@@ -8,6 +8,7 @@ import 'package:kakao_map_sdk/kakao_map_sdk.dart' as kakao;
 import '../models/shelter.dart';
 import '../models/shelter_cluster.dart';
 import 'common.dart';
+import 'map_load_status.dart';
 import 'shelter_pin.dart';
 import 'shelter_cluster_pin.dart';
 
@@ -25,7 +26,9 @@ class ShelterMap extends StatefulWidget {
     required this.shelters,
     required this.onSelected,
     this.configuration = const MapConfiguration(),
+    this.tileProviderFactory,
   });
+  final TileProvider Function()? tileProviderFactory;
   final List<Shelter> shelters;
   final ValueChanged<Shelter> onSelected;
   final MapConfiguration configuration;
@@ -35,6 +38,7 @@ class ShelterMap extends StatefulWidget {
 
 class _ShelterMapState extends State<ShelterMap> {
   bool _failed = false;
+  final _loadStatus = MapLoadStatus();
   final _mapController = MapController();
   late int _level = widget.shelters.isEmpty ? 6 : 14;
   kakao.KakaoMapController? _nativeController;
@@ -64,6 +68,7 @@ class _ShelterMapState extends State<ShelterMap> {
   @override
   void dispose() {
     _watchdog?.cancel();
+    _loadStatus.dispose();
     _mapController.dispose();
     super.dispose();
   }
@@ -190,7 +195,7 @@ class _ShelterMapState extends State<ShelterMap> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '가까운 위치의 대피소 ${cluster.members.length}곳',
+                        '대피소 목록 ${cluster.members.length}곳',
                         style: const TextStyle(
                           fontSize: 21,
                           fontWeight: FontWeight.bold,
@@ -220,6 +225,22 @@ class _ShelterMapState extends State<ShelterMap> {
         ),
       ),
     );
+  }
+
+  void _showOfflineList() {
+    if (widget.shelters.isEmpty) {
+      showModalBottomSheet<void>(
+        context: context,
+        builder: (_) => const SafeArea(
+          child: Padding(
+            padding: EdgeInsets.all(24),
+            child: Text('표시할 시설이 없습니다. 지역을 선택해 공식 시설을 조회하거나 저장한 대피소를 확인하세요.'),
+          ),
+        ),
+      );
+      return;
+    }
+    _chooseCluster(ShelterCluster(widget.shelters, _level));
   }
 
   @override
@@ -282,6 +303,15 @@ class _ShelterMapState extends State<ShelterMap> {
         ),
         children: [
           TileLayer(
+            key: ValueKey(_loadStatus.generation),
+            tileProvider: widget.tileProviderFactory?.call(),
+            tileBuilder: (context, child, tile) => ObservedMapTile(
+              key: ObjectKey(tile),
+              tile: tile,
+              status: _loadStatus,
+              attempt: _loadStatus.generation,
+              child: child,
+            ),
             urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
             userAgentPackageName: 'kr.example.safe_korea',
           ),
@@ -335,6 +365,58 @@ class _ShelterMapState extends State<ShelterMap> {
               style: const TextStyle(fontSize: 12, color: ink),
             ),
           ),
+        ),
+      ),
+      Positioned(
+        left: 8,
+        right: 8,
+        bottom: 42,
+        child: ListenableBuilder(
+          listenable: _loadStatus,
+          builder: (context, _) {
+            if (!_loadStatus.loading && !_loadStatus.failed) {
+              return const SizedBox.shrink();
+            }
+            return Material(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxHeight: 160),
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Semantics(
+                        liveRegion: true,
+                        child: Text(
+                          _loadStatus.failed
+                              ? '지도 배경 일부 또는 전체를 불러오지 못했습니다. 연결을 확인하거나 시설 목록을 이용하세요.'
+                              : '지도 배경 불러오는 중… 시설 목록은 바로 볼 수 있습니다.',
+                        ),
+                      ),
+                      Wrap(
+                        spacing: 8,
+                        children: [
+                          if (_loadStatus.failed)
+                            TextButton.icon(
+                              onPressed: () => setState(_loadStatus.retry),
+                              icon: const Icon(Icons.refresh),
+                              label: const Text('지도 다시 시도'),
+                            ),
+                          TextButton.icon(
+                            onPressed: _showOfflineList,
+                            icon: const Icon(Icons.list),
+                            label: const Text('시설 목록 보기'),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
         ),
       ),
       Positioned(

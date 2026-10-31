@@ -1,3 +1,5 @@
+import 'helpers/map_tiles.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:safe_korea/models/shelter.dart';
@@ -161,6 +163,7 @@ void main() {
               height: 400,
               child: ShelterMap(
                 configuration: const MapConfiguration(nativeAppKey: ''),
+                tileProviderFactory: () => FixtureTiles(false),
                 shelters: [point('a', 37.5, 127), point('b', 37.5, 127)],
                 onSelected: (s) => chosen = s.id,
               ),
@@ -170,9 +173,13 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(find.byType(ShelterClusterPin), findsOneWidget);
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 100)),
+      );
+      await tester.pumpAndSettle();
       await tester.longPress(find.byType(ShelterClusterPin));
       await tester.pumpAndSettle();
-      expect(find.text('가까운 위치의 대피소 2곳'), findsOneWidget);
+      expect(find.text('대피소 목록 2곳'), findsOneWidget);
       expect(tester.takeException(), isNull);
       await tester.scrollUntilVisible(
         find.text('테스트 시설 b'),
