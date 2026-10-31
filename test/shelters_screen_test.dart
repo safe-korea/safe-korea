@@ -71,6 +71,10 @@ void main() {
       expect(find.textContaining('1건을 받아 기기에 저장했습니다'), findsOneWidget);
       expect(store.cached, isNotNull);
       fail = true;
+      await tester.ensureVisible(find.text('지역 변경'));
+      await tester.tap(find.text('지역 변경'));
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('선택 지역 대피소 불러오기'));
       await tester.tap(find.text('선택 지역 대피소 불러오기'));
       await tester.pumpAndSettle();
       expect(find.textContaining('공식 시설 조회에 실패했습니다'), findsOneWidget);

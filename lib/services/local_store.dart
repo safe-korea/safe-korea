@@ -111,6 +111,40 @@ class LocalStore {
     }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
+  Future<void> _ensureSavedSheltersTable() async => (await database).execute(
+    'CREATE TABLE IF NOT EXISTS saved_shelters (id TEXT PRIMARY KEY, content TEXT NOT NULL, saved_at TEXT NOT NULL)',
+  );
+  Future<List<Map<String, dynamic>>> loadSavedShelters() async {
+    await _ensureSavedSheltersTable();
+    final rows = await (await database).query(
+      'saved_shelters',
+      orderBy: 'saved_at DESC, id ASC',
+    );
+    return rows
+        .map(
+          (row) => jsonDecode(row['content'] as String) as Map<String, dynamic>,
+        )
+        .toList();
+  }
+
+  Future<void> saveSavedShelter(String id, Map<String, dynamic> entry) async {
+    await _ensureSavedSheltersTable();
+    await (await database).insert('saved_shelters', {
+      'id': id,
+      'content': jsonEncode(entry),
+      'saved_at': entry['savedAt'],
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  Future<void> removeSavedShelter(String id) async {
+    await _ensureSavedSheltersTable();
+    await (await database).delete(
+      'saved_shelters',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
   Future<FamilyPlan> load() async {
     final rows = await (await database).query(
       'plans',

@@ -15,6 +15,7 @@ void main() {
     await tester.pumpAndSettle();
     await File('${Directory.systemTemp.path}/safe-korea-iphone-home.png')
         .writeAsBytes(await binding.takeScreenshot('home'));
+    await tester.ensureVisible(find.text('모의 공습경보 시작'));
     await tester.tap(find.text('모의 공습경보 시작'));
     await tester.pumpAndSettle();
     await binding.takeScreenshot('drill');
@@ -29,6 +30,11 @@ void main() {
     await binding.takeScreenshot('guidelines');
     await tester.tap(find.byType(NavigationDestination).at(1));
     await tester.pumpAndSettle();
+    if (find.text('지역 변경').evaluate().isNotEmpty) {
+      await tester.ensureVisible(find.text('지역 변경'));
+      await tester.tap(find.text('지역 변경'));
+      await tester.pumpAndSettle();
+    }
     await tester.ensureVisible(find.text('선택 지역 대피소 불러오기'));
     await tester.tap(find.text('선택 지역 대피소 불러오기'));
     await tester.pump();
@@ -49,7 +55,11 @@ void main() {
         .writeAsBytes(await binding.takeScreenshot('shelters'));
     await tester.ensureVisible(find.text('크게 보기'));
     await tester.tap(find.text('크게 보기'));
-    await tester.pump(const Duration(seconds: 3));
+    await tester.pumpAndSettle();
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(seconds: 3)),
+    );
+    await tester.pumpAndSettle();
     await binding.takeScreenshot('map-full');
     debugPrint('PREVIEW_DIRECTORY=${Directory.systemTemp.path}');
   });

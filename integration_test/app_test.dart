@@ -18,6 +18,7 @@ void main() {
   ) async {
     await tester.pumpWidget(const SafeKoreaApp());
     await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('모의 공습경보 시작'));
     await tester.tap(find.text('모의 공습경보 시작'));
     await tester.pumpAndSettle();
     expect(find.text('훈련 / 테스트'), findsOneWidget);

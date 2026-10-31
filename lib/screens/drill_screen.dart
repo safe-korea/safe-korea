@@ -18,6 +18,15 @@ class _DrillScreenState extends State<DrillScreen> {
       title: const Text('훈련 / 테스트'),
       backgroundColor: const Color(0xFFFFE9DB),
     ),
+    bottomNavigationBar: SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
+        child: FilledButton.tonal(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('훈련 종료 · 홈으로'),
+        ),
+      ),
+    ),
     body: PageBody(
       children: [
         const Notice(
@@ -54,6 +63,24 @@ class _DrillScreenState extends State<DrillScreen> {
         const Text('실제 상황에서는 재난문자·TV·라디오와 현장 안내를 따르세요.'),
         const SizedBox(height: 24),
         const Notice('화학 공격은 대피 방법이 다릅니다. 상황별 행동강령을 확인하세요.'),
+        FilledButton.icon(
+          onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute<void>(builder: (_) => const SheltersScreen()),
+          ),
+          icon: const Icon(Icons.near_me),
+          label: const Text('대피시설 확인'),
+        ),
+        const SizedBox(height: 12),
+        OutlinedButton(
+          onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute<void>(builder: (_) => const GuidelinesScreen()),
+          ),
+          child: const Text('상황별 행동강령 보기'),
+        ),
+        const SizedBox(height: 12),
+        const SizedBox(height: 16),
         const Text(
           '연습 체크 · 선택 사항',
           style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
@@ -79,28 +106,6 @@ class _DrillScreenState extends State<DrillScreen> {
         if (_checked.length == 3)
           const Notice('대피 행동 연습을 마쳤어요. 실제 상황에서는 최신 정부·현장 안내에 따라 행동하세요.'),
         const SizedBox(height: 12),
-        FilledButton.icon(
-          onPressed: () => Navigator.push(
-            context,
-            MaterialPageRoute<void>(builder: (_) => const SheltersScreen()),
-          ),
-          icon: const Icon(Icons.near_me),
-          label: const Text('대피시설 확인'),
-        ),
-        const SizedBox(height: 12),
-        OutlinedButton(
-          onPressed: () => Navigator.push(
-            context,
-            MaterialPageRoute<void>(builder: (_) => const GuidelinesScreen()),
-          ),
-          child: const Text('상황별 행동강령 보기'),
-        ),
-        const SizedBox(height: 12),
-        FilledButton.tonal(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('훈련 종료 · 홈으로'),
-        ),
-        const SizedBox(height: 16),
         const Text('출처: 행정안전부 국민안전24\n비상시 행동요령 · 원문 확인 2026-10-31'),
       ],
     ),

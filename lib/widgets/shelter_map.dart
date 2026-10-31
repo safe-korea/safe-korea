@@ -6,8 +6,10 @@ import 'package:latlong2/latlong.dart';
 import 'package:kakao_map_sdk/kakao_map_sdk.dart' as kakao;
 
 import '../models/shelter.dart';
+import '../models/shelter_cluster.dart';
 import 'common.dart';
 import 'shelter_pin.dart';
+import 'shelter_cluster_pin.dart';
 
 class MapConfiguration {
   const MapConfiguration({
@@ -33,6 +35,13 @@ class ShelterMap extends StatefulWidget {
 
 class _ShelterMapState extends State<ShelterMap> {
   bool _failed = false;
+  final _mapController = MapController();
+  late int _level = widget.shelters.isEmpty ? 6 : 14;
+  kakao.KakaoMapController? _nativeController;
+  final _nativePois = <kakao.Poi>[];
+  final _nativeStyles = <int, kakao.PoiStyle>{};
+  bool _nativeUpdating = false;
+  int _nativeRevision = 0;
   Future<void>? _initialization;
   Timer? _watchdog;
   static Future<void>? _sdkInitialization;
@@ -55,30 +64,162 @@ class _ShelterMapState extends State<ShelterMap> {
   @override
   void dispose() {
     _watchdog?.cancel();
+    _mapController.dispose();
     super.dispose();
   }
 
-  Future<void> _markers(kakao.KakaoMapController controller) async {
+  void _markers(kakao.KakaoMapController controller) {
     _watchdog?.cancel();
+    _nativeController = controller;
+    _nativePois.clear();
+    _nativeStyles.clear();
+    _nativeRevision++;
+    _refreshNative();
+  }
+
+  Future<void> _refreshNative() async {
+    if (_nativeUpdating || _nativeController == null || _failed || !mounted) {
+      return;
+    }
+    _nativeUpdating = true;
+    final controller = _nativeController!;
+    final revision = _nativeRevision;
     try {
-      final image = await kakao.KImage.fromWidget(
-        const ShelterPin(),
-        const Size(44, 56),
-        context: context,
-      );
-      final style = kakao.PoiStyle(icon: image);
-      for (final shelter in widget.shelters) {
-        if (!mounted || _failed) return;
-        await controller.labelLayer.addPoi(
-          kakao.LatLng(shelter.latitude, shelter.longitude),
-          style: style,
-          id: shelter.id,
-          onClick: () => widget.onSelected(shelter),
+      for (final poi in [..._nativePois]) {
+        if (!mounted || !identical(controller, _nativeController)) return;
+        await controller.labelLayer.removePoi(poi);
+      }
+      _nativePois.clear();
+      for (final cluster in clusterShelters(
+        widget.shelters,
+        _level.toDouble(),
+      )) {
+        if (!mounted || !identical(controller, _nativeController)) return;
+        final count = cluster.isSingle ? 1 : cluster.members.length;
+        if (!_nativeStyles.containsKey(count)) {
+          final size = cluster.isSingle
+              ? const Size(44, 56)
+              : const Size(52, 52);
+          final image = await kakao.KImage.fromWidget(
+            cluster.isSingle
+                ? const ShelterPin()
+                : ShelterClusterPin(count: count),
+            size,
+            context: context,
+          );
+          if (!mounted ||
+              _failed ||
+              !identical(controller, _nativeController)) {
+            return;
+          }
+          _nativeStyles[count] = kakao.PoiStyle(
+            icon: image,
+            anchor: kakao.KPoint(0.5, cluster.isSingle ? 1.0 : 0.5),
+          );
+        }
+        final poi = await controller.labelLayer.addPoi(
+          kakao.LatLng(cluster.latitude, cluster.longitude),
+          style: _nativeStyles[count]!,
+          id: cluster.id,
+          onClick: () => _activateCluster(cluster, native: true),
         );
+        if (!mounted || _failed || !identical(controller, _nativeController)) {
+          return;
+        }
+        _nativePois.add(poi);
       }
     } catch (_) {
-      if (mounted) setState(() => _failed = true);
+      if (mounted && identical(controller, _nativeController)) {
+        setState(() => _failed = true);
+      }
+    } finally {
+      _nativeUpdating = false;
+      if (mounted && !_failed && revision != _nativeRevision) _refreshNative();
     }
+  }
+
+  Future<void> _activateCluster(
+    ShelterCluster cluster, {
+    bool native = false,
+  }) async {
+    if (!mounted) return;
+    if (cluster.isSingle) {
+      widget.onSelected(cluster.members.single);
+      return;
+    }
+    if (_level >= 18) {
+      _chooseCluster(cluster);
+      return;
+    }
+    final next = (_level + 2).clamp(0, 18);
+    if (native) {
+      try {
+        await _nativeController?.moveCamera(
+          kakao.CameraUpdate.newCenterPosition(
+            kakao.LatLng(cluster.latitude, cluster.longitude),
+            zoomLevel: next,
+          ),
+        );
+      } catch (_) {
+        if (mounted) setState(() => _failed = true);
+      }
+    } else {
+      _mapController.move(
+        LatLng(cluster.latitude, cluster.longitude),
+        next.toDouble(),
+      );
+    }
+  }
+
+  void _chooseCluster(ShelterCluster cluster) {
+    if (!mounted) return;
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (sheetContext) => SafeArea(
+        child: SizedBox(
+          height: MediaQuery.sizeOf(sheetContext).height * 0.65,
+          child: ListView.builder(
+            itemCount: cluster.members.length + 1,
+            itemBuilder: (_, index) {
+              if (index == 0) {
+                return Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '가까운 위치의 대피소 ${cluster.members.length}곳',
+                        style: const TextStyle(
+                          fontSize: 21,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      const Text(
+                        '시설 이름과 주소를 확인한 뒤 선택하세요. 숫자 표시 위치가 실제 출입구를 뜻하지는 않습니다.',
+                      ),
+                    ],
+                  ),
+                );
+              }
+              final shelter = cluster.members[index - 1];
+              return ListTile(
+                contentPadding: const EdgeInsets.all(16),
+                title: Text(shelter.name),
+                subtitle: Text(shelter.address),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () {
+                  Navigator.pop(sheetContext);
+                  widget.onSelected(shelter);
+                },
+              );
+            },
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -99,6 +240,12 @@ class _ShelterMapState extends State<ShelterMap> {
             zoomLevel: widget.shelters.isEmpty ? 7 : 14,
           ),
           onMapReady: _markers,
+          onCameraMoveEnd: (position, gesture) {
+            if (_level == position.zoomLevel) return;
+            _level = position.zoomLevel;
+            _nativeRevision++;
+            _refreshNative();
+          },
           onMapError: (_) {
             if (mounted) setState(() => _failed = true);
           },
@@ -110,9 +257,28 @@ class _ShelterMapState extends State<ShelterMap> {
   Widget _fallback() => Stack(
     children: [
       FlutterMap(
+        mapController: _mapController,
         options: MapOptions(
           initialCenter: _center,
-          initialZoom: widget.shelters.isEmpty ? 6 : 14,
+          initialZoom: _level.toDouble(),
+          initialCameraFit: widget.shelters.length > 1
+              ? CameraFit.coordinates(
+                  coordinates: [
+                    for (final s in widget.shelters)
+                      LatLng(s.latitude, s.longitude),
+                  ],
+                  padding: const EdgeInsets.all(56),
+                  maxZoom: 15,
+                )
+              : null,
+          onMapReady: () {
+            final level = _mapController.camera.zoom.floor();
+            if (mounted && level != _level) setState(() => _level = level);
+          },
+          onPositionChanged: (camera, hasGesture) {
+            final level = camera.zoom.floor();
+            if (level != _level) setState(() => _level = level);
+          },
         ),
         children: [
           TileLayer(
@@ -121,18 +287,30 @@ class _ShelterMapState extends State<ShelterMap> {
           ),
           MarkerLayer(
             markers: [
-              for (final shelter in widget.shelters)
+              for (final cluster in clusterShelters(
+                widget.shelters,
+                _level.toDouble(),
+              ))
                 Marker(
-                  point: LatLng(shelter.latitude, shelter.longitude),
-                  width: 48,
-                  height: 58,
-                  alignment: Alignment.topCenter,
+                  point: LatLng(cluster.latitude, cluster.longitude),
+                  width: cluster.isSingle ? 48 : 52,
+                  height: cluster.isSingle ? 58 : 52,
+                  alignment: cluster.isSingle
+                      ? Alignment.topCenter
+                      : Alignment.center,
                   child: Semantics(
                     button: true,
-                    label: '${shelter.name} 대피소 상세',
+                    label: cluster.isSingle
+                        ? '${cluster.members.single.name} 대피소 상세'
+                        : '대피소 ${cluster.members.length}곳 묶음 확대',
                     child: GestureDetector(
-                      onTap: () => widget.onSelected(shelter),
-                      child: const ShelterPin(),
+                      onTap: () => _activateCluster(cluster),
+                      onLongPress: cluster.isSingle
+                          ? null
+                          : () => _chooseCluster(cluster),
+                      child: cluster.isSingle
+                          ? const ShelterPin()
+                          : ShelterClusterPin(count: cluster.members.length),
                     ),
                   ),
                 ),
@@ -153,7 +331,7 @@ class _ShelterMapState extends State<ShelterMap> {
             child: Text(
               widget.configuration.hasKakaoKey
                   ? '연결 문제로 기본 지도 표시 중'
-                  : '기본 지도 · 카카오 지도 준비 중',
+                  : '기본 지도\n숫자는 대피소 묶음 · 누르면 확대',
               style: const TextStyle(fontSize: 12, color: ink),
             ),
           ),

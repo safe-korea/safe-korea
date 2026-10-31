@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-const ink = Color(0xFF142D34);
-const teal = Color(0xFF006B60);
+import '../theme/app_theme.dart';
+
+const ink = AppPalette.ink;
+const teal = AppPalette.green;
 
 class Notice extends StatelessWidget {
   const Notice(this.text, {super.key, this.urgent = false});

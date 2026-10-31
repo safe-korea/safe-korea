@@ -105,6 +105,29 @@ void main() {
       expect((await store.load()).backupContactName, '추가 연락처');
     },
   );
+  test(
+    'saved shelters persist separately from cache, family plan and readiness',
+    () async {
+      await store.save(const FamilyPlan(contactName: '유지할 계획'));
+      await store.savePreparation({'water'});
+      await store.saveSavedShelter('a', {
+        'savedAt': '2026-10-31T01:00:00Z',
+        'record': 'a',
+      });
+      await store.saveSavedShelter('b', {
+        'savedAt': '2026-10-31T02:00:00Z',
+        'record': 'b',
+      });
+      await store.saveShelterCatalog({'coverage': '새 조회 지역', 'items': []});
+      final reopened = LocalStore(database: db);
+      expect((await reopened.loadSavedShelters()).length, 2);
+      await reopened.removeSavedShelter('a');
+      expect((await reopened.loadSavedShelters()).single['record'], 'b');
+      expect((await reopened.load()).contactName, '유지할 계획');
+      expect(await reopened.loadPreparation(), {'water'});
+      expect((await reopened.loadShelterCatalog())!['coverage'], '새 조회 지역');
+    },
+  );
   testWidgets('family form saves locally and confirms deletion', (
     tester,
   ) async {

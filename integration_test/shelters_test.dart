@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:safe_korea/widgets/shelter_pin.dart';
+import 'package:safe_korea/widgets/shelter_cluster_pin.dart';
+import 'package:safe_korea/services/saved_shelters_controller.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:path/path.dart' as path;
@@ -21,11 +23,19 @@ void main() {
       final db = await openDatabase(dbPath);
       final store = LocalStore(database: db);
       final repository = ShelterRepository(store: store);
+      final saved = SavedSheltersController(store: store);
       try {
         await tester.pumpWidget(
-          MaterialApp(home: SheltersScreen(repository: repository)),
+          MaterialApp(
+            home: SheltersScreen(repository: repository, savedShelters: saved),
+          ),
         );
         await tester.pumpAndSettle();
+        if (find.text('지역 변경').evaluate().isNotEmpty) {
+          await tester.ensureVisible(find.text('지역 변경'));
+          await tester.tap(find.text('지역 변경'));
+          await tester.pumpAndSettle();
+        }
         await tester.ensureVisible(find.text('선택 지역 대피소 불러오기'));
         await tester.tap(find.text('선택 지역 대피소 불러오기'));
         await tester.pump();
@@ -45,10 +55,32 @@ void main() {
         await tester.ensureVisible(find.text('온라인 지도 열기'));
         await tester.tap(find.text('온라인 지도 열기'));
         await tester.pump(const Duration(seconds: 3));
-        expect(find.byType(ShelterPin), findsWidgets);
+        expect(
+          find.byWidgetPredicate(
+            (widget) => widget is ShelterPin || widget is ShelterClusterPin,
+          ),
+          findsWidgets,
+        );
+        await tester.ensureVisible(find.text('대피소 저장').first);
+        await tester.tap(find.text('대피소 저장').first);
+        await tester.pumpAndSettle();
+        expect(saved.entries.length, 1);
+        final reopenedSaved = SavedSheltersController(store: store);
+        await reopenedSaved.ensureLoaded();
+        expect(
+          reopenedSaved.entries.single.shelter.id,
+          saved.entries.single.shelter.id,
+        );
+        expect(
+          reopenedSaved.entries.single.snapshot.retrievedAt,
+          catalog.retrievedAt,
+        );
+        reopenedSaved.dispose();
         await tester.pumpWidget(const SizedBox());
         await tester.pumpWidget(
-          MaterialApp(home: SheltersScreen(repository: repository)),
+          MaterialApp(
+            home: SheltersScreen(repository: repository, savedShelters: saved),
+          ),
         );
         await tester.pumpAndSettle();
         expect(find.textContaining('현재 표시 범위: 서울특별시 종로구'), findsOneWidget);
@@ -58,6 +90,7 @@ void main() {
         );
       } finally {
         await tester.pumpWidget(const SizedBox());
+        saved.dispose();
         repository.close();
         await db.close();
         await deleteDatabase(dbPath);

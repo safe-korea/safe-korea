@@ -12,7 +12,8 @@
 | 가족 비상연락처·만남 장소·메모 | 연락처 2곳·만남 장소 2곳·요약 카드·SQLite 저장 |
 | 나의 준비 | 비상배낭 8개 항목 체크리스트·로컬 저장 |
 | GPS | 명시적 요청, 거부·꺼짐·타임아웃 처리 |
-| 시설 검색·직선거리순 정렬·지도 | 공식 시설 조회와 전용 핀, 전체 화면 지도 |
+| 시설 검색·직선거리순 정렬·지도 | 공식 시설 조회, 핀 묶음·확대·시설 선택, 전체 화면 지도 |
+| 저장한 대피소 | 여러 지역의 개별 시설을 출처·조회 시각과 함께 SQLite 저장·검색·해제 |
 | 카카오 지도 | SDK/연결 코드 준비. 키 미입력으로 실제 인증 미검증, 현재는 기본 OSM 지도 |
 | 대한민국 공식 민방위 시설 목록 | 시·도/시·군·구 선택 후 국민안전24 조회, 마지막 조회 지역 SQLite 저장 |
 | 실시간 정부 공습경보 | 미구현. API/권한/지연/이용 조건 검증 전 완료로 간주하지 않음 |
@@ -42,7 +43,7 @@ JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home .tools/
 # Android 개발용 APK (배포용 서명 아님)
 JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home .tools/flutter/bin/flutter build apk --debug --target-platform android-arm64
 # iOS 시뮬레이터 (백그라운드/항상 위치 권한 사용 안 함)
-BYPASS_PERMISSION_LOCATION_ALWAYS=1 .tools/flutter/bin/flutter run -d FCA9E923-B6DA-4BFF-A955-30B435322CA0
+BYPASS_PERMISSION_LOCATION_ALWAYS=1 .tools/flutter/bin/flutter run -d E3A83EF7-8FD6-4656-AE84-EFA2E3136351
 BYPASS_PERMISSION_LOCATION_ALWAYS=1 .tools/flutter/bin/flutter build ios --simulator --debug
 ```
 
@@ -63,10 +64,10 @@ git clone --depth 1 --branch stable https://github.com/flutter/flutter.git .tool
 python3 -m unittest discover -s scripts -p 'test_*.py' -v
 # 실제 플랫폼의 화면 이동 및 별도 테스트 SQLite 검증
 JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home .tools/flutter/bin/flutter test integration_test/app_test.dart -d emulator-5556 --no-uninstall
-BYPASS_PERMISSION_LOCATION_ALWAYS=1 .tools/flutter/bin/flutter test integration_test/app_test.dart -d FCA9E923-B6DA-4BFF-A955-30B435322CA0 --no-uninstall
+BYPASS_PERMISSION_LOCATION_ALWAYS=1 .tools/flutter/bin/flutter test integration_test/app_test.dart -d E3A83EF7-8FD6-4656-AE84-EFA2E3136351 --no-uninstall
 ```
 
-2026-10-31 검증 결과: `flutter analyze` 이슈 0, Flutter 테스트 25건, Python 테스트 4건 통과. Android API 36과 iOS 26.5 시뮬레이터에서 기본 앱 통합 테스트 및 실시간 공식 시설 조회·지도·SQLite 재열기 통합 테스트 통과. 공식 종로구 응답 107건을 확인했습니다. Android에서 실제 권한 거부/일회 허용 후 모의 GPS 좌표·오차·시각 표시를 확인했습니다. 국내 실기기 GPS 정확도는 아직 검증하지 않았습니다.
+2026-11-01 로컬 검증 결과: `flutter analyze` 이슈 0, Flutter 테스트 32건, Python 테스트 4건 통과. Android API 36과 iOS 26.5 시뮬레이터에서 기본 앱 통합 테스트 및 실시간 공식 시설 조회·지도·SQLite 재열기 통합 테스트 통과. 공식 종로구 응답 107건을 확인했습니다. Android에서 실제 권한 거부/일회 허용 후 모의 GPS 좌표·오차·시각 표시를 확인했습니다. 국내 실기기 GPS 정확도는 아직 검증하지 않았습니다.
 
 Android 개발용 APK: `build/app/outputs/flutter-apk/app-debug.apk`. iOS 시뮬레이터 앱: `build/ios/iphonesimulator/Runner.app`. 결과 로그와 화면은 `artifacts/`에 보관합니다. 전체 검증은 `./scripts/verify.sh`로 다시 실행할 수 있습니다.
 
@@ -76,9 +77,10 @@ Android 개발용 APK: `build/app/outputs/flutter-apk/app-debug.apk`. iOS 시뮬
 
 1. **주변 대피시설**에서 시·도와 시·군·구를 선택합니다.
 2. **선택 지역 대피소 불러오기**를 누르면 공식 국민안전24 지도에서 해당 지역의 민방위 대피소를 조회합니다. 현재 화면의 표시 범위와 조회 시각을 확인하세요.
-3. **온라인 지도 열기**를 누르면 실제 시설 핀이 표시됩니다. 핀을 눌러 이름과 주소를 확인할 수 있습니다.
+3. **온라인 지도 열기**를 누르면 실제 시설 핀이 표시됩니다. 숫자는 가까운 시설의 묶음이며 누르면 확대됩니다. 충분히 확대해도 겹치는 시설은 선택 목록에서 고릅니다. 기본 지도에서는 묶음을 길게 눌러 바로 목록을 열 수도 있습니다. 숫자 위치는 실제 출입구가 아닙니다.
 4. GPS를 허용하면 받은 지역 안에서 직선거리순으로 정렬합니다. GPS 위치에 따라 다른 지역을 자동 조회하지 않으므로 필요한 인접 지역은 직접 선택하세요.
-5. 마지막으로 조회한 지역 한 곳의 목록은 기기에 저장되어 다음 실행부터 인터넷 없이도 검색할 수 있습니다. 지도 배경은 온라인 전용입니다.
+5. 마지막으로 조회한 지역 한 곳의 목록은 기기에 저장되어 다음 실행부터 인터넷 없이도 검색할 수 있습니다. **대피소 저장**을 누른 개별 시설은 지역을 바꿔도 **저장한 대피소**에서 검색·열람·해제할 수 있습니다. 공식 조회 시각과 기기 저장 시각은 별도로 표시하며 자동 최신화되지 않습니다. 지도 배경은 온라인 전용입니다.
+6. 조회 후에는 지역 입력이 접힙니다. **지역 변경**을 눌러 다른 지역을 조회하세요. UI 설계와 접근성 검토는 [DESIGN.md](DESIGN.md)에 기록합니다.
 
 처음 설치할 때 동봉 시설은 0건입니다. 전국 전체 시설을 미리 수집하거나 자동 최신화하지 않습니다. 조회 실패 시 기존 자료를 유지하며 잘못된 좌표·중복은 제외 수를 표시합니다. 공식 지도 응답에 시설별 갱신일이 없어 `제공되지 않음`으로 표시합니다. 조회 시각을 시설 갱신일로 대신하지 않습니다.
 
@@ -87,7 +89,7 @@ Android 개발용 APK: `build/app/outputs/flutter-apk/app-debug.apk`. iOS 시뮬
 ```sh
 # 외부 공식 사이트에 지역 단위 요청 1회를 보내는 명시적 통합 검증
 JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home .tools/flutter/bin/flutter test integration_test/shelters_test.dart -d emulator-5556 --no-uninstall
-BYPASS_PERMISSION_LOCATION_ALWAYS=1 .tools/flutter/bin/flutter test integration_test/shelters_test.dart -d FCA9E923-B6DA-4BFF-A955-30B435322CA0 --no-uninstall
+BYPASS_PERMISSION_LOCATION_ALWAYS=1 .tools/flutter/bin/flutter test integration_test/shelters_test.dart -d E3A83EF7-8FD6-4656-AE84-EFA2E3136351 --no-uninstall
 ```
 
 ## 데이터·개인정보
@@ -116,4 +118,4 @@ BYPASS_PERMISSION_LOCATION_ALWAYS=1 .tools/flutter/bin/flutter drive --driver=te
 - `scripts`: 검증된 공식 CSV 정규화 가져오기 및 테스트
 - `test`, `integration_test`: 위젯·저장·위치·시설 검증 및 플랫폼 통합 테스트
 
-출시 전 필요한 작업: 공식 웹사이트 조회 경로의 운영 이용 조건·안정성 확인, 다른 지역별 결과/갱신 정책 검증, 실기기 GPS·권한·VoiceOver/TalkBack 점검, 정부 행동강령 변경 재검토, iOS 실기기 서명과 앱 아이콘·배포 서명 구성. 원격 push·배포는 수행하지 않습니다.
+출시 전 필요한 작업: 공식 웹사이트 조회 경로의 운영 이용 조건·안정성 확인, 다른 지역별 결과/갱신 정책 검증, 실기기 GPS·권한·VoiceOver/TalkBack 점검, 정부 행동강령 변경 재검토, iOS 실기기 서명과 앱 아이콘·배포 서명 구성. 원격 push와 초안 PR #1 게시까지 승인 후 수행했으며, 앱 배포·스토어 제출은 수행하지 않았습니다.

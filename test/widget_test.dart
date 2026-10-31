@@ -20,6 +20,7 @@ void main() {
     await tester.pumpWidget(const SafeKoreaApp());
     expect(find.text('SAFE KOREA'), findsOneWidget);
     expect(find.textContaining('실제 정부 경보 수신 기능 없음'), findsOneWidget);
+    await tester.ensureVisible(find.text('모의 공습경보 시작'));
     await tester.tap(find.text('모의 공습경보 시작'));
     await tester.pumpAndSettle();
     expect(find.text('훈련 / 테스트'), findsOneWidget);

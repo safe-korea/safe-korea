@@ -91,7 +91,7 @@ void main() {
         ),
       );
       await tester.pump();
-      expect(find.text('기본 지도 · 카카오 지도 준비 중'), findsOneWidget);
+      expect(find.textContaining('기본 지도'), findsOneWidget);
       await tester.tap(find.byType(ShelterPin));
       expect(selected, 'test-only');
       await tester.pumpWidget(const SizedBox());
