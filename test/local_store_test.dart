@@ -79,6 +79,32 @@ void main() {
       expect(await store.loadShelterCatalog(), isNotNull);
     },
   );
+  test(
+    'old family JSON remains readable and new backup contact persists',
+    () async {
+      await db.insert('plans', {
+        'id': 1,
+        'content': '{"contactName":"이전 계획","meetingPlace":"기존 장소"}',
+      });
+      final old = await store.load();
+      expect(old.backupContactName, isEmpty);
+      expect(old.meetingPlace, '기존 장소');
+      await store.save(
+        const FamilyPlan(
+          contactName: '주 연락처',
+          backupContactName: '추가 연락처',
+          backupPhone: '01000000000',
+        ),
+      );
+      expect((await store.load()).backupPhone, '01000000000');
+      await store.savePreparation({'water', 'radio'});
+      expect(await LocalStore(database: db).loadPreparation(), {
+        'water',
+        'radio',
+      });
+      expect((await store.load()).backupContactName, '추가 연락처');
+    },
+  );
   testWidgets('family form saves locally and confirms deletion', (
     tester,
   ) async {
@@ -87,7 +113,10 @@ void main() {
     await tester.pumpAndSettle();
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField).first, '가족');
-    await tester.enterText(find.byType(TextField).at(2), '만남 장소');
+    await tester.enterText(
+      find.byKey(const ValueKey('family-field-2')),
+      '만남 장소',
+    );
     await tester.ensureVisible(find.text('기기에 저장'));
     await tester.tap(find.text('기기에 저장'));
     await tester.pumpAndSettle();

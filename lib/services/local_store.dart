@@ -13,14 +13,25 @@ class FamilyPlan {
     this.meetingPlace = '',
     this.backupPlace = '',
     this.note = '',
+    this.backupContactName = '',
+    this.backupPhone = '',
   });
-  final String contactName, phone, meetingPlace, backupPlace, note;
+  final String contactName,
+      phone,
+      meetingPlace,
+      backupPlace,
+      note,
+      backupContactName,
+      backupPhone;
+  bool get isEmpty => toJson().values.every((value) => value.trim().isEmpty);
   Map<String, String> toJson() => {
     'contactName': contactName,
     'phone': phone,
     'meetingPlace': meetingPlace,
     'backupPlace': backupPlace,
     'note': note,
+    'backupContactName': backupContactName,
+    'backupPhone': backupPhone,
   };
   factory FamilyPlan.fromJson(Map<String, dynamic> json) => FamilyPlan(
     contactName: json['contactName'] as String? ?? '',
@@ -28,6 +39,8 @@ class FamilyPlan {
     meetingPlace: json['meetingPlace'] as String? ?? '',
     backupPlace: json['backupPlace'] as String? ?? '',
     note: json['note'] as String? ?? '',
+    backupContactName: json['backupContactName'] as String? ?? '',
+    backupPhone: json['backupPhone'] as String? ?? '',
   );
 }
 
@@ -71,6 +84,30 @@ class LocalStore {
     await (await database).insert('shelter_catalog', {
       'id': 1,
       'content': jsonEncode(catalog),
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  Future<void> _ensurePreparationTable() async => (await database).execute(
+    'CREATE TABLE IF NOT EXISTS preparation (id INTEGER PRIMARY KEY, content TEXT NOT NULL)',
+  );
+  Future<Set<String>> loadPreparation() async {
+    await _ensurePreparationTable();
+    final rows = await (await database).query(
+      'preparation',
+      where: 'id = ?',
+      whereArgs: [1],
+    );
+    if (rows.isEmpty) return {};
+    return (jsonDecode(rows.first['content'] as String) as List)
+        .cast<String>()
+        .toSet();
+  }
+
+  Future<void> savePreparation(Set<String> values) async {
+    await _ensurePreparationTable();
+    await (await database).insert('preparation', {
+      'id': 1,
+      'content': jsonEncode(values.toList()..sort()),
     }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 

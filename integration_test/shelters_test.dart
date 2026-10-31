@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:safe_korea/widgets/shelter_pin.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:path/path.dart' as path;
@@ -44,7 +45,7 @@ void main() {
         await tester.ensureVisible(find.text('온라인 지도 열기'));
         await tester.tap(find.text('온라인 지도 열기'));
         await tester.pump(const Duration(seconds: 3));
-        expect(find.byIcon(Icons.location_on), findsWidgets);
+        expect(find.byType(ShelterPin), findsWidgets);
         await tester.pumpWidget(const SizedBox());
         await tester.pumpWidget(
           MaterialApp(home: SheltersScreen(repository: repository)),

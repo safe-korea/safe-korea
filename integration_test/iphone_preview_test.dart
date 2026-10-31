@@ -15,8 +15,19 @@ void main() {
     await tester.pumpAndSettle();
     await File('${Directory.systemTemp.path}/safe-korea-iphone-home.png')
         .writeAsBytes(await binding.takeScreenshot('home'));
-    await tester.ensureVisible(find.text('주변 대피시설'));
-    await tester.tap(find.text('주변 대피시설'));
+    await tester.tap(find.text('모의 공습경보 시작'));
+    await tester.pumpAndSettle();
+    await binding.takeScreenshot('drill');
+    await tester.ensureVisible(find.text('훈련 종료 · 홈으로'));
+    await tester.tap(find.text('훈련 종료 · 홈으로'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byType(NavigationDestination).at(3));
+    await tester.pumpAndSettle();
+    await binding.takeScreenshot('readiness');
+    await tester.tap(find.byType(NavigationDestination).at(2));
+    await tester.pumpAndSettle();
+    await binding.takeScreenshot('guidelines');
+    await tester.tap(find.byType(NavigationDestination).at(1));
     await tester.pumpAndSettle();
     await tester.ensureVisible(find.text('선택 지역 대피소 불러오기'));
     await tester.tap(find.text('선택 지역 대피소 불러오기'));
@@ -36,6 +47,10 @@ void main() {
     await tester.pump(const Duration(seconds: 2));
     await File('${Directory.systemTemp.path}/safe-korea-iphone-shelters.png')
         .writeAsBytes(await binding.takeScreenshot('shelters'));
+    await tester.ensureVisible(find.text('크게 보기'));
+    await tester.tap(find.text('크게 보기'));
+    await tester.pump(const Duration(seconds: 3));
+    await binding.takeScreenshot('map-full');
     debugPrint('PREVIEW_DIRECTORY=${Directory.systemTemp.path}');
   });
 }

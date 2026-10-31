@@ -1,4 +1,4 @@
-# SAFE KOREA v0.1
+# SAFE KOREA MVP
 
 대한민국 시민을 위한 한국어 오프라인 비상 대비 Flutter MVP입니다. **비공식 프로토타입이며 실제 정부 경보를 수신하지 않습니다.** 모의 화면에는 항상 `훈련 / 테스트`가 표시됩니다.
 
@@ -9,13 +9,21 @@
 | Material 3 한국어 홈 / 큰 버튼 / 글씨 확대 | 구현 |
 | 모의 공습경보와 대피 행동 연습 | 구현, 소리·알림·실제 경보 발송 없음 |
 | 공습·경계·화학·생물학·해제·사전 준비 | 정부 원문을 요약해 JSON 동봉, 오프라인 이용 |
-| 가족 비상연락처·만남 장소·메모 | SQLite 로컬 저장·수정·삭제 |
+| 가족 비상연락처·만남 장소·메모 | 연락처 2곳·만남 장소 2곳·요약 카드·SQLite 저장 |
+| 나의 준비 | 비상배낭 8개 항목 체크리스트·로컬 저장 |
 | GPS | 명시적 요청, 거부·꺼짐·타임아웃 처리 |
-| 시설 검색·직선거리순 정렬·OSM 지도 | 공식 지도 응답 연동, Android/iOS에서 실제 시설 핀 표시 검증 |
+| 시설 검색·직선거리순 정렬·지도 | 공식 시설 조회와 전용 핀, 전체 화면 지도 |
+| 카카오 지도 | SDK/연결 코드 준비. 키 미입력으로 실제 인증 미검증, 현재는 기본 OSM 지도 |
 | 대한민국 공식 민방위 시설 목록 | 시·도/시·군·구 선택 후 국민안전24 조회, 마지막 조회 지역 SQLite 저장 |
 | 실시간 정부 공습경보 | 미구현. API/권한/지연/이용 조건 검증 전 완료로 간주하지 않음 |
 
 가까운 시설이 현재 개방되어 있거나 이동 경로가 안전하다는 뜻은 아닙니다. 일반 공습과 화학 공격의 대피 방법은 다릅니다. 최신 재난문자·정부 방송·현장 통제를 우선하세요.
+
+## 앱 구성
+
+하단 메뉴로 **홈 · 대피소 · 행동강령 · 나의 준비**를 이동합니다. 가족 계획은 저장된 내용을 먼저 읽고 필요할 때 수정합니다. 훈련에는 선택형 연습 체크가 있습니다. 준비물 체크와 가족 계획은 기기에만 저장됩니다.
+
+완료 범위와 남은 검증은 [MVP_CHECKLIST.md](MVP_CHECKLIST.md), 카카오 지도 키 연결은 [KAKAO_SETUP.md](KAKAO_SETUP.md)를 참고하세요. 키를 나중에 넣어도 되며 현재 앱의 기본 기능과 지도는 키 없이 실행됩니다.
 
 ## 실행
 
@@ -54,15 +62,15 @@ git clone --depth 1 --branch stable https://github.com/flutter/flutter.git .tool
 .tools/flutter/bin/flutter test
 python3 -m unittest discover -s scripts -p 'test_*.py' -v
 # 실제 플랫폼의 화면 이동 및 별도 테스트 SQLite 검증
-JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home .tools/flutter/bin/flutter test integration_test/app_test.dart -d emulator-5556
-BYPASS_PERMISSION_LOCATION_ALWAYS=1 .tools/flutter/bin/flutter test integration_test/app_test.dart -d FCA9E923-B6DA-4BFF-A955-30B435322CA0
+JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home .tools/flutter/bin/flutter test integration_test/app_test.dart -d emulator-5556 --no-uninstall
+BYPASS_PERMISSION_LOCATION_ALWAYS=1 .tools/flutter/bin/flutter test integration_test/app_test.dart -d FCA9E923-B6DA-4BFF-A955-30B435322CA0 --no-uninstall
 ```
 
-2026-10-31 검증 결과: `flutter analyze` 이슈 0, Flutter 테스트 21건, Python 테스트 4건 통과. Android API 36과 iOS 26.5 시뮬레이터에서 기본 앱 통합 테스트 및 실시간 공식 시설 조회·지도·SQLite 재열기 통합 테스트 통과. 공식 종로구 응답 107건을 확인했습니다. Android에서 실제 권한 거부/일회 허용 후 모의 GPS 좌표·오차·시각 표시를 확인했습니다. 국내 실기기 GPS 정확도는 아직 검증하지 않았습니다.
+2026-10-31 검증 결과: `flutter analyze` 이슈 0, Flutter 테스트 25건, Python 테스트 4건 통과. Android API 36과 iOS 26.5 시뮬레이터에서 기본 앱 통합 테스트 및 실시간 공식 시설 조회·지도·SQLite 재열기 통합 테스트 통과. 공식 종로구 응답 107건을 확인했습니다. Android에서 실제 권한 거부/일회 허용 후 모의 GPS 좌표·오차·시각 표시를 확인했습니다. 국내 실기기 GPS 정확도는 아직 검증하지 않았습니다.
 
 Android 개발용 APK: `build/app/outputs/flutter-apk/app-debug.apk`. iOS 시뮬레이터 앱: `build/ios/iphonesimulator/Runner.app`. 결과 로그와 화면은 `artifacts/`에 보관합니다. 전체 검증은 `./scripts/verify.sh`로 다시 실행할 수 있습니다.
 
-검증 결과와 빌드 상태는 [PROGRESS.md](PROGRESS.md)에 기록합니다. 통합 테스트는 사용자 가족 계획 DB와 다른 `safe_korea_integration_only.db`를 사용하고 테스트 후 해당 DB만 정리합니다.
+검증 결과와 빌드 상태는 [PROGRESS.md](PROGRESS.md)에 기록합니다. `--no-uninstall`로 테스트 종료 시 앱과 저장 데이터 삭제를 막습니다. 통합 테스트는 사용자 가족 계획 DB와 다른 `safe_korea_integration_only.db`를 사용하고 테스트 후 해당 DB만 정리합니다.
 
 ## 대피소 지도 사용법
 
@@ -78,8 +86,8 @@ Android 개발용 APK: `build/app/outputs/flutter-apk/app-debug.apk`. iOS 시뮬
 
 ```sh
 # 외부 공식 사이트에 지역 단위 요청 1회를 보내는 명시적 통합 검증
-JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home .tools/flutter/bin/flutter test integration_test/shelters_test.dart -d emulator-5556
-BYPASS_PERMISSION_LOCATION_ALWAYS=1 .tools/flutter/bin/flutter test integration_test/shelters_test.dart -d FCA9E923-B6DA-4BFF-A955-30B435322CA0
+JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home .tools/flutter/bin/flutter test integration_test/shelters_test.dart -d emulator-5556 --no-uninstall
+BYPASS_PERMISSION_LOCATION_ALWAYS=1 .tools/flutter/bin/flutter test integration_test/shelters_test.dart -d FCA9E923-B6DA-4BFF-A955-30B435322CA0 --no-uninstall
 ```
 
 ## 데이터·개인정보
@@ -89,6 +97,14 @@ BYPASS_PERMISSION_LOCATION_ALWAYS=1 .tools/flutter/bin/flutter test integration_
 GPS는 앱에서 저장하지 않고 서버에 직접 전송하지 않습니다. 공식 시설 조회에는 선택 지역 코드와 IP만 정부 사이트에 전달됩니다. 온라인 지도는 별도 선택 시 조회하며, 지도 제공자에 IP와 조회 범위가 전달됩니다. 지도는 오프라인 기능에 포함되지 않습니다. OSM 저작자 표시·앱 User-Agent·기본 타일 캐시를 사용하며 대량 다운로드는 하지 않습니다.
 
 가족 계획은 암호화되지 않은 기기 내부 SQLite에 저장합니다. Android 앱 백업은 비활성화했고 iOS Documents는 저장 전 백업 대상에서 제외합니다. 자동 연락, 가족 위치 추적, 로그인, 분석 도구, 서버, Firebase는 없습니다. 기기 분실·고장에 대비해 종이 연락카드도 보관하세요.
+
+## iPhone 17 Pro 미리보기
+
+```sh
+BYPASS_PERMISSION_LOCATION_ALWAYS=1 .tools/flutter/bin/flutter drive --driver=test_driver/iphone_preview.dart --target=integration_test/iphone_preview_test.dart -d E3A83EF7-8FD6-4656-AE84-EFA2E3136351 --keep-app-running
+```
+
+미리보기 파일은 artifacts/iphone17-pro-*.png에 저장합니다. 이 명령은 화면 확인용이며 공식 시설 조회 1회를 보낼 수 있습니다. 제품용 앱은 일반 `flutter run` 명령으로 실행하세요.
 
 ## 구조
 

@@ -1,0 +1,49 @@
+Formatted 26 files (0 changed) in 0.06 seconds.
+Analyzing safe-korea-starter...
+No issues found! (ran in 4.2s)
+00:00 +0: loading /Users/gimtaehyeong/Downloads/safe-korea-starter/test/widget_test.dart
+00:00 +0: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/widget_test.dart: Korean home opens a clearly labeled drill and returns
+00:00 +1: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/widget_test.dart: Korean home opens a clearly labeled drill and returns
+00:00 +2: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/widget_test.dart: Korean home opens a clearly labeled drill and returns
+00:00 +3: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/widget_test.dart: Korean home opens a clearly labeled drill and returns
+00:00 +4: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/widget_test.dart: Korean home opens a clearly labeled drill and returns
+00:00 +5: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/widget_test.dart: Korean home opens a clearly labeled drill and returns
+00:00 +6: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/widget_test.dart: Korean home opens a clearly labeled drill and returns
+00:00 +7: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/widget_test.dart: Korean home opens a clearly labeled drill and returns
+00:00 +8: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/widget_test.dart: Korean home opens a clearly labeled drill and returns
+00:00 +9: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/widget_test.dart: Korean home opens a clearly labeled drill and returns
+00:00 +10: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/widget_test.dart: Korean home opens a clearly labeled drill and returns
+00:00 +11: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/app_completion_test.dart: bottom navigation switches screens and system back returns home
+00:01 +12: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/app_completion_test.dart: bottom navigation switches screens and system back returns home
+00:01 +13: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/app_completion_test.dart: bottom navigation switches screens and system back returns home
+00:01 +14: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/app_completion_test.dart: bottom navigation switches screens and system back returns home
+00:01 +15: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/app_completion_test.dart: bottom navigation switches screens and system back returns home
+00:01 +16: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/app_completion_test.dart: bottom navigation switches screens and system back returns home
+00:01 +17: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/app_completion_test.dart: bottom navigation switches screens and system back returns home
+00:01 +18: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/app_completion_test.dart: bottom navigation switches screens and system back returns home
+00:01 +19: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/app_completion_test.dart: bottom navigation switches screens and system back returns home
+00:01 +20: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/local_store_test.dart: family form saves locally and confirms deletion
+00:01 +21: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/local_store_test.dart: family form saves locally and confirms deletion
+00:01 +21: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/app_completion_test.dart: missing Kakao key keeps the app usable and shelter pin opens details
+  [1m[flutter_map][0m
+    We want to help keep OpenStreetMap available for everyone. Our examples
+    and demo app use the public tile servers, but they are NOT free to use by
+    everyone! Please review whether the OpenStreetMap tile servers are suitable
+    for your project.
+    See:
+      * https://operations.osmfoundation.org/policies/tiles (OSM Tile Usage Policy)
+      * https://docs.fleaflet.dev/osm-warn for more information about this warning
+00:01 +22: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/local_store_test.dart: family form saves locally and confirms deletion
+00:01 +23: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/local_store_test.dart: unsaved family changes are protected when going back
+00:01 +24: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/local_store_test.dart: read failure blocks overwrite and write failure preserves input
+00:02 +25: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/local_store_test.dart: (tearDownAll)
+00:02 +25: All tests passed!
+test_normalized_official_schema (test_import_shelters.ImportTests.test_normalized_official_schema) ... ok
+test_projected_or_invalid_coordinate_rejected (test_import_shelters.ImportTests.test_projected_or_invalid_coordinate_rejected) ... ok
+test_released_records_are_excluded (test_import_shelters.ImportTests.test_released_records_are_excluded) ... ok
+test_unknown_status_duplicate_date_and_missing_fields (test_import_shelters.ImportTests.test_unknown_status_duplicate_date_and_missing_fields) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.001s
+
+OK

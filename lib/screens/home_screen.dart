@@ -5,9 +5,16 @@ import 'drill_screen.dart';
 import 'guidelines_screen.dart';
 import 'family_screen.dart';
 import 'shelters_screen.dart';
+import 'readiness_screen.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({
+    super.key,
+    this.onShelters,
+    this.onGuidelines,
+    this.onReadiness,
+  });
+  final VoidCallback? onShelters, onGuidelines, onReadiness;
   void _open(BuildContext context, Widget page) =>
       Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => page));
   @override
@@ -82,6 +89,7 @@ class HomeScreen extends StatelessWidget {
           '주변 대피시설',
           '공식 자료 · 위치 · 지도',
           const SheltersScreen(),
+          callback: onShelters,
         ),
         _tile(
           context,
@@ -89,6 +97,7 @@ class HomeScreen extends StatelessWidget {
           '상황별 행동강령',
           '인터넷 없이 읽는 대응 안내',
           const GuidelinesScreen(),
+          callback: onGuidelines,
         ),
         _tile(
           context,
@@ -96,6 +105,14 @@ class HomeScreen extends StatelessWidget {
           '가족 안전 계획',
           '비상연락처와 만남 장소 저장',
           const FamilyScreen(),
+        ),
+        _tile(
+          context,
+          Icons.checklist,
+          '비상배낭 체크리스트',
+          '필요한 준비물을 기기에 체크',
+          const ReadinessScreen(),
+          callback: onReadiness,
         ),
         const SizedBox(height: 16),
         const Text(
@@ -116,14 +133,15 @@ class HomeScreen extends StatelessWidget {
     IconData icon,
     String title,
     String subtitle,
-    Widget page,
-  ) => Padding(
+    Widget page, {
+    VoidCallback? callback,
+  }) => Padding(
     padding: const EdgeInsets.only(bottom: 12),
     child: Card(
       margin: EdgeInsets.zero,
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        onTap: () => _open(context, page),
+        onTap: callback ?? () => _open(context, page),
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Row(

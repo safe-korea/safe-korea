@@ -12,9 +12,11 @@ class FamilyScreen extends StatefulWidget {
 
 class _FamilyScreenState extends State<FamilyScreen> {
   late final LocalStore _store = widget.store ?? LocalStore();
-  final _fields = List.generate(5, (_) => TextEditingController());
+  final _fields = List.generate(7, (_) => TextEditingController());
   bool _loading = true, _saving = false, _loadFailed = false, _dirty = false;
   String? _message;
+  FamilyPlan _savedPlan = const FamilyPlan();
+  bool _editing = true;
   @override
   void initState() {
     super.initState();
@@ -31,6 +33,8 @@ class _FamilyScreenState extends State<FamilyScreen> {
         plan.meetingPlace,
         plan.backupPlace,
         plan.note,
+        plan.backupContactName,
+        plan.backupPhone,
       ];
       for (var i = 0; i < values.length; i++) {
         _fields[i].text = values[i];
@@ -38,6 +42,8 @@ class _FamilyScreenState extends State<FamilyScreen> {
       setState(() {
         _loading = false;
         _loadFailed = false;
+        _savedPlan = plan;
+        _editing = plan.isEmpty;
         _message = null;
       });
     } catch (_) {
@@ -58,18 +64,21 @@ class _FamilyScreenState extends State<FamilyScreen> {
       _message = null;
     });
     try {
-      await _store.save(
-        FamilyPlan(
-          contactName: _fields[0].text.trim(),
-          phone: _fields[1].text.trim(),
-          meetingPlace: _fields[2].text.trim(),
-          backupPlace: _fields[3].text.trim(),
-          note: _fields[4].text.trim(),
-        ),
+      final plan = FamilyPlan(
+        contactName: _fields[0].text.trim(),
+        phone: _fields[1].text.trim(),
+        meetingPlace: _fields[2].text.trim(),
+        backupPlace: _fields[3].text.trim(),
+        note: _fields[4].text.trim(),
+        backupContactName: _fields[5].text.trim(),
+        backupPhone: _fields[6].text.trim(),
       );
+      await _store.save(plan);
       if (mounted) {
         setState(() {
           _dirty = false;
+          _savedPlan = plan;
+          _editing = plan.isEmpty;
           _message = '이 기기에 저장했습니다. 종이 연락카드도 준비해 두세요.';
         });
         ScaffoldMessenger.of(context)
@@ -115,6 +124,8 @@ class _FamilyScreenState extends State<FamilyScreen> {
       setState(() {
         _loadFailed = false;
         _dirty = false;
+        _savedPlan = const FamilyPlan();
+        _editing = true;
         _message = '저장된 계획을 삭제했습니다.';
       });
     } catch (_) {
@@ -188,38 +199,111 @@ class _FamilyScreenState extends State<FamilyScreen> {
                     onPressed: _load,
                     child: const Text('저장 내용 다시 읽기'),
                   ),
-                for (final (index, label) in [
-                  '비상연락처 이름',
-                  '비상연락처 전화번호',
-                  '첫 번째 만남 장소',
-                  '연락이 안 될 때 두 번째 장소',
-                  '대피 계획 · 도움이 필요한 사항',
-                ].indexed)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 16),
-                    child: TextField(
-                      controller: _fields[index],
-                      onChanged: (_) => setState(() {
-                        _dirty = true;
-                        _message = null;
-                      }),
-                      enabled: !_saving && !_loadFailed,
-                      keyboardType: index == 1
-                          ? TextInputType.phone
-                          : TextInputType.multiline,
-                      minLines: index == 4 ? 3 : 1,
-                      maxLines: index == 1 ? 1 : null,
-                      maxLength: index == 4 ? 1000 : 160,
-                      decoration: InputDecoration(
-                        labelText: label,
-                        alignLabelWithHint: true,
+                if (!_savedPlan.isEmpty) ...[
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          const Text(
+                            '저장된 가족 계획',
+                            style: TextStyle(
+                              fontSize: 23,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          if (_savedPlan.contactName.isNotEmpty ||
+                              _savedPlan.phone.isNotEmpty)
+                            SelectableText(
+                              '비상연락처\n${_savedPlan.contactName}  ${_savedPlan.phone}',
+                            ),
+                          if (_savedPlan.backupContactName.isNotEmpty ||
+                              _savedPlan.backupPhone.isNotEmpty) ...[
+                            const SizedBox(height: 12),
+                            SelectableText(
+                              '추가 연락처\n${_savedPlan.backupContactName}  ${_savedPlan.backupPhone}',
+                            ),
+                          ],
+                          const Divider(height: 32),
+                          SelectableText(
+                            '첫 번째 만남 장소\n${_savedPlan.meetingPlace.isEmpty ? '아직 정하지 않았어요' : _savedPlan.meetingPlace}',
+                          ),
+                          const SizedBox(height: 12),
+                          SelectableText(
+                            '두 번째 만남 장소\n${_savedPlan.backupPlace.isEmpty ? '아직 정하지 않았어요' : _savedPlan.backupPlace}',
+                          ),
+                          if (_savedPlan.note.isNotEmpty) ...[
+                            const SizedBox(height: 16),
+                            SelectableText(_savedPlan.note),
+                          ],
+                        ],
                       ),
                     ),
                   ),
-                FilledButton(
-                  onPressed: _saving || _loadFailed ? null : _save,
-                  child: Text(_saving ? '저장 중…' : '기기에 저장'),
-                ),
+                  if (!_editing)
+                    FilledButton.tonalIcon(
+                      onPressed: () => setState(() => _editing = true),
+                      icon: const Icon(Icons.edit_outlined),
+                      label: const Text('가족 계획 수정'),
+                    ),
+                  const SizedBox(height: 16),
+                ],
+                if (_editing) ...[
+                  for (final index in [0, 1, 5, 6, 2, 3, 4]) ...[
+                    if ([0, 5, 2, 4].contains(index))
+                      Padding(
+                        padding: const EdgeInsets.only(top: 12, bottom: 12),
+                        child: Text(
+                          switch (index) {
+                            0 => '비상연락처',
+                            5 => '추가 비상연락처',
+                            2 => '만남 장소',
+                            _ => '메모',
+                          },
+                          style: const TextStyle(
+                            fontSize: 21,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: TextField(
+                        key: ValueKey('family-field-$index'),
+                        controller: _fields[index],
+                        onChanged: (_) => setState(() {
+                          _dirty = true;
+                          _message = null;
+                        }),
+                        enabled: !_saving && !_loadFailed,
+                        keyboardType: index == 1 || index == 6
+                            ? TextInputType.phone
+                            : TextInputType.multiline,
+                        minLines: index == 4 ? 3 : 1,
+                        maxLines: index == 1 || index == 6 ? 1 : null,
+                        maxLength: index == 4 ? 1000 : 160,
+                        decoration: InputDecoration(
+                          labelText: [
+                            '비상연락처 이름',
+                            '비상연락처 전화번호',
+                            '첫 번째 만남 장소',
+                            '연락이 안 될 때 두 번째 장소',
+                            '대피 계획 · 도움이 필요한 사항',
+                            '추가 연락처 이름',
+                            '추가 연락처 전화번호',
+                          ][index],
+                          alignLabelWithHint: true,
+                        ),
+                      ),
+                    ),
+                  ],
+                  FilledButton(
+                    onPressed: _saving || _loadFailed ? null : _save,
+                    child: Text(_saving ? '저장 중…' : '기기에 저장'),
+                  ),
+                ],
                 const SizedBox(height: 12),
                 OutlinedButton(
                   onPressed: _saving ? null : _clear,

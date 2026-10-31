@@ -9,6 +9,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:safe_korea/main.dart';
 import 'package:safe_korea/services/local_store.dart';
 import 'package:safe_korea/screens/family_screen.dart';
+import 'package:safe_korea/screens/readiness_screen.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -53,7 +54,10 @@ void main() {
       await tester.pumpWidget(MaterialApp(home: FamilyScreen(store: store)));
       await tester.pumpAndSettle();
       await tester.enterText(find.byType(TextField).first, '테스트 연락처');
-      await tester.enterText(find.byType(TextField).at(2), '테스트 만남 장소');
+      await tester.enterText(
+        find.byKey(const ValueKey('family-field-2')),
+        '테스트 만남 장소',
+      );
       await tester.ensureVisible(find.text('기기에 저장'));
       await tester.tap(find.text('기기에 저장'));
       await tester.pumpAndSettle();
@@ -61,6 +65,16 @@ void main() {
       await db.close();
       db = await openDatabase(dbPath);
       expect((await LocalStore(database: db).load()).meetingPlace, '테스트 만남 장소');
+      final reopenedStore = LocalStore(database: db);
+      await tester.pumpWidget(
+        MaterialApp(home: ReadinessScreen(store: reopenedStore)),
+      );
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('생수 · 간편식'));
+      await tester.tap(find.text('생수 · 간편식'));
+      await tester.pump(const Duration(seconds: 1));
+      expect(await reopenedStore.loadPreparation(), contains('water'));
+      expect((await reopenedStore.load()).meetingPlace, '테스트 만남 장소');
     } finally {
       await tester.pumpWidget(const SizedBox());
       await db?.close();

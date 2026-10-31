@@ -4,13 +4,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart';
 
 import '../models/shelter.dart';
 import '../services/location_service.dart';
 import '../services/shelter_repository.dart';
 import '../widgets/common.dart';
+import '../widgets/shelter_map.dart';
 
 class SheltersScreen extends StatefulWidget {
   const SheltersScreen({
@@ -256,9 +255,7 @@ class _SheltersScreenState extends State<SheltersScreen> {
                   : (value) => setState(() => _district = value!),
             ),
             const SizedBox(height: 12),
-            const Text(
-              '선택한 지역 코드와 IP가 국민안전24에 전달됩니다. GPS 좌표는 전송하지 않습니다. 공식 웹사이트 조회를 사용하며 응답이 지연되거나 변경될 수 있습니다.',
-            ),
+            const Text('조회 시 선택한 지역 코드와 IP만 국민안전24에 전달됩니다. GPS 좌표는 보내지 않습니다.'),
             const SizedBox(height: 12),
             FilledButton.icon(
               onPressed: _fetching ? null : _fetch,
@@ -270,12 +267,12 @@ class _SheltersScreenState extends State<SheltersScreen> {
               Semantics(liveRegion: true, child: Notice(_networkMessage!)),
           ],
           const Text(
-            '위치 없이도 검색할 수 있어요',
+            '내 위치로 거리 확인',
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
           const Text(
-            '현재 위치는 버튼을 눌렀을 때만 확인하며 기기에서 거리 계산에 사용합니다. 저장하지 않습니다. GPS 오차와 직선거리를 고려하세요.',
+            '현재 위치는 기기에서 거리 계산에만 사용합니다. 위치 권한 없이도 지역 검색과 목록을 볼 수 있습니다.',
           ),
           const SizedBox(height: 16),
           FilledButton.icon(
@@ -293,8 +290,17 @@ class _SheltersScreenState extends State<SheltersScreen> {
           if (catalog == null && _error == null)
             const Center(child: CircularProgressIndicator()),
           if (catalog != null) ...[
-            Text(
-              '출처: ${catalog.sourceName}\n자료 범위: ${catalog.coverage}\n자료 확보일: ${catalog.retrievedAt ?? '미확보'}',
+            ExpansionTile(
+              tilePadding: EdgeInsets.zero,
+              title: const Text('자료 출처와 조회 시각'),
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: SelectableText(
+                    '출처: ${catalog.sourceName}\n자료 범위: ${catalog.coverage}\n마지막 조회: ${_formatTime(catalog.retrievedAt)}\n시설별 갱신일이 제공되지 않는 자료는 현장에서 다시 확인하세요.',
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 16),
             if (catalog.shelters.isEmpty && catalog.retrievedAt == null)
@@ -327,7 +333,7 @@ class _SheltersScreenState extends State<SheltersScreen> {
               const SizedBox(height: 12),
             ],
             const Notice(
-              '온라인 지도를 열면 지도 제공자에게 조회 지역과 IP가 전달됩니다. 인터넷이 필요하며 배경이 비어 있으면 시설 목록을 이용하세요.',
+              '지도는 인터넷이 필요합니다. 조회 지역과 IP가 지도 제공자에게 전달됩니다. 연결되지 않으면 저장된 목록을 이용하세요.',
             ),
             if (!_map)
               OutlinedButton.icon(
@@ -337,7 +343,7 @@ class _SheltersScreenState extends State<SheltersScreen> {
               ),
             if (_map) ...[
               SizedBox(
-                height: 320,
+                height: 360,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(16),
                   child: _buildMap(items),
@@ -346,12 +352,23 @@ class _SheltersScreenState extends State<SheltersScreen> {
               const SizedBox(height: 8),
               Wrap(
                 children: [
-                  TextButton(
-                    onPressed: () => openExternal(
+                  TextButton.icon(
+                    onPressed: () => Navigator.push(
                       context,
-                      Uri.parse('https://www.openstreetmap.org/copyright'),
+                      MaterialPageRoute<void>(
+                        builder: (_) => Scaffold(
+                          appBar: AppBar(title: const Text('대피소 지도')),
+                          body: SafeArea(
+                            child: ShelterMap(
+                              shelters: items,
+                              onSelected: _showShelter,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
-                    child: const Text('© OpenStreetMap contributors'),
+                    icon: const Icon(Icons.fullscreen),
+                    label: const Text('크게 보기'),
                   ),
                   TextButton(
                     onPressed: () => setState(() => _map = false),
@@ -384,15 +401,37 @@ class _SheltersScreenState extends State<SheltersScreen> {
     );
   }
 
+  String _formatTime(String? raw) {
+    if (raw == null) return '아직 조회하지 않았어요';
+    final time = DateTime.tryParse(raw)?.toLocal();
+    if (time == null) return '확인할 수 없음';
+    String two(int value) => value.toString().padLeft(2, '0');
+    return '${time.year}.${two(time.month)}.${two(time.day)} ${two(time.hour)}:${two(time.minute)}';
+  }
+
   Widget _shelterCard(Shelter shelter) => Card(
     child: Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            shelter.name,
-            style: const TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                padding: EdgeInsets.only(top: 3, right: 10),
+                child: Icon(Icons.home_work_outlined, color: teal),
+              ),
+              Expanded(
+                child: Text(
+                  shelter.name,
+                  style: const TextStyle(
+                    fontSize: 21,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
           ),
           Text(shelter.address),
           if (_position != null)
@@ -406,50 +445,21 @@ class _SheltersScreenState extends State<SheltersScreen> {
       ),
     ),
   );
-  Widget _buildMap(List<Shelter> items) {
-    final first = items.firstOrNull;
-    final center = first != null
-        ? LatLng(first.latitude, first.longitude)
-        : _position != null
-        ? LatLng(_position!.latitude, _position!.longitude)
-        : const LatLng(36.3, 127.8);
-    return FlutterMap(
-      options: MapOptions(
-        initialCenter: center,
-        initialZoom: first != null || _position != null ? 14 : 6,
+  void _showShelter(Shelter shelter) => showModalBottomSheet<void>(
+    context: context,
+    isScrollControlled: true,
+    builder: (_) => SafeArea(
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: _shelterCard(shelter),
+        ),
       ),
-      children: [
-        TileLayer(
-          urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-          userAgentPackageName: 'kr.example.safe_korea',
-        ),
-        MarkerLayer(
-          markers: [
-            for (final shelter in items)
-              Marker(
-                point: LatLng(shelter.latitude, shelter.longitude),
-                width: 48,
-                height: 48,
-                child: IconButton(
-                  tooltip: shelter.name,
-                  onPressed: () => showModalBottomSheet<void>(
-                    context: context,
-                    isScrollControlled: true,
-                    builder: (_) => SafeArea(
-                      child: SingleChildScrollView(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: _shelterCard(shelter),
-                        ),
-                      ),
-                    ),
-                  ),
-                  icon: const Icon(Icons.location_on, size: 40, color: teal),
-                ),
-              ),
-          ],
-        ),
-      ],
-    );
-  }
+    ),
+  );
+  Widget _buildMap(List<Shelter> items) => ShelterMap(
+    key: ValueKey('${_catalog?.areaCode}-$_query'),
+    shelters: items,
+    onSelected: _showShelter,
+  );
 }

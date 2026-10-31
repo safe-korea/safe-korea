@@ -1,0 +1,23 @@
+Launching lib/main.dart on sdk gphone64 arm64 in debug mode...
+Running Gradle task 'assembleDebug'...                              8.8s
+✓ Built build/app/outputs/flutter-apk/app-debug.apk
+Installing build/app/outputs/flutter-apk/app-debug.apk...          885ms
+I/FlutterActivityAndFragmentDelegate(14712): If you are attempting to set --enable-dart-profiling via Intent extras to launch a Flutter component outside of using the Flutter CLI, note that support for setting engine flags on Android via Intent will soon be dropped; see https://github.com/flutter/flutter/issues/180686 for more information on this breaking change. To migrate, set --enable-dart-profiling or any other flags specified via Intent extras on the command line instead or see https://github.com/flutter/flutter/blob/main/docs/engine/Flutter-Android-Engine-Flags.md for alternative methods.
+D/FlutterJNI(14712): Beginning load of flutter...
+D/FlutterJNI(14712): flutter (null) was loaded normally!
+I/flutter (14712): [IMPORTANT:flutter/shell/platform/android/android_context_gl_impeller.cc(104)] Using the Impeller rendering backend (OpenGLES).
+D/FlutterGeolocator(14712): Attaching Geolocator to activity
+D/FlutterRenderer(14712): Width is zero. 0,0
+D/FlutterGeolocator(14712): Creating service.
+D/FlutterGeolocator(14712): Binding to location service.
+D/FlutterRenderer(14712): Width is zero. 0,0
+D/FlutterJNI(14712): Sending viewport metrics to the engine.
+D/FlutterGeolocator(14712): Geolocator foreground service connected
+D/FlutterGeolocator(14712): Initializing Geolocator services
+D/FlutterGeolocator(14712): Flutter engine connected. Connected engine count 1
+D/FlutterJNI(14712): Sending viewport metrics to the engine.
+D/WindowLayoutComponentImpl(14712): Register WindowLayoutInfoListener on Context=kr.example.safe_korea.MainActivity@3068d8c, of which baseContext=android.app.ContextImpl@5e95db6
+D/FlutterJNI(14712): Sending viewport metrics to the engine.
+D/InsetsController(14712): hide(ime(), fromIme=false)
+I/ImeTracker(14712): kr.example.safe_korea:ea8a91ce: onCancelled at PHASE_CLIENT_ALREADY_HIDDEN
+Syncing files to device sdk gphone64 arm64...                      289ms
