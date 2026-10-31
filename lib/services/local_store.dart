@@ -52,6 +52,28 @@ class LocalStore {
     );
   }
 
+  Future<void> _ensureCatalogTable() async => (await database).execute(
+    'CREATE TABLE IF NOT EXISTS shelter_catalog (id INTEGER PRIMARY KEY, content TEXT NOT NULL)',
+  );
+  Future<Map<String, dynamic>?> loadShelterCatalog() async {
+    await _ensureCatalogTable();
+    final rows = await (await database).query(
+      'shelter_catalog',
+      where: 'id = ?',
+      whereArgs: [1],
+    );
+    if (rows.isEmpty) return null;
+    return jsonDecode(rows.first['content'] as String) as Map<String, dynamic>;
+  }
+
+  Future<void> saveShelterCatalog(Map<String, dynamic> catalog) async {
+    await _ensureCatalogTable();
+    await (await database).insert('shelter_catalog', {
+      'id': 1,
+      'content': jsonEncode(catalog),
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
   Future<FamilyPlan> load() async {
     final rows = await (await database).query(
       'plans',

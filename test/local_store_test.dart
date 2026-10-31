@@ -64,6 +64,21 @@ void main() {
       expect((await store.load()).contactName, isEmpty);
     },
   );
+  test(
+    'catalog cache persists independently without overwriting family plan',
+    () async {
+      await store.save(const FamilyPlan(contactName: '보존'));
+      expect(await store.loadShelterCatalog(), isNull);
+      await store.saveShelterCatalog({'coverage': '테스트 지역', 'items': []});
+      expect(
+        (await LocalStore(database: db).loadShelterCatalog())!['coverage'],
+        '테스트 지역',
+      );
+      expect((await store.load()).contactName, '보존');
+      await store.clear();
+      expect(await store.loadShelterCatalog(), isNotNull);
+    },
+  );
   testWidgets('family form saves locally and confirms deletion', (
     tester,
   ) async {

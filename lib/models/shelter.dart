@@ -1,5 +1,8 @@
 import 'dart:math';
 
+const officialMapSource =
+    'https://www.safekorea.go.kr/safekorea-kor/flsm/flsm/facilitiesSafteyMap.do?menuSn=234&title=%EB%AF%BC%EB%B0%A9%EC%9C%84%EB%8C%80%ED%94%BC%EC%86%8C';
+
 class Shelter {
   const Shelter({
     required this.id,
@@ -9,7 +12,8 @@ class Shelter {
     required this.longitude,
     required this.updatedAt,
   });
-  final String id, name, address, updatedAt;
+  final String id, name, address;
+  final String? updatedAt;
   final double latitude, longitude;
 
   factory Shelter.fromJson(Map<String, dynamic> json) {
@@ -23,15 +27,16 @@ class Shelter {
         lon > 132) {
       throw const FormatException('대한민국 범위를 벗어난 좌표');
     }
-    for (final key in ['id', 'name', 'address', 'updatedAt']) {
+    for (final key in ['id', 'name', 'address']) {
       if (json[key] is! String || (json[key] as String).trim().isEmpty) {
         throw FormatException('시설 필수 정보 누락: $key');
       }
     }
-    if (json['status'] != 'designated') {
+    if (json['status'] != 'designated' &&
+        json['status'] != 'official_listing') {
       throw const FormatException('지정 상태가 확인되지 않은 시설');
     }
-    DateTime.parse(json['updatedAt'] as String);
+    if (json['updatedAt'] != null) DateTime.parse(json['updatedAt'] as String);
     return Shelter(
       id: json['id'],
       name: json['name'],
@@ -59,9 +64,15 @@ class ShelterCatalog {
       sourceUrl = json['sourceUrl'] as String,
       retrievedAt = json['retrievedAt'] as String?,
       coverage = json['coverage'] as String,
+      areaCode = json['areaCode'] as String?,
+      skippedCount = json['skippedCount'] as int? ?? 0,
+      officialCount = json['officialCount'] as int?,
       shelters = [] {
     if (json['schemaVersion'] != 1 ||
-        sourceUrl != 'https://www.data.go.kr/data/15021098/standard.do') {
+        ![
+          'https://www.data.go.kr/data/15021098/standard.do',
+          officialMapSource,
+        ].contains(sourceUrl)) {
       throw const FormatException('지원하지 않는 데이터 출처 또는 버전');
     }
     if ((json['items'] as List).isNotEmpty &&
@@ -76,8 +87,35 @@ class ShelterCatalog {
     }
   }
   final String sourceName, sourceUrl, coverage;
-  final String? retrievedAt;
+  final String? retrievedAt, areaCode;
+  final int skippedCount;
+  final int? officialCount;
   final List<Shelter> shelters;
+  Map<String, dynamic> toJson() => {
+    'schemaVersion': 1,
+    'sourceName': sourceName,
+    'sourceUrl': sourceUrl,
+    'retrievedAt': retrievedAt,
+    'coverage': coverage,
+    'status': 'verified',
+    'areaCode': areaCode,
+    'skippedCount': skippedCount,
+    'officialCount': officialCount,
+    'items': [
+      for (final s in shelters)
+        {
+          'id': s.id,
+          'name': s.name,
+          'address': s.address,
+          'latitude': s.latitude,
+          'longitude': s.longitude,
+          'updatedAt': s.updatedAt,
+          'status': sourceUrl == officialMapSource
+              ? 'official_listing'
+              : 'designated',
+        },
+    ],
+  };
   List<Shelter> nearest(double lat, double lon) => [...shelters]
     ..sort(
       (a, b) => a.distanceFrom(lat, lon).compareTo(b.distanceFrom(lat, lon)),

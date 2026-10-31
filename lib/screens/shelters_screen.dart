@@ -9,17 +9,30 @@ import 'package:latlong2/latlong.dart';
 
 import '../models/shelter.dart';
 import '../services/location_service.dart';
+import '../services/shelter_repository.dart';
 import '../widgets/common.dart';
 
 class SheltersScreen extends StatefulWidget {
-  const SheltersScreen({super.key, this.catalog, this.locationService});
+  const SheltersScreen({
+    super.key,
+    this.catalog,
+    this.locationService,
+    this.repository,
+  });
   final ShelterCatalog? catalog;
   final LocationService? locationService;
+  final ShelterRepository? repository;
   @override
   State<SheltersScreen> createState() => _SheltersScreenState();
 }
 
 class _SheltersScreenState extends State<SheltersScreen> {
+  late final ShelterRepository _repository =
+      widget.repository ?? ShelterRepository();
+  List<Map<String, dynamic>> _provinces = [];
+  String _province = '11', _district = '11110';
+  bool _fetching = false;
+  String? _networkMessage;
   ShelterCatalog? _catalog;
   Position? _position;
   bool _locating = false, _map = false;
@@ -33,8 +46,28 @@ class _SheltersScreenState extends State<SheltersScreen> {
 
   Future<void> _load() async {
     try {
+      final regionData = jsonDecode(
+        await rootBundle.loadString('assets/regions.json'),
+      ) as Map<String, dynamic>;
+      _provinces = (regionData['provinces'] as List)
+          .map((r) => Map<String, dynamic>.from(r as Map))
+          .toList();
+      for (final province in _provinces) {
+        (province['districts'] as List).sort(
+          (a, b) => (a['code'] as String).compareTo(b['code'] as String),
+        );
+      }
+      ShelterCatalog? cached;
+      if (widget.catalog == null) {
+        try {
+          cached = await _repository.cached();
+        } catch (_) {
+          _networkMessage = '기기에 저장된 시설 자료를 읽지 못했습니다. 지역을 선택해 다시 조회해 주세요.';
+        }
+      }
       final catalog =
           widget.catalog ??
+          cached ??
           ShelterCatalog.fromJson(
             jsonDecode(await rootBundle.loadString('assets/shelters.json'))
                 as Map<String, dynamic>,
@@ -42,6 +75,17 @@ class _SheltersScreenState extends State<SheltersScreen> {
       if (mounted) {
         setState(() {
           _catalog = catalog;
+          final area = catalog.areaCode;
+          if (area != null) {
+            for (final province in _provinces) {
+              if ((province['districts'] as List).any(
+                (d) => d['code'] == area,
+              )) {
+                _province = province['code'] as String;
+                _district = area;
+              }
+            }
+          }
           _error = null;
         });
       }
@@ -50,6 +94,61 @@ class _SheltersScreenState extends State<SheltersScreen> {
         setState(() => _error = '시설 자료를 읽지 못했습니다. 정부 공식 시설 검색을 이용해 주세요.');
       }
     }
+  }
+
+  List<dynamic> get _districts =>
+      _provinces.firstWhere((p) => p['code'] == _province)['districts'] as List;
+
+  Future<void> _fetch() async {
+    final province = _provinces.firstWhere((p) => p['code'] == _province);
+    final district = _districts.firstWhere((d) => d['code'] == _district);
+    setState(() {
+      _fetching = true;
+      _networkMessage = null;
+    });
+    try {
+      final catalog = await _repository.fetch(
+        _district,
+        '${province['name']} ${district['name']}',
+      );
+      if (!mounted) return;
+      setState(() {
+        _catalog = catalog;
+        _map = false;
+        _query = '';
+      });
+      try {
+        await _repository.save(catalog);
+        if (mounted) {
+          setState(
+            () => _networkMessage =
+                '공식 지도에서 ${catalog.shelters.length}건을 받아 기기에 저장했습니다. 인터넷 없이 목록을 다시 볼 수 있습니다.',
+          );
+        }
+      } catch (_) {
+        if (mounted) {
+          setState(
+            () => _networkMessage =
+                '시설은 조회했지만 기기에 저장하지 못했습니다. 이번 화면에서만 이용할 수 있습니다.',
+          );
+        }
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(
+          () => _networkMessage =
+              '공식 시설 조회에 실패했습니다. 연결이나 정부 사이트 응답을 확인해 주세요. 기존에 표시하던 자료는 유지합니다.',
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _fetching = false);
+    }
+  }
+
+  @override
+  void dispose() {
+    if (widget.repository == null) _repository.close();
+    super.dispose();
   }
 
   Future<void> _locate() async {
@@ -114,6 +213,62 @@ class _SheltersScreenState extends State<SheltersScreen> {
             '가까운 시설이 안전한 경로나 현재 개방을 뜻하지 않습니다. 공습용 대피시설은 화학 공격에 적합하지 않을 수 있습니다.',
             urgent: true,
           ),
+          if (_provinces.isNotEmpty) ...[
+            const Text(
+              '지역을 선택해 공식 대피소 조회',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+            DropdownButtonFormField<String>(
+              key: ValueKey('province-$_province'),
+              initialValue: _province,
+              isExpanded: true,
+              decoration: const InputDecoration(labelText: '시·도'),
+              items: [
+                for (final p in _provinces)
+                  DropdownMenuItem(
+                    value: p['code'] as String,
+                    child: Text(p['name'] as String),
+                  ),
+              ],
+              onChanged: _fetching
+                  ? null
+                  : (value) => setState(() {
+                      _province = value!;
+                      _district = _districts.first['code'] as String;
+                    }),
+            ),
+            const SizedBox(height: 12),
+            DropdownButtonFormField<String>(
+              key: ValueKey('district-$_district'),
+              initialValue: _district,
+              isExpanded: true,
+              decoration: const InputDecoration(labelText: '시·군·구'),
+              items: [
+                for (final d in _districts)
+                  DropdownMenuItem(
+                    value: d['code'] as String,
+                    child: Text(d['name'] as String),
+                  ),
+              ],
+              onChanged: _fetching
+                  ? null
+                  : (value) => setState(() => _district = value!),
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              '선택한 지역 코드와 IP가 국민안전24에 전달됩니다. GPS 좌표는 전송하지 않습니다. 공식 웹사이트 조회를 사용하며 응답이 지연되거나 변경될 수 있습니다.',
+            ),
+            const SizedBox(height: 12),
+            FilledButton.icon(
+              onPressed: _fetching ? null : _fetch,
+              icon: const Icon(Icons.download_outlined),
+              label: Text(_fetching ? '공식 시설 조회 중…' : '선택 지역 대피소 불러오기'),
+            ),
+            const SizedBox(height: 12),
+            if (_networkMessage != null)
+              Semantics(liveRegion: true, child: Notice(_networkMessage!)),
+          ],
           const Text(
             '위치 없이도 검색할 수 있어요',
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
@@ -142,9 +297,17 @@ class _SheltersScreenState extends State<SheltersScreen> {
               '출처: ${catalog.sourceName}\n자료 범위: ${catalog.coverage}\n자료 확보일: ${catalog.retrievedAt ?? '미확보'}',
             ),
             const SizedBox(height: 16),
-            if (catalog.shelters.isEmpty)
+            if (catalog.shelters.isEmpty && catalog.retrievedAt == null)
               const Notice(
-                '공식 대피시설 데이터 미연동\n공식 다운로드 접근이 확인되지 않아 시설을 표시하지 않습니다. 정부 시설 검색 또는 안전디딤돌에서 확인해 주세요.',
+                '저장된 대피시설이 없습니다.\n위에서 지역을 선택해 공식 대피소를 조회하세요. 조회한 목록은 이 기기에 저장됩니다.',
+              ),
+            if (catalog.retrievedAt != null)
+              Notice(
+                '현재 표시 범위: ${catalog.coverage}\n국민안전24 등재 시설 ${catalog.officialCount ?? catalog.shelters.length}건 중 좌표 유효 시설 ${catalog.shelters.length}건 · 제외 ${catalog.skippedCount}건\n전국 전체 목록이 아닙니다. 저장 후 시설 정보가 변경될 수 있습니다.',
+              ),
+            if (catalog.shelters.isEmpty && catalog.retrievedAt != null)
+              const Notice(
+                '해당 지역의 공식 조회 결과가 0건입니다. 실제 시설이 없다는 뜻으로 단정하지 말고 정부 사이트나 지자체에 확인하세요.',
               ),
             if (catalog.shelters.isNotEmpty) ...[
               TextField(
@@ -200,22 +363,20 @@ class _SheltersScreenState extends State<SheltersScreen> {
             const SizedBox(height: 12),
             for (final shelter in items.take(50)) _shelterCard(shelter),
             if (items.length > 50)
-              const Text('가까운 50개만 표시합니다. 시설명이나 주소로 범위를 좁혀 주세요.'),
+              const Text(
+                '목록에는 현재 순서의 앞 50개만 표시합니다. 지도에는 검색 결과 전체를 표시합니다. 시설명이나 주소로 범위를 좁힐 수 있습니다.',
+              ),
             if (catalog.shelters.isNotEmpty && items.isEmpty)
               const Notice('일치하는 시설이 없습니다. 검색어를 바꿔 주세요.'),
             TextButton(
               onPressed: () =>
                   openExternal(context, Uri.parse(catalog.sourceUrl)),
-              child: const Text('공공데이터포털 출처 보기'),
+              child: const Text('공식 자료 출처 보기'),
             ),
           ],
           OutlinedButton(
-            onPressed: () => openExternal(
-              context,
-              Uri.parse(
-                'https://safekorea.go.kr/safekorea-kor/flsm/flsm/facilitiesSafteyMap.do?menuSn=235',
-              ),
-            ),
+            onPressed: () =>
+                openExternal(context, Uri.parse(officialMapSource)),
             child: const Text('정부 공식 시설 검색 열기'),
           ),
         ],
@@ -238,7 +399,9 @@ class _SheltersScreenState extends State<SheltersScreen> {
             Text(
               '직선거리 ${(shelter.distanceFrom(_position!.latitude, _position!.longitude) / 1000).toStringAsFixed(2)}km · 이동 경로 아님',
             ),
-          Text('원자료 갱신: ${shelter.updatedAt}\n현재 개방·수용 여유·현장 위험 미확인'),
+          Text(
+            '원자료 갱신: ${shelter.updatedAt ?? '제공되지 않음'}\n현재 개방·수용 여유·현장 위험 미확인',
+          ),
         ],
       ),
     ),
@@ -262,7 +425,7 @@ class _SheltersScreenState extends State<SheltersScreen> {
         ),
         MarkerLayer(
           markers: [
-            for (final shelter in items.take(50))
+            for (final shelter in items)
               Marker(
                 point: LatLng(shelter.latitude, shelter.longitude),
                 width: 48,

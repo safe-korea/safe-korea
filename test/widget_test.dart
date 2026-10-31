@@ -51,7 +51,8 @@ void main() {
         MaterialApp(home: SheltersScreen(locationService: DeniedLocation())),
       );
       await tester.pumpAndSettle();
-      expect(find.textContaining('공식 대피시설 데이터 미연동'), findsOneWidget);
+      expect(find.textContaining('저장된 대피시설이 없습니다.'), findsOneWidget);
+      await tester.ensureVisible(find.text('GPS 현재 위치 확인'));
       await tester.tap(find.text('GPS 현재 위치 확인'));
       await tester.pumpAndSettle();
       expect(find.textContaining('위치 권한 없이도 시설 검색'), findsOneWidget);
