@@ -351,6 +351,7 @@ class _ShelterMapState extends State<ShelterMap> {
       Positioned(
         top: 8,
         left: 8,
+        right: 8,
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: Colors.white.withValues(alpha: 0.95),
@@ -370,7 +371,7 @@ class _ShelterMapState extends State<ShelterMap> {
       Positioned(
         left: 8,
         right: 8,
-        bottom: 42,
+        bottom: 12 + 48 * MediaQuery.textScalerOf(context).scale(1),
         child: ListenableBuilder(
           listenable: _loadStatus,
           builder: (context, _) {
@@ -422,6 +423,7 @@ class _ShelterMapState extends State<ShelterMap> {
       Positioned(
         bottom: 0,
         left: 0,
+        right: 0,
         child: Material(
           color: Colors.white.withValues(alpha: 0.95),
           child: InkWell(
@@ -429,11 +431,14 @@ class _ShelterMapState extends State<ShelterMap> {
               context,
               Uri.parse('https://www.openstreetmap.org/copyright'),
             ),
-            child: const Padding(
-              padding: EdgeInsets.all(9),
-              child: Text(
-                '© OpenStreetMap contributors',
-                style: TextStyle(fontSize: 12),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: 48, minWidth: 48),
+              child: const Padding(
+                padding: EdgeInsets.all(12),
+                child: Text(
+                  '© OpenStreetMap contributors',
+                  style: TextStyle(fontSize: 12),
+                ),
               ),
             ),
           ),

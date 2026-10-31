@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:safe_korea/widgets/shelter_pin.dart';
+import 'package:safe_korea/models/saved_shelter.dart';
 import 'package:safe_korea/widgets/shelter_cluster_pin.dart';
 import 'package:safe_korea/services/saved_shelters_controller.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -65,6 +66,11 @@ void main() {
         await tester.tap(find.text('대피소 저장').first);
         await tester.pumpAndSettle();
         expect(saved.entries.length, 1);
+        await saved.refresh(saved.entries.single, repository);
+        expect(
+          saved.entries.single.check,
+          anyOf(ShelterCheck.confirmed, ShelterCheck.changed),
+        );
         final reopenedSaved = SavedSheltersController(store: store);
         await reopenedSaved.ensureLoaded();
         expect(
@@ -73,7 +79,7 @@ void main() {
         );
         expect(
           reopenedSaved.entries.single.snapshot.retrievedAt,
-          catalog.retrievedAt,
+          saved.entries.single.snapshot.retrievedAt,
         );
         reopenedSaved.dispose();
         await tester.pumpWidget(const SizedBox());

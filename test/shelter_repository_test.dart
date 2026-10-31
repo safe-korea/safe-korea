@@ -71,6 +71,17 @@ void main() {
     expect(data.skippedCount, 2);
     expect(data.officialCount, 3);
   });
+  test('conflicting records with the same regional ID are rejected rather than replacing a saved facility', () {
+    expect(
+      () => parse(
+        response([
+          entry('a'),
+          {...entry('a'), 'facilNm': '다른 테스트 시설'},
+        ]),
+      ),
+      throwsA(isA<ConflictingShelterIdentity>()),
+    );
+  });
   test('unrelated facility type, wrong region, incomplete map and all invalid fail closed', () {
     final normal = response([entry('a')]);
     for (final data in [

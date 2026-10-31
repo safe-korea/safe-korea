@@ -5,6 +5,16 @@ import 'package:http/http.dart' as http;
 import '../models/shelter.dart';
 import 'local_store.dart';
 
+class IncompleteShelterResponse extends FormatException {
+  const IncompleteShelterResponse(this.total, this.mapCount)
+    : super('공식 자료의 전체 건수와 지도 목록 건수가 일치하지 않습니다.');
+  final int total, mapCount;
+}
+
+class ConflictingShelterIdentity extends FormatException {
+  const ConflictingShelterIdentity() : super('같은 시설 번호에 서로 다른 시설 정보가 있습니다.');
+}
+
 /// Read-only adapter for the official website's public, undocumented list call.
 /// No website API keys, authentication, proxy endpoints or GPS are used.
 class ShelterRepository {
@@ -95,10 +105,10 @@ class ShelterRepository {
     final total = payload['totalCnt'] as int;
     // `list` contains only five paginated rows. `mapList` must contain all rows.
     if (total < 0 || total != rows.length) {
-      throw const FormatException('지역 전체 시설 자료를 받지 못했습니다.');
+      throw IncompleteShelterResponse(total, rows.length);
     }
     final items = <Map<String, dynamic>>[];
-    final ids = <String>{};
+    final recordsById = <String, Map<String, dynamic>>{};
     var skipped = 0;
     for (final raw in rows) {
       try {
@@ -120,8 +130,17 @@ class ShelterRepository {
           'updatedAt': null, 'status': 'official_listing',
         };
         final shelter = Shelter.fromJson(record);
-        if (!ids.add(shelter.id)) throw const FormatException('중복 ID');
+        final existing = recordsById[shelter.id];
+        if (existing != null) {
+          if (jsonEncode(existing) != jsonEncode(record)) {
+            throw const ConflictingShelterIdentity();
+          }
+          throw const FormatException('중복 ID');
+        }
+        recordsById[shelter.id] = record;
         items.add(record);
+      } on ConflictingShelterIdentity {
+        rethrow;
       } catch (_) {
         skipped++;
       }

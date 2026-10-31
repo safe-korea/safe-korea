@@ -35,6 +35,14 @@ void main() {
       await tester.tap(find.text('지역 변경'));
       await tester.pumpAndSettle();
     }
+    await tester.ensureVisible(find.text('현재 위치로 지역 찾기'));
+    await tester.tap(find.text('현재 위치로 지역 찾기'));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('위치로 조회 지역 제안받기'));
+    await binding.takeScreenshot('region');
+    await tester.ensureVisible(find.text('현재 위치로 지역 찾기'));
+    await tester.tap(find.text('현재 위치로 지역 찾기'));
+    await tester.pumpAndSettle();
     await tester.ensureVisible(find.text('선택 지역 대피소 불러오기'));
     await tester.tap(find.text('선택 지역 대피소 불러오기'));
     await tester.pump();

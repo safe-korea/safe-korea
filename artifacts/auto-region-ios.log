@@ -1,0 +1,9 @@
+00:00 +0: loading ./integration_test/region_test.dart
+Running Xcode build...
+Xcode build done.                                           20.2s
+00:00 +0: native geocoder resolves Seoul and does not guess a missing district
+PUBLIC_FIXTURE_REGION_COUNT: 1
+PUBLIC_FIXTURE_REGION: KR|서울특별시|null|서울특별시|가회동|street=북촌로7길 32|name=북촌로7길 32|road=북촌로7길
+REGION_RESULT: 11/manual district required
+00:00 +1: (tearDownAll)
+00:00 +1: All tests passed!

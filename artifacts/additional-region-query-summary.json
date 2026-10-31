@@ -1,0 +1,26 @@
+[
+  {
+    "code": "26110",
+    "region": "부산광역시 중구",
+    "responseCode": "26110",
+    "tableNm": "TFK_CIVIL_EMR_FACL_TEMP",
+    "gubun": "2",
+    "officialCount": 51,
+    "mapListCount": 51,
+    "retrievedAt": "2026-10-31T17:23:02.361495+00:00",
+    "scope": "Official HTTP response metadata and count comparison, not physical-site verification",
+    "countsMatch": true
+  },
+  {
+    "code": "50110",
+    "region": "제주특별자치도 제주시",
+    "responseCode": "50110",
+    "tableNm": "TFK_CIVIL_EMR_FACL_TEMP",
+    "gubun": "2",
+    "officialCount": 812,
+    "mapListCount": 479,
+    "retrievedAt": "2026-10-31T17:23:02.772370+00:00",
+    "scope": "Official HTTP response metadata and count comparison, not physical-site verification",
+    "countsMatch": false
+  }
+]

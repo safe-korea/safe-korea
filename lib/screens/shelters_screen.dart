@@ -7,6 +7,7 @@ import 'package:geolocator/geolocator.dart';
 
 import '../models/shelter.dart';
 import '../services/location_service.dart';
+import '../services/region_suggestion_service.dart';
 import '../services/shelter_repository.dart';
 import '../services/saved_shelters_controller.dart';
 import 'saved_shelters_screen.dart';
@@ -20,9 +21,11 @@ class SheltersScreen extends StatefulWidget {
     this.locationService,
     this.repository,
     this.savedShelters,
+    this.regionService,
   });
   final ShelterCatalog? catalog;
   final LocationService? locationService;
+  final RegionSuggestionService? regionService;
   final ShelterRepository? repository;
   final SavedSheltersController? savedShelters;
   @override
@@ -34,14 +37,18 @@ class _SheltersScreenState extends State<SheltersScreen> {
       widget.repository ?? ShelterRepository();
   late final _saved = widget.savedShelters ?? SavedSheltersController.shared;
   List<Map<String, dynamic>> _provinces = [];
-  String _province = '11', _district = '11110';
-  bool _fetching = false, _choosingRegion = true;
+  String _province = '11';
+  String? _district = '11110';
+  bool _fetching = false, _choosingRegion = true, _queryFailed = false;
   String? _networkMessage;
   ShelterCatalog? _catalog;
   Position? _position;
   bool _locating = false, _map = false;
   String? _error, _locationMessage;
   String _query = '';
+  bool _suggesting = false;
+  String? _regionMessage;
+  RegionSuggestion? _suggestion;
   @override
   void initState() {
     super.initState();
@@ -106,15 +113,18 @@ class _SheltersScreenState extends State<SheltersScreen> {
       _provinces.firstWhere((p) => p['code'] == _province)['districts'] as List;
 
   Future<void> _fetch() async {
+    final districtCode = _district;
+    if (districtCode == null) return;
     final province = _provinces.firstWhere((p) => p['code'] == _province);
-    final district = _districts.firstWhere((d) => d['code'] == _district);
+    final district = _districts.firstWhere((d) => d['code'] == districtCode);
     setState(() {
       _fetching = true;
+      _queryFailed = false;
       _networkMessage = null;
     });
     try {
       final catalog = await _repository.fetch(
-        _district,
+        districtCode,
         '${province['name']} ${district['name']}',
       );
       if (!mounted) return;
@@ -140,8 +150,24 @@ class _SheltersScreenState extends State<SheltersScreen> {
           );
         }
       }
+    } on ConflictingShelterIdentity {
+      if (mounted) {
+        _queryFailed = true;
+        setState(
+          () => _networkMessage = '공식 자료의 같은 시설 번호에 서로 다른 정보가 있어 구분할 수 없습니다. 기존 자료를 유지합니다. 정부 공식 시설 검색에서 확인해 주세요.',
+        );
+      }
+    } on IncompleteShelterResponse catch (error) {
+      if (mounted) {
+        _queryFailed = true;
+        setState(
+          () => _networkMessage =
+              '공식 자료는 전체 ${error.total}건인데 지도 목록은 ${error.mapCount}건으로 건수가 일치하지 않습니다. 기존 자료를 유지합니다. 정부 공식 시설 검색에서 확인해 주세요.',
+        );
+      }
     } catch (_) {
       if (mounted) {
+        _queryFailed = true;
         setState(
           () => _networkMessage =
               '공식 시설 조회에 실패했습니다. 연결이나 정부 사이트 응답을 확인해 주세요. 기존에 표시하던 자료는 유지합니다.',
@@ -194,6 +220,63 @@ class _SheltersScreenState extends State<SheltersScreen> {
     } finally {
       if (mounted) setState(() => _locating = false);
     }
+  }
+
+  Future<void> _suggestRegion() async {
+    setState(() {
+      _suggesting = true;
+      _regionMessage = null;
+      _suggestion = null;
+    });
+    try {
+      final position = await (widget.locationService ?? LocationService())
+          .current();
+      if (!mounted) return;
+      final suggestion =
+          await (widget.regionService ?? RegionSuggestionService()).suggest(
+            position,
+            _provinces,
+          );
+      if (!mounted) return;
+      setState(() {
+        _suggestion = suggestion;
+        _regionMessage = suggestion == null
+            ? '현재 위치의 시군구를 확실하게 찾지 못했습니다. 지역을 직접 선택해 주세요.'
+            : suggestion.districtCode == null
+            ? '${suggestion.label}까지만 확인했습니다. 시군구는 직접 선택해 주세요.'
+            : '조회 지역 제안: ${suggestion.label} · 위치 오차 약 ${position.accuracy.round()}m. 경계 부근에서는 실제 지역과 다를 수 있으니 확인하세요.';
+      });
+    } on LocationFailure catch (error) {
+      if (mounted) setState(() => _regionMessage = error.message);
+    } on TimeoutException {
+      if (mounted) {
+        setState(
+          () => _regionMessage = '위치 또는 지역 확인 시간이 초과되었습니다. 지역을 직접 선택해 주세요.',
+        );
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(
+          () => _regionMessage = '현재 위치의 지역을 확인하지 못했습니다. 지역을 직접 선택해 주세요.',
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _suggesting = false);
+    }
+  }
+
+  void _applySuggestion() {
+    final suggestion = _suggestion;
+    if (suggestion == null) return;
+    setState(() {
+      _province = suggestion.provinceCode;
+      _district = suggestion.districtCode;
+      _choosingRegion = true;
+      _suggestion = null;
+      _regionMessage = suggestion.districtCode == null
+          ? '${suggestion.label} 선택됨. 시군구를 직접 선택해야 조회할 수 있습니다.'
+          : '${suggestion.label} 선택됨. 아래에서 지역을 확인하고 대피소 불러오기를 눌러 주세요.';
+    });
   }
 
   List<Shelter> get _filtered {
@@ -265,10 +348,38 @@ class _SheltersScreenState extends State<SheltersScreen> {
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 12),
+              ExpansionTile(
+                tilePadding: EdgeInsets.zero,
+                title: const Text('현재 위치로 지역 찾기'),
+                children: [
+                  const Text(
+                    '현재 위치로 지역을 찾으면 좌표가 Apple/Google 등 기기 주소 변환 서비스에 전달될 수 있습니다. 직접 지역을 선택하면 위치를 보내지 않습니다.',
+                  ),
+                  OutlinedButton.icon(
+                    onPressed: _suggesting || _fetching || _locating
+                        ? null
+                        : _suggestRegion,
+                    icon: const Icon(Icons.location_searching),
+                    label: Text(
+                      _suggesting ? '현재 위치의 지역 확인 중…' : '위치로 조회 지역 제안받기',
+                    ),
+                  ),
+                  if (_regionMessage != null)
+                    Semantics(liveRegion: true, child: Notice(_regionMessage!)),
+                  if (_suggestion != null)
+                    OutlinedButton(
+                      onPressed: _fetching ? null : _applySuggestion,
+                      child: const Text('제안한 지역 선택'),
+                    ),
+                ],
+              ),
+              const SizedBox(height: 12),
               DropdownButtonFormField<String>(
                 key: ValueKey('province-$_province'),
                 initialValue: _province,
                 isExpanded: true,
+                isDense: false,
+                itemHeight: null,
                 decoration: const InputDecoration(labelText: '시·도'),
                 items: [
                   for (final p in _provinces)
@@ -289,6 +400,8 @@ class _SheltersScreenState extends State<SheltersScreen> {
                 key: ValueKey('district-$_district'),
                 initialValue: _district,
                 isExpanded: true,
+                isDense: false,
+                itemHeight: null,
                 decoration: const InputDecoration(labelText: '시·군·구'),
                 items: [
                   for (final d in _districts)
@@ -307,7 +420,9 @@ class _SheltersScreenState extends State<SheltersScreen> {
               ),
               const SizedBox(height: 12),
               FilledButton.icon(
-                onPressed: _fetching ? null : _fetch,
+                onPressed: _fetching || _suggesting || _district == null
+                    ? null
+                    : _fetch,
                 icon: const Icon(Icons.download_outlined),
                 label: Text(_fetching ? '공식 시설 조회 중…' : '선택 지역 대피소 불러오기'),
               ),
@@ -315,6 +430,12 @@ class _SheltersScreenState extends State<SheltersScreen> {
             ],
             if (_networkMessage != null)
               Semantics(liveRegion: true, child: Notice(_networkMessage!)),
+            if (_queryFailed)
+              OutlinedButton(
+                onPressed: () =>
+                    openExternal(context, Uri.parse(officialMapSource)),
+                child: const Text('정부 공식 시설 검색 열기'),
+              ),
             if (_error != null) ...[
               Notice(_error!),
               OutlinedButton(onPressed: _load, child: const Text('다시 읽기')),
@@ -408,11 +529,11 @@ class _SheltersScreenState extends State<SheltersScreen> {
               ),
               const SizedBox(height: 8),
               const Text(
-                '현재 위치는 기기에서 거리 계산에만 사용합니다. 위치 권한 없이도 지역 검색과 목록을 볼 수 있습니다.',
+                '아래 GPS 버튼은 위치를 기기 안에서 거리 계산에만 사용합니다. 위치 권한 없이도 지역 검색과 목록을 볼 수 있습니다.',
               ),
               const SizedBox(height: 16),
               FilledButton.icon(
-                onPressed: _locating ? null : _locate,
+                onPressed: _locating || _suggesting ? null : _locate,
                 icon: const Icon(Icons.my_location),
                 label: Text(_locating ? '위치 확인 중…' : 'GPS 현재 위치 확인'),
               ),
@@ -445,11 +566,12 @@ class _SheltersScreenState extends State<SheltersScreen> {
                 child: const Text('공식 자료 출처 보기'),
               ),
             ],
-            OutlinedButton(
-              onPressed: () =>
-                  openExternal(context, Uri.parse(officialMapSource)),
-              child: const Text('정부 공식 시설 검색 열기'),
-            ),
+            if (!_queryFailed)
+              OutlinedButton(
+                onPressed: () =>
+                    openExternal(context, Uri.parse(officialMapSource)),
+                child: const Text('정부 공식 시설 검색 열기'),
+              ),
           ],
         ),
       ),

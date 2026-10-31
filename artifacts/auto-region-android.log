@@ -1,0 +1,15 @@
+Waiting for another flutter command to release the startup lock...
+00:00 +0: loading ./integration_test/region_test.dart
+Running Gradle task 'assembleDebug'...                             15.3s
+✓ Built build/app/outputs/flutter-apk/app-debug.apk
+Installing build/app/outputs/flutter-apk/app-debug.apk...          907ms
+00:00 +0: native geocoder resolves Seoul and does not guess a missing district
+PUBLIC_FIXTURE_REGION_COUNT: 5
+PUBLIC_FIXTURE_REGION: KR|서울특별시|null|null|종로구|street=대한민국 서울특별시 종로구 가회동 102-1|name=102-1|road=가회동
+PUBLIC_FIXTURE_REGION: KR|서울특별시|null|null|종로구|street=대한민국 서울특별시 종로구 북촌로9길 21|name=21|road=null
+PUBLIC_FIXTURE_REGION: KR|서울특별시|null|null|null|street=대한민국 서울특별시 북촌한옥마을입구.정세권활동터|name=북촌한옥마을입구.정세권활동터|road=null
+PUBLIC_FIXTURE_REGION: KR|서울특별시|null|null|종로구|street=대한민국 서울특별시 종로구|name=03055|road=null
+PUBLIC_FIXTURE_REGION: KR|서울특별시|null|null|종로구|street=대한민국 서울특별시 종로구 가회동|name=가회동|road=가회동
+REGION_RESULT: 11/11110
+00:00 +1: (tearDownAll)
+00:00 +1: All tests passed!

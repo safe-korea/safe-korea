@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 
 import '../models/saved_shelter.dart';
 import '../services/saved_shelters_controller.dart';
+import '../services/shelter_repository.dart';
 import '../widgets/common.dart';
 import '../widgets/shelter_map.dart';
 
 class SavedSheltersScreen extends StatefulWidget {
-  const SavedSheltersScreen({super.key, this.controller});
+  const SavedSheltersScreen({super.key, this.controller, this.repository});
+  final ShelterRepository? repository;
   final SavedSheltersController? controller;
   @override
   State<SavedSheltersScreen> createState() => _SavedSheltersScreenState();
@@ -15,6 +17,27 @@ class SavedSheltersScreen extends StatefulWidget {
 class _SavedSheltersScreenState extends State<SavedSheltersScreen> {
   late final _controller = widget.controller ?? SavedSheltersController.shared;
   String _query = '';
+  String? _refreshMessage;
+  late final _repository = widget.repository ?? ShelterRepository();
+  @override
+  void dispose() {
+    if (widget.repository == null) _repository.close();
+    super.dispose();
+  }
+
+  Future<void> _refresh(SavedShelter entry) async {
+    setState(() => _refreshMessage = '공식 자료를 다시 확인하고 있습니다…');
+    final message = await _controller.refresh(entry, _repository);
+    if (mounted) setState(() => _refreshMessage = message);
+  }
+
+  String _checkLabel(SavedShelter entry) => switch (entry.check) {
+    ShelterCheck.confirmed => '공식 목록 재확인 · 개방 여부 미확인',
+    ShelterCheck.changed => '공식 정보 변경 반영 · 개방 여부 미확인',
+    ShelterCheck.notFound => '이번 조회에서 찾지 못함 · 기존 정보 유지',
+    ShelterCheck.incomplete => '일부 자료 누락으로 확인 불가 · 기존 정보 유지',
+    null => '저장 후 다시 확인하지 않음',
+  };
   @override
   void initState() {
     super.initState();
@@ -57,6 +80,8 @@ class _SavedSheltersScreenState extends State<SavedSheltersScreen> {
             const Notice(
               '지역을 바꿔도 이 기기에 보관한 대피소를 볼 수 있습니다. 저장된 정보는 자동 갱신되지 않으므로 출입구와 현재 개방 여부는 다시 확인하세요.',
             ),
+            if (_refreshMessage != null)
+              Semantics(liveRegion: true, child: Notice(_refreshMessage!)),
             if (_controller.loading)
               const Center(child: CircularProgressIndicator()),
             if (_controller.error != null) ...[
@@ -108,14 +133,41 @@ class _SavedSheltersScreenState extends State<SavedSheltersScreen> {
                         Text(
                           '조회 지역: ${entry.snapshot.coverage}\n공식 자료 조회: ${_time(entry.snapshot.retrievedAt)}\n기기 저장: ${_time(entry.savedAt.toIso8601String())}',
                         ),
+                        Text(_checkLabel(entry)),
+                        if (entry.checkedAt != null)
+                          Text(
+                            '최근 재확인: ${_time(entry.checkedAt!.toIso8601String())}',
+                          ),
                         const Text('현재 개방·수용 여유·이동 경로 안전 미확인'),
+                        const SizedBox(height: 12),
+                        const Text('재확인 시 이 시설의 지역 코드와 IP가 국민안전24에 전달됩니다.'),
+                        OutlinedButton.icon(
+                          onPressed:
+                              _controller.loaded &&
+                                  !_controller.busy &&
+                                  !_controller.loading
+                              ? () => _refresh(entry)
+                              : null,
+                          icon: const Icon(Icons.refresh),
+                          label: Text(
+                            _controller.busy ? '저장 목록 처리 중…' : '공식 자료 다시 확인',
+                          ),
+                        ),
                         const SizedBox(height: 12),
                         OutlinedButton.icon(
                           onPressed: () => Navigator.push(
                             context,
                             MaterialPageRoute<void>(
                               builder: (_) => Scaffold(
-                                appBar: AppBar(title: const Text('저장한 대피소 지도')),
+                                appBar: AppBar(
+                                  title: Text(
+                                    entry.check == ShelterCheck.notFound ||
+                                            entry.check ==
+                                                ShelterCheck.incomplete
+                                        ? '이전 저장 정보 지도'
+                                        : '저장한 대피소 지도',
+                                  ),
+                                ),
                                 body: SafeArea(
                                   child: ShelterMap(
                                     shelters: [entry.shelter],
@@ -126,7 +178,7 @@ class _SavedSheltersScreenState extends State<SavedSheltersScreen> {
                                         child: SingleChildScrollView(
                                           padding: const EdgeInsets.all(24),
                                           child: SelectableText(
-                                            '${entry.shelter.name}\n${entry.shelter.address}\n현재 개방 여부는 현장에서 확인하세요.',
+                                            '${entry.shelter.name}\n${entry.shelter.address}\n공식 자료 조회: ${_time(entry.snapshot.retrievedAt)}\n${_checkLabel(entry)}\n현재 개방 여부는 현장에서 확인하세요.',
                                           ),
                                         ),
                                       ),
