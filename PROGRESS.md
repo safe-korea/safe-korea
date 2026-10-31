@@ -74,3 +74,10 @@
 - README 및 DATA_SOURCES.md의 현재 상태를 업데이트. 초기 CSV 차단에 대한 기록은 과거 관측으로 보존.
 - 일반 실행 앱에서도 종로구 공식 응답 107건 전부 유효(제외 0건)로 저장하고 지도 핀을 직접 확인. `artifacts/android-official-shelters.png`에 화면 보관. APK 및 iOS 시뮬레이터 앱을 일반 main 대상으로 재빌드·실행 완료.
 - 이 추가 구현으로 이전 기록의 ‘실제 시설 미연동/0건’ 제한은 **최초 동봉 자료**에만 해당함. 현재는 선택 지역 공식 조회와 마지막 조회 지역의 오프라인 이용이 가능함. 다른 지역 전체 실증·자동 최신화·실제 경보 수신은 여전히 별도 과제.
+
+## iPhone 17 Pro 화면 확인
+- iOS 26.5의 iPhone 17 Pro 시뮬레이터를 부팅해 실제 Flutter 앱을 실행.
+- 공식 지역 조회·지도·핀 화면 및 홈 화면 캡처. 캡처 자동화 테스트와 호스트 이미지 저장용 Flutter driver 추가.
+- 테스트 종료 시 임시 앱이 삭제되는 동작 때문에 캡처 파일을 호스트로 전달하는 driver 방식으로 저장. 원본 시뮬레이터 캡처로 지도 배경과 핀 렌더를 다시 확인.
+- `artifacts/iphone17-pro-home.png`, `artifacts/iphone17-pro-shelters.png`. Mac Simulator 창도 열어 확인 가능하게 함.
+- Preview 통합 검증 및 flutter analyze 통과. 제품 기능 변경 없음.
