@@ -23,6 +23,8 @@ class FakeGeolocator extends GeolocatorPlatform {
   }) async {
     fixes++;
     expect(locationSettings!.timeLimit, const Duration(seconds: 15));
+    expect(locationSettings, isA<AndroidSettings>());
+    expect((locationSettings as AndroidSettings).forceLocationManager, isTrue);
     return Position(
       latitude: 37.5,
       longitude: 127,

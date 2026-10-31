@@ -1,0 +1,6 @@
+00:00 +0: loading /Users/gimtaehyeong/Downloads/safe-korea-starter/integration_test/app_test.dart
+Running Xcode build...                                          
+Xcode build done.                                           15.8s
+00:00 +0: native offline drill, guidance and isolated SQLite plan
+00:03 +1: (tearDownAll)
+00:04 +1: All tests passed!

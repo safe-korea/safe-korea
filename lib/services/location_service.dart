@@ -1,4 +1,5 @@
 import 'package:geolocator/geolocator.dart';
+import 'package:flutter/foundation.dart';
 
 class LocationFailure implements Exception {
   const LocationFailure(this.message);
@@ -24,10 +25,18 @@ class LocationService {
       throw const LocationFailure('위치 권한 없이도 시설 검색과 행동강령을 이용할 수 있어요.');
     }
     return Geolocator.getCurrentPosition(
-      locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.high,
-        timeLimit: Duration(seconds: 15),
-      ),
+      locationSettings: defaultTargetPlatform == TargetPlatform.android
+          ? AndroidSettings(
+              // Use Android's location manager without prompting to enable
+              // Google's device-wide network accuracy/crowdsourcing setting.
+              forceLocationManager: true,
+              accuracy: LocationAccuracy.high,
+              timeLimit: const Duration(seconds: 15),
+            )
+          : const LocationSettings(
+              accuracy: LocationAccuracy.high,
+              timeLimit: Duration(seconds: 15),
+            ),
     );
   }
 }

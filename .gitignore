@@ -20,3 +20,4 @@ ios/Flutter/flutter_export_environment.sh
 __pycache__/
 *.pyc
 .swiftpm/
+android/.kotlin/

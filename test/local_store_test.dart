@@ -6,10 +6,16 @@ import 'package:safe_korea/screens/family_screen.dart';
 
 class MemoryStore extends LocalStore {
   FamilyPlan plan = const FamilyPlan();
+  bool failLoad = false, failSave = false;
   @override
-  Future<FamilyPlan> load() async => plan;
+  Future<FamilyPlan> load() async {
+    if (failLoad) throw StateError('test read failure');
+    return plan;
+  }
+
   @override
   Future<void> save(FamilyPlan value) async {
+    if (failSave) throw StateError('test write failure');
     plan = value;
   }
 
@@ -71,6 +77,8 @@ void main() {
     await tester.tap(find.text('기기에 저장'));
     await tester.pumpAndSettle();
     expect((await memory.load()).meetingPlace, '만남 장소');
+    await tester.pump(const Duration(seconds: 5));
+    await tester.pumpAndSettle();
     await tester.ensureVisible(find.text('저장된 계획 삭제'));
     await tester.tap(find.text('저장된 계획 삭제'));
     await tester.pumpAndSettle();
@@ -84,4 +92,70 @@ void main() {
     expect((await memory.load()).contactName, isEmpty);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets('unsaved family changes are protected when going back', (
+    tester,
+  ) async {
+    final memory = MemoryStore();
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Builder(
+          builder: (context) => Scaffold(
+            body: TextButton(
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute<void>(
+                  builder: (_) => FamilyScreen(store: memory),
+                ),
+              ),
+              child: const Text('계획 열기'),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.text('계획 열기'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField).first, '아직 저장 안 함');
+    await tester.pumpAndSettle();
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    expect(find.text('저장하지 않은 변경이 있습니다'), findsOneWidget);
+    await tester.tap(find.text('계속 작성'));
+    await tester.pumpAndSettle();
+    expect(find.text('아직 저장 안 함'), findsOneWidget);
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('변경 버리고 나가기'));
+    await tester.pumpAndSettle();
+    expect(find.text('계획 열기'), findsOneWidget);
+    expect(memory.plan.contactName, isEmpty);
+  });
+  testWidgets(
+    'read failure blocks overwrite and write failure preserves input',
+    (tester) async {
+      final memory = MemoryStore()..failLoad = true;
+      await tester.pumpWidget(MaterialApp(home: FamilyScreen(store: memory)));
+      await tester.pumpAndSettle();
+      expect(find.textContaining('기존 내용을 보호하기 위해 저장을 멈췄습니다'), findsOneWidget);
+      expect(
+        tester.widget<TextField>(find.byType(TextField).first).enabled,
+        isFalse,
+      );
+      memory.failLoad = false;
+      await tester.tap(find.text('저장 내용 다시 읽기'));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextField).first, '보존할 입력');
+      memory.failSave = true;
+      await tester.ensureVisible(find.text('기기에 저장'));
+      await tester.tap(find.text('기기에 저장'));
+      await tester.pumpAndSettle();
+      expect(find.textContaining('저장하지 못했습니다'), findsOneWidget);
+      expect(
+        tester.widget<TextField>(find.byType(TextField).first).controller!.text,
+        '보존할 입력',
+      );
+      expect(memory.plan.contactName, isEmpty);
+    },
+  );
 }

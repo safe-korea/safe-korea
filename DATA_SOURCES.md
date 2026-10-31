@@ -29,8 +29,10 @@
 - flutter_map + [OpenStreetMap](https://www.openstreetmap.org/copyright). 기본 지도는 온라인, 대량 다운로드/오프라인 타일 수집 없음.
 - [OSM 타일 정책](https://operations.osmfoundation.org/policies/tiles/) 준수: HTTPS, 앱 User-Agent, 저작자 표시, flutter_map 8.3의 기본 캐시 사용. 서비스 보장 없음.
 - 지도 열기는 명시적 선택. 지도 타일 조회 시 IP와 지도 범위가 OSM에 전달됨. 앱의 GPS 좌표를 서버에 직접 전송하거나 저장하지 않음.
-- 기기 위치는 일회 확인, 타임아웃 15초. 권한 거부·서비스 꺼짐·오차/시각 표시. 백그라운드 위치 권한 없음.
+- 기기 위치는 일회 확인, 타임아웃 15초. 권한 거부·서비스 꺼짐·오차/시각 표시. 백그라운드 위치 권한 없음. Android는 forceLocationManager로 기기 기본 위치 관리자를 사용하여 Google의 기기 전체 위치 정확도 설정 변경 요청을 피함.
 - 가족 계획: 앱 내부 SQLite, 분석/서버 전송 없음. 암호화되지 않은 로컬 저장. Android 앱 백업 비활성화; iOS는 SQLite를 열기 전에 앱 Documents 디렉터리를 백업 대상에서 제외하며 실패 시 저장을 중단함. 실제 iCloud 백업 동작은 실기기 검증 필요.
 
 ## 실제 정부 경보
 실시간 수신 미구현. 공식 API 제공·이용 허가·신뢰성·지연·장애 대응·실기기 검증 전에는 완료로 간주하지 않는다. 서버/FCM/실제 경보 발송 없음.
+
+추가 조사: [서울시 동대문구 공식 데이터셋](https://data.seoul.go.kr/dataList/OA-20032/A/1/datasetView.do)은 EPSG:2097 투영좌표이며 위경도 미제공이라고 명시하고, 조회 당시 내려받을 파일이 없었습니다. 해당 원천도 좌표계 검증 없이 앱에 추가하지 않았습니다. 일부 지역 Open API가 존재한다는 사실이 전국 시설 실시간 연동을 보장하지 않습니다.

@@ -58,6 +58,10 @@ JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home .tools/
 BYPASS_PERMISSION_LOCATION_ALWAYS=1 .tools/flutter/bin/flutter test integration_test/app_test.dart -d FCA9E923-B6DA-4BFF-A955-30B435322CA0
 ```
 
+2026-10-31 검증 결과: `flutter analyze` 이슈 0, Flutter 테스트 15건, Python 테스트 4건 통과. Android API 36과 iOS 26.5 시뮬레이터 통합 테스트 각각 1건 통과. Android에서 실제 권한 거부/일회 허용 후 모의 GPS 좌표·오차·시각 표시를 확인했습니다. 국내 실기기 GPS 정확도는 아직 검증하지 않았습니다.
+
+Android 개발용 APK: `build/app/outputs/flutter-apk/app-debug.apk`. iOS 시뮬레이터 앱: `build/ios/iphonesimulator/Runner.app`. 결과 로그와 화면은 `artifacts/`에 보관합니다. 전체 검증은 `./scripts/verify.sh`로 다시 실행할 수 있습니다.
+
 검증 결과와 빌드 상태는 [PROGRESS.md](PROGRESS.md)에 기록합니다. 통합 테스트는 사용자 가족 계획 DB와 다른 `safe_korea_integration_only.db`를 사용하고 테스트 후 해당 DB만 정리합니다.
 
 ## 데이터·개인정보

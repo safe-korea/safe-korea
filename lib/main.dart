@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'screens/home_screen.dart';
@@ -25,6 +26,7 @@ class SafeKoreaApp extends StatelessWidget {
       appBarTheme: const AppBarTheme(
         backgroundColor: Color(0xFFF5F7F2),
         foregroundColor: ink,
+        systemOverlayStyle: SystemUiOverlayStyle.dark,
         centerTitle: false,
       ),
       textTheme: const TextTheme(

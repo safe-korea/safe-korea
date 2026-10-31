@@ -120,7 +120,7 @@ class _SheltersScreenState extends State<SheltersScreen> {
           ),
           const SizedBox(height: 8),
           const Text(
-            '현재 위치는 버튼을 눌렀을 때만 확인하며 저장·전송하지 않습니다. GPS 오차와 직선거리를 고려하세요.',
+            '현재 위치는 버튼을 눌렀을 때만 확인하며 기기에서 거리 계산에 사용합니다. 저장하지 않습니다. GPS 오차와 직선거리를 고려하세요.',
           ),
           const SizedBox(height: 16),
           FilledButton.icon(
@@ -163,6 +163,9 @@ class _SheltersScreenState extends State<SheltersScreen> {
               ),
               const SizedBox(height: 12),
             ],
+            const Notice(
+              '온라인 지도를 열면 지도 제공자에게 조회 지역과 IP가 전달됩니다. 인터넷이 필요하며 배경이 비어 있으면 시설 목록을 이용하세요.',
+            ),
             if (!_map)
               OutlinedButton.icon(
                 onPressed: () => setState(() => _map = true),
@@ -170,9 +173,6 @@ class _SheltersScreenState extends State<SheltersScreen> {
                 label: const Text('온라인 지도 열기'),
               ),
             if (_map) ...[
-              const Notice(
-                '지도는 인터넷이 필요합니다. 지도 제공자에게 조회 지역과 IP가 전달됩니다. 배경이 비어 있으면 목록을 이용하세요.',
-              ),
               SizedBox(
                 height: 320,
                 child: ClipRRect(

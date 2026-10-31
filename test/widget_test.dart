@@ -84,4 +84,15 @@ void main() {
       }
     },
   );
+  testWidgets('home controls have accessible labels and Android tap sizes', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+
+    await tester.pumpWidget(const SafeKoreaApp());
+    await tester.pumpAndSettle();
+    await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
+    await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
+    semantics.dispose();
+  });
 }
