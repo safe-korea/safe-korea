@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../theme/app_theme.dart';
 import '../widgets/common.dart';
+import '../widgets/drill_elapsed_timer.dart';
 import 'guidelines_screen.dart';
 import 'readiness_screen.dart';
 import 'saved_shelters_screen.dart';
@@ -88,7 +89,9 @@ class _DrillScreenState extends State<DrillScreen> {
                 '실제 공습경보가 아닙니다',
                 style: TextStyle(color: Colors.white, fontSize: 14),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 12),
+              const DrillElapsedTimer(),
+              const SizedBox(height: 16),
               FilledButton.icon(
                 style: FilledButton.styleFrom(
                   backgroundColor: Colors.white,
@@ -124,7 +127,7 @@ class _DrillScreenState extends State<DrillScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '준비된 배낭만 챙기세요',
+                      '손 닿는 곳에 있으면 챙기세요',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
@@ -132,8 +135,16 @@ class _DrillScreenState extends State<DrillScreen> {
                     ),
                     SizedBox(height: 6),
                     Text(
-                      '짐보다 대피가 먼저입니다.',
+                      '없으면 바로 대피하세요.',
                       style: TextStyle(fontSize: 16, color: AppPalette.muted),
+                    ),
+                    SizedBox(height: 12),
+                    Text(
+                      '준비된 배낭 · 물 · 상비약 · 손전등',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ],
                 ),
@@ -142,22 +153,6 @@ class _DrillScreenState extends State<DrillScreen> {
           ),
         ),
         const SizedBox(height: 12),
-        ExpansionTile(
-          tilePadding: const EdgeInsets.symmetric(horizontal: 8),
-          title: const Text('챙길 것 보기'),
-          childrenPadding: const EdgeInsets.all(16),
-          children: [
-            const _KitLine(Icons.water_drop_outlined, '물 · 간편식 · 상비약'),
-            const SizedBox(height: 12),
-            const _KitLine(Icons.flashlight_on_outlined, '손전등 · 라디오 · 건전지'),
-            const SizedBox(height: 12),
-            const Text('평소에 미리 준비하세요. 물품을 찾느라 대피를 늦추지 마세요.'),
-            TextButton(
-              onPressed: () => _open(const ReadinessScreen()),
-              child: const Text('평소에 비상배낭 준비하기'),
-            ),
-          ],
-        ),
         ExpansionTile(
           tilePadding: const EdgeInsets.symmetric(horizontal: 8),
           title: const Text('행동요령 보기'),
@@ -244,25 +239,5 @@ class _DrillScreenState extends State<DrillScreen> {
         ),
       ],
     ),
-  );
-}
-
-class _KitLine extends StatelessWidget {
-  const _KitLine(this.icon, this.label);
-  final IconData icon;
-  final String label;
-  @override
-  Widget build(BuildContext context) => Row(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      ExcludeSemantics(child: Icon(icon, size: 24, color: AppPalette.alert)),
-      const SizedBox(width: 12),
-      Expanded(
-        child: Text(
-          label,
-          style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
-        ),
-      ),
-    ],
   );
 }

@@ -67,7 +67,7 @@ JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home .tools/
 BYPASS_PERMISSION_LOCATION_ALWAYS=1 .tools/flutter/bin/flutter test integration_test/app_test.dart -d E3A83EF7-8FD6-4656-AE84-EFA2E3136351 --no-uninstall
 ```
 
-2026-11-01 로컬 검증 결과: `flutter analyze` 이슈 0, Flutter 테스트 52건, Python 테스트 4건 통과. Android API 36과 iOS 26.5 시뮬레이터에서 기본 앱 통합 테스트 및 실시간 공식 시설 조회·지도·SQLite 재열기 통합 테스트 통과. 공식 종로구 응답 107건을 확인했습니다. Android에서 실제 권한 거부/일회 허용 후 모의 GPS 좌표·오차·시각 표시를 확인했습니다. 국내 실기기 GPS 정확도는 아직 검증하지 않았습니다.
+2026-11-01 로컬 검증 결과: `flutter analyze` 이슈 0, Flutter 테스트 53건, Python 테스트 4건 통과. Android API 36과 iOS 26.5 시뮬레이터에서 기본 앱 통합 테스트 및 실시간 공식 시설 조회·지도·SQLite 재열기 통합 테스트 통과. 공식 종로구 응답 107건을 확인했습니다. Android에서 실제 권한 거부/일회 허용 후 모의 GPS 좌표·오차·시각 표시를 확인했습니다. 국내 실기기 GPS 정확도는 아직 검증하지 않았습니다.
 
 Android 개발용 APK: `build/app/outputs/flutter-apk/app-debug.apk`. iOS 시뮬레이터 앱: `build/ios/iphonesimulator/Runner.app`. 결과 로그와 화면은 `artifacts/`에 보관합니다. 전체 검증은 `./scripts/verify.sh`로 다시 실행할 수 있습니다.
 
@@ -129,4 +129,6 @@ GPS는 앱에서 저장하지 않습니다. **거리 계산**은 기기 안에�
 
 [flutter_local_notifications](https://pub.dev/packages/flutter_local_notifications) 22.3.3 사용. Android 채널은 소리/진동 조합별로 분리합니다. 사용자가 OS에서 바꾼 채널 설정, 무음/집중 모드, 알림 차단은 우회하지 않습니다. 예약·원격 푸시·실제 정부 경보 자동 수신 기능은 없습니다. 네트워크 없이 동작하는 수동 테스트입니다. 실제 기기의 소리·진동, 알림 센터 탭 및 종료 상태 실행은 추가 수동 검증이 필요합니다.
 
-경보 훈련 진입 화면은 **먼저 대피 → 준비된 배낭 → 대피 후 정부 안내** 순서입니다. 빨간 경보 영역에 대피시설 버튼을 크게 보여주며 준비물 목록과 행동요령은 펼쳐서 봅니다. 테스트 알림을 눌러도 같은 화면으로 연결됩니다. 실제 정부 경보 수신 상태는 변하지 않았습니다.
+경보 훈련 진입 화면은 **먼저 대피 → 준비된 배낭 → 대피 후 정부 안내** 순서입니다. 빨간 경보 영역에 대피시설 버튼을 크게 보여주며 손 닿는 물품만 챙기고 없으면 바로 대피하도록 안내하며, 행동요령은 펼쳐서 봅니다. 테스트 알림을 눌러도 같은 화면으로 연결됩니다. 실제 정부 경보 수신 상태는 변하지 않았습니다.
+
+연습 경과 타이머는 훈련 화면을 연 때부터 계산합니다. 지도를 열거나 앱이 백그라운드에 있는 동안에도 같은 세션의 경과 시간을 반영합니다. 훈련 화면을 닫고 다시 열거나 앱 프로세스가 종료되면 새로 시작하며 기록은 저장하지 않습니다. 공격 도달 시각·남은 안전 시간·대피 제한시간을 의미하지 않습니다.

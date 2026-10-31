@@ -12,12 +12,9 @@ void main() {
     await tester.pumpAndSettle();
     await binding.takeScreenshot('drill');
     expect(find.text('대피시설 확인').hitTestable(), findsOneWidget);
-    expect(find.text('준비된 배낭만 챙기세요').hitTestable(), findsOneWidget);
-    expect(find.text('물 · 간편식 · 상비약'), findsNothing);
-    await tester.ensureVisible(find.text('챙길 것 보기'));
-    await tester.tap(find.text('챙길 것 보기'));
-    await tester.pumpAndSettle();
-    expect(find.text('물 · 간편식 · 상비약'), findsOneWidget);
+    expect(find.text('없으면 바로 대피하세요.').hitTestable(), findsOneWidget);
+    expect(find.text('챙길 것 보기'), findsNothing);
+    expect(find.text('준비된 배낭 · 물 · 상비약 · 손전등'), findsOneWidget);
     await tester.ensureVisible(find.text('행동요령 보기'));
     await tester.tap(find.text('행동요령 보기'));
     await tester.pumpAndSettle();
