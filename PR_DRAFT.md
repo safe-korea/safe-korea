@@ -38,9 +38,8 @@
 
 ## 원격 게시 상태
 
-이 파일은 **로컬 초안이며 GitHub PR을 생성한 상태가 아닙니다.**
-
-- 대상: `https://github.com/taehyeooo/safe-korea`
-- 작업 브랜치: `feat/safe-korea-mvp`
-- 조회 당시 원격 브랜치 없음. 사용자 승인 후 초기 기준 커밋 `75b00d5`를 `main`으로 게시하고 작업 브랜치를 올려 비교 가능한 draft PR을 만드는 방안을 준비했습니다.
-- 최초 지시의 원격 push 승인 조건에 따라 아직 push/PR 게시를 수행하지 않았습니다.
+- 초안 PR: https://github.com/taehyeooo/safe-korea/pull/1
+- 상태: Draft · 미병합
+- 대상: `taehyeooo/safe-korea`, base `main`, head `feat/safe-korea-mvp`
+- 사용자의 진행 승인 후 초기 기준 커밋 `75b00d5`를 `main`으로 게시하고 작업 브랜치를 push해 PR 생성 완료.
+- 카카오 키와 실기기 검증 등 남은 항목은 PR 본문에 명시함. 앱 배포·스토어 제출·실제 경보 발송은 수행하지 않음.

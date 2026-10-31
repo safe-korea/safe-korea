@@ -100,3 +100,10 @@
 - 최종 일반 Android 앱 실행 성공, 개발용 APK 약 146MB(네이티브 지도 SDK 포함). 해시는 artifacts/apk.sha256. 배포 서명/원격 게시 없음.
 - 원래 작업 공간의 origin에서 대상 GitHub 저장소 taehyeooo/safe-korea를 확인. 읽기 조회상 원격 브랜치 없음. 스타터 로컬 저장소에 origin 주소만 연결하고 feat/safe-korea-mvp 브랜치 생성. push 및 PR 생성은 아직 수행하지 않음.
 - PR_DRAFT.md와 MVP_CHECKLIST.md 작성. 최초 지시의 원격 push 승인 조건에 따라, 원격의 초기 기준 main과 작업 브랜치 게시 및 draft PR은 승인 후 수행할 단계로 남김.
+
+## 승인 후 원격 게시
+- 사용자 ‘진행해’ 승인 후 원격 브랜치가 여전히 없는 것을 재확인.
+- 초기 기준 커밋 75b00d5를 main으로 push하고 feat/safe-korea-mvp 브랜치 원격 게시.
+- 초안 PR #1 생성: https://github.com/taehyeooo/safe-korea/pull/1 (base main → head feat/safe-korea-mvp).
+- PR에는 검증 결과와 iPhone 화면, 카카오 키 미입력·실기기/실제 경보 수신 등 제한을 명시. 미병합 상태로 유지.
+- 게시 상태 문서만 변경했으므로 코드 테스트는 반복하지 않음. 원격 PR 상태·최종 head 일치 확인.
