@@ -1,0 +1,19 @@
+Launching lib/main.dart on sdk gphone64 arm64 in debug mode...
+Running Gradle task 'assembleDebug'...                              9.3s
+✓ Built build/app/outputs/flutter-apk/app-debug.apk
+Installing build/app/outputs/flutter-apk/app-debug.apk...        1,122ms
+I/FlutterActivityAndFragmentDelegate(21667): If you are attempting to set --enable-dart-profiling via Intent extras to launch a Flutter component outside of using the Flutter CLI, note that support for setting engine flags on Android via Intent will soon be dropped; see https://github.com/flutter/flutter/issues/180686 for more information on this breaking change. To migrate, set --enable-dart-profiling or any other flags specified via Intent extras on the command line instead or see https://github.com/flutter/flutter/blob/main/docs/engine/Flutter-Android-Engine-Flags.md for alternative methods.
+D/FlutterJNI(21667): Beginning load of flutter...
+D/FlutterJNI(21667): flutter (null) was loaded normally!
+I/flutter (21667): [IMPORTANT:flutter/shell/platform/android/android_context_gl_impeller.cc(104)] Using the Impeller rendering backend (OpenGLES).
+D/FlutterGeolocator(21667): Attaching Geolocator to activity
+D/FlutterRenderer(21667): Width is zero. 0,0
+Syncing files to device sdk gphone64 arm64...
+D/FlutterGeolocator(21667): Creating service.
+D/FlutterGeolocator(21667): Binding to location service.
+I/Choreographer(21667): Skipped 36 frames!  The application may be doing too much work on its main thread.
+I/WindowExtensionsImpl(21667): Initializing Window Extensions, vendor API level=9, activity embedding enabled=true
+I/mple.safe_korea(21667): Compiler allocated 5111KB to compile void android.view.ViewRootImpl.performTraversals()
+D/FlutterRenderer(21667): Width is zero. 0,0
+D/FlutterJNI(21667): Sending viewport metrics to the engine.
+Syncing files to device sdk gphone64 arm64...                      197ms

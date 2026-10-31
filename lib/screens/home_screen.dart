@@ -147,8 +147,8 @@ class HomeScreen extends StatelessWidget {
         ),
         ActionTile(
           icon: Icons.people_outline,
-          title: '가족 안전 계획',
-          subtitle: '연락처와 만남 장소',
+          title: '가족 만남 장소',
+          subtitle: '만남 장소 · 지도 핀',
           onTap: () => _open(context, const FamilyScreen()),
         ),
         ActionTile(

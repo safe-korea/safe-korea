@@ -88,8 +88,8 @@ class _ReadinessScreenState extends State<ReadinessScreen> {
         ),
         ActionTile(
           icon: Icons.people_outline,
-          title: '가족 계획 열기',
-          subtitle: '연락처 · 만남 장소',
+          title: '가족 만남 장소',
+          subtitle: '첫 번째 장소 · 대체 장소',
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute<void>(builder: (_) => const FamilyScreen()),

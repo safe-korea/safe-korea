@@ -52,11 +52,15 @@ void main() {
           phone: '01012345678',
           meetingPlace: '합의한 장소',
           note: '약 챙기기',
+          meetingPoint: MeetingPoint(37.5665, 126.978),
+          backupPoint: MeetingPoint(37.57, 126.98),
         ),
       );
       final reloaded = await LocalStore(database: db).load();
       expect(reloaded.meetingPlace, '합의한 장소');
       expect(reloaded.note, '약 챙기기');
+      expect(reloaded.meetingPoint!.latitude, 37.5665);
+      expect(reloaded.backupPoint!.longitude, 126.98);
       await store.save(const FamilyPlan(contactName: '변경'));
       expect((await db.query('plans')).length, 1);
       expect((await store.load()).phone, isEmpty);
@@ -151,7 +155,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('취소'));
     await tester.pumpAndSettle();
-    expect((await memory.load()).contactName, '가족');
+    expect((await memory.load()).meetingPlace, '만남 장소');
     await tester.tap(find.text('저장된 계획 삭제'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('삭제'));

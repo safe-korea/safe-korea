@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../services/local_store.dart';
 import '../widgets/common.dart';
+import 'meeting_point_screen.dart';
 
 class FamilyScreen extends StatefulWidget {
   const FamilyScreen({super.key, this.store});
@@ -17,6 +18,7 @@ class _FamilyScreenState extends State<FamilyScreen> {
   String? _message;
   FamilyPlan _savedPlan = const FamilyPlan();
   bool _editing = true;
+  MeetingPoint? _meetingPoint, _backupPoint;
   @override
   void initState() {
     super.initState();
@@ -43,7 +45,9 @@ class _FamilyScreenState extends State<FamilyScreen> {
         _loading = false;
         _loadFailed = false;
         _savedPlan = plan;
-        _editing = plan.isEmpty;
+        _editing = !plan.hasMeetingPlan;
+        _meetingPoint = plan.meetingPoint;
+        _backupPoint = plan.backupPoint;
         _message = null;
       });
     } catch (_) {
@@ -65,21 +69,23 @@ class _FamilyScreenState extends State<FamilyScreen> {
     });
     try {
       final plan = FamilyPlan(
-        contactName: _fields[0].text.trim(),
-        phone: _fields[1].text.trim(),
+        contactName: _savedPlan.contactName,
+        phone: _savedPlan.phone,
         meetingPlace: _fields[2].text.trim(),
         backupPlace: _fields[3].text.trim(),
         note: _fields[4].text.trim(),
-        backupContactName: _fields[5].text.trim(),
-        backupPhone: _fields[6].text.trim(),
+        backupContactName: _savedPlan.backupContactName,
+        backupPhone: _savedPlan.backupPhone,
+        meetingPoint: _meetingPoint,
+        backupPoint: _backupPoint,
       );
       await _store.save(plan);
       if (mounted) {
         setState(() {
           _dirty = false;
           _savedPlan = plan;
-          _editing = plan.isEmpty;
-          _message = '이 기기에 저장했습니다. 종이 연락카드도 준비해 두세요.';
+          _editing = !plan.hasMeetingPlan;
+          _message = '만남 장소를 이 기기에 저장했습니다. 가족에게도 미리 알려 주세요.';
         });
         ScaffoldMessenger.of(context)
             .showSnackBar(const SnackBar(content: Text('계획 저장 완료')));
@@ -99,8 +105,8 @@ class _FamilyScreenState extends State<FamilyScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('가족 계획을 삭제할까요?'),
-        content: const Text('이 기기에 저장된 연락처와 계획을 삭제합니다.'),
+        title: const Text('만남 장소를 삭제할까요?'),
+        content: const Text('만남 장소·지도 핀·약속을 삭제합니다. 기존 연락처는 보존합니다.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -116,7 +122,13 @@ class _FamilyScreenState extends State<FamilyScreen> {
     if (confirmed != true || !mounted) return;
     setState(() => _saving = true);
     try {
-      await _store.clear();
+      final preserved = FamilyPlan(
+        contactName: _savedPlan.contactName,
+        phone: _savedPlan.phone,
+        backupContactName: _savedPlan.backupContactName,
+        backupPhone: _savedPlan.backupPhone,
+      );
+      await _store.save(preserved);
       if (!mounted) return;
       for (final field in _fields) {
         field.clear();
@@ -124,7 +136,9 @@ class _FamilyScreenState extends State<FamilyScreen> {
       setState(() {
         _loadFailed = false;
         _dirty = false;
-        _savedPlan = const FamilyPlan();
+        _savedPlan = preserved;
+        _meetingPoint = null;
+        _backupPoint = null;
         _editing = true;
         _message = '저장된 계획을 삭제했습니다.';
       });
@@ -160,6 +174,54 @@ class _FamilyScreenState extends State<FamilyScreen> {
     }
   }
 
+  Future<void> _pickPoint(int index) async {
+    final point = await Navigator.push<MeetingPoint>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => MeetingPointScreen(
+          title: index == 2 ? '첫 번째 만남 장소' : '대체 만남 장소',
+          initialPoint: index == 2 ? _meetingPoint : _backupPoint,
+        ),
+      ),
+    );
+    if (point == null || !mounted) return;
+    setState(() {
+      if (index == 2) {
+        _meetingPoint = point;
+      } else {
+        _backupPoint = point;
+      }
+      _dirty = true;
+    });
+  }
+
+  Widget _pointSummary(MeetingPoint point, String title) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      Text(
+        '좌표 ${point.latitude.toStringAsFixed(5)}, ${point.longitude.toStringAsFixed(5)}',
+      ),
+      OutlinedButton.icon(
+        onPressed: () => Navigator.push(
+          context,
+          MaterialPageRoute<void>(
+            builder: (_) => MeetingPointScreen(
+              title: title,
+              initialPoint: point,
+              readOnly: true,
+            ),
+          ),
+        ),
+        icon: const Icon(Icons.map_outlined),
+        label: Text('$title 지도 보기'),
+      ),
+      const Text(
+        '온라인 지도 · IP와 조회 범위가 지도 제공자에게 전달됩니다.',
+        style: TextStyle(fontSize: 13),
+      ),
+    ],
+  );
+
   @override
   void dispose() {
     for (final field in _fields) {
@@ -175,18 +237,16 @@ class _FamilyScreenState extends State<FamilyScreen> {
       if (!didPop) _confirmExit();
     },
     child: Scaffold(
-      appBar: AppBar(title: const Text('가족 안전 계획')),
+      appBar: AppBar(title: const Text('가족 만남 장소')),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : PageBody(
               children: [
-                const Notice(
-                  '연락처와 계획은 이 기기에만 저장됩니다. 서버 전송·자동 연락·가족 위치 추적은 하지 않습니다.',
-                ),
+                const Notice('가족끼리 정한 장소입니다. 공식 대피시설이나 안전한 이동 경로를 보장하지 않습니다.'),
                 const PageIntro(
                   eyebrow: '가족과 미리 약속',
                   title: '어디서 다시 만날까요?',
-                  subtitle: '연락처와 만남 장소를 함께 정하세요.',
+                  subtitle: '통신이 끊기면 만날 장소와 대체 장소를 정하세요.',
                 ),
                 const ExpansionTile(
                   title: Text('저장·보관 안내'),
@@ -194,7 +254,7 @@ class _FamilyScreenState extends State<FamilyScreen> {
                     Padding(
                       padding: EdgeInsets.only(bottom: 16),
                       child: Text(
-                        '종이 연락카드도 준비하세요. 저장 내용은 앱 내부 평문이며 기기 잠금으로 보호해 주세요.',
+                        '장소와 좌표는 기기에만 저장됩니다. 지도는 온라인이며 지도 제공자에게 IP와 조회 범위가 전달됩니다. 가족에게 자동 공유되지 않습니다. 기존 연락처는 수정·삭제하지 않고 보존합니다.',
                       ),
                     ),
                   ],
@@ -207,7 +267,7 @@ class _FamilyScreenState extends State<FamilyScreen> {
                     onPressed: _load,
                     child: const Text('저장 내용 다시 읽기'),
                   ),
-                if (!_savedPlan.isEmpty) ...[
+                if (_savedPlan.hasMeetingPlan) ...[
                   Card(
                     child: Padding(
                       padding: const EdgeInsets.all(20),
@@ -222,26 +282,20 @@ class _FamilyScreenState extends State<FamilyScreen> {
                             ),
                           ),
                           const SizedBox(height: 16),
-                          if (_savedPlan.contactName.isNotEmpty ||
-                              _savedPlan.phone.isNotEmpty)
-                            SelectableText(
-                              '비상연락처\n${_savedPlan.contactName}  ${_savedPlan.phone}',
-                            ),
-                          if (_savedPlan.backupContactName.isNotEmpty ||
-                              _savedPlan.backupPhone.isNotEmpty) ...[
-                            const SizedBox(height: 12),
-                            SelectableText(
-                              '추가 연락처\n${_savedPlan.backupContactName}  ${_savedPlan.backupPhone}',
-                            ),
-                          ],
-                          const Divider(height: 32),
                           SelectableText(
                             '첫 번째 만남 장소\n${_savedPlan.meetingPlace.isEmpty ? '아직 정하지 않았어요' : _savedPlan.meetingPlace}',
                           ),
+                          if (_savedPlan.meetingPoint != null)
+                            _pointSummary(
+                              _savedPlan.meetingPoint!,
+                              '첫 번째 만남 장소',
+                            ),
                           const SizedBox(height: 12),
                           SelectableText(
                             '두 번째 만남 장소\n${_savedPlan.backupPlace.isEmpty ? '아직 정하지 않았어요' : _savedPlan.backupPlace}',
                           ),
+                          if (_savedPlan.backupPoint != null)
+                            _pointSummary(_savedPlan.backupPoint!, '대체 만남 장소'),
                           if (_savedPlan.note.isNotEmpty) ...[
                             const SizedBox(height: 16),
                             SelectableText(_savedPlan.note),
@@ -254,21 +308,20 @@ class _FamilyScreenState extends State<FamilyScreen> {
                     FilledButton.tonalIcon(
                       onPressed: () => setState(() => _editing = true),
                       icon: const Icon(Icons.edit_outlined),
-                      label: const Text('가족 계획 수정'),
+                      label: const Text('만남 장소 수정'),
                     ),
                   const SizedBox(height: 16),
                 ],
                 if (_editing) ...[
-                  for (final index in [0, 1, 5, 6, 2, 3, 4]) ...[
-                    if ([0, 5, 2, 4].contains(index))
+                  for (final index in [2, 3, 4]) ...[
+                    if ([2, 3, 4].contains(index))
                       Padding(
                         padding: const EdgeInsets.only(top: 12, bottom: 12),
                         child: Text(
                           switch (index) {
-                            0 => '비상연락처',
-                            5 => '추가 비상연락처',
-                            2 => '만남 장소',
-                            _ => '메모',
+                            2 => '01  첫 번째 만남 장소',
+                            3 => '02  대체 만남 장소',
+                            _ => '가족끼리 정한 약속',
                           },
                           style: const TextStyle(
                             fontSize: 21,
@@ -298,7 +351,7 @@ class _FamilyScreenState extends State<FamilyScreen> {
                             '비상연락처 전화번호',
                             '첫 번째 만남 장소',
                             '연락이 안 될 때 두 번째 장소',
-                            '대피 계획 · 도움이 필요한 사항',
+                            '가족끼리 정한 약속',
                             '추가 연락처 이름',
                             '추가 연락처 전화번호',
                           ][index],
@@ -306,7 +359,47 @@ class _FamilyScreenState extends State<FamilyScreen> {
                         ),
                       ),
                     ),
+                    if (index != 4) ...[
+                      const Text(
+                        '온라인 지도 · IP와 조회 범위가 지도 제공자에게 전달됩니다.',
+                        style: TextStyle(fontSize: 13),
+                      ),
+                      if ((index == 2 ? _meetingPoint : _backupPoint)
+                          case final point?)
+                        Text(
+                          '선택 좌표 ${point.latitude.toStringAsFixed(5)}, ${point.longitude.toStringAsFixed(5)}',
+                        ),
+                      OutlinedButton.icon(
+                        onPressed: _saving || _loadFailed
+                            ? null
+                            : () => _pickPoint(index),
+                        icon: const Icon(Icons.add_location_alt_outlined),
+                        label: Text(
+                          index == 2 ? '첫 번째 장소 지도에서 지정' : '대체 장소 지도에서 지정',
+                        ),
+                      ),
+                      if ((index == 2 ? _meetingPoint : _backupPoint) != null)
+                        TextButton(
+                          onPressed: _saving || _loadFailed
+                              ? null
+                              : () => setState(() {
+                                  if (index == 2) {
+                                    _meetingPoint = null;
+                                  } else {
+                                    _backupPoint = null;
+                                  }
+                                  _dirty = true;
+                                }),
+                          child: const Text('이 핀 지우기'),
+                        ),
+                      const SizedBox(height: 16),
+                    ],
                   ],
+                  const Text(
+                    '지도는 온라인입니다. 지도 제공자에게 IP와 조회 범위가 전달됩니다. 이름만 저장할 수도 있어요.',
+                    style: TextStyle(fontSize: 14),
+                  ),
+                  const SizedBox(height: 12),
                   FilledButton(
                     onPressed: _saving || _loadFailed ? null : _save,
                     child: Text(_saving ? '저장 중…' : '기기에 저장'),
@@ -314,7 +407,7 @@ class _FamilyScreenState extends State<FamilyScreen> {
                 ],
                 const SizedBox(height: 12),
                 OutlinedButton(
-                  onPressed: _saving ? null : _clear,
+                  onPressed: _saving || _loadFailed ? null : _clear,
                   child: const Text('저장된 계획 삭제'),
                 ),
               ],

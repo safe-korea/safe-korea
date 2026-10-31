@@ -6,6 +6,34 @@ import 'package:flutter/services.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as path;
 
+class MeetingPoint {
+  const MeetingPoint(this.latitude, this.longitude);
+  final double latitude, longitude;
+  bool get isValid =>
+      latitude.isFinite &&
+      longitude.isFinite &&
+      latitude >= -90 &&
+      latitude <= 90 &&
+      longitude >= -180 &&
+      longitude <= 180;
+  Map<String, double> toJson() => {
+    'latitude': latitude,
+    'longitude': longitude,
+  };
+  static MeetingPoint? fromJson(dynamic value) {
+    if (value is! Map ||
+        value['latitude'] is! num ||
+        value['longitude'] is! num) {
+      return null;
+    }
+    final point = MeetingPoint(
+      (value['latitude'] as num).toDouble(),
+      (value['longitude'] as num).toDouble(),
+    );
+    return point.isValid ? point : null;
+  }
+}
+
 class FamilyPlan {
   const FamilyPlan({
     this.contactName = '',
@@ -15,6 +43,8 @@ class FamilyPlan {
     this.note = '',
     this.backupContactName = '',
     this.backupPhone = '',
+    this.meetingPoint,
+    this.backupPoint,
   });
   final String contactName,
       phone,
@@ -23,8 +53,22 @@ class FamilyPlan {
       note,
       backupContactName,
       backupPhone;
-  bool get isEmpty => toJson().values.every((value) => value.trim().isEmpty);
-  Map<String, String> toJson() => {
+  final MeetingPoint? meetingPoint, backupPoint;
+  bool get hasMeetingPlan =>
+      meetingPlace.trim().isNotEmpty ||
+      backupPlace.trim().isNotEmpty ||
+      note.trim().isNotEmpty ||
+      meetingPoint != null ||
+      backupPoint != null;
+  bool get isEmpty =>
+      !hasMeetingPlan &&
+      [
+        contactName,
+        phone,
+        backupContactName,
+        backupPhone,
+      ].every((value) => value.trim().isEmpty);
+  Map<String, dynamic> toJson() => {
     'contactName': contactName,
     'phone': phone,
     'meetingPlace': meetingPlace,
@@ -32,6 +76,8 @@ class FamilyPlan {
     'note': note,
     'backupContactName': backupContactName,
     'backupPhone': backupPhone,
+    if (meetingPoint?.isValid ?? false) 'meetingPoint': meetingPoint!.toJson(),
+    if (backupPoint?.isValid ?? false) 'backupPoint': backupPoint!.toJson(),
   };
   factory FamilyPlan.fromJson(Map<String, dynamic> json) => FamilyPlan(
     contactName: json['contactName'] as String? ?? '',
@@ -41,6 +87,8 @@ class FamilyPlan {
     note: json['note'] as String? ?? '',
     backupContactName: json['backupContactName'] as String? ?? '',
     backupPhone: json['backupPhone'] as String? ?? '',
+    meetingPoint: MeetingPoint.fromJson(json['meetingPoint']),
+    backupPoint: MeetingPoint.fromJson(json['backupPoint']),
   );
 }
 
