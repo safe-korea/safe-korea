@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../services/local_store.dart';
 import '../widgets/common.dart';
 import 'meeting_point_screen.dart';
+import 'meeting_share_screen.dart';
+import '../services/meeting_share.dart';
 
 class FamilyScreen extends StatefulWidget {
   const FamilyScreen({super.key, this.store});
@@ -304,6 +306,23 @@ class _FamilyScreenState extends State<FamilyScreen> {
                       ),
                     ),
                   ),
+                  if (canShareMeetingPlan(_savedPlan)) ...[
+                    FilledButton.icon(
+                      onPressed: _dirty || _saving
+                          ? null
+                          : () => Navigator.push(
+                              context,
+                              MaterialPageRoute<void>(
+                                builder: (_) =>
+                                    MeetingShareScreen(plan: _savedPlan),
+                              ),
+                            ),
+                      icon: const Icon(Icons.share_outlined),
+                      label: const Text('가족에게 공유'),
+                    ),
+                    if (_dirty) const Text('수정한 내용을 먼저 저장한 뒤 공유하세요.'),
+                    const SizedBox(height: 8),
+                  ],
                   if (!_editing)
                     FilledButton.tonalIcon(
                       onPressed: () => setState(() => _editing = true),

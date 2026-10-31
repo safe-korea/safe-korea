@@ -197,3 +197,10 @@
 - OSM 온라인 지도, 확대/축소·저작자 표시·타일 로딩/실패/재시도. 지도 실패 시 신규 핀 확인 비활성, 장소 이름 저장과 기존 좌표 열람은 오프라인 가능. 카카오 만남 장소 선택/주소 검색은 미구현.
 - 검증: format/analyze 0, Flutter 60건 + Python 6건 통과. 구형 JSON/잘못된 좌표, SQLite 두 좌표 재열기, 연락처 보존, 지도 선택/실패, 320px 200% 글씨 테스트.
 - Android API36/iPhone17Pro 공개 장소 fixture 지도 및 별도 테스트 SQLite 통합 테스트 통과. 사용자 DB와 분리된 safe_korea_meeting_integration_only.db만 생성/정리. 캡처 artifacts/iphone17-pro-family-meeting*.png는 테스트 장소이며 개인 데이터 아님. 테스트 후 일반 앱 재실행.
+
+## 2026-11-01 — 가족 만남 장소 공유
+
+- 저장된 가족 장소 → 공유 미리보기 → OS 공유 창 연결(share_plus). 첫 번째/대체 장소와 OSM 핀 링크 포함, 가족 약속은 기본 제외/선택 포함, 기존 연락처 필드는 제외. 수정 중에는 저장 전 공유 비활성. 공유 실패/앱 미지원 시 내용 복사 지원.
+- 카카오 앱 키/SDK 없이 설치된 공유 앱을 사용자가 선택하는 방식. 카카오톡 앱 자체는 시뮬레이터에 없어 수신·전송 미검증. 자동 발송/공유 결과를 전달 완료로 표현하지 않음.
+- 검증: analyze 0, Flutter 64건 + Python 6건 통과. 공유 텍스트/연락처 제외/메모 선택/iPad anchor/오류/복사/미저장 차단 테스트. Android/iOS 실제 OS 공유 창을 공개 장소 fixture로 열어 캡처·시각 확인. 대상 앱/수신자는 선택하지 않았고 메시지는 보내지 않음. 두 플랫폼 통합 테스트 통과 후 일반 main 앱 재실행.
+- artifacts/iphone17-pro-family-share-preview.png, iphone17-pro-family-share-sheet.png, android-family-share-sheet.png 및 share-*.log.
