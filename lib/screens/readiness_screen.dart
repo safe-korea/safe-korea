@@ -81,40 +81,18 @@ class _ReadinessScreenState extends State<ReadinessScreen> {
     appBar: AppBar(title: const Text('나의 준비')),
     body: PageBody(
       children: [
-        const Text(
-          '우리 가족의\n비상 준비를 한곳에',
-          style: TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.w800,
-            height: 1.3,
-          ),
+        const PageIntro(
+          eyebrow: '평소에 준비',
+          title: '하나씩 챙겨 두세요',
+          subtitle: '가족과 약속하고, 비상배낭을 준비하세요.',
         ),
-        const SizedBox(height: 20),
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const Icon(Icons.people_outline, size: 36, color: teal),
-                const SizedBox(height: 12),
-                const Text(
-                  '가족 안전 계획',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                ),
-                const Text('연락처와 만남 장소를 미리 정해 두세요.'),
-                const SizedBox(height: 16),
-                FilledButton(
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute<void>(
-                      builder: (_) => const FamilyScreen(),
-                    ),
-                  ),
-                  child: const Text('가족 계획 열기'),
-                ),
-              ],
-            ),
+        ActionTile(
+          icon: Icons.people_outline,
+          title: '가족 계획 열기',
+          subtitle: '연락처 · 만남 장소',
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute<void>(builder: (_) => const FamilyScreen()),
           ),
         ),
         const SizedBox(height: 24),
@@ -123,7 +101,7 @@ class _ReadinessScreenState extends State<ReadinessScreen> {
           style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
-        const Text('가지고 이동할 수 있는 분량으로 준비하고, 약과 식품의 유효기간을 정기적으로 확인하세요.'),
+        const Text('가볍게 준비하고 유효기간을 확인하세요.'),
         const SizedBox(height: 16),
         if (_loading) const Center(child: CircularProgressIndicator()),
         if (!_loading) ...[
@@ -147,6 +125,18 @@ class _ReadinessScreenState extends State<ReadinessScreen> {
               children: [
                 for (final entry in preparednessItems.entries)
                   CheckboxListTile(
+                    secondary: ExcludeSemantics(
+                      child: Icon(switch (entry.key) {
+                        'water' => Icons.water_drop_outlined,
+                        'medicine' => Icons.medication_outlined,
+                        'light' => Icons.flashlight_on_outlined,
+                        'radio' => Icons.radio_outlined,
+                        'power' => Icons.battery_charging_full,
+                        'contact' => Icons.contact_page_outlined,
+                        'hygiene' => Icons.clean_hands_outlined,
+                        _ => Icons.shield_outlined,
+                      }, color: teal),
+                    ),
                     title: Text(entry.value),
                     value: _checked.contains(entry.key),
                     controlAffinity: ListTileControlAffinity.leading,

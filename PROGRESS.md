@@ -181,3 +181,11 @@
 - 별도 DrillElapsedTimer 위젯: 단조 시계 Stopwatch 기준 경과시간, 매초 해당 위젯만 갱신. 백그라운드에서는 갱신을 멈추고 복귀 시 시계에서 다시 계산. 종료 시 타이머/observer 해제. 기록 저장 및 프로세스 종료 후 복원 없음.
 - 공식 자료의 즉각 대피 원칙에 따라 임의의 ‘몇 분 이내’나 남은 안전 시간은 추가하지 않음. ‘연습 경과 / 제한시간 아님’ 명시.
 - 검증: analyze 0, Flutter 53건 + Python 4건 통과. 65초/71분 경과·복귀·dispose 테스트 추가. iPhone 17 Pro 촬영 통합 테스트 및 이미지 직접 검토. Android 일반 앱 빌드/실행, iOS 일반 앱 복원. 로그 artifacts/drill-timer-*.log.
+
+## 2026-11-01 — 사이렌과 평상시 화면 디자인
+
+- 기본 알림음을 직접 합성한 6초 상승/하강 사이렌으로 변경. PCM16 mono 22050Hz WAV, 외부 음원/저작권 의존 없음. Android raw/siren v2 채널, iOS 리소스 번들/커스텀 sound 이름 연결. 리소스 제거 방지 keep.xml 추가. 기본 꺼짐과 명시적 테스트 전송 유지, 실제 정부 알림 아님.
+- 홈 전면 재배치(대피소 카드/붉은 연습 카드/아이콘 준비 목록), 공통 ActionTile/PageIntro. 행동강령 상황별 아이콘, 나의 준비 가족 바로가기/준비물 아이콘, 지역 선택 도입부, 가족 계획/알림 화면 제목 정리. 지도 제공자·지도 렌더 알고리즘 자체 변경 없음.
+- 검증: format, analyze 0, Flutter 55건 + Python 6건 통과. Android/iOS 무음과 커스텀 사운드 설정 테스트, 음원 동일성/6초/클리핑 테스트, 320px 200% 글씨 주요 화면 테스트.
+- Android debug APK 및 iOS Runner.app 내부 음원이 원본과 동일함을 확인(SHA256 a390c59eeecc97396fefadf1ebffe096c6850c1908fce70883cb093ef1673743). 실제 기기 청취/무음·집중 모드별 재생은 미검증, 자동 테스트에서 소리를 발생시키지 않음.
+- iPhone 전체 미리보기 통과(공식 지역 조회 포함), 홈/준비/행동강령 이미지 직접 검토. 테스트 후 일반 앱 복원, Android 일반 앱 실행. artifacts/siren-design-*.log 및 iphone17-pro-*.png 갱신.

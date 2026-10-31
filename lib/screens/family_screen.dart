@@ -183,15 +183,23 @@ class _FamilyScreenState extends State<FamilyScreen> {
                 const Notice(
                   '연락처와 계획은 이 기기에만 저장됩니다. 서버 전송·자동 연락·가족 위치 추적은 하지 않습니다.',
                 ),
-                const Text(
-                  '통신이 끊겨도 만날 수 있도록',
-                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+                const PageIntro(
+                  eyebrow: '가족과 미리 약속',
+                  title: '어디서 다시 만날까요?',
+                  subtitle: '연락처와 만남 장소를 함께 정하세요.',
                 ),
-                const SizedBox(height: 8),
-                const Text(
-                  '가족과 합의한 장소를 기록하세요. 기기를 잃어버릴 수 있으니 종이 연락카드도 준비하세요. 저장 내용은 앱 내부 평문이며 기기 잠금으로 보호해 주세요.',
+                const ExpansionTile(
+                  title: Text('저장·보관 안내'),
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(bottom: 16),
+                      child: Text(
+                        '종이 연락카드도 준비하세요. 저장 내용은 앱 내부 평문이며 기기 잠금으로 보호해 주세요.',
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 12),
                 if (_message != null)
                   Semantics(liveRegion: true, child: Notice(_message!)),
                 if (_loadFailed)

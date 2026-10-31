@@ -83,12 +83,15 @@ class DrillNotifications {
       payload: payload,
       notificationDetails: NotificationDetails(
         android: AndroidNotificationDetails(
-          'drill_v1_s${sound ? 1 : 0}_v${vibration ? 1 : 0}',
+          'drill_siren_v2_s${sound ? 1 : 0}_v${vibration ? 1 : 0}',
           '훈련 테스트 · 소리 ${sound ? "켜짐" : "꺼짐"} · 진동 ${vibration ? "켜짐" : "꺼짐"}',
           channelDescription: '사용자가 직접 실행하는 모의 알림',
           importance: Importance.high,
           priority: Priority.high,
           playSound: sound,
+          sound: sound
+              ? const RawResourceAndroidNotificationSound('drill_siren')
+              : null,
           enableVibration: vibration,
         ),
         iOS: DarwinNotificationDetails(
@@ -96,6 +99,7 @@ class DrillNotifications {
           presentBanner: true,
           presentList: true,
           presentSound: sound,
+          sound: sound ? 'drill_siren.wav' : null,
           presentBadge: false,
         ),
       ),

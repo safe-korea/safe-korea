@@ -322,7 +322,17 @@ class _SheltersScreenState extends State<SheltersScreen> {
         listenable: _saved,
         builder: (context, _) => PageBody(
           children: [
-            const Notice('공습용 시설입니다. 화학 공격 시에는 별도 행동강령을 확인하세요.', urgent: true),
+            const Padding(
+              padding: EdgeInsets.only(bottom: 16),
+              child: Text(
+                '공습용 대피시설 · 화학 공격은 별도 행동강령 확인',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Color(0xFF8D421F),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
             if (!_choosingRegion && catalog != null) ...[
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -343,11 +353,11 @@ class _SheltersScreenState extends State<SheltersScreen> {
               const SizedBox(height: 12),
             ],
             if (_provinces.isNotEmpty && _choosingRegion) ...[
-              const Text(
-                '지역을 선택해 공식 대피소 조회',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              const PageIntro(
+                eyebrow: '공식 시설 찾기',
+                title: '어느 지역을 찾으세요?',
+                subtitle: '지역을 선택하면 지도와 목록으로 볼 수 있어요.',
               ),
-              const SizedBox(height: 12),
               ExpansionTile(
                 tilePadding: EdgeInsets.zero,
                 title: const Text('현재 위치로 지역 찾기'),

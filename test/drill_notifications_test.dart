@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -63,6 +64,8 @@ void main() {
         false,
       );
       expect(shows.last.arguments['platformSpecifics']['playSound'], true);
+      expect(shows.last.arguments['platformSpecifics']['sound'], 'drill_siren');
+      expect(shows.first.arguments['platformSpecifics']['sound'], isNull);
       expect(
         shows.first.arguments['platformSpecifics']['channelId'],
         isNot(shows.last.arguments['platformSpecifics']['channelId']),
@@ -72,6 +75,20 @@ void main() {
       expect(calls.last.arguments['id'], DrillNotifications.notificationId);
     },
   );
+  test('iOS uses the bundled siren only when sound is selected', () async {
+    debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+    addTearDown(() => debugDefaultTargetPlatformOverride = null);
+    IOSFlutterLocalNotificationsPlugin.registerWith();
+    final service = DrillNotifications();
+    await service.send(sound: true, vibration: false);
+    final audible = calls.lastWhere((call) => call.method == 'show');
+    expect(audible.arguments['platformSpecifics']['sound'], 'drill_siren.wav');
+    expect(audible.arguments['platformSpecifics']['presentSound'], true);
+    await service.send(sound: false, vibration: false);
+    final silent = calls.lastWhere((call) => call.method == 'show');
+    expect(silent.arguments['platformSpecifics']['sound'], isNull);
+    expect(silent.arguments['platformSpecifics']['presentSound'], false);
+  });
   test(
     'cold-start payload waits for navigator; unknown payload is ignored',
     () {

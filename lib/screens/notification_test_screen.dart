@@ -49,15 +49,15 @@ class _NotificationTestScreenState extends State<NotificationTestScreen> {
     appBar: AppBar(title: const Text('테스트 알림')),
     body: PageBody(
       children: [
-        Text('훈련 / 테스트', style: Theme.of(context).textTheme.headlineSmall),
-        const SizedBox(height: 12),
-        const Text(
-          '실제 정부 경보가 아닙니다. 아래 버튼을 누를 때만 이 기기에 테스트 알림을 보냅니다. 인터넷은 필요하지 않습니다.',
+        const PageIntro(
+          eyebrow: '훈련 / 테스트',
+          title: '사이렌으로 알아차리기',
+          subtitle: '직접 보내는 테스트 알림입니다. 실제 정부 경보가 아닙니다.',
         ),
         const SizedBox(height: 16),
         SwitchListTile(
-          title: const Text('소리 켜기'),
-          subtitle: const Text('기본 알림음 사용 · 사이렌 아님'),
+          title: const Text('사이렌 켜기'),
+          subtitle: const Text('6초 사이렌 · 테스트 버튼을 누르면 울립니다'),
           value: _sound,
           onChanged: _busy ? null : (value) => setState(() => _sound = value),
         ),
