@@ -86,7 +86,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(requests, 2);
       expect(find.text('합성 테스트 대피소'), findsOneWidget);
-      expect(find.textContaining('현재 표시 범위: 서울특별시 종로구'), findsOneWidget);
+      expect(find.textContaining('서울특별시 종로구 · 지도 표시'), findsOneWidget);
       await tester.pumpWidget(const SizedBox());
       repository.close();
     },

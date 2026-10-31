@@ -200,9 +200,6 @@ class _FamilyScreenState extends State<FamilyScreen> {
   Widget _pointSummary(MeetingPoint point, String title) => Column(
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
-      Text(
-        '좌표 ${point.latitude.toStringAsFixed(5)}, ${point.longitude.toStringAsFixed(5)}',
-      ),
       OutlinedButton.icon(
         onPressed: () => Navigator.push(
           context,
@@ -244,22 +241,15 @@ class _FamilyScreenState extends State<FamilyScreen> {
           ? const Center(child: CircularProgressIndicator())
           : PageBody(
               children: [
-                const Notice('가족끼리 정한 장소입니다. 공식 대피시설이나 안전한 이동 경로를 보장하지 않습니다.'),
-                const PageIntro(
-                  eyebrow: '가족과 미리 약속',
-                  title: '어디서 다시 만날까요?',
-                  subtitle: '통신이 끊기면 만날 장소와 대체 장소를 정하세요.',
-                ),
-                const ExpansionTile(
-                  title: Text('저장·보관 안내'),
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(bottom: 16),
-                      child: Text(
-                        '장소와 좌표는 기기에만 저장됩니다. 지도는 온라인이며 지도 제공자에게 IP와 조회 범위가 전달됩니다. 가족에게 자동 공유되지 않습니다. 기존 연락처는 수정·삭제하지 않고 보존합니다.',
-                      ),
-                    ),
-                  ],
+                if (!_savedPlan.hasMeetingPlan)
+                  const PageIntro(
+                    eyebrow: '가족과 미리 약속',
+                    title: '어디서 다시 만날까요?',
+                    subtitle: '첫 번째 장소와 대체 장소를 정하세요.',
+                  ),
+                const Text(
+                  '가족끼리 정한 장소 · 공식 대피시설과 다를 수 있어요.',
+                  style: TextStyle(fontSize: 14),
                 ),
                 const SizedBox(height: 12),
                 if (_message != null)
@@ -277,7 +267,7 @@ class _FamilyScreenState extends State<FamilyScreen> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           const Text(
-                            '저장된 가족 계획',
+                            '우리 가족의 만남 장소',
                             style: TextStyle(
                               fontSize: 23,
                               fontWeight: FontWeight.bold,
@@ -294,7 +284,7 @@ class _FamilyScreenState extends State<FamilyScreen> {
                             ),
                           const SizedBox(height: 12),
                           SelectableText(
-                            '두 번째 만남 장소\n${_savedPlan.backupPlace.isEmpty ? '아직 정하지 않았어요' : _savedPlan.backupPlace}',
+                            '대체 장소\n${_savedPlan.backupPlace.isEmpty ? '아직 정하지 않았어요' : _savedPlan.backupPlace}',
                           ),
                           if (_savedPlan.backupPoint != null)
                             _pointSummary(_savedPlan.backupPoint!, '대체 만남 장소'),
@@ -369,7 +359,7 @@ class _FamilyScreenState extends State<FamilyScreen> {
                             '비상연락처 이름',
                             '비상연락처 전화번호',
                             '첫 번째 만남 장소',
-                            '연락이 안 될 때 두 번째 장소',
+                            '대체 장소',
                             '가족끼리 정한 약속',
                             '추가 연락처 이름',
                             '추가 연락처 전화번호',
@@ -424,6 +414,33 @@ class _FamilyScreenState extends State<FamilyScreen> {
                     child: Text(_saving ? '저장 중…' : '기기에 저장'),
                   ),
                 ],
+                if (_savedPlan.meetingPoint != null ||
+                    _savedPlan.backupPoint != null)
+                  ExpansionTile(
+                    title: const Text('저장된 좌표 상세'),
+                    children: [
+                      for (final entry in [
+                        (label: '첫 번째 장소', point: _savedPlan.meetingPoint),
+                        (label: '대체 장소', point: _savedPlan.backupPoint),
+                      ])
+                        if (entry.point case final point?)
+                          SelectableText(
+                            '${entry.label}: ${point.latitude.toStringAsFixed(5)}, ${point.longitude.toStringAsFixed(5)}',
+                          ),
+                    ],
+                  ),
+                const ExpansionTile(
+                  title: Text('저장·보관 안내'),
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(bottom: 16),
+                      child: Text(
+                        '장소와 좌표는 기기에만 저장됩니다. 지도는 온라인이며 지도 제공자에게 IP와 조회 범위가 전달됩니다. 가족에게 자동 공유되지 않습니다. 기존 연락처는 수정·삭제하지 않고 보존합니다.',
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
                 const SizedBox(height: 12),
                 OutlinedButton(
                   onPressed: _saving || _loadFailed ? null : _clear,

@@ -43,9 +43,9 @@ class HomeScreen extends StatelessWidget {
           '비공식 대비 앱 · 실제 정부 경보 수신 기능 없음',
           style: TextStyle(fontSize: 13, color: AppPalette.muted),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 16),
         Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: AppPalette.ink,
             borderRadius: BorderRadius.circular(20),
@@ -96,7 +96,7 @@ class HomeScreen extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: AppPalette.alertBackground,
             borderRadius: BorderRadius.circular(16),
@@ -105,17 +105,6 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Text(
-                '경보가 울리면',
-                style: TextStyle(
-                  color: AppPalette.alert,
-                  fontSize: 21,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-              const SizedBox(height: 4),
-              const Text('대피 행동을 미리 연습하세요.', style: TextStyle(fontSize: 16)),
-              const SizedBox(height: 12),
               FilledButton.icon(
                 style: FilledButton.styleFrom(
                   backgroundColor: AppPalette.alert,
@@ -127,7 +116,7 @@ class HomeScreen extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 16),
         const Text(
           '나의 비상 준비',
           style: TextStyle(fontSize: 21, fontWeight: FontWeight.w800),
@@ -140,16 +129,16 @@ class HomeScreen extends StatelessWidget {
           onTap: () => _open(context, const SavedSheltersScreen()),
         ),
         ActionTile(
-          icon: Icons.menu_book_outlined,
-          title: '상황별 행동강령',
-          subtitle: '인터넷 없이 확인',
-          onTap: onGuidelines ?? () => _open(context, const GuidelinesScreen()),
-        ),
-        ActionTile(
           icon: Icons.people_outline,
           title: '가족 만남 장소',
           subtitle: '만남 장소 · 지도 핀',
           onTap: () => _open(context, const FamilyScreen()),
+        ),
+        ActionTile(
+          icon: Icons.menu_book_outlined,
+          title: '상황별 행동강령',
+          subtitle: '인터넷 없이 확인',
+          onTap: onGuidelines ?? () => _open(context, const GuidelinesScreen()),
         ),
         ActionTile(
           icon: Icons.backpack_outlined,

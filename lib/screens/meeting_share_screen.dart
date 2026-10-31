@@ -87,15 +87,49 @@ class _MeetingShareScreenState extends State<MeetingShareScreen> {
                 ? null
                 : (value) => setState(() => _includeNote = value ?? false),
           ),
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: SelectableText(_text),
+        for (final place in [
+          (
+            label: '첫 번째 장소',
+            name: widget.plan.meetingPlace,
+            point: widget.plan.meetingPoint,
           ),
-        ),
+          (
+            label: '대체 장소',
+            name: widget.plan.backupPlace,
+            point: widget.plan.backupPoint,
+          ),
+        ])
+          if (place.name.trim().isNotEmpty || place.point?.isValid == true)
+            Card(
+              child: ListTile(
+                contentPadding: const EdgeInsets.all(16),
+                leading: const Icon(Icons.location_on_outlined),
+                title: Text(place.label, style: const TextStyle(fontSize: 14)),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      place.name.trim().isEmpty ? '지도에 지정한 장소' : place.name,
+                      style: const TextStyle(
+                        fontSize: 21,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    Text(
+                      place.point?.isValid == true ? '지도 링크 포함' : '지도 위치 미지정',
+                    ),
+                  ],
+                ),
+              ),
+            ),
+        if (_includeNote)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: Text(widget.plan.note),
+          ),
         const SizedBox(height: 16),
         const Text(
-          '카카오톡이 설치되어 있으면 공유 목록에서 선택하세요. 장소 이름·좌표·선택한 약속이 전달됩니다. 받을 사람은 직접 선택하며 자동 발송하지 않습니다.',
+          '장소 이름·좌표와 선택한 약속을 공유합니다. 다음 화면에서 카카오톡과 받을 사람을 직접 선택하세요. 자동 전송하지 않습니다.',
           style: TextStyle(fontSize: 14),
         ),
         const SizedBox(height: 16),
@@ -113,6 +147,16 @@ class _MeetingShareScreenState extends State<MeetingShareScreen> {
           onPressed: _busy || !canShareMeetingPlan(widget.plan) ? null : _copy,
           icon: const Icon(Icons.copy_outlined),
           label: const Text('내용 복사'),
+        ),
+        ExpansionTile(
+          tilePadding: EdgeInsets.zero,
+          title: const Text('전송 내용 전체 보기'),
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: SelectableText(_text),
+            ),
+          ],
         ),
         if (_message != null)
           Padding(

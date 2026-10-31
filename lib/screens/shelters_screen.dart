@@ -459,7 +459,7 @@ class _SheltersScreenState extends State<SheltersScreen> {
                 ),
               if (catalog.retrievedAt != null)
                 Notice(
-                  '현재 표시 범위: ${catalog.coverage}\n국민안전24 등재 시설 ${catalog.officialCount ?? catalog.shelters.length}건 중 좌표 유효 시설 ${catalog.shelters.length}건 · 제외 ${catalog.skippedCount}건\n전국 전체 목록이 아닙니다. 저장 후 시설 정보가 변경될 수 있습니다.',
+                  '${catalog.coverage} · 지도 표시 ${catalog.shelters.length}곳\n선택 지역 자료입니다. 시설 정보는 변경될 수 있습니다.',
                 ),
               if (catalog.shelters.isEmpty && catalog.retrievedAt != null)
                 const Notice(
@@ -538,9 +538,7 @@ class _SheltersScreenState extends State<SheltersScreen> {
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
-              const Text(
-                '아래 GPS 버튼은 위치를 기기 안에서 거리 계산에만 사용합니다. 위치 권한 없이도 지역 검색과 목록을 볼 수 있습니다.',
-              ),
+              const Text('선택 사항 · 위치는 기기 안에서 거리 계산에만 사용합니다.'),
               const SizedBox(height: 16),
               FilledButton.icon(
                 onPressed: _locating || _suggesting ? null : _locate,
@@ -557,7 +555,7 @@ class _SheltersScreenState extends State<SheltersScreen> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: SelectableText(
-                      '출처: ${catalog.sourceName}\n자료 범위: ${catalog.coverage}\n마지막 조회: ${_formatTime(catalog.retrievedAt)}\n시설별 갱신일이 제공되지 않는 자료는 현장에서 다시 확인하세요.',
+                      '국민안전24 등재 ${catalog.officialCount ?? catalog.shelters.length}건 · 좌표 제외 ${catalog.skippedCount}건\n전국 전체 목록이 아닙니다.\n출처: ${catalog.sourceName}\n자료 범위: ${catalog.coverage}\n마지막 조회: ${_formatTime(catalog.retrievedAt)}\n시설별 갱신일이 제공되지 않는 자료는 현장에서 다시 확인하세요.',
                     ),
                   ),
                 ],

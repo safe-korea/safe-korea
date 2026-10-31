@@ -66,6 +66,21 @@ void main() {
       expect(find.textContaining('도착 여부를 확인할 수 없습니다'), findsOneWidget);
     },
   );
+  testWidgets('compact preview hides raw links until expanded', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(402, 874));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      const MaterialApp(home: MeetingShareScreen(plan: plan)),
+    );
+    expect(find.text('지도 링크 포함'), findsOneWidget);
+    expect(find.textContaining('https://'), findsNothing);
+    expect(tester.getBottomRight(find.text('카카오톡 등으로 공유')).dy, lessThan(874));
+    await tester.ensureVisible(find.text('전송 내용 전체 보기'));
+    await tester.tap(find.text('전송 내용 전체 보기'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('https://'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
   testWidgets('share failure keeps copy fallback available', (tester) async {
     String? copied;
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
