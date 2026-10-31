@@ -59,3 +59,4 @@
 - iOS 앱: `build/ios/iphonesimulator/Runner.app`. 실기기/배포용 빌드 아님.
 - 검증 근거: `artifacts/verify.log`, `android-integration.log`, `ios-integration.log`, 각 플랫폼 `*-run.log` 및 홈/위치 화면 캡처.
 - 프로젝트는 사용자가 지정한 Downloads 스타터에 작성했으며 기존 `/Users/gimtaehyeong/orca/safe-korea` 작업 트리는 변경하지 않음.
+- 저장한 실행 로그는 출력 내용은 유지하고 Git 검토를 위해 줄 끝 공백만 정리함. 최종 Git diff 공백 검사 통과.

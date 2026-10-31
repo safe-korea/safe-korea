@@ -8,7 +8,7 @@ D/FlutterJNI(12840): flutter (null) was loaded normally!
 I/flutter (12840): [IMPORTANT:flutter/shell/platform/android/android_context_gl_impeller.cc(104)] Using the Impeller rendering backend (OpenGLES).
 D/FlutterGeolocator(12840): Attaching Geolocator to activity
 D/FlutterRenderer(12840): Width is zero. 0,0
-Syncing files to device sdk gphone64 arm64...                   
+Syncing files to device sdk gphone64 arm64...
 D/FlutterGeolocator(12840): Creating service.
 D/FlutterGeolocator(12840): Binding to location service.
 I/WindowExtensionsImpl(12840): Initializing Window Extensions, vendor API level=9, activity embedding enabled=true
