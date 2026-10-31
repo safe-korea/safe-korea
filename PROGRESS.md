@@ -160,3 +160,10 @@
 - 검증: format 통과, analyze 0, Flutter 50건 + Python 4건 통과. Android arm64 debug APK/iOS simulator build 성공. 두 플랫폼에서 notifications_test 통과(실제 플러그인 초기화 및 payload 주입 화면 이동/중복 방지). 자동 검증은 알림을 실제 전송하거나 소리·진동을 발생시키지 않음.
 - 제한: 실제 알림 센터 배달/탭·앱 종료 후 실행·실기기 음향/진동은 추가 수동 검증 필요. 시스템 권한/채널/집중 모드를 우회하지 않으며 표시/소리를 보장하지 않음. 테스트 후 일반 main.dart 앱으로 복원.
 - 증거: artifacts/notification-*.log.
+
+## 2026-11-01 — UI UX Pro Max로 대피 우선 화면 개선
+
+- 지정 GitHub 스킬 원문을 프로젝트 .tools에 가져와 읽고 검색 실행. 접근성 중심 단일 열·큰 글씨·48dp 이상 터치·단계적 상세 공개 적용. 기존 녹색 브랜딩과 오프라인 한국어 시스템 폰트 유지.
+- 훈련/알림 진입 화면: 먼저 대피(대피시설 CTA) → 준비된 배낭(핵심 6개 물품) → 대피 후 안내. 준비물 찾기 때문에 대피가 지연되지 않도록 명시. 저장한 시설/상황별 행동강령/평소 배낭 준비 연결. 선택 체크는 접어서 제공. 실제 정부 경보 수신 기능 변경 없음.
+- 검증: dart format, flutter analyze 0, Flutter 52건, Python 4건 통과. 402×874 첫 화면 가시성·터치/라벨, 작은 가로 화면 200% 글씨 스크롤 테스트 추가. Android 일반 앱 빌드/실행 성공. iPhone 17 Pro 통합 촬영 통과 및 첫 화면 이미지 직접 검토.
+- artifacts/iphone17-pro-drill.png, iphone17-pro-drill-details.png 갱신. iPhone 테스트 후 일반 main.dart 앱으로 복원. 실기기 스크린리더 검증은 남음.

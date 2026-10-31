@@ -147,7 +147,7 @@ class HomeScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const Text(
-                '미리 해보는 대피 연습',
+                '경보가 울리면, 이렇게 행동해요',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w700,
@@ -155,7 +155,7 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8),
-              const Text('실제 경보가 아닌 훈련입니다. 소리 없이 대피 행동을 익혀 보세요.'),
+              const Text('먼저 대피하고, 준비된 배낭만 챙기세요. 훈련 화면에서 행동 순서를 익혀 보세요.'),
               const SizedBox(height: 16),
               OutlinedButton.icon(
                 onPressed: () => _open(context, const DrillScreen()),
