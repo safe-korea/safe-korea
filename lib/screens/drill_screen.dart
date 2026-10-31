@@ -30,7 +30,7 @@ class _DrillScreenState extends State<DrillScreen> {
     body: PageBody(
       children: [
         const Notice(
-          '훈련 / 테스트\n실제 공습경보가 아닙니다. 알림이나 사이렌을 발송하지 않습니다.',
+          '훈련 / 테스트\n실제 공습경보가 아닙니다. 이 화면을 여는 것만으로 알림이나 소리가 발생하지 않습니다.',
           urgent: true,
         ),
         const Icon(Icons.shield_outlined, size: 64, color: ink),

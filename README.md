@@ -7,7 +7,7 @@
 | 기능 | 상태 |
 |---|---|
 | Material 3 한국어 홈 / 큰 버튼 / 글씨 확대 | 구현 |
-| 모의 공습경보와 대피 행동 연습 | 구현, 소리·알림·실제 경보 발송 없음 |
+| 모의 공습경보와 대피 행동 연습 | 구현, 별도 버튼에서만 로컬 테스트 알림 실행 |
 | 공습·경계·화학·생물학·해제·사전 준비 | 정부 원문을 요약해 JSON 동봉, 오프라인 이용 |
 | 가족 비상연락처·만남 장소·메모 | 연락처 2곳·만남 장소 2곳·요약 카드·SQLite 저장 |
 | 나의 준비 | 비상배낭 8개 항목 체크리스트·로컬 저장 |
@@ -67,7 +67,7 @@ JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home .tools/
 BYPASS_PERMISSION_LOCATION_ALWAYS=1 .tools/flutter/bin/flutter test integration_test/app_test.dart -d E3A83EF7-8FD6-4656-AE84-EFA2E3136351 --no-uninstall
 ```
 
-2026-11-01 로컬 검증 결과: `flutter analyze` 이슈 0, Flutter 테스트 46건, Python 테스트 4건 통과. Android API 36과 iOS 26.5 시뮬레이터에서 기본 앱 통합 테스트 및 실시간 공식 시설 조회·지도·SQLite 재열기 통합 테스트 통과. 공식 종로구 응답 107건을 확인했습니다. Android에서 실제 권한 거부/일회 허용 후 모의 GPS 좌표·오차·시각 표시를 확인했습니다. 국내 실기기 GPS 정확도는 아직 검증하지 않았습니다.
+2026-11-01 로컬 검증 결과: `flutter analyze` 이슈 0, Flutter 테스트 50건, Python 테스트 4건 통과. Android API 36과 iOS 26.5 시뮬레이터에서 기본 앱 통합 테스트 및 실시간 공식 시설 조회·지도·SQLite 재열기 통합 테스트 통과. 공식 종로구 응답 107건을 확인했습니다. Android에서 실제 권한 거부/일회 허용 후 모의 GPS 좌표·오차·시각 표시를 확인했습니다. 국내 실기기 GPS 정확도는 아직 검증하지 않았습니다.
 
 Android 개발용 APK: `build/app/outputs/flutter-apk/app-debug.apk`. iOS 시뮬레이터 앱: `build/ios/iphonesimulator/Runner.app`. 결과 로그와 화면은 `artifacts/`에 보관합니다. 전체 검증은 `./scripts/verify.sh`로 다시 실행할 수 있습니다.
 
@@ -122,3 +122,9 @@ GPS는 앱에서 저장하지 않습니다. **거리 계산**은 기기 안에�
 - `test`, `integration_test`: 위젯·저장·위치·시설 검증 및 플랫폼 통합 테스트
 
 출시 전 필요한 작업: 공식 웹사이트 조회 경로의 운영 이용 조건·안정성 확인, 다른 지역별 결과/갱신 정책 검증, 실기기 GPS·권한·VoiceOver/TalkBack 점검, 정부 행동강령 변경 재검토, iOS 실기기 서명과 앱 아이콘·배포 서명 구성. 원격 push와 초안 PR #1 게시까지 승인 후 수행했으며, 앱 배포·스토어 제출은 수행하지 않았습니다.
+
+## 테스트 알림
+
+홈 하단 **테스트 알림 설정 → 지금 테스트 알림 보내기**에서 기기 알림 권한을 요청합니다. 앱 시작 시에는 권한을 요청하거나 알림을 보내지 않습니다. 소리와 Android 진동은 기본 꺼짐이며 직접 켤 수 있습니다. iPhone 진동은 OS 설정을 따릅니다. 알림 제목·본문은 훈련임을 표시하며 누르면 훈련 화면을 엽니다. 앱 종료 후 알림을 눌러 실행하는 경로도 연결했습니다. 테스트 알림 지우기는 이 앱의 테스트 알림 1개만 지웁니다.
+
+[flutter_local_notifications](https://pub.dev/packages/flutter_local_notifications) 22.3.3 사용. Android 채널은 소리/진동 조합별로 분리합니다. 사용자가 OS에서 바꾼 채널 설정, 무음/집중 모드, 알림 차단은 우회하지 않습니다. 예약·원격 푸시·실제 정부 경보 자동 수신 기능은 없습니다. 네트워크 없이 동작하는 수동 테스트입니다. 실제 기기의 소리·진동, 알림 센터 탭 및 종료 상태 실행은 추가 수동 검증이 필요합니다.

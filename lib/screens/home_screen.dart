@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../widgets/common.dart';
 import 'drill_screen.dart';
+import 'notification_test_screen.dart';
 import 'guidelines_screen.dart';
 import 'family_screen.dart';
 import 'shelters_screen.dart';
@@ -160,6 +161,11 @@ class HomeScreen extends StatelessWidget {
                 onPressed: () => _open(context, const DrillScreen()),
                 icon: const Icon(Icons.shield_outlined),
                 label: const Text('모의 공습경보 시작'),
+              ),
+              TextButton.icon(
+                onPressed: () => _open(context, const NotificationTestScreen()),
+                icon: const Icon(Icons.notifications_outlined),
+                label: const Text('테스트 알림 설정'),
               ),
             ],
           ),
