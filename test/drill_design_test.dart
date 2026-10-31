@@ -15,10 +15,11 @@ void main() {
       MaterialApp(theme: buildAppTheme(), home: const DrillScreen()),
     );
     expect(find.text('대피시설 확인').hitTestable(), findsOneWidget);
-    expect(find.text('물 · 간편식 · 상비약').hitTestable(), findsOneWidget);
+    expect(find.text('준비된 배낭만 챙기세요').hitTestable(), findsOneWidget);
+    expect(find.text('물 · 간편식 · 상비약'), findsNothing);
     expect(
       tester.getTopLeft(find.text('대피시설 확인')).dy,
-      lessThan(tester.getTopLeft(find.text('02  챙길 것은 준비된 배낭')).dy),
+      lessThan(tester.getTopLeft(find.text('준비된 배낭만 챙기세요')).dy),
     );
     expect(find.byType(Checkbox), findsNothing);
     final semantics = tester.ensureSemantics();
@@ -45,6 +46,13 @@ void main() {
         home: const DrillScreen(),
       ),
     );
+    await tester.ensureVisible(find.text('챙길 것 보기'));
+    await tester.tap(find.text('챙길 것 보기'));
+    await tester.pumpAndSettle();
+    expect(find.text('물 · 간편식 · 상비약'), findsOneWidget);
+    await tester.ensureVisible(find.text('행동요령 보기'));
+    await tester.tap(find.text('행동요령 보기'));
+    await tester.pumpAndSettle();
     await tester.ensureVisible(find.text('연습 체크 · 선택 사항'));
     await tester.tap(find.text('연습 체크 · 선택 사항'));
     await tester.pumpAndSettle();

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 abstract final class AppPalette {
+  static const alert = Color(0xFFB42318);
+  static const alertBackground = Color(0xFFFFF7F5);
   static const green = Color(0xFF086B50);
   static const ink = Color(0xFF17352D);
   static const background = Color(0xFFF5F8F6);
