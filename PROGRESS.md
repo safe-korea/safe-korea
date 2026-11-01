@@ -388,3 +388,5 @@
 - 실제 사진 보관함에서 사람이 선택하는 과정, 실기기 HEIC/권한 거부, Android 프로세스 종료 후 복구, TTS 실제 청취/비행기 모드, 스크린리더 검증은 남음. 사진 업로드·실제 경보 발송·자동 가족 연락은 구현하지 않음.
 
 최종 검증: `dart format` 변경 없음, `flutter analyze` 이슈 0, Flutter 120건·Python 7건 통과. 증거: `artifacts/shelter-support-verify.log`, `shelter-records-iphone.log`, `shelter-records-android.log`.
+
+일반 앱 복원: `scripts/run_app.sh`로 iPhone 17 Pro 및 Android API 36의 `lib/main.dart` 재설치·실행 성공. 테스트 전용 화면 대신 직접 조작 가능한 앱으로 복원했습니다. 실행 로그: `artifacts/shelter-support-run-{iphone,android}.log`.
