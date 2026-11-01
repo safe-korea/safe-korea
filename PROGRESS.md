@@ -472,3 +472,14 @@ Android API 36에서도 공식 서울시청 공개 사진 매칭/표시와 공�
 - 서버 결정: 현재 정적 HTTPS 호스팅으로 충분. 공개 시설 데이터 제공에 한해 필요 시 읽기 전용 API/공용 캐시 도입 검토. 자체 계정·서버 DB·푸시는 도입하지 않음. SERVER_PLAN.md에 운영/배포 조건 기록.
 - 실제 iPhone 설치·VoiceOver·브라우저 저장공간 정리/업데이트 장기 동작·공개 개인정보 정책·최종 도메인·외부 배포는 후속 항목입니다.
 - 증거: artifacts/pwa-build.log, pwa-verify.log, pwa-browser-qa.log, pwa-cors-check.json, pwa-{chromium,webkit}-*.png.
+
+## 2026-11-01 — 제품 가치와 실제 화면을 보여주는 PWA 온보딩
+
+- 사용자 피드백 반영: 설치 설명을 첫 화면에서 분리하고 3단계 제품 소개 → 설치/오프라인 준비로 재구성했습니다. 핵심 메시지는 즉시 확인할 행동, 실내/실외에 맞는 안내, 사전 저장 후 오프라인 이용입니다.
+- 실제 웹 앱에서 캡처한 공습·실외 선택·행동요령 목록을 휴대폰 프레임으로 보여줍니다. 화면 확대 dialog, 이전/다음/단계 직접 선택, 먼저 둘러보기, 소개 재열기를 제공합니다. 자동 재생·가짜 이용자 수·미구현 지도/경보 홍보는 넣지 않았습니다.
+- 재방문해도 ?intro=1로 새 소개를 확인할 수 있습니다. 저장된 선호와 사용자 정보를 초기화하지 않았습니다.
+- 로딩 전 빈 화면이 캡처되는 문제를 발견해 미리보기 이미지를 교체하고, Flutter 첫 프레임 및 실제 콘텐츠 표시 후 QA 캡처하도록 수정했습니다.
+- Chromium·WebKit: 세 소개 화면, 확대/닫기, 이전/건너뛰기, 모바일·데스크톱·가로, 320px 200% 글자, 설치, 오프라인 재실행/실내 안내 선택, 캐시 복구/실패 검사 통과. Flutter 150건·Python 12건, 정적 분석 통과. 웹 release 빌드 성공.
+- 서버 설명 정정: 공개 배포에 HTTPS 호스팅 서버는 필수입니다. 초기 배포안을 Cloudflare Pages Direct Upload로 구체화하고 _headers/404.html을 준비했습니다. 별도 API·DB 서버는 현재 미도입. 호스팅 전용 _headers가 오프라인 다운로드에 포함되지 않도록 제외/검사했습니다.
+- 외부 계정 생성·배포·push는 하지 않았습니다. 실제 iPhone 홈 화면 설치·VoiceOver·운영 호스팅의 헤더/HTTPS/업데이트 검증은 남아 있습니다.
+- 근거: artifacts/pwa-marketing-build.log, pwa-marketing-browser.log, pwa-marketing-verify.log, pwa-{chromium,webkit}-intro-*.png.

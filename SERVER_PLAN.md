@@ -1,6 +1,18 @@
 # SAFE KOREA 서버 구성
 
-## 현재 구현: 정적 PWA만
+## 배포에는 호스팅 서버가 필요합니다
+
+PWA를 공개하려면 사용자의 브라우저에 HTML·JavaScript·앱 파일을 HTTPS로 제공하는 **호스팅 서버가 반드시 필요합니다**. 현재 필요하지 않은 것은 별도로 직접 운영하는 API·DB 서버입니다. 정적 호스팅도 서버 인프라를 사용하는 서비스이며, 서버가 전혀 없는 배포라는 뜻이 아닙니다.
+
+초기 배포안은 **Cloudflare Pages의 정적 호스팅**입니다. 직접 만든 `build/web` 산출물을 Direct Upload로 배포하는 방식으로 준비합니다. Cloudflare가 웹 파일 제공을 운영하고, 앱에 계정/가족 동기화 DB는 두지 않습니다. 배포 계정·도메인·운영 주체·개인정보 정책을 확정한 뒤 사용자 승인으로 실제 업로드합니다. 아직 계정 생성이나 배포는 하지 않았습니다.
+
+- `web/_headers`: 미해시 앱 파일의 재검증과 기본 응답 헤더 설정.
+- `web/404.html`: 없는 정적 자원이 HTML 200으로 대체되지 않도록 404 페이지 제공.
+- `build/web`만 배포하며 `_headers`는 호스팅 설정이므로 오프라인 캐시 목록에서 제외합니다.
+- 무료 플랜 한도와 단일 파일 25 MiB 제한은 실제 배포 전 다시 확인합니다. 현재 빌드 산출물 크기를 검사할 수 있으며 비용/가용성을 보장하지 않습니다.
+- [Cloudflare Direct Upload](https://developers.cloudflare.com/pages/get-started/direct-upload/) · [플랫폼 제한](https://developers.cloudflare.com/pages/platform/limits/).
+
+## 현재 구현: 정적 PWA
 
 Android는 기존 Flutter 네이티브 앱을 유지합니다. iPhone PWA는 `lib/pwa_main.dart`를 별도 진입점으로 사용하고, 공유 행동요령·디자인 토큰을 재사용합니다. `./scripts/build_pwa.sh`가 만드는 `build/web`을 HTTPS 정적 호스팅에 올리는 구조입니다. 현재는 localhost 미리보기만 실행했으며 외부 배포는 하지 않았습니다.
 

@@ -7,7 +7,7 @@ from pathlib import Path
 def prepare(root=Path('build/web')):
     # Exclude build metadata and source template from offline payload.
     ignored = {'safe-worker.js', 'safe-worker.template.js', 'flutter_service_worker.js',
-               'version.json', '.last_build_id'}
+               'version.json', '.last_build_id', '_headers', '_redirects'}
     files = sorted(p for p in root.rglob('*') if p.is_file() and
                    p.name not in ignored and not p.name.endswith(('.map', '.symbols')) and
                    ('canvaskit' not in p.relative_to(root).parts or

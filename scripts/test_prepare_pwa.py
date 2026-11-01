@@ -22,12 +22,14 @@ class PwaBuildTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             (root / 'canvaskit').mkdir()
+            (root / '_headers').write_text('/*\n  Cache-Control: no-cache\n')
             for name in ['canvaskit.js', 'canvaskit.wasm', 'skwasm.wasm', 'canvaskit.js.symbols']:
                 (root / 'canvaskit' / name).write_bytes(b'test')
             prepare(root)
             worker = (root / 'safe-worker.js').read_text()
             self.assertIn('canvaskit/canvaskit.wasm', worker)
             self.assertNotIn('skwasm.wasm', worker)
+            self.assertNotIn('_headers', worker)
             self.assertNotIn('canvaskit.js.symbols', worker)
 
 
