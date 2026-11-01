@@ -49,7 +49,9 @@
 
 ## 검증
 
-- `./scripts/verify.sh`: format, analyze 이슈 0, Flutter 테스트 78건, Python 테스트 7건 통과.
+- 추가 QA: 긴 장소명·320px/200% 내부 상세 버튼 접근, Android 공식 시설/SQLite, iPhone 상황별 행동 안내·기본 공유 창 확인. [QA_REPORT.md](QA_REPORT.md)에 결과와 미검증 범위 기록.
+
+- `./scripts/verify.sh`: format, analyze 이슈 0, Flutter 테스트 80건, Python 테스트 7건 통과.
 - Android/iOS 네이티브 기본 흐름과 공식 시설 조회·핀/묶음·대피소 저장·SQLite 재읽기는 이전 변경에서 검증. 이번 내부 화면 수정은 iPhone 17 Pro에서 테스트용 시설·가족 장소를 사용해 펼친 행동요령·시설 상세·저장 목록·가족/공유 화면을 검증.
 - 320px·200% 글자에서 홈·훈련·겹친 시설 선택 동작, 저장/조회 실패 시 기존 값 보존 검증.
 - SDK 포함 Android debug APK 및 iOS simulator 빌드 성공. iPhone 17 Pro 화면 캡처.
