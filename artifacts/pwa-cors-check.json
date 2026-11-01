@@ -1,0 +1,10 @@
+{
+  "origin": "http://127.0.0.1:8765",
+  "responseHttpStatus": 200,
+  "allowOriginHeaderPresent": false,
+  "browserFetch": {
+    "readable": false,
+    "error": "TypeError"
+  },
+  "limitation": "Observed one public region request from localhost; production origin and usage rights still require verification."
+}

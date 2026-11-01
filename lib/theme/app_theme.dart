@@ -29,7 +29,7 @@ abstract final class AppPalette {
   };
 }
 
-ThemeData buildAppTheme() {
+ThemeData buildAppTheme({String? fontFamily}) {
   final scheme = ColorScheme.fromSeed(seedColor: AppPalette.green).copyWith(
     primary: AppPalette.green,
     onPrimary: Colors.white,
@@ -43,10 +43,14 @@ ThemeData buildAppTheme() {
   return ThemeData(
     useMaterial3: true,
     colorScheme: scheme,
-    fontFamily: defaultTargetPlatform == TargetPlatform.iOS
-        ? 'Apple SD Gothic Neo'
-        : 'sans-serif',
-    fontFamilyFallback: const ['Noto Sans CJK KR', 'Noto Sans KR'],
+    fontFamily:
+        fontFamily ??
+        (defaultTargetPlatform == TargetPlatform.iOS
+            ? 'Apple SD Gothic Neo'
+            : 'sans-serif'),
+    fontFamilyFallback: fontFamily == null
+        ? const ['Noto Sans CJK KR', 'Noto Sans KR']
+        : [fontFamily],
     scaffoldBackgroundColor: AppPalette.background,
     textTheme: const TextTheme(
       headlineSmall: TextStyle(
@@ -101,7 +105,11 @@ ThemeData buildAppTheme() {
         minimumSize: const Size(64, 56),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        textStyle: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+        textStyle: TextStyle(
+          fontFamily: fontFamily,
+          fontSize: 17,
+          fontWeight: FontWeight.w700,
+        ),
       ),
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
@@ -109,7 +117,11 @@ ThemeData buildAppTheme() {
         minimumSize: const Size(64, 52),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        textStyle: TextStyle(
+          fontFamily: fontFamily,
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     ),
     inputDecorationTheme: InputDecorationTheme(

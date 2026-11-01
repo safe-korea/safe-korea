@@ -74,7 +74,12 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  fonts:
+    - family: SafeKoreaWeb
+      fonts:
+        - asset: assets/fonts/NanumGothic-Regular.ttf
   assets:
+    - assets/fonts/OFL.txt
     - assets/guidelines.json
     - assets/shelters.json
     - assets/regions.json
