@@ -27,7 +27,9 @@ class ShelterMap extends StatefulWidget {
     required this.onSelected,
     this.configuration = const MapConfiguration(),
     this.tileProviderFactory,
+    this.currentLocation,
   });
+  final LatLng? currentLocation;
   final TileProvider Function()? tileProviderFactory;
   final List<Shelter> shelters;
   final ValueChanged<Shelter> onSelected;
@@ -49,9 +51,14 @@ class _ShelterMapState extends State<ShelterMap> {
   Future<void>? _initialization;
   Timer? _watchdog;
   static Future<void>? _sdkInitialization;
-  LatLng get _center => widget.shelters.isEmpty
-      ? const LatLng(36.3, 127.8)
-      : LatLng(widget.shelters.first.latitude, widget.shelters.first.longitude);
+  LatLng get _center =>
+      widget.currentLocation ??
+      (widget.shelters.isEmpty
+          ? const LatLng(36.3, 127.8)
+          : LatLng(
+              widget.shelters.first.latitude,
+              widget.shelters.first.longitude,
+            ));
   @override
   void initState() {
     super.initState();
@@ -95,6 +102,21 @@ class _ShelterMapState extends State<ShelterMap> {
         await controller.labelLayer.removePoi(poi);
       }
       _nativePois.clear();
+      if (!mounted || !identical(controller, _nativeController)) return;
+      if (widget.currentLocation case final location?) {
+        final image = await kakao.KImage.fromWidget(
+          const _CurrentLocationPin(),
+          const Size(48, 48),
+          context: context,
+        );
+        if (!mounted || !identical(controller, _nativeController)) return;
+        final poi = await controller.labelLayer.addPoi(
+          kakao.LatLng(location.latitude, location.longitude),
+          style: kakao.PoiStyle(icon: image, anchor: kakao.KPoint(0.5, 0.5)),
+          id: 'current-location',
+        );
+        _nativePois.add(poi);
+      }
       for (final cluster in clusterShelters(
         widget.shelters,
         _level.toDouble(),
@@ -282,7 +304,8 @@ class _ShelterMapState extends State<ShelterMap> {
         options: MapOptions(
           initialCenter: _center,
           initialZoom: _level.toDouble(),
-          initialCameraFit: widget.shelters.length > 1
+          initialCameraFit:
+              widget.currentLocation == null && widget.shelters.length > 1
               ? CameraFit.coordinates(
                   coordinates: [
                     for (final s in widget.shelters)
@@ -317,6 +340,13 @@ class _ShelterMapState extends State<ShelterMap> {
           ),
           MarkerLayer(
             markers: [
+              if (widget.currentLocation != null)
+                Marker(
+                  point: widget.currentLocation!,
+                  width: 48,
+                  height: 48,
+                  child: const _CurrentLocationPin(),
+                ),
               for (final cluster in clusterShelters(
                 widget.shelters,
                 _level.toDouble(),
@@ -362,7 +392,7 @@ class _ShelterMapState extends State<ShelterMap> {
             child: Text(
               widget.configuration.hasKakaoKey
                   ? '연결 문제로 기본 지도 표시 중'
-                  : '기본 지도\n숫자는 대피소 묶음 · 누르면 확대',
+                  : '기본 지도 · 숫자는 대피소 묶음${widget.currentLocation == null ? '' : '\n파란 표시는 마지막 확인 위치'}',
               style: const TextStyle(fontSize: 12, color: ink),
             ),
           ),
@@ -445,5 +475,17 @@ class _ShelterMapState extends State<ShelterMap> {
         ),
       ),
     ],
+  );
+}
+
+class _CurrentLocationPin extends StatelessWidget {
+  const _CurrentLocationPin();
+  @override
+  Widget build(BuildContext context) => Semantics(
+    label: '내 위치 · 마지막 GPS 확인 지점',
+    child: const DecoratedBox(
+      decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+      child: Icon(Icons.my_location, color: Color(0xFF1565C0), size: 32),
+    ),
   );
 }

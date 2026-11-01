@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:latlong2/latlong.dart';
 
 import '../models/shelter.dart';
 import '../services/location_service.dart';
@@ -198,7 +199,7 @@ class _SheltersScreenState extends State<SheltersScreen> {
         setState(() {
           _position = position;
           _locationMessage =
-              '현재 위치 확인 · 오차 약 ${position.accuracy.round()}m\n${position.latitude.toStringAsFixed(4)}, ${position.longitude.toStringAsFixed(4)}\n확인 시각: ${position.timestamp.toLocal()}';
+              '현재 위치 확인 · 오차 약 ${position.accuracy.round()}m\n확인 ${_formatTime(position.timestamp.toIso8601String())} · 실시간 추적 아님';
           _map = false;
         });
       }
@@ -207,8 +208,7 @@ class _SheltersScreenState extends State<SheltersScreen> {
     } on TimeoutException {
       if (mounted) {
         setState(
-          () => _locationMessage =
-              '위치 확인 시간이 초과되었습니다. 실외에서 다시 시도하거나 주소로 목록을 검색하세요.',
+          () => _locationMessage = '위치 확인 시간이 초과되었습니다. 다시 시도하거나 지역을 직접 선택하세요.',
         );
       }
     } catch (_) {
@@ -352,6 +352,30 @@ class _SheltersScreenState extends State<SheltersScreen> {
               ),
               const SizedBox(height: 12),
             ],
+            FilledButton.icon(
+              onPressed: _locating || _suggesting ? null : _locate,
+              icon: const Icon(Icons.my_location),
+              label: Text(_locating ? '위치 확인 중…' : 'GPS 현재 위치 확인'),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              '조회한 지역 안에서 가까운 순으로 표시합니다.',
+              style: TextStyle(fontSize: 14),
+            ),
+            if (_locationMessage != null)
+              Semantics(liveRegion: true, child: Notice(_locationMessage!)),
+            if (_position != null)
+              TextButton(
+                onPressed: _locating
+                    ? null
+                    : () => setState(() {
+                        _position = null;
+                        _locationMessage = null;
+                        _map = false;
+                      }),
+                child: const Text('현재 위치 표시 지우기'),
+              ),
+            const SizedBox(height: 16),
             if (_provinces.isNotEmpty && _choosingRegion) ...[
               const Text(
                 '지역을 선택하세요',
@@ -517,6 +541,12 @@ class _SheltersScreenState extends State<SheltersScreen> {
                             body: SafeArea(
                               child: ShelterMap(
                                 shelters: items,
+                                currentLocation: _position == null
+                                    ? null
+                                    : LatLng(
+                                        _position!.latitude,
+                                        _position!.longitude,
+                                      ),
                                 onSelected: (shelter) =>
                                     _showShelter(shelter, catalog),
                               ),
@@ -535,24 +565,6 @@ class _SheltersScreenState extends State<SheltersScreen> {
                 ),
               ],
               const SizedBox(height: 12),
-              ExpansionTile(
-                tilePadding: EdgeInsets.zero,
-                title: const Text('가까운 순으로 보기'),
-                subtitle: const Text('GPS 선택 사용 · 직선거리 기준'),
-                children: [
-                  const Text('위치는 기기 안에서 거리 계산에만 사용합니다.'),
-                  FilledButton.icon(
-                    onPressed: _locating || _suggesting ? null : _locate,
-                    icon: const Icon(Icons.my_location),
-                    label: Text(_locating ? '위치 확인 중…' : 'GPS 현재 위치 확인'),
-                  ),
-                  if (_locationMessage != null)
-                    Semantics(
-                      liveRegion: true,
-                      child: Notice(_locationMessage!),
-                    ),
-                ],
-              ),
               ExpansionTile(
                 tilePadding: EdgeInsets.zero,
                 title: const Text('자료 출처와 조회 시각'),
@@ -771,6 +783,9 @@ class _SheltersScreenState extends State<SheltersScreen> {
     return ShelterMap(
       key: ValueKey('${_catalog?.areaCode}-$_query'),
       shelters: items,
+      currentLocation: _position == null
+          ? null
+          : LatLng(_position!.latitude, _position!.longitude),
       onSelected: (shelter) => _showShelter(shelter, catalog),
     );
   }
