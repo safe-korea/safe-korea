@@ -1,0 +1,6 @@
+# Jindo simplified proposal
+
+2026-11-02. Built-in imagegen edit of `c-jindo.png`; original preserved. Proposal only, launcher unchanged. Inspected output: simplified face and two-color appearance; raster still has subtle tonal variation and cheek notches. Final vector cleanup / small-size brand review remains before production adoption.
+
+Prompt:
+Edit this safeKor Jindo dog app icon into an exceptionally simple original brand symbol. Keep recognizable Korean white Jindo upright ears and friendly calm face. Remove scarf, all fur detail, eyebrows, realistic shading, glossy highlights, gradients, shadows and texture. Use only two flat solid colors: warm ivory and deep forest green. Ivory square background; centered deep green solid head silhouette with tall softly triangular ears, broad rounded cheeks, ivory negative-space face, tiny deep green dot eyes and compact rounded triangular nose, minimal mouth. No words, badges, frames, extra objects, body, shield. Visual simplicity and memorability of a polished software mascot logo, but entirely original dog geometry; do not depict GitHub Octocat or a cat. Geometric vector-like crisp contours; reads clearly as friendly dog at 32px. One final square icon, ample safe padding, no presentation mockup.

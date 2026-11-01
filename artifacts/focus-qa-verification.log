@@ -1,0 +1,361 @@
+Formatted 118 files (0 changed) in 0.24 seconds.
+Analyzing safe-korea...                                         
+No issues found! (ran in 3.2s)
+00:00 +0: loading /Users/gimtaehyeong/orca/safe-korea/test/shelter_api_client_test.dart
+00:00 +0: /Users/gimtaehyeong/orca/safe-korea/test/shelter_api_client_test.dart: region-only request and stale metadata survive native storage serialization
+00:00 +1: /Users/gimtaehyeong/orca/safe-korea/test/action_brief_test.dart: briefs keep conditions that change the action
+00:00 +2: /Users/gimtaehyeong/orca/safe-korea/test/shelter_api_client_test.dart: configured API failures never silently fall back to government
+00:00 +3: /Users/gimtaehyeong/orca/safe-korea/test/pwa_shelters_test.dart: unconfigured service keeps official fallback and does not offer broken fetch
+00:00 +4: /Users/gimtaehyeong/orca/safe-korea/test/pwa_shelters_test.dart: unconfigured service keeps official fallback and does not offer broken fetch
+00:00 +5: /Users/gimtaehyeong/orca/safe-korea/test/pwa_shelters_test.dart: unconfigured service keeps official fallback and does not offer broken fetch
+00:00 +6: /Users/gimtaehyeong/orca/safe-korea/test/pwa_shelters_test.dart: unconfigured service keeps official fallback and does not offer broken fetch
+00:00 +7: /Users/gimtaehyeong/orca/safe-korea/test/pwa_shelters_test.dart: unconfigured service keeps official fallback and does not offer broken fetch
+00:00 +8: /Users/gimtaehyeong/orca/safe-korea/test/pwa_shelters_test.dart: unconfigured service keeps official fallback and does not offer broken fetch
+00:00 +9: /Users/gimtaehyeong/orca/safe-korea/test/pwa_shelters_test.dart: unconfigured service keeps official fallback and does not offer broken fetch
+00:00 +10: /Users/gimtaehyeong/orca/safe-korea/test/pwa_shelters_test.dart: unconfigured service keeps official fallback and does not offer broken fetch
+00:00 +11: /Users/gimtaehyeong/orca/safe-korea/test/pwa_shelters_test.dart: unconfigured service keeps official fallback and does not offer broken fetch
+00:00 +12: /Users/gimtaehyeong/orca/safe-korea/test/pwa_shelters_test.dart: unconfigured service keeps official fallback and does not offer broken fetch
+00:00 +13: /Users/gimtaehyeong/orca/safe-korea/test/pwa_shelters_test.dart: unconfigured service keeps official fallback and does not offer broken fetch
+00:00 +14: /Users/gimtaehyeong/orca/safe-korea/test/pwa_shelters_test.dart: unconfigured service keeps official fallback and does not offer broken fetch
+00:00 +14: /Users/gimtaehyeong/orca/safe-korea/test/map_loading_test.dart: failed background keeps facility list usable and retry recovers without moving camera
+  [1m[flutter_map][0m
+    We want to help keep OpenStreetMap available for everyone. Our examples
+    and demo app use the public tile servers, but they are NOT free to use by
+    everyone! Please review whether the OpenStreetMap tile servers are suitable
+    for your project.
+    See:
+      * https://operations.osmfoundation.org/policies/tiles (OSM Tile Usage Policy)
+      * https://docs.fleaflet.dev/osm-warn for more information about this warning
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+00:00 +15: /Users/gimtaehyeong/orca/safe-korea/test/action_brief_test.dart: pictogram rows align titles and details without clipping text
+00:00 +16: /Users/gimtaehyeong/orca/safe-korea/test/persona_journeys_test.dart: P1 first-time commuter reaches immediate action and returns home
+00:01 +16: /Users/gimtaehyeong/orca/safe-korea/test/map_loading_test.dart: failed background keeps facility list usable and retry recovers without moving camera
+  [1m[flutter_map][0m
+    We want to help keep OpenStreetMap available for everyone. Our examples
+    and demo app use the public tile servers, but they are NOT free to use by
+    everyone! Please review whether the OpenStreetMap tile servers are suitable
+    for your project.
+    See:
+      * https://operations.osmfoundation.org/policies/tiles (OSM Tile Usage Policy)
+      * https://docs.fleaflet.dev/osm-warn for more information about this warning
+00:01 +17: /Users/gimtaehyeong/orca/safe-korea/test/map_loading_test.dart: failed background keeps facility list usable and retry recovers without moving camera
+00:01 +18: /Users/gimtaehyeong/orca/safe-korea/test/pwa_shelters_test.dart: region selection, stale and retry states fit a narrow large-text screen
+00:01 +19: /Users/gimtaehyeong/orca/safe-korea/test/cross_screen_alignment_test.dart: guide, drill action and bag share icon and text columns at scale 1.0
+00:01 +20: /Users/gimtaehyeong/orca/safe-korea/test/cross_screen_alignment_test.dart: guide, drill action and bag share icon and text columns at scale 1.0
+00:01 +21: /Users/gimtaehyeong/orca/safe-korea/test/qa_internal_pages_test.dart: internal long content remains usable at 320px scale 1.0
+00:01 +22: /Users/gimtaehyeong/orca/safe-korea/test/qa_internal_pages_test.dart: internal long content remains usable at 320px scale 1.0
+00:01 +23: /Users/gimtaehyeong/orca/safe-korea/test/qa_internal_pages_test.dart: internal long content remains usable at 320px scale 1.0
+00:02 +24: /Users/gimtaehyeong/orca/safe-korea/test/qa_internal_pages_test.dart: internal long content remains usable at 320px scale 1.0
+00:02 +25: /Users/gimtaehyeong/orca/safe-korea/test/qa_internal_pages_test.dart: internal long content remains usable at 320px scale 1.0
+00:02 +26: /Users/gimtaehyeong/orca/safe-korea/test/qa_internal_pages_test.dart: internal long content remains usable at 320px scale 1.0
+00:02 +27: /Users/gimtaehyeong/orca/safe-korea/test/qa_internal_pages_test.dart: internal long content remains usable at 320px scale 1.0
+00:03 +28: /Users/gimtaehyeong/orca/safe-korea/test/qa_internal_pages_test.dart: internal long content remains usable at 320px scale 1.0
+00:03 +29: /Users/gimtaehyeong/orca/safe-korea/test/qa_internal_pages_test.dart: internal long content remains usable at 320px scale 1.0
+00:03 +30: /Users/gimtaehyeong/orca/safe-korea/test/qa_internal_pages_test.dart: internal long content remains usable at 320px scale 1.0
+00:03 +31: /Users/gimtaehyeong/orca/safe-korea/test/qa_internal_pages_test.dart: internal long content remains usable at 320px scale 1.0
+00:03 +32: /Users/gimtaehyeong/orca/safe-korea/test/meeting_map_design_test.dart: meeting map actions remain reachable (Size(375.0, 812.0), 3.0)
+  [1m[flutter_map][0m
+    We want to help keep OpenStreetMap available for everyone. Our examples
+    and demo app use the public tile servers, but they are NOT free to use by
+    everyone! Please review whether the OpenStreetMap tile servers are suitable
+    for your project.
+    See:
+      * https://operations.osmfoundation.org/policies/tiles (OSM Tile Usage Policy)
+      * https://docs.fleaflet.dev/osm-warn for more information about this warning
+00:03 +32: /Users/gimtaehyeong/orca/safe-korea/test/meeting_place_test.dart: map requires precise selection and returns a chosen point
+  [1m[flutter_map][0m
+    We want to help keep OpenStreetMap available for everyone. Our examples
+    and demo app use the public tile servers, but they are NOT free to use by
+    everyone! Please review whether the OpenStreetMap tile servers are suitable
+    for your project.
+    See:
+      * https://operations.osmfoundation.org/policies/tiles (OSM Tile Usage Policy)
+      * https://docs.fleaflet.dev/osm-warn for more information about this warning
+00:03 +33: /Users/gimtaehyeong/orca/safe-korea/test/meeting_map_design_test.dart: meeting map actions remain reachable (Size(375.0, 812.0), 3.0)
+00:03 +34: /Users/gimtaehyeong/orca/safe-korea/test/meeting_map_design_test.dart: meeting map actions remain reachable (Size(375.0, 812.0), 3.0)
+00:03 +35: /Users/gimtaehyeong/orca/safe-korea/test/meeting_map_design_test.dart: meeting map actions remain reachable (Size(375.0, 812.0), 3.0)
+00:03 +36: /Users/gimtaehyeong/orca/safe-korea/test/meeting_map_design_test.dart: meeting map actions remain reachable (Size(375.0, 812.0), 3.0)
+00:03 +37: /Users/gimtaehyeong/orca/safe-korea/test/meeting_map_design_test.dart: meeting map actions remain reachable (Size(375.0, 812.0), 3.0)
+00:03 +38: /Users/gimtaehyeong/orca/safe-korea/test/meeting_map_design_test.dart: meeting map actions remain reachable (Size(375.0, 812.0), 3.0)
+00:03 +39: /Users/gimtaehyeong/orca/safe-korea/test/meeting_place_test.dart: map requires precise selection and returns a chosen point
+00:03 +39: /Users/gimtaehyeong/orca/safe-korea/test/meeting_map_design_test.dart: meeting map actions remain reachable (Size(568.0, 320.0), 2.0)
+  [1m[flutter_map][0m
+    We want to help keep OpenStreetMap available for everyone. Our examples
+    and demo app use the public tile servers, but they are NOT free to use by
+    everyone! Please review whether the OpenStreetMap tile servers are suitable
+    for your project.
+    See:
+      * https://operations.osmfoundation.org/policies/tiles (OSM Tile Usage Policy)
+      * https://docs.fleaflet.dev/osm-warn for more information about this warning
+00:04 +40: /Users/gimtaehyeong/orca/safe-korea/test/meeting_place_test.dart: map requires precise selection and returns a chosen point
+00:04 +41: /Users/gimtaehyeong/orca/safe-korea/test/qa_internal_pages_test.dart: internal long content remains usable at 320px scale 2.0
+00:04 +41: /Users/gimtaehyeong/orca/safe-korea/test/meeting_place_test.dart: failed map cannot confirm a new pin and can be cancelled
+  [1m[flutter_map][0m
+    We want to help keep OpenStreetMap available for everyone. Our examples
+    and demo app use the public tile servers, but they are NOT free to use by
+    everyone! Please review whether the OpenStreetMap tile servers are suitable
+    for your project.
+    See:
+      * https://operations.osmfoundation.org/policies/tiles (OSM Tile Usage Policy)
+      * https://docs.fleaflet.dev/osm-warn for more information about this warning
+00:04 +41: /Users/gimtaehyeong/orca/safe-korea/test/meeting_map_design_test.dart: meeting map actions remain reachable (Size(1024.0, 768.0), 2.0)
+  [1m[flutter_map][0m
+    We want to help keep OpenStreetMap available for everyone. Our examples
+    and demo app use the public tile servers, but they are NOT free to use by
+    everyone! Please review whether the OpenStreetMap tile servers are suitable
+    for your project.
+    See:
+      * https://operations.osmfoundation.org/policies/tiles (OSM Tile Usage Policy)
+      * https://docs.fleaflet.dev/osm-warn for more information about this warning
+00:04 +41: /Users/gimtaehyeong/orca/safe-korea/test/meeting_place_test.dart: failed map cannot confirm a new pin and can be cancelled
+Exception: Invalid image data
+00:04 +42: /Users/gimtaehyeong/orca/safe-korea/test/qa_internal_pages_test.dart: internal long content remains usable at 320px scale 2.0
+00:04 +42: /Users/gimtaehyeong/orca/safe-korea/test/meeting_place_test.dart: failed map cannot confirm a new pin and can be cancelled
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+00:04 +43: /Users/gimtaehyeong/orca/safe-korea/test/drill_notifications_test.dart: screen defaults silent and recovers from platform error
+00:04 +44: /Users/gimtaehyeong/orca/safe-korea/test/drill_notifications_test.dart: screen defaults silent and recovers from platform error
+00:04 +45: /Users/gimtaehyeong/orca/safe-korea/test/drill_notifications_test.dart: screen defaults silent and recovers from platform error
+00:04 +45: /Users/gimtaehyeong/orca/safe-korea/test/meeting_place_test.dart: meeting form and map remain usable with large text
+  [1m[flutter_map][0m
+    We want to help keep OpenStreetMap available for everyone. Our examples
+    and demo app use the public tile servers, but they are NOT free to use by
+    everyone! Please review whether the OpenStreetMap tile servers are suitable
+    for your project.
+    See:
+      * https://operations.osmfoundation.org/policies/tiles (OSM Tile Usage Policy)
+      * https://docs.fleaflet.dev/osm-warn for more information about this warning
+00:04 +46: /Users/gimtaehyeong/orca/safe-korea/test/drill_notifications_test.dart: screen defaults silent and recovers from platform error
+00:04 +47: /Users/gimtaehyeong/orca/safe-korea/test/widget_test.dart: Korean home opens a clearly labeled drill and returns
+00:05 +48: /Users/gimtaehyeong/orca/safe-korea/test/widget_test.dart: Korean home opens a clearly labeled drill and returns
+00:05 +49: /Users/gimtaehyeong/orca/safe-korea/test/widget_test.dart: Korean home opens a clearly labeled drill and returns
+00:05 +50: /Users/gimtaehyeong/orca/safe-korea/test/widget_test.dart: Korean home opens a clearly labeled drill and returns
+00:05 +51: /Users/gimtaehyeong/orca/safe-korea/test/widget_test.dart: Korean home opens a clearly labeled drill and returns
+00:05 +52: /Users/gimtaehyeong/orca/safe-korea/test/app_completion_test.dart: bottom navigation switches screens and system back returns home
+00:06 +53: /Users/gimtaehyeong/orca/safe-korea/test/app_completion_test.dart: bottom navigation switches screens and system back returns home
+00:06 +54: /Users/gimtaehyeong/orca/safe-korea/test/app_completion_test.dart: bottom navigation switches screens and system back returns home
+00:06 +55: /Users/gimtaehyeong/orca/safe-korea/test/app_completion_test.dart: bottom navigation switches screens and system back returns home
+00:06 +56: /Users/gimtaehyeong/orca/safe-korea/test/app_completion_test.dart: bottom navigation switches screens and system back returns home
+00:06 +57: /Users/gimtaehyeong/orca/safe-korea/test/app_completion_test.dart: bottom navigation switches screens and system back returns home
+00:06 +58: /Users/gimtaehyeong/orca/safe-korea/test/app_completion_test.dart: bottom navigation switches screens and system back returns home
+00:06 +59: /Users/gimtaehyeong/orca/safe-korea/test/app_completion_test.dart: bottom navigation switches screens and system back returns home
+00:06 +60: /Users/gimtaehyeong/orca/safe-korea/test/app_completion_test.dart: bottom navigation switches screens and system back returns home
+00:06 +61: /Users/gimtaehyeong/orca/safe-korea/test/app_completion_test.dart: bottom navigation switches screens and system back returns home
+00:06 +62: /Users/gimtaehyeong/orca/safe-korea/test/app_completion_test.dart: bottom navigation switches screens and system back returns home
+00:06 +63: /Users/gimtaehyeong/orca/safe-korea/test/app_completion_test.dart: bottom navigation switches screens and system back returns home
+00:06 +64: /Users/gimtaehyeong/orca/safe-korea/test/app_completion_test.dart: bottom navigation switches screens and system back returns home
+00:06 +65: /Users/gimtaehyeong/orca/safe-korea/test/app_completion_test.dart: bottom navigation switches screens and system back returns home
+00:07 +66: /Users/gimtaehyeong/orca/safe-korea/test/design_review_test.dart: new screens keep actions reachable at Size(375.0, 812.0) scale 3.0
+00:07 +67: /Users/gimtaehyeong/orca/safe-korea/test/design_review_test.dart: new screens keep actions reachable at Size(375.0, 812.0) scale 3.0
+00:07 +68: /Users/gimtaehyeong/orca/safe-korea/test/design_review_test.dart: new screens keep actions reachable at Size(375.0, 812.0) scale 3.0
+00:07 +69: /Users/gimtaehyeong/orca/safe-korea/test/design_review_test.dart: new screens keep actions reachable at Size(375.0, 812.0) scale 3.0
+00:07 +70: /Users/gimtaehyeong/orca/safe-korea/test/design_review_test.dart: new screens keep actions reachable at Size(375.0, 812.0) scale 3.0
+00:07 +71: /Users/gimtaehyeong/orca/safe-korea/test/design_review_test.dart: new screens keep actions reachable at Size(375.0, 812.0) scale 3.0
+00:07 +72: /Users/gimtaehyeong/orca/safe-korea/test/app_completion_test.dart: preparedness checks save, survive reopening and preserve prior value on failure
+00:07 +73: /Users/gimtaehyeong/orca/safe-korea/test/design_review_test.dart: new screens keep actions reachable at Size(568.0, 320.0) scale 2.0
+00:07 +73: /Users/gimtaehyeong/orca/safe-korea/test/app_completion_test.dart: missing Kakao key keeps the app usable and shelter pin opens details
+  [1m[flutter_map][0m
+    We want to help keep OpenStreetMap available for everyone. Our examples
+    and demo app use the public tile servers, but they are NOT free to use by
+    everyone! Please review whether the OpenStreetMap tile servers are suitable
+    for your project.
+    See:
+      * https://operations.osmfoundation.org/policies/tiles (OSM Tile Usage Policy)
+      * https://docs.fleaflet.dev/osm-warn for more information about this warning
+00:07 +74: /Users/gimtaehyeong/orca/safe-korea/test/design_review_test.dart: new screens keep actions reachable at Size(568.0, 320.0) scale 2.0
+00:07 +75: /Users/gimtaehyeong/orca/safe-korea/test/focus_flow_test.dart: core actions are reachable from the initial phone home without scrolling
+00:07 +76: /Users/gimtaehyeong/orca/safe-korea/test/focus_flow_test.dart: core actions are reachable from the initial phone home without scrolling
+00:08 +77: /Users/gimtaehyeong/orca/safe-korea/test/focus_flow_test.dart: core actions are reachable from the initial phone home without scrolling
+00:08 +78: /Users/gimtaehyeong/orca/safe-korea/test/focus_flow_test.dart: core actions are reachable from the initial phone home without scrolling
+00:09 +79: /Users/gimtaehyeong/orca/safe-korea/test/shelters_screen_test.dart: regional query caches results, failure preserves them, reopening needs no network
+00:09 +80: /Users/gimtaehyeong/orca/safe-korea/test/shelters_screen_test.dart: regional query caches results, failure preserves them, reopening needs no network
+00:09 +81: /Users/gimtaehyeong/orca/safe-korea/test/gps_map_test.dart: GPS is explicit, sorts loaded facilities and can be cleared
+00:09 +82: /Users/gimtaehyeong/orca/safe-korea/test/gps_map_test.dart: GPS is explicit, sorts loaded facilities and can be cleared
+  [1m[flutter_map][0m
+    We want to help keep OpenStreetMap available for everyone. Our examples
+    and demo app use the public tile servers, but they are NOT free to use by
+    everyone! Please review whether the OpenStreetMap tile servers are suitable
+    for your project.
+    See:
+      * https://operations.osmfoundation.org/policies/tiles (OSM Tile Usage Policy)
+      * https://docs.fleaflet.dev/osm-warn for more information about this warning
+00:09 +83: /Users/gimtaehyeong/orca/safe-korea/test/alert_guidance_test.dart: manual situation switches advice and resets when alert changes
+00:09 +83: /Users/gimtaehyeong/orca/safe-korea/test/gps_map_test.dart: map centers on GPS and distinguishes location from facility pins
+  [1m[flutter_map][0m
+    We want to help keep OpenStreetMap available for everyone. Our examples
+    and demo app use the public tile servers, but they are NOT free to use by
+    everyone! Please review whether the OpenStreetMap tile servers are suitable
+    for your project.
+    See:
+      * https://operations.osmfoundation.org/policies/tiles (OSM Tile Usage Policy)
+      * https://docs.fleaflet.dev/osm-warn for more information about this warning
+00:09 +84: /Users/gimtaehyeong/orca/safe-korea/test/gps_map_test.dart: map centers on GPS and distinguishes location from facility pins
+00:09 +85: /Users/gimtaehyeong/orca/safe-korea/test/alert_guidance_test.dart: all drill types support large text and do not auto-play sound
+00:10 +86: /Users/gimtaehyeong/orca/safe-korea/test/alert_guidance_test.dart: all drill types support large text and do not auto-play sound
+00:10 +87: /Users/gimtaehyeong/orca/safe-korea/test/alert_guidance_test.dart: all drill types support large text and do not auto-play sound
+00:10 +88: /Users/gimtaehyeong/orca/safe-korea/test/alert_guidance_test.dart: all drill types support large text and do not auto-play sound
+00:10 +89: /Users/gimtaehyeong/orca/safe-korea/test/alert_guidance_test.dart: all drill types support large text and do not auto-play sound
+00:10 +90: /Users/gimtaehyeong/orca/safe-korea/test/local_store_test.dart: SQLite persists Korean plan across store instances, replaces and deletes
+00:10 +91: /Users/gimtaehyeong/orca/safe-korea/test/local_store_test.dart: SQLite persists Korean plan across store instances, replaces and deletes
+00:10 +92: /Users/gimtaehyeong/orca/safe-korea/test/local_store_test.dart: SQLite persists Korean plan across store instances, replaces and deletes
+00:10 +93: /Users/gimtaehyeong/orca/safe-korea/test/local_store_test.dart: SQLite persists Korean plan across store instances, replaces and deletes
+00:10 +94: /Users/gimtaehyeong/orca/safe-korea/test/release_readiness_test.dart: training colors distinguish urgent, prepare and release without removing labels
+00:10 +95: /Users/gimtaehyeong/orca/safe-korea/test/release_readiness_test.dart: training colors distinguish urgent, prepare and release without removing labels
+00:10 +96: /Users/gimtaehyeong/orca/safe-korea/test/release_readiness_test.dart: training colors distinguish urgent, prepare and release without removing labels
+00:10 +97: /Users/gimtaehyeong/orca/safe-korea/test/release_readiness_test.dart: training colors distinguish urgent, prepare and release without removing labels
+00:10 +98: /Users/gimtaehyeong/orca/safe-korea/test/release_readiness_test.dart: training colors distinguish urgent, prepare and release without removing labels
+00:10 +99: /Users/gimtaehyeong/orca/safe-korea/test/release_readiness_test.dart: training colors distinguish urgent, prepare and release without removing labels
+00:10 +100: /Users/gimtaehyeong/orca/safe-korea/test/release_readiness_test.dart: training colors distinguish urgent, prepare and release without removing labels
+00:10 +101: /Users/gimtaehyeong/orca/safe-korea/test/release_readiness_test.dart: training colors distinguish urgent, prepare and release without removing labels
+00:10 +102: /Users/gimtaehyeong/orca/safe-korea/test/release_readiness_test.dart: training colors distinguish urgent, prepare and release without removing labels
+00:10 +103: /Users/gimtaehyeong/orca/safe-korea/test/release_readiness_test.dart: training colors distinguish urgent, prepare and release without removing labels
+00:10 +104: /Users/gimtaehyeong/orca/safe-korea/test/release_readiness_test.dart: training colors distinguish urgent, prepare and release without removing labels
+00:10 +105: /Users/gimtaehyeong/orca/safe-korea/test/release_readiness_test.dart: training colors distinguish urgent, prepare and release without removing labels
+00:11 +106: /Users/gimtaehyeong/orca/safe-korea/test/shelter_records_test.dart: photo picker cancel and failure preserve draft; saving and reopening keeps local photo
+00:11 +106: /Users/gimtaehyeong/orca/safe-korea/test/map_and_saved_shelters_test.dart: same-location cluster can expose a facility list and select the intended shelter
+  [1m[flutter_map][0m
+    We want to help keep OpenStreetMap available for everyone. Our examples
+    and demo app use the public tile servers, but they are NOT free to use by
+    everyone! Please review whether the OpenStreetMap tile servers are suitable
+    for your project.
+    See:
+      * https://operations.osmfoundation.org/policies/tiles (OSM Tile Usage Policy)
+      * https://docs.fleaflet.dev/osm-warn for more information about this warning
+00:11 +107: /Users/gimtaehyeong/orca/safe-korea/test/shelter_records_test.dart: photo picker cancel and failure preserve draft; saving and reopening keeps local photo
+00:11 +108: /Users/gimtaehyeong/orca/safe-korea/test/shelter_records_test.dart: photo picker cancel and failure preserve draft; saving and reopening keeps local photo
+00:11 +109: /Users/gimtaehyeong/orca/safe-korea/test/shelter_records_test.dart: photo picker cancel and failure preserve draft; saving and reopening keeps local photo
+00:12 +110: /Users/gimtaehyeong/orca/safe-korea/test/local_store_test.dart: family form saves locally and confirms deletion
+00:12 +111: /Users/gimtaehyeong/orca/safe-korea/test/region_and_refresh_test.dart: confirmed GPS region queries once and retains position for distance ordering
+00:12 +112: /Users/gimtaehyeong/orca/safe-korea/test/region_and_refresh_test.dart: confirmed GPS region queries once and retains position for distance ordering
+00:12 +113: /Users/gimtaehyeong/orca/safe-korea/test/region_and_refresh_test.dart: confirmed GPS region queries once and retains position for distance ordering
+00:12 +114: /Users/gimtaehyeong/orca/safe-korea/test/region_and_refresh_test.dart: confirmed GPS region queries once and retains position for distance ordering
+00:12 +115: /Users/gimtaehyeong/orca/safe-korea/test/map_and_saved_shelters_test.dart: save from a query, view offline saved list, remove and synchronize original screen
+00:12 +116: /Users/gimtaehyeong/orca/safe-korea/test/map_and_saved_shelters_test.dart: save from a query, view offline saved list, remove and synchronize original screen
+00:12 +117: /Users/gimtaehyeong/orca/safe-korea/test/map_and_saved_shelters_test.dart: save from a query, view offline saved list, remove and synchronize original screen
+00:12 +118: /Users/gimtaehyeong/orca/safe-korea/test/map_and_saved_shelters_test.dart: save from a query, view offline saved list, remove and synchronize original screen
+00:12 +119: /Users/gimtaehyeong/orca/safe-korea/test/local_store_test.dart: unsaved family changes are protected when going back
+00:12 +120: /Users/gimtaehyeong/orca/safe-korea/test/drill_elapsed_timer_test.dart: elapsed clock reads actual duration and catches up on resume
+00:12 +121: /Users/gimtaehyeong/orca/safe-korea/test/drill_elapsed_timer_test.dart: elapsed clock reads actual duration and catches up on resume
+00:12 +122: /Users/gimtaehyeong/orca/safe-korea/test/drill_elapsed_timer_test.dart: elapsed clock reads actual duration and catches up on resume
+00:12 +123: /Users/gimtaehyeong/orca/safe-korea/test/drill_elapsed_timer_test.dart: elapsed clock reads actual duration and catches up on resume
+00:12 +124: /Users/gimtaehyeong/orca/safe-korea/test/drill_elapsed_timer_test.dart: elapsed clock reads actual duration and catches up on resume
+00:12 +125: /Users/gimtaehyeong/orca/safe-korea/test/local_store_test.dart: read failure blocks overwrite and write failure preserves input
+00:13 +126: /Users/gimtaehyeong/orca/safe-korea/test/region_and_refresh_test.dart: region geocoding runs only on explicit button and never auto-fetches shelters
+00:13 +127: /Users/gimtaehyeong/orca/safe-korea/test/region_and_refresh_test.dart: incomplete official response explains the mismatch and preserves existing facilities
+00:13 +128: /Users/gimtaehyeong/orca/safe-korea/test/saved_summary_test.dart: saved summary prioritizes map and aligns name with address
+00:13 +129: /Users/gimtaehyeong/orca/safe-korea/test/saved_summary_test.dart: saved summary prioritizes map and aligns name with address
+00:14 +130: /Users/gimtaehyeong/orca/safe-korea/test/radio_supplies_test.dart: radio opens official URL only after a tap and blocks duplicate requests
+00:14 +131: /Users/gimtaehyeong/orca/safe-korea/test/preparedness_design_test.dart: redesigned everyday screens support narrow large text
+00:14 +132: /Users/gimtaehyeong/orca/safe-korea/test/preparedness_design_test.dart: redesigned everyday screens support narrow large text
+00:15 +133: /Users/gimtaehyeong/orca/safe-korea/test/pwa_guidance_test.dart: web guidance opens contextual advice without native plugins
+00:15 +134: /Users/gimtaehyeong/orca/safe-korea/test/pwa_guidance_test.dart: web guidance opens contextual advice without native plugins
+00:15 +135: /Users/gimtaehyeong/orca/safe-korea/test/inner_alignment_test.dart: expanded guideline title and instructions share a content edge
+00:15 +136: /Users/gimtaehyeong/orca/safe-korea/test/inner_alignment_test.dart: expanded guideline title and instructions share a content edge
+00:15 +137: /Users/gimtaehyeong/orca/safe-korea/test/inner_alignment_test.dart: expanded guideline title and instructions share a content edge
+00:15 +138: /Users/gimtaehyeong/orca/safe-korea/test/pwa_guidance_test.dart: web detail remains scrollable with large text Size(375.0, 812.0)
+00:15 +139: /Users/gimtaehyeong/orca/safe-korea/test/pwa_guidance_test.dart: web detail remains scrollable with large text Size(375.0, 812.0)
+00:15 +140: /Users/gimtaehyeong/orca/safe-korea/test/meeting_share_test.dart: sharing is explicit, previews note selection, supplies popover anchor
+00:15 +141: /Users/gimtaehyeong/orca/safe-korea/test/meeting_share_test.dart: sharing is explicit, previews note selection, supplies popover anchor
+00:15 +142: /Users/gimtaehyeong/orca/safe-korea/test/meeting_share_test.dart: sharing is explicit, previews note selection, supplies popover anchor
+00:15 +143: /Users/gimtaehyeong/orca/safe-korea/test/meeting_share_test.dart: sharing is explicit, previews note selection, supplies popover anchor
+00:16 +144: /Users/gimtaehyeong/orca/safe-korea/test/mbti_scenarios_test.dart: MBTI ISTJ: preparation survives reopening and can be revised
+00:16 +145: /Users/gimtaehyeong/orca/safe-korea/test/mbti_scenarios_test.dart: MBTI ISTJ: preparation survives reopening and can be revised
+00:16 +146: /Users/gimtaehyeong/orca/safe-korea/test/mbti_scenarios_test.dart: MBTI ISTJ: preparation survives reopening and can be revised
+00:16 +147: /Users/gimtaehyeong/orca/safe-korea/test/mbti_scenarios_test.dart: MBTI ISTJ: preparation survives reopening and can be revised
+00:16 +148: /Users/gimtaehyeong/orca/safe-korea/test/mbti_scenarios_test.dart: MBTI ISTJ: preparation survives reopening and can be revised
+00:16 +149: /Users/gimtaehyeong/orca/safe-korea/test/meeting_share_test.dart: unsaved edits cannot share a stale saved snapshot
+00:16 +150: /Users/gimtaehyeong/orca/safe-korea/test/mbti_scenarios_test.dart: MBTI ISFJ: long family note does not hide places or sharing
+00:17 +151: /Users/gimtaehyeong/orca/safe-korea/test/mbti_scenarios_test.dart: MBTI INFJ: note opt-in can be revoked before another share
+00:17 +152: /Users/gimtaehyeong/orca/safe-korea/test/mbti_scenarios_test.dart: MBTI INTJ: saved source and time remain distinguishable from opening status
+00:17 +153: /Users/gimtaehyeong/orca/safe-korea/test/mbti_scenarios_test.dart: MBTI ISTP: explicit map pin selection identifies the chosen facility
+  [1m[flutter_map][0m
+    We want to help keep OpenStreetMap available for everyone. Our examples
+    and demo app use the public tile servers, but they are NOT free to use by
+    everyone! Please review whether the OpenStreetMap tile servers are suitable
+    for your project.
+    See:
+      * https://operations.osmfoundation.org/policies/tiles (OSM Tile Usage Policy)
+      * https://docs.fleaflet.dev/osm-warn for more information about this warning
+00:17 +154: /Users/gimtaehyeong/orca/safe-korea/test/mbti_scenarios_test.dart: MBTI ISFP: permission refusal and silent drill do not send notifications
+00:17 +155: /Users/gimtaehyeong/orca/safe-korea/test/mbti_scenarios_test.dart: MBTI INFP: preview and clipboard contain only selected public fields
+00:18 +156: /Users/gimtaehyeong/orca/safe-korea/test/mbti_scenarios_test.dart: MBTI INTP: chemical and nuclear exceptions are directly readable
+00:18 +157: /Users/gimtaehyeong/orca/safe-korea/test/mbti_scenarios_test.dart: MBTI ESTP: urgent primary action is reachable without a form
+00:18 +158: /Users/gimtaehyeong/orca/safe-korea/test/mbti_scenarios_test.dart: MBTI ESFP: share failure offers a functioning copy fallback
+00:18 +159: /Users/gimtaehyeong/orca/safe-korea/test/mbti_scenarios_test.dart: MBTI ENFP: backing out of an edit preserves the draft until a decision
+00:18 +160: /Users/gimtaehyeong/orca/safe-korea/test/mbti_scenarios_test.dart: MBTI ENTP: failed refresh does not trap the user or erase offline data
+00:18 +161: /Users/gimtaehyeong/orca/safe-korea/test/mbti_scenarios_test.dart: MBTI ESTJ: preparation count reflects successful writes only
+00:19 +162: /Users/gimtaehyeong/orca/safe-korea/test/mbti_scenarios_test.dart: MBTI ESFJ: closing share flow does not claim delivery or family safety
+00:19 +163: /Users/gimtaehyeong/orca/safe-korea/test/mbti_scenarios_test.dart: MBTI ENFJ: enlarged action text remains reachable when explaining to a companion
+00:19 +164: /Users/gimtaehyeong/orca/safe-korea/test/mbti_scenarios_test.dart: MBTI ENTJ: elapsed time never becomes an evacuation countdown
+00:19 +165: All tests passed!
+test_pcm_duration_and_no_clipping (test_drill_siren.SirenTests.test_pcm_duration_and_no_clipping) ... ok
+test_platform_assets_identical (test_drill_siren.SirenTests.test_platform_assets_identical) ... ok
+test_signal_timing_and_voice_assets (test_drill_siren.SirenTests.test_signal_timing_and_voice_assets) ... ok
+test_normalized_official_schema (test_import_shelters.ImportTests.test_normalized_official_schema) ... ok
+test_projected_or_invalid_coordinate_rejected (test_import_shelters.ImportTests.test_projected_or_invalid_coordinate_rejected) ... ok
+test_released_records_are_excluded (test_import_shelters.ImportTests.test_released_records_are_excluded) ... ok
+test_unknown_status_duplicate_date_and_missing_fields (test_import_shelters.ImportTests.test_unknown_status_duplicate_date_and_missing_fields) ... ok
+test_accepts_aligned_load_segment (test_inspect_release.ReleaseInspectionTests.test_accepts_aligned_load_segment) ... ok
+test_invalid_elf_is_not_mistaken_for_compatible (test_inspect_release.ReleaseInspectionTests.test_invalid_elf_is_not_mistaken_for_compatible) ... ok
+test_rejects_4kb_and_incongruent_offsets (test_inspect_release.ReleaseInspectionTests.test_rejects_4kb_and_incongruent_offsets) ... ok
+test_offline_allowlist_excludes_unused_renderers_and_debug_symbols (test_prepare_pwa.PwaBuildTests.test_offline_allowlist_excludes_unused_renderers_and_debug_symbols) ... ok
+test_worker_version_changes_with_asset_content_and_is_repeatable (test_prepare_pwa.PwaBuildTests.test_worker_version_changes_with_asset_content_and_is_repeatable) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.013s
+
+OK
+Offline allowlist: 2 files, 0.0 MiB
+Offline allowlist: 1 files, 0.0 MiB
+Offline allowlist: 1 files, 0.0 MiB
+Offline allowlist: 1 files, 0.0 MiB

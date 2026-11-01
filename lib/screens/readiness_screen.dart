@@ -85,16 +85,6 @@ class _ReadinessScreenState extends State<ReadinessScreen> {
     appBar: AppBar(title: const Text('나의 준비')),
     body: PageBody(
       children: [
-        ActionTile(
-          icon: Icons.people_outline,
-          title: '가족 만남 장소',
-          subtitle: '첫 번째 장소 · 대체 장소',
-          onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute<void>(builder: (_) => const FamilyScreen()),
-          ),
-        ),
-        const SizedBox(height: 24),
         const Text(
           '비상배낭 체크리스트',
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -127,18 +117,20 @@ class _ReadinessScreenState extends State<ReadinessScreen> {
                   CheckboxListTile(
                     selected: _checked.contains(entry.key),
                     selectedTileColor: const Color(0xFFE3F0EC),
-                    secondary: ExcludeSemantics(
-                      child: Icon(switch (entry.key) {
-                        'water' => Icons.water_drop_outlined,
-                        'medicine' => Icons.medication_outlined,
-                        'light' => Icons.flashlight_on_outlined,
-                        'radio' => Icons.radio_outlined,
-                        'power' => Icons.battery_charging_full,
-                        'contact' => Icons.contact_page_outlined,
-                        'hygiene' => Icons.clean_hands_outlined,
-                        _ => Icons.shield_outlined,
-                      }, color: teal),
-                    ),
+                    secondary: MediaQuery.textScalerOf(context).scale(16) > 24
+                        ? null
+                        : ExcludeSemantics(
+                            child: Icon(switch (entry.key) {
+                              'water' => Icons.water_drop_outlined,
+                              'medicine' => Icons.medication_outlined,
+                              'light' => Icons.flashlight_on_outlined,
+                              'radio' => Icons.radio_outlined,
+                              'power' => Icons.battery_charging_full,
+                              'contact' => Icons.contact_page_outlined,
+                              'hygiene' => Icons.clean_hands_outlined,
+                              _ => Icons.shield_outlined,
+                            }, color: teal),
+                          ),
                     title: Text(entry.value),
                     value: _checked.contains(entry.key),
                     controlAffinity: ListTileControlAffinity.leading,
@@ -169,6 +161,16 @@ class _ReadinessScreenState extends State<ReadinessScreen> {
             MaterialPageRoute<void>(builder: (_) => const RadioScreen()),
           ),
         ),
+        ActionTile(
+          icon: Icons.people_outline,
+          title: '가족 만남 장소',
+          subtitle: '첫 번째 장소 · 대체 장소',
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute<void>(builder: (_) => const FamilyScreen()),
+          ),
+        ),
+        const SizedBox(height: 24),
         // A supplier preview is useful in development, but is not a live store.
         if (kDebugMode) ...[
           const SizedBox(height: 12),

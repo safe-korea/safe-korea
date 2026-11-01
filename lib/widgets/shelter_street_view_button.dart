@@ -62,14 +62,11 @@ class _ShelterStreetViewButtonState extends State<ShelterStreetViewButton> {
         '주변 거리 사진이며, 실제 출입구와 다를 수 있어요.',
         style: TextStyle(fontSize: 14, height: 1.4),
       ),
-      const Text(
-        '설치 안내에서는 ‘설치없이 지도보기’를 선택하세요.',
-        style: TextStyle(fontSize: 13),
-      ),
       ExpansionTile(
         tilePadding: EdgeInsets.zero,
         title: const Text('사진 이용 안내', style: TextStyle(fontSize: 14)),
         children: const [
+          Text('설치 안내에서는 ‘설치없이 지도보기’를 선택하세요.', style: TextStyle(fontSize: 13)),
           Padding(
             padding: EdgeInsets.only(bottom: 12),
             child: Text(
