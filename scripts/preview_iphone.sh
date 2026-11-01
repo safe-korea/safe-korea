@@ -8,6 +8,5 @@ BYPASS_PERMISSION_LOCATION_ALWAYS=1 .tools/flutter/bin/flutter drive \
   --driver=test_driver/iphone_preview.dart \
   --target=integration_test/iphone_preview_test.dart \
   -d "$preview_device" --keep-app-running || preview_status=$?
-BYPASS_PERMISSION_LOCATION_ALWAYS=1 .tools/flutter/bin/flutter run \
-  --target=lib/main.dart --no-resident -d "$preview_device"
+./scripts/run_app.sh "$preview_device"
 exit "$preview_status"
