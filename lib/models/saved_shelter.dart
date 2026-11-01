@@ -1,5 +1,29 @@
 import 'shelter.dart';
 
+enum ShelterRole { none, primary, alternate }
+
+extension ShelterRoleLabel on ShelterRole {
+  String get label => switch (this) {
+    ShelterRole.none => '일반 저장',
+    ShelterRole.primary => '주 대피소',
+    ShelterRole.alternate => '대체 대피소',
+  };
+}
+
+class ShelterPhoto {
+  const ShelterPhoto({required this.data, required this.addedAt});
+  final String data;
+  final DateTime addedAt;
+  Map<String, dynamic> toJson() => {
+    'data': data,
+    'addedAt': addedAt.toIso8601String(),
+  };
+  factory ShelterPhoto.fromJson(Map<String, dynamic> json) => ShelterPhoto(
+    data: json['data'] as String,
+    addedAt: DateTime.parse(json['addedAt'] as String),
+  );
+}
+
 enum ShelterCheck { confirmed, changed, notFound, incomplete }
 
 /// An explicit saved snapshot, including the source and original retrieval time.
@@ -10,7 +34,27 @@ class SavedShelter {
     this.checkedAt,
     this.check,
     this.keyVersion = 2,
+    this.role = ShelterRole.none,
+    this.entranceNote = '',
+    this.photos = const [],
   });
+  final ShelterRole role;
+  final String entranceNote;
+  final List<ShelterPhoto> photos;
+  SavedShelter withPersonal({
+    required ShelterRole role,
+    required String note,
+    required List<ShelterPhoto> photos,
+  }) => SavedShelter._(
+    snapshot,
+    savedAt,
+    checkedAt: checkedAt,
+    check: check,
+    keyVersion: keyVersion,
+    role: role,
+    entranceNote: note,
+    photos: List.unmodifiable(photos),
+  );
   final int keyVersion;
   final DateTime? checkedAt;
   final ShelterCheck? check;
@@ -24,6 +68,9 @@ class SavedShelter {
     checkedAt: time.toUtc(),
     check: result,
     keyVersion: keyVersion,
+    role: role,
+    entranceNote: entranceNote,
+    photos: photos,
   );
   final ShelterCatalog snapshot;
   final DateTime savedAt;
@@ -67,6 +114,13 @@ class SavedShelter {
       catalog,
       DateTime.parse(json['savedAt'] as String).toUtc(),
       keyVersion: keyVersion,
+      role: ShelterRole.values.byName(json['role'] as String? ?? 'none'),
+      entranceNote: json['entranceNote'] as String? ?? '',
+      photos: List.unmodifiable(
+        (json['photos'] as List? ?? []).map(
+          (p) => ShelterPhoto.fromJson(Map<String, dynamic>.from(p as Map)),
+        ),
+      ),
       checkedAt: json['checkedAt'] == null
           ? null
           : DateTime.parse(json['checkedAt'] as String).toUtc(),
@@ -82,5 +136,8 @@ class SavedShelter {
     'catalog': snapshot.toJson(),
     'checkedAt': checkedAt?.toIso8601String(),
     'check': check?.name,
+    'role': role.name,
+    'entranceNote': entranceNote,
+    'photos': photos.map((p) => p.toJson()).toList(),
   };
 }

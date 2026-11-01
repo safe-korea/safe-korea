@@ -63,6 +63,15 @@ class SavedMemoryStore extends LocalStore {
   }
 
   @override
+  Future<void> saveSavedShelters(List<Map<String, dynamic>> entries) async {
+    if (failWrite) throw StateError('test batch write');
+    for (final entry in entries) {
+      records[entry['storageKey'] as String] = {...entry}..remove('storageKey');
+    }
+    writes++;
+  }
+
+  @override
   Future<void> removeSavedShelter(String id) async {
     if (failWrite) throw StateError('test remove');
     writes++;

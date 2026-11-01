@@ -184,6 +184,20 @@ class LocalStore {
     }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
+  /// Role reassignment and personal records must commit together.
+  Future<void> saveSavedShelters(List<Map<String, dynamic>> entries) async {
+    await _ensureSavedSheltersTable();
+    await (await database).transaction((txn) async {
+      for (final entry in entries) {
+        await txn.insert('saved_shelters', {
+          'id': entry['storageKey'],
+          'content': jsonEncode({...entry}..remove('storageKey')),
+          'saved_at': entry['savedAt'],
+        }, conflictAlgorithm: ConflictAlgorithm.replace);
+      }
+    });
+  }
+
   Future<void> removeSavedShelter(String id) async {
     await _ensureSavedSheltersTable();
     await (await database).delete(

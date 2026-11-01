@@ -12,6 +12,7 @@ import '../services/region_suggestion_service.dart';
 import '../services/shelter_repository.dart';
 import '../services/saved_shelters_controller.dart';
 import 'saved_shelters_screen.dart';
+import 'shelter_record_screen.dart';
 import '../widgets/common.dart';
 import '../widgets/shelter_map.dart';
 
@@ -240,6 +241,7 @@ class _SheltersScreenState extends State<SheltersScreen> {
       if (!mounted) return;
       setState(() {
         _suggestion = suggestion;
+        _position = position;
         _regionMessage = suggestion == null
             ? '현재 위치의 시군구를 확실하게 찾지 못했습니다. 지역을 직접 선택해 주세요.'
             : suggestion.districtCode == null
@@ -412,6 +414,22 @@ class _SheltersScreenState extends State<SheltersScreen> {
                   ),
                   if (_regionMessage != null)
                     Semantics(liveRegion: true, child: Notice(_regionMessage!)),
+                  if (_suggestion?.districtCode != null) ...[
+                    const Text(
+                      '확인한 지역의 코드·IP를 국민안전24에 보내 시설을 조회합니다.',
+                      style: TextStyle(fontSize: 14),
+                    ),
+                    FilledButton.icon(
+                      onPressed: _fetching
+                          ? null
+                          : () {
+                              _applySuggestion();
+                              _fetch();
+                            },
+                      icon: const Icon(Icons.near_me_outlined),
+                      label: const Text('이 지역 대피소 바로 조회'),
+                    ),
+                  ],
                   if (_suggestion != null)
                     OutlinedButton(
                       onPressed: _fetching ? null : _applySuggestion,
@@ -748,6 +766,20 @@ class _SheltersScreenState extends State<SheltersScreen> {
                   _saved.contains(source, shelter.id) ? '대피소 저장 해제' : '대피소 저장',
                 ),
               ),
+            if (source != null && _saved.entryFor(source, shelter.id) != null)
+              OutlinedButton.icon(
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (_) => ShelterRecordScreen(
+                      entry: _saved.entryFor(source, shelter.id)!,
+                      controller: _saved,
+                    ),
+                  ),
+                ),
+                icon: const Icon(Icons.photo_library_outlined),
+                label: const Text('우선순위·사진·메모 추가'),
+              ),
             if (!_saved.loaded && !_saved.loading)
               TextButton(
                 onPressed: _saved.load,
@@ -761,6 +793,12 @@ class _SheltersScreenState extends State<SheltersScreen> {
 
   Future<void> _toggleSaved(Shelter shelter, ShelterCatalog catalog) async {
     final wasSaved = _saved.contains(catalog, shelter.id);
+    final existing = _saved.entryFor(catalog, shelter.id);
+    if (existing != null &&
+        !await confirmPersonalRecordRemoval(context, existing)) {
+      return;
+    }
+    if (!mounted) return;
     final result = await _saved.toggle(catalog, shelter.id);
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(

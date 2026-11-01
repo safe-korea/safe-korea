@@ -10,6 +10,9 @@ import 'guidelines_screen.dart';
 import 'readiness_screen.dart';
 import 'saved_shelters_screen.dart';
 import 'shelters_screen.dart';
+import 'after_arrival_screen.dart';
+import '../services/saved_shelters_controller.dart';
+import '../models/saved_shelter.dart';
 
 class DrillScreen extends StatefulWidget {
   const DrillScreen({super.key, this.kind = AlertKind.air});
@@ -21,6 +24,12 @@ class DrillScreen extends StatefulWidget {
 class _DrillScreenState extends State<DrillScreen> {
   final _checked = <int>{};
   late AlertKind _kind = widget.kind;
+  @override
+  void initState() {
+    super.initState();
+    SavedSheltersController.shared.ensureLoaded();
+  }
+
   void _open(Widget page) =>
       Navigator.push(context, MaterialPageRoute<void>(builder: (_) => page));
 
@@ -111,6 +120,24 @@ class _DrillScreenState extends State<DrillScreen> {
             icon: const Icon(Icons.near_me_outlined),
             label: const Text('주변 대피소 보기'),
           ),
+          ListenableBuilder(
+            listenable: SavedSheltersController.shared,
+            builder: (context, _) {
+              final hasPlan = SavedSheltersController.shared.entries.any(
+                (entry) => entry.role != ShelterRole.none,
+              );
+              return hasPlan
+                  ? Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: OutlinedButton.icon(
+                        onPressed: () => _open(const SavedSheltersScreen()),
+                        icon: const Icon(Icons.bookmark),
+                        label: const Text('내 주·대체 대피소 바로 보기'),
+                      ),
+                    )
+                  : const SizedBox.shrink();
+            },
+          ),
           const SizedBox(height: 16),
         ],
         Container(
@@ -121,6 +148,7 @@ class _DrillScreenState extends State<DrillScreen> {
           ),
           child: AlertActions(
             kind: _kind,
+            training: true,
             onKindChanged: (kind) => setState(() => _kind = kind),
           ),
         ),
@@ -168,6 +196,12 @@ class _DrillScreenState extends State<DrillScreen> {
           ),
         ],
         const SizedBox(height: 12),
+        if (_kind == AlertKind.air)
+          OutlinedButton.icon(
+            onPressed: () => _open(const AfterArrivalScreen(training: true)),
+            icon: const Icon(Icons.task_alt),
+            label: const Text('대피 후 할 일·상태 공유'),
+          ),
         const Text('정부 방송·현장 지시를 우선하세요.', style: TextStyle(fontSize: 14)),
         if (_kind == AlertKind.air)
           ExpansionTile(

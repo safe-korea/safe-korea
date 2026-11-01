@@ -4,6 +4,7 @@ import '../services/local_store.dart';
 import '../widgets/common.dart';
 import 'meeting_point_screen.dart';
 import 'meeting_share_screen.dart';
+import 'status_share_screen.dart';
 import '../services/meeting_share.dart';
 
 class FamilyScreen extends StatefulWidget {
@@ -236,7 +237,21 @@ class _FamilyScreenState extends State<FamilyScreen> {
       if (!didPop) _confirmExit();
     },
     child: Scaffold(
-      appBar: AppBar(title: const Text('가족 만남 장소')),
+      appBar: AppBar(
+        title: const Text('가족 만남 장소'),
+        actions: [
+          IconButton(
+            tooltip: '내 상태 공유',
+            icon: const Icon(Icons.chat_bubble_outline),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute<void>(
+                builder: (_) => const StatusShareScreen(),
+              ),
+            ),
+          ),
+        ],
+      ),
       bottomNavigationBar: _loading
           ? null
           : SafeArea(

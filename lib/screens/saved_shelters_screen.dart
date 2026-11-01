@@ -6,6 +6,7 @@ import '../services/shelter_repository.dart';
 import '../widgets/common.dart';
 import '../widgets/shelter_map.dart';
 import 'shelters_screen.dart';
+import 'shelter_record_screen.dart';
 
 class SavedSheltersScreen extends StatefulWidget {
   const SavedSheltersScreen({super.key, this.controller, this.repository});
@@ -53,6 +54,7 @@ class _SavedSheltersScreenState extends State<SavedSheltersScreen> {
   }
 
   Future<void> _remove(SavedShelter entry) async {
+    if (!await confirmPersonalRecordRemoval(context, entry) || !mounted) return;
     final result = await _controller.toggle(entry.snapshot, entry.shelter.id);
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
@@ -79,7 +81,7 @@ class _SavedSheltersScreenState extends State<SavedSheltersScreen> {
         return PageBody(
           children: [
             const Text(
-              '이름·주소는 오프라인으로 확인할 수 있어요.\n지도·최신 자료 조회에는 인터넷이 필요해요.',
+              '사진·메모·주소는 오프라인으로 볼 수 있어요.\n지도와 재조회에는 인터넷이 필요해요.',
               style: TextStyle(fontSize: 14),
             ),
             const SizedBox(height: 12),
@@ -203,7 +205,47 @@ class _SavedSheltersScreenState extends State<SavedSheltersScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          if (entry.role != ShelterRole.none) ...[
+            Text(
+              entry.role.label,
+              style: const TextStyle(color: teal, fontWeight: FontWeight.w800),
+            ),
+            const SizedBox(height: 8),
+          ],
           _identity(entry),
+          if (entry.entranceNote.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            IconTextBlock(
+              icon: Icons.door_front_door_outlined,
+              title: '출입구 메모 · 개인 기록',
+              body: Text(entry.entranceNote),
+            ),
+          ],
+          if (entry.photos.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            PersonalShelterPhoto(photo: entry.photos.first, index: 1),
+          ],
+          const SizedBox(height: 12),
+          OutlinedButton.icon(
+            onPressed:
+                _controller.loaded && !_controller.busy && !_controller.loading
+                ? () => Navigator.push(
+                    context,
+                    MaterialPageRoute<void>(
+                      builder: (_) => ShelterRecordScreen(
+                        entry: entry,
+                        controller: _controller,
+                      ),
+                    ),
+                  )
+                : null,
+            icon: const Icon(Icons.photo_library_outlined),
+            label: Text(
+              entry.photos.isEmpty && entry.entranceNote.isEmpty
+                  ? '우선순위·사진·메모 추가'
+                  : '사진 ${entry.photos.length}장·메모 관리',
+            ),
+          ),
           const SizedBox(height: 16),
           FilledButton.icon(
             onPressed: () => _openMap(entry),

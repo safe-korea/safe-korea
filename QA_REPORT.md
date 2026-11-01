@@ -169,3 +169,15 @@ P7의 미충족은 앱 충돌과 별개인 제품 범위의 공백이다. 임의
 
 ### 디자인 후속 — 저장 동작과 선택 상태
 가족 입력 화면 캡처에서 저장 버튼이 본문 아래에 묻히는 문제를 하단 고정 저장 영역으로 개선했다. 작성/수정 시 저장 버튼이 먼저 나오며, 저장되지 않은 변경이 있으면 공유 차단은 유지한다. 하단은 최대 높이 42%로 제한하고 큰 글씨에서는 내부 스크롤이 가능하다. 입력 아이콘·준비물 선택 배경·상황 체크 표시도 추가했다. iPhone 캡처 및 Flutter 106건/Python 7건/정적 분석 통과. 기본 화면과 본문 스크롤 후 저장 버튼 접근을 검사했으며, OS 키보드로 가려지는 상황과 실제 스크린리더 검증은 완료로 간주하지 않는다.
+
+
+### 출입구 사진·대피 지원 QA (2026-11-01)
+- `test/shelter_records_test.dart`: 이전 저장 형식 호환, 재확인 중 개인 기록 유지, 주/대체 단일 지정과 실패 보존, SQLite 재열기, 다중 저장 롤백, 사진 선택 취소/오류/저장 실패·재시도, 저장 해제 취소, 375px/글씨 2.5배, 실제 이미지 디코딩/손상 파일 거부.
+- `test/emergency_support_test.dart`: 무자동 음성 재생, 상황 변경·화면 해제 정지, 음성 실패 글 안내, 잘못된 음성 대체 차단, 상태 직접 선택/명시 공유/훈련 문구, 도착 안전 미확인과 훈련 경로 유지. 공유·음성은 spy로 검사하여 실제 발송/재생하지 않음.
+- `test/region_and_refresh_test.dart`: GPS 지역 제안만으로 조회하지 않음, 확인 버튼으로 1회 조회, 위치 재사용. 기존 권한 거부/모호한 시군구 시나리오 유지.
+- `integration_test/shelter_records_test.dart`: iPhone 17 Pro와 Android API 36에서 PNG 생성→앱의 실제 이미지 변환→저장 목록→확대→대피 후 안내→수동 공유 미리보기 통과. 사진 선택기는 주입한 fixture이며 실제 OS 사진 선택까지 검증했다고 보지 않음. 테스트 시설/이미지에 실제 시설 아님을 명시.
+- 캡처: `artifacts/iphone17-pro-personal-photo-{editor,saved,zoom}.png`, `iphone17-pro-after-arrival.png`, `iphone17-pro-status-share-preview.png`. 저장 카드에서 개인 기록/우선순위 구분, 사진 자르지 않기, 별도 확대 버튼, 편집 고정 저장 버튼을 확인. 상태 선택 너비 통일.
+- 미검증: 실제 사진 보관함 권한·HEIC 실기기·프로세스 종료 복구·실제 기기 TTS 청취/네트워크 차단·OS 키보드·VoiceOver/TalkBack. 사진 저장은 앱 내부 DB의 기존 백업 제외를 사용하지만 기기 보안/분실 복구나 암호화 보관 인증은 아님.
+- 유지보수: flutter_tts의 SPM/KGP 향후 호환 경고. 현재 iOS CocoaPods/Android 빌드는 통과하며 SDK 업그레이드 시 다시 검증 필요.
+
+최종 검증: `dart format` 변경 없음, `flutter analyze` 이슈 0, Flutter 120건·Python 7건 통과. 증거: `artifacts/shelter-support-verify.log`, `shelter-records-iphone.log`, `shelter-records-android.log`.

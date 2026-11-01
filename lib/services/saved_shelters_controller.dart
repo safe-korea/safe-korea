@@ -14,7 +14,11 @@ class SavedSheltersController extends ChangeNotifier {
   String? error;
   Future<void>? _pending;
   List<SavedShelter> get entries => List.unmodifiable(
-    _entries.values.toList()..sort((a, b) => b.savedAt.compareTo(a.savedAt)),
+    _entries.values.toList()..sort((a, b) {
+      int rank(ShelterRole r) => r == ShelterRole.none ? 2 : r.index - 1;
+      final roleOrder = rank(a.role).compareTo(rank(b.role));
+      return roleOrder != 0 ? roleOrder : b.savedAt.compareTo(a.savedAt);
+    }),
   );
   SavedShelter? _find(ShelterCatalog catalog, String id) {
     for (final entry in _entries.values) {
@@ -26,6 +30,9 @@ class SavedSheltersController extends ChangeNotifier {
     }
     return null;
   }
+
+  SavedShelter? entryFor(ShelterCatalog catalog, String id) =>
+      _find(catalog, id);
 
   bool contains(ShelterCatalog catalog, String id) =>
       _find(catalog, id) != null;
@@ -121,6 +128,48 @@ class SavedSheltersController extends ChangeNotifier {
     } catch (_) {
       error = '공식 자료 재확인 또는 저장에 실패했습니다. 기존 정보를 유지합니다.';
       return error!;
+    } finally {
+      busy = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> savePersonal(
+    String key,
+    ShelterRole role,
+    String note,
+    List<ShelterPhoto> photos,
+  ) async {
+    if (!loaded || busy || loading || !_entries.containsKey(key)) return false;
+    if (note.length > 300 || photos.length > 3) return false;
+    busy = true;
+    error = null;
+    notifyListeners();
+    try {
+      final entry = _entries[key]!;
+      final changes = <SavedShelter>[
+        for (final other in _entries.values)
+          if (role != ShelterRole.none &&
+              other.role == role &&
+              other.key != key)
+            other.withPersonal(
+              role: ShelterRole.none,
+              note: other.entranceNote,
+              photos: other.photos,
+            ),
+        entry.withPersonal(role: role, note: note.trim(), photos: photos),
+      ];
+      await _store.saveSavedShelters([
+        for (final value in changes)
+          {...value.toJson(), 'storageKey': value.key},
+      ]);
+      for (final value in changes) {
+        _entries[value.key] = value;
+      }
+      return true;
+    } catch (_) {
+      error = '개인 기록을 저장하지 못했습니다. 기존 기록은 유지됩니다.';
+      return false;
     } finally {
       busy = false;
       notifyListeners();

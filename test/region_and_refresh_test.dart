@@ -86,6 +86,42 @@ Future<List<Map<String, dynamic>>> regions() async =>
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   setUp(() => rootBundle.clear());
+  testWidgets(
+    'confirmed GPS region queries once and retains position for distance ordering',
+    (tester) async {
+      final repo = RefreshRepository()
+        ..next = fixture('26110', '부산광역시 중구', 'a');
+      final location = FixtureLocation();
+      final region = FixtureRegion();
+      final saved = SavedSheltersController(store: SavedMemoryStore());
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: buildAppTheme(),
+          home: SheltersScreen(
+            repository: repo,
+            locationService: location,
+            regionService: region,
+            savedShelters: saved,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('현재 위치로 지역 찾기'));
+      await tester.tap(find.text('현재 위치로 지역 찾기'));
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('위치로 조회 지역 제안받기'));
+      await tester.tap(find.text('위치로 조회 지역 제안받기'));
+      await tester.pumpAndSettle();
+      expect(repo.calls, 0);
+      await tester.ensureVisible(find.text('이 지역 대피소 바로 조회'));
+      await tester.tap(find.text('이 지역 대피소 바로 조회'));
+      await tester.pumpAndSettle();
+      expect(repo.calls, 1);
+      expect(location.calls, 1);
+      expect(find.text('현재 위치 표시 지우기'), findsOneWidget);
+      expect(find.text('부산광역시 중구'), findsWidgets);
+    },
+  );
   test(
     'stale or imprecise GPS does not reach the external region lookup',
     () async {
