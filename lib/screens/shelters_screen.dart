@@ -14,6 +14,9 @@ import '../services/saved_shelters_controller.dart';
 import 'saved_shelters_screen.dart';
 import 'shelter_record_screen.dart';
 import '../widgets/common.dart';
+import '../models/public_shelter_photo.dart';
+import '../widgets/public_shelter_photo.dart';
+import '../widgets/shelter_street_view_button.dart';
 import '../widgets/shelter_map.dart';
 
 class SheltersScreen extends StatefulWidget {
@@ -736,6 +739,14 @@ class _SheltersScreenState extends State<SheltersScreen> {
               ),
             const SizedBox(height: 8),
             const Text('개방 여부·수용 여유는 현장 확인', style: TextStyle(fontSize: 14)),
+            const SizedBox(height: 12),
+            if (PublicShelterPhoto.match(source, shelter) != null) ...[
+              PublicShelterPhotoCard(
+                photo: PublicShelterPhoto.match(source, shelter)!,
+              ),
+              const SizedBox(height: 12),
+            ],
+            ShelterStreetViewButton(shelter: shelter),
             ExpansionTile(
               expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
               tilePadding: EdgeInsets.zero,

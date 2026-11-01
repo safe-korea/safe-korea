@@ -103,6 +103,9 @@ void main() {
       );
       await mount(SavedSheltersScreen(controller: c));
       await capture('personal-photo-saved');
+      await tester.ensureVisible(find.text('내 기록 · 선택'));
+      await tester.tap(find.text('내 기록 · 선택'));
+      await tester.pumpAndSettle();
       await tester.ensureVisible(find.text('사진 1 크게 보기'));
       await tester.tap(find.text('사진 1 크게 보기'));
       await tester.pumpAndSettle();

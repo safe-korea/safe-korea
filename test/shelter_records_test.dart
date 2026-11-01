@@ -196,6 +196,9 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(find.text('뒤편 출입구'), findsOneWidget);
+      await tester.ensureVisible(find.text('내 기록 · 선택'));
+      await tester.tap(find.text('내 기록 · 선택'));
+      await tester.pumpAndSettle();
       expect(find.text('사진 1 크게 보기'), findsOneWidget);
       expect(tester.takeException(), isNull);
     },

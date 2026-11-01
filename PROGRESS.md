@@ -390,3 +390,19 @@
 최종 검증: `dart format` 변경 없음, `flutter analyze` 이슈 0, Flutter 120건·Python 7건 통과. 증거: `artifacts/shelter-support-verify.log`, `shelter-records-iphone.log`, `shelter-records-android.log`.
 
 일반 앱 복원: `scripts/run_app.sh`로 iPhone 17 Pro 및 Android API 36의 `lib/main.dart` 재설치·실행 성공. 테스트 전용 화면 대신 직접 조작 가능한 앱으로 복원했습니다. 실행 로그: `artifacts/shelter-support-run-{iphone,android}.log`.
+
+## 2026-11-01 — 사진 요구 정정: 공개된 거리 사진 연결
+- 사용자 의도는 이미 공개된 시설 사진임을 정정. 개인 사진 업로드를 요청 충족으로 간주하지 않음.
+- 국민안전24 종로구 응답 107건 필드, 공개 지도 스크립트, 카카오 로컬 API/지도 URL 가이드 조사. 현재 연동 경로에는 시설 사진 URL 없음.
+- 시설 좌표를 공식 카카오 로드뷰 URL로 연결. 앱 내 브라우저 우선, 실패 시 외부 브라우저, 실패/재시도 UI. 현재 GPS/인증키/개인 기록 전송 없음.
+- 시설 상세·저장 목록·저장 지도 핀 상세에 연결. 직접 추가 사진은 ‘내 기록 · 선택’에 접어 두고 기존 자료 보존. 사진의 출처·온라인 여부·출입구와의 차이·설치 없이 보는 방법 안내.
+- iPhone 네이티브 화면/링크 실행 통과. 별도 Safari 수동 확인에서 공식 시설 좌표의 카카오 거리 사진이 실제 표시됨. 한 지점 확인이며 전국 사진 제공 또는 정확한 출입구 검증은 아님.
+- 카드 안 자동 시설 사진은 여전히 미완료: 시설별 매칭·사용 조건이 확인된 데이터 확보 후 연결해야 함. 사진을 추측 매칭하거나 생성하지 않았고 카카오 이미지를 저장소에 복제하지 않음.
+
+- 추가 조사로 서울시청 2026-06-03 공개 건물 외관 사진 1건의 CC BY-SA 4.0 조건·저작자·공식 시설 식별자를 확인. 1280px 공개 축소본을 동봉해 시설 상세/저장 목록에서 자동 표시·오프라인 확대. 촬영일·출처·라이선스와 ‘출입구 사진 아님’을 상시 표시. 나머지 시설은 로드뷰 연결이며 전국 인라인 사진 제공은 미완료.
+
+최종 로컬 검증: format/analyze 이슈 0, Flutter 128건·Python 7건 통과(`artifacts/public-imagery-verify.log`). iPhone에서 공식 목록의 서울시청 식별자와 공개 사진 매칭·JPEG 표시, 서울보증보험 로드뷰 버튼 화면 통합 검사 통과.
+
+Android API 36에서도 공식 서울시청 공개 사진 매칭/표시와 공식 시설 로드뷰 버튼 통합 2개 시나리오 통과(`artifacts/public-imagery-android.log`). Android 제공자 브라우저의 실제 거리 사진 수동 확인은 이번에 수행하지 않았으며 iPhone Safari 수동 확인과 구분합니다.
+
+일반 앱 복원: iPhone 17 Pro와 Android API 36에 최신 `lib/main.dart` 빌드·설치·실행 성공. 실행 증거는 `artifacts/public-imagery-run-{iphone,android}.log`. 개인 데이터·로컬 설정은 보존했습니다.

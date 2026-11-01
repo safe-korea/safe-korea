@@ -181,3 +181,17 @@ P7의 미충족은 앱 충돌과 별개인 제품 범위의 공백이다. 임의
 - 유지보수: flutter_tts의 SPM/KGP 향후 호환 경고. 현재 iOS CocoaPods/Android 빌드는 통과하며 SDK 업그레이드 시 다시 검증 필요.
 
 최종 검증: `dart format` 변경 없음, `flutter analyze` 이슈 0, Flutter 120건·Python 7건 통과. 증거: `artifacts/shelter-support-verify.log`, `shelter-records-iphone.log`, `shelter-records-android.log`.
+
+### 공개 거리 사진 연결 QA (2026-11-01)
+- `test/shelter_street_view_test.dart` 6건: HTTPS 공식 URL·위도/경도 순서·GPS/키 없는 전달, 잘못된 좌표 차단, 브라우저 폴백/실패, 자동 열림 없음·재시도, 개인 사진 보조 메뉴 전환, 375px/글씨 2.5배 및 가로 화면.
+- `integration_test/street_view_test.dart`: 실제 공식 종로구 조회 후 S200700195 시설의 사진 연결 화면 검증. `CHECK_LIVE_ROADVIEW=true`는 사용자가 요청한 공개 URL을 실제 열며 기본값 false는 브라우저를 열지 않는다. 테스트에서 URL 열기에 성공한 것은 사진 제공이나 출입구 정확성 검증과 구분한다.
+- iPhone 17 Pro Safari에서 같은 시설의 공식 링크 → ‘설치없이 지도보기’ → 실제 거리 사진/이동 화살표/확대 UI를 직접 확인. 외부 서비스 사진을 앱 자산으로 저장하지 않음. 앱 화면 캡처 `artifacts/iphone17-pro-public-roadview-entry.png`에는 연결 버튼과 사진 한계만 표시.
+- 기존 개인 사진 테스트는 접힌 ‘내 기록 · 선택’을 펼친 뒤 사진 보존을 확인하도록 조정. 개인 사진 삭제/이전 형식 호환 동작은 유지.
+- 미완료: 전국 사진 커버리지·정확한 출입구 매칭. 인라인/오프라인 공개 사진은 아래 서울시청 1곳만 제공. 카카오 설치 유도/네트워크/미촬영 지역에 따라 제공자 화면 동작이 달라질 수 있다.
+
+- `test/public_shelter_photo_test.dart`: 정확한 출처/지역/시설번호/명칭/주소/좌표 매칭과 불일치 거부, 실제 동봉 JPEG 오프라인 렌더링·확대·촬영일·출입구 한계·저작자/라이선스 유지. 실제 대피소 사진 확보 범위는 서울시청 건물 외관 1곳뿐이며 다른 시설에 이 이미지를 재사용하지 않음.
+- 네이티브 통합에 중구 공식 목록 실시간 재조회→서울시청 매칭→동봉 사진 표시 추가. 카카오 거리 사진과 달리 이 파일만 재사용 허용 조건을 확인해 저장소/앱에 동봉. 시각 확인용 스크린샷도 해당 저작자·라이선스 표시를 유지한다.
+
+최종 로컬 검증: format/analyze 이슈 0, Flutter 128건·Python 7건 통과(`artifacts/public-imagery-verify.log`). iPhone에서 공식 목록의 서울시청 식별자와 공개 사진 매칭·JPEG 표시, 서울보증보험 로드뷰 버튼 화면 통합 검사 통과.
+
+Android API 36에서도 공식 서울시청 공개 사진 매칭/표시와 공식 시설 로드뷰 버튼 통합 2개 시나리오 통과(`artifacts/public-imagery-android.log`). Android 제공자 브라우저의 실제 거리 사진 수동 확인은 이번에 수행하지 않았으며 iPhone Safari 수동 확인과 구분합니다.

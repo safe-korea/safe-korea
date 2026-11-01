@@ -78,6 +78,7 @@ flutter:
     - assets/guidelines.json
     - assets/shelters.json
     - assets/regions.json
+    - assets/public_photos/seoul_city_hall_2026.jpg
 
   # To add assets to your application, add an assets section, like this:
   # assets:

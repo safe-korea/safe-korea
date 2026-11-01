@@ -4,6 +4,9 @@ import '../models/saved_shelter.dart';
 import '../services/saved_shelters_controller.dart';
 import '../services/shelter_repository.dart';
 import '../widgets/common.dart';
+import '../models/public_shelter_photo.dart';
+import '../widgets/public_shelter_photo.dart';
+import '../widgets/shelter_street_view_button.dart';
 import '../widgets/shelter_map.dart';
 import 'shelters_screen.dart';
 import 'shelter_record_screen.dart';
@@ -221,31 +224,6 @@ class _SavedSheltersScreenState extends State<SavedSheltersScreen> {
               body: Text(entry.entranceNote),
             ),
           ],
-          if (entry.photos.isNotEmpty) ...[
-            const SizedBox(height: 16),
-            PersonalShelterPhoto(photo: entry.photos.first, index: 1),
-          ],
-          const SizedBox(height: 12),
-          OutlinedButton.icon(
-            onPressed:
-                _controller.loaded && !_controller.busy && !_controller.loading
-                ? () => Navigator.push(
-                    context,
-                    MaterialPageRoute<void>(
-                      builder: (_) => ShelterRecordScreen(
-                        entry: entry,
-                        controller: _controller,
-                      ),
-                    ),
-                  )
-                : null,
-            icon: const Icon(Icons.photo_library_outlined),
-            label: Text(
-              entry.photos.isEmpty && entry.entranceNote.isEmpty
-                  ? '우선순위·사진·메모 추가'
-                  : '사진 ${entry.photos.length}장·메모 관리',
-            ),
-          ),
           const SizedBox(height: 16),
           FilledButton.icon(
             onPressed: () => _openMap(entry),
@@ -256,6 +234,56 @@ class _SavedSheltersScreenState extends State<SavedSheltersScreen> {
           const Text(
             '지도 이용 시 조회 범위·IP가 지도 제공자에게 전달됩니다.',
             style: TextStyle(fontSize: 12, height: 1.4),
+          ),
+          if (entry.check != ShelterCheck.notFound &&
+              entry.check != ShelterCheck.incomplete &&
+              PublicShelterPhoto.match(entry.snapshot, entry.shelter) !=
+                  null) ...[
+            const SizedBox(height: 16),
+            PublicShelterPhotoCard(
+              photo: PublicShelterPhoto.match(entry.snapshot, entry.shelter)!,
+            ),
+          ],
+          const SizedBox(height: 12),
+          ShelterStreetViewButton(
+            shelter: entry.shelter,
+            previousLocation:
+                entry.check == ShelterCheck.notFound ||
+                entry.check == ShelterCheck.incomplete,
+          ),
+          ExpansionTile(
+            tilePadding: EdgeInsets.zero,
+            expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
+            title: const Text('내 기록 · 선택'),
+            children: [
+              if (entry.photos.isNotEmpty) ...[
+                const SizedBox(height: 16),
+                PersonalShelterPhoto(photo: entry.photos.first, index: 1),
+              ],
+              const SizedBox(height: 12),
+              OutlinedButton.icon(
+                onPressed:
+                    _controller.loaded &&
+                        !_controller.busy &&
+                        !_controller.loading
+                    ? () => Navigator.push(
+                        context,
+                        MaterialPageRoute<void>(
+                          builder: (_) => ShelterRecordScreen(
+                            entry: entry,
+                            controller: _controller,
+                          ),
+                        ),
+                      )
+                    : null,
+                icon: const Icon(Icons.photo_library_outlined),
+                label: Text(
+                  entry.photos.isEmpty && entry.entranceNote.isEmpty
+                      ? '우선순위·사진·메모 추가'
+                      : '사진 ${entry.photos.length}장·메모 관리',
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 8),
           ExpansionTile(
@@ -346,6 +374,13 @@ class _SavedSheltersScreenState extends State<SavedSheltersScreen> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       _identity(entry),
+                      const SizedBox(height: 12),
+                      ShelterStreetViewButton(
+                        shelter: entry.shelter,
+                        previousLocation:
+                            entry.check == ShelterCheck.notFound ||
+                            entry.check == ShelterCheck.incomplete,
+                      ),
                       const SizedBox(height: 16),
                       InfoLine(
                         label: '공식 자료 조회',
