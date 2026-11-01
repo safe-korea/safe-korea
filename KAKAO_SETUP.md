@@ -4,9 +4,9 @@
 
 ## 나중에 키를 넣는 방법
 
-1. [Kakao Developers](https://developers.kakao.com/console/app)에서 SAFE KOREA용 앱을 등록하고 카카오 지도 사용 설정과 플랫폼 등록을 완료합니다. 가입·약관 동의·유료 설정을 대신 수행하지 않습니다.
+1. [Kakao Developers](https://developers.kakao.com/console/app)에서 기존 SAFE KOREA 앱을 선택하고 **카카오맵 > 사용 설정**을 확인합니다. 2026-11-01 계정에서 기존 `safe-korea` 앱을 확인했으므로 중복 생성하지 않습니다. 설정 저장과 실제 지도 인증은 아직 확인되지 않았습니다.
 2. Android 패키지명은 `kr.example.safe_korea`, iOS Bundle ID는 `kr.example.safeKorea`입니다. Android 개발 서명의 키 해시도 해당 앱에 등록해야 합니다. 배포 서명은 별도 등록 대상입니다.
-3. 지도 SDK용 **네이티브 앱 키**를 사용합니다. REST API 키·Admin 키·다른 사이트의 키를 사용하지 않습니다.
+3. **앱 > 플랫폼 키 > 네이티브 앱 키**에서 Android/iOS 정보를 등록하고 지도 SDK용 **네이티브 앱 키**를 사용합니다. REST API 키·Admin 키·다른 사이트의 키를 사용하지 않습니다.
 4. 예제 파일을 로컬 설정으로 복사하고 값을 채웁니다.
 
 ```sh
@@ -25,6 +25,12 @@ cp config/kakao.example.json config/kakao.local.json
 JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home .tools/flutter/bin/flutter run -d emulator-5556 --dart-define-from-file=config/kakao.local.json
 BYPASS_PERMISSION_LOCATION_ALWAYS=1 .tools/flutter/bin/flutter run -d E3A83EF7-8FD6-4656-AE84-EFA2E3136351 --dart-define-from-file=config/kakao.local.json
 ```
+
+## 무료 사용 범위 확인
+
+2026-11-01 확인한 [공식 카카오맵 안내](https://developers.kakao.com/docs/ko/kakaomap/common)에 따르면, 2026-07-21부터 개발자 계정에서 처음 카카오맵 API를 활성화한 앱에만 무료 쿼터를 제공합니다. 앱 정보의 **카카오맵 무료 쿼터** 배지를 확인해야 합니다. 다른 앱의 활성화를 해제하면 무료 대상이 옮겨진다고 가정하지 않습니다. 두 번째 활성화 앱이나 무료 한도 초과 사용은 유료 설정이 필요하므로 자동으로 비즈월렛·결제를 연결하지 않습니다.
+
+플랫폼 정보의 현재 설정 위치는 [앱 설정 문서](https://developers.kakao.com/docs/ko/app-setting/app)의 네이티브 앱 키 절을 따릅니다.
 
 ## 동작
 
