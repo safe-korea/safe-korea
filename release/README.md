@@ -9,9 +9,9 @@
 - store/ko-KR/full-description.txt: 4,000자 이내 상세 설명
 - store/ko-KR/upload-screenshots/: 제출용 JPEG 4장, 1080×1920. 투명도 없는 형식으로 인코딩만 변환했으며 내용·구도는 변경하지 않음.
 - store/ko-KR/screenshots/: 실제 Android API 36 원본 PNG 4장, 1080×1920. AI UI/가상 시설/개인정보/자동 경보 연출 없음. Android integration test로 캡처했고 원본을 편집하지 않음.
-- branding/icon-play-512.png: 기존 집 심볼을 정리한 Play 아이콘 시안. 최종 채택/Android launcher 적용 전 후보.
+- branding/icon-play-512.png: 사용자가 확정한 단순 진돗개 아이콘의 512px 파일. Android launcher 적용은 별도.
 - branding/feature-graphic-1024x500.png: 기능 그래픽 후보, SVG/HTML에서 코드로 렌더링.
-- branding/mascot-jindo-v1.png: AI 생성 캐릭터 제안. 앱에 미적용. 원본·프롬프트·적용 범위는 branding/BRIEF.md.
+- branding/mascot-jindo-v1.png: 사용자가 선택한 전신 진돗개. PWA 온보딩에 사용. 원본·프롬프트·적용 범위는 branding/BRIEF.md.
 
 ## 공개 페이지
 
@@ -26,7 +26,7 @@
 - 앱/개발자 표시명·고유 applicationId와 업로드 키/Play 서명, 카카오 배포 해시 등록 남음.
 - 카카오 SDK/Cloudflare 등 개인정보·위탁/국외 처리 최종 검토 남음.
 - 정책에 정한 문의 종료 후 최대 90일 보관/삭제는 운영자가 Gmail에서 직접 수행해야 하며 자동 삭제 기능은 구현하지 않음. 필요한 법정 보관 예외는 별도로 검토.
-- 앱 아이콘 시안은 아직 설치 앱의 launcher 아이콘이 아님. 캐릭터 권리/이름/최종 방향 검토 후 앱에 적용.
+- 진돗개 아이콘 디자인 확정. 설치 앱 launcher 적용과 캐릭터 권리/이름 검토는 남음.
 - 정부 원천 자료 이용 조건, 실기기 검증과 계정별 폐쇄 테스트 요건 남음.
 
 ## 캡처 재현

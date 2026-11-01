@@ -12,6 +12,11 @@ const origin = process.env.PWA_TEST_URL || 'http://127.0.0.1:8765';
       page.on('pageerror', e => errors.push(e.message));
       page.on('request', r => {if (!r.url().startsWith(origin) && /^https?:/.test(r.url())) external.push(r.url());});
       await page.goto(origin);
+      await page.locator('.tour-mascot').evaluate(image => image.decode());
+      const mascot = await page.locator('.tour-mascot').boundingBox();
+      const phone = await page.locator('#preview-open').boundingBox();
+      assert(mascot.width > 0 && mascot.x + mascot.width <= phone.x, 'Mascot must not cover the app preview');
+      assert.equal(await page.locator('.tour-mascot').getAttribute('alt'), '');
       // Show product value and real screenshots before asking the user to install.
       for (let slide = 0; slide < 3; slide++) {
         assert.equal(await page.locator('[data-slide][aria-current="step"]').count(), 1);
