@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../services/local_store.dart';
 import '../widgets/common.dart';
 import 'family_screen.dart';
+import 'radio_screen.dart';
+import 'supplies_screen.dart';
 
 const preparednessItems = <String, String>{
   'water': '생수 · 간편식',
@@ -155,7 +157,27 @@ class _ReadinessScreenState extends State<ReadinessScreen> {
         const Text(
           '참고: 행정안전부 국민안전24 · 비상시 행동요령\n원문 확인 2026-10-31 · 개인 상황에 맞게 준비하세요.',
         ),
+        const SizedBox(height: 24),
+        ActionTile(
+          icon: Icons.radio_outlined,
+          title: '라디오 연결',
+          subtitle: 'KBS 공식 서비스 · 인터넷 필요',
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute<void>(builder: (_) => const RadioScreen()),
+          ),
+        ),
         const SizedBox(height: 12),
+        ActionTile(
+          icon: Icons.shopping_bag_outlined,
+          title: '비상용품 준비',
+          subtitle: '구매 전 확인 · 판매처 준비 중',
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute<void>(builder: (_) => const SuppliesScreen()),
+          ),
+        ),
+        const SizedBox(height: 24),
         OutlinedButton.icon(
           onPressed: () =>
               showLicensePage(context: context, applicationName: 'SAFE KOREA'),

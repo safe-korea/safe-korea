@@ -227,3 +227,15 @@ UI UX Pro Max의 접근성·터치·반응형 체크리스트를 적용했습니
 - 네이티브 검증: iPhone 17 Pro/iOS 26.5, Android API 36에서 카카오 인증·배경·핀·확대·중앙 위치 선택·좌표 반환·읽기 전용 재열기 통과. Android 등록 핀 자동 검사와 양쪽 화면 캡처를 확인했습니다. 테스트는 공개 좌표를 사용하고 사용자 가족 DB에 쓰거나 메시지를 전송하지 않았습니다. 로그: `artifacts/meeting-map-iphone.log`, `artifacts/meeting-map-android.log`.
 
 - 검사 후 iPhone/Android 일반 앱 재실행 완료. 최종 format/analyze, Flutter 137건·Python 7건 통과 (`artifacts/meeting-map-verify.log`).
+
+## 2026-11-01 — 라디오·비상용품 UX/UI
+
+- UI UX Pro Max의 버튼 역할·터치 크기·반응형 체크리스트 및 기존 Material 3 토큰을 적용했습니다. 버튼 우선순위 검색 결과는 직접 맞지 않아 검색 결과를 근거로 일반화하지 않고 실제 캡처와 기존 디자인 규칙으로 판단했습니다.
+- 실제 iPhone 캡처에서 대피 후 화면의 라디오 카드가 과도하게 커진 것을 확인해 버튼+인터넷 안내의 작은 카드로 수정했습니다. 라디오 상세의 중복 설명을 줄이고, 비상용품 카드의 긴 설명을 `FM 수신 지원 · 전원 방식`으로 줄였습니다.
+- 대피 화면에는 물품 구매/광고 진입을 추가하지 않았습니다. 물품 화면의 제휴 판매처 미연결 상태를 명시하고 상품/가격/구매 버튼을 만들지 않았습니다.
+- 위젯 검사 6건 추가: 명시적 KBS URL 전달, 동시 열기 차단, 예외/false 실패 복구, 주소 복사, 나의 준비에서 화면 이동, 작은 화면·가로·태블릿과 글씨 확대. 전체 Flutter 143건·Python 7건·분석 통과.
+- 라디오의 실제 음성 재생, KBS 앱 설치/자동 채널 선택, 기본 FM 앱 실행, 실제 제휴 구매·광고 송출은 이번 구현/검사 범위가 아닙니다. 외부 사이트 장애는 앱 실행 성공과 별개입니다.
+
+- 최종 iPhone 17 Pro/iOS 26.5·Android API 36에서 준비 화면 → 비상용품/라디오 → 대피 후 라디오와 가족 공유 버튼 접근 통합 검사 통과. iPhone 캡처로 최종 정렬 확인. 외부 연결은 별도로 iPhone Safari에서 동일 KBS URL을 열어 공식 콩 안내 페이지 표시를 확인했으며, 앱 버튼에서 실제 방송 재생까지 검증한 것은 아닙니다.
+
+- 검사 후 iPhone/Android 일반 앱 재실행 완료. 최종 로그: `artifacts/radio-supplies-verify.log`, `artifacts/radio-supplies-iphone.log`, `artifacts/radio-supplies-android.log`.

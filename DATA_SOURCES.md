@@ -129,3 +129,9 @@
 - [삼성 FM 안내](https://www.samsung.com/in/support/mobile-devices/using-the-radio-app-on-my-samsung-phone/): 지원 Galaxy 기기의 기본 라디오로 인터넷 없이 수신 가능, 유선 이어폰이 필요한 기기가 있음. 모든 Galaxy/Android가 지원하는 것으로 일반화하지 않음.
 - [Galaxy FM SDK](https://developer.samsung.com/galaxy-fm-radio/overview.html): FM 하드웨어를 갖춘 Android 10 이상 삼성 기기 및 파트너 가입 조건. 현재 앱의 FM 수신 기능은 미구현이며 파트너 신청/기기 지원 검증을 하지 않음.
 - [Apple Music 개인정보 안내](https://images.apple.com/legal/privacy/data/en/apple-music/): 방송 재생 시 방송사로 네트워크 연결. 온라인 라디오를 통신 두절용 오프라인 수신 기능으로 안내하지 않음. 별도 휴대용 라디오 또는 실제 지원 기기 기본 앱이 대안이며, 앱만으로 FM 수신 하드웨어를 대체할 수 없음.
+
+## 라디오 연결 (2026-11-01)
+- 연결 대상: https://radio.kbs.co.kr/kong.html — KBS 공식 콩 안내 페이지. 공식 페이지의 Android/iOS 앱 설치 링크와 실시간 라디오 서비스 소개를 확인했습니다.
+- 앱은 사용자가 버튼을 누를 때만 외부 브라우저/연결 앱에 이 고정 URL을 전달합니다. URL에 위치·가족 정보·추적 파라미터를 추가하지 않습니다.
+- 이 연결은 곧바로 특정 방송을 재생하는 딥링크가 아니며, KBS 페이지에서 이용/설치 안내를 따르는 방식입니다. 방송 재생·채널 자동 선택·수신 성공을 표시하지 않습니다.
+- 비상용품 화면의 분류는 기존 동봉 준비물 목록 중 일부를 사용한 구매 전 확인 안내입니다. 개별 제품/판매처/광고 추천이 아니며 제휴 수익은 아직 발생하지 않습니다.

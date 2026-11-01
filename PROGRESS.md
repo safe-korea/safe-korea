@@ -428,3 +428,14 @@ Android API 36에서도 공식 서울시청 공개 사진 매칭/표시와 공�
 - 네이티브 검증: iPhone 17 Pro/iOS 26.5, Android API 36에서 카카오 인증·배경·핀·확대·중앙 위치 선택·좌표 반환·읽기 전용 재열기 통과. Android 등록 핀 자동 검사와 양쪽 화면 캡처를 확인했습니다. 테스트는 공개 좌표를 사용하고 사용자 가족 DB에 쓰거나 메시지를 전송하지 않았습니다. 로그: `artifacts/meeting-map-iphone.log`, `artifacts/meeting-map-android.log`.
 
 - 검사 후 iPhone/Android 일반 앱 재실행 완료. 최종 format/analyze, Flutter 137건·Python 7건 통과 (`artifacts/meeting-map-verify.log`).
+
+## 2026-11-01 — 라디오 연결과 비상용품 준비 영역
+- 기존 카드·아이콘·색상·여백을 재사용해 나의 준비 → 라디오 연결, 공습 대피 후 → KBS 라디오 연결을 추가했습니다. 대피 후 화면은 작은 연결 카드로 줄여 가족 상태 알리기 버튼과 행동 안내를 우선합니다.
+- 고정된 KBS 공식 콩 안내 URL을 사용자 동작에서만 외부로 엽니다. 인터넷 필요 표시, 중복 열기 차단, 실패 시 재시도·주소 복사, 오프라인 FM 지원 기기/휴대용 라디오 안내를 제공합니다. 자동 재생·직접 방송 수신은 미구현입니다.
+- 나의 준비 → 비상용품 준비에 4개 구매 전 확인 카드를 추가했습니다. 실제 제휴 판매처가 없음을 표시하고 허구의 상품·가격·광고·결제 버튼은 넣지 않았습니다.
+- 수익화 제안은 README에 기록: 평상시 준비 영역의 제휴 링크부터 검토, 광고/수수료 표시, 대피 화면 광고 배제, 위치/가족 정보 광고 타기팅 배제. 현재 광고 SDK·추적·수익 계약 없음.
+- 신규 회귀 검사 6건: 명시적 연결·중복 차단·예외/false 실패·주소 복사·화면 이동·375px 300%/568×320 200%/1024×768 200%에서 버튼 접근과 overflow. 전체 Flutter 143건·Python 7건, 정적 분석 통과.
+
+- 최종 iPhone 17 Pro/iOS 26.5·Android API 36에서 준비 화면 → 비상용품/라디오 → 대피 후 라디오와 가족 공유 버튼 접근 통합 검사 통과. iPhone 캡처로 최종 정렬 확인. 외부 연결은 별도로 iPhone Safari에서 동일 KBS URL을 열어 공식 콩 안내 페이지 표시를 확인했으며, 앱 버튼에서 실제 방송 재생까지 검증한 것은 아닙니다.
+
+- 검사 후 iPhone/Android 일반 앱 재실행 완료. 최종 로그: `artifacts/radio-supplies-verify.log`, `artifacts/radio-supplies-iphone.log`, `artifacts/radio-supplies-android.log`.

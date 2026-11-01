@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/alert_guidance.dart';
 import '../widgets/common.dart';
+import '../widgets/radio_link_card.dart';
 import 'status_share_screen.dart';
 
 /// Air-raid follow-up only; not a location or safety verification.
@@ -32,6 +33,8 @@ class AfterArrivalScreen extends StatelessWidget {
           body: Text('현장 안내를 따르며 도움이 필요한 사람을 살피세요.'),
         ),
         const SizedBox(height: 24),
+        const RadioLinkCard(compact: true),
+        const SizedBox(height: 16),
         FilledButton.icon(
           onPressed: () => Navigator.push(
             context,
