@@ -60,7 +60,7 @@ class _DrillElapsedTimerState extends State<DrillElapsedTimer>
     return Semantics(
       // Do not interrupt spoken guidance every second.
       label:
-          '연습 경과 ${elapsed.inMinutes}분 ${elapsed.inSeconds % 60}초. 대피 제한시간이 아닙니다.',
+          '훈련 시작 후 경과 ${elapsed.inMinutes}분 ${elapsed.inSeconds % 60}초. 대피 제한시간이 아닙니다.',
       excludeSemantics: true,
       child: Wrap(
         crossAxisAlignment: WrapCrossAlignment.center,
@@ -68,7 +68,7 @@ class _DrillElapsedTimerState extends State<DrillElapsedTimer>
         runSpacing: 4,
         children: [
           const Text(
-            '연습 경과',
+            '훈련 시작 후 경과',
             style: TextStyle(color: Colors.white, fontSize: 16),
           ),
           Text(
@@ -82,7 +82,7 @@ class _DrillElapsedTimerState extends State<DrillElapsedTimer>
             ),
           ),
           const Text(
-            '제한시간 아님',
+            '대피 여유시간 아님',
             style: TextStyle(color: Colors.white, fontSize: 13),
           ),
         ],

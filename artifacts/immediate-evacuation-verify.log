@@ -1,0 +1,235 @@
+Formatted 72 files (0 changed) in 0.12 seconds.
+Analyzing safe-korea-starter...                                 
+No issues found! (ran in 2.9s)
+00:00 +0: loading /Users/gimtaehyeong/Downloads/safe-korea-starter/test/action_brief_test.dart
+00:00 +0: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/meeting_place_test.dart: legacy plan and invalid coordinates remain readable
+00:00 +1: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/meeting_place_test.dart: editing and clearing meeting places preserves legacy contacts
+00:00 +2: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/meeting_place_test.dart: editing and clearing meeting places preserves legacy contacts
+00:00 +3: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/meeting_place_test.dart: editing and clearing meeting places preserves legacy contacts
+00:00 +4: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/meeting_place_test.dart: editing and clearing meeting places preserves legacy contacts
+00:00 +4: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/map_loading_test.dart: failed background keeps facility list usable and retry recovers without moving camera
+  [1m[flutter_map][0m
+    We want to help keep OpenStreetMap available for everyone. Our examples
+    and demo app use the public tile servers, but they are NOT free to use by
+    everyone! Please review whether the OpenStreetMap tile servers are suitable
+    for your project.
+    See:
+      * https://operations.osmfoundation.org/policies/tiles (OSM Tile Usage Policy)
+      * https://docs.fleaflet.dev/osm-warn for more information about this warning
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+00:00 +5: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/meeting_place_test.dart: editing and clearing meeting places preserves legacy contacts
+00:00 +6: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/meeting_place_test.dart: editing and clearing meeting places preserves legacy contacts
+00:00 +7: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/qa_internal_pages_test.dart: internal long content remains usable at 320px scale 1.0
+00:00 +7: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/map_loading_test.dart: failed background keeps facility list usable and retry recovers without moving camera
+  [1m[flutter_map][0m
+    We want to help keep OpenStreetMap available for everyone. Our examples
+    and demo app use the public tile servers, but they are NOT free to use by
+    everyone! Please review whether the OpenStreetMap tile servers are suitable
+    for your project.
+    See:
+      * https://operations.osmfoundation.org/policies/tiles (OSM Tile Usage Policy)
+      * https://docs.fleaflet.dev/osm-warn for more information about this warning
+00:00 +8: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/qa_internal_pages_test.dart: internal long content remains usable at 320px scale 1.0
+00:00 +8: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/meeting_place_test.dart: map requires precise selection and returns a chosen point
+  [1m[flutter_map][0m
+    We want to help keep OpenStreetMap available for everyone. Our examples
+    and demo app use the public tile servers, but they are NOT free to use by
+    everyone! Please review whether the OpenStreetMap tile servers are suitable
+    for your project.
+    See:
+      * https://operations.osmfoundation.org/policies/tiles (OSM Tile Usage Policy)
+      * https://docs.fleaflet.dev/osm-warn for more information about this warning
+00:01 +9: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/qa_internal_pages_test.dart: internal long content remains usable at 320px scale 1.0
+00:01 +10: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/meeting_place_test.dart: map requires precise selection and returns a chosen point
+00:01 +11: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/qa_internal_pages_test.dart: internal long content remains usable at 320px scale 2.0
+00:01 +11: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/meeting_place_test.dart: failed map cannot confirm a new pin and can be cancelled
+  [1m[flutter_map][0m
+    We want to help keep OpenStreetMap available for everyone. Our examples
+    and demo app use the public tile servers, but they are NOT free to use by
+    everyone! Please review whether the OpenStreetMap tile servers are suitable
+    for your project.
+    See:
+      * https://operations.osmfoundation.org/policies/tiles (OSM Tile Usage Policy)
+      * https://docs.fleaflet.dev/osm-warn for more information about this warning
+00:01 +12: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/qa_internal_pages_test.dart: internal long content remains usable at 320px scale 2.0
+00:01 +12: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/meeting_place_test.dart: failed map cannot confirm a new pin and can be cancelled
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+00:01 +13: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/qa_internal_pages_test.dart: internal long content remains usable at 320px scale 2.0
+00:01 +14: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/qa_internal_pages_test.dart: internal long content remains usable at 320px scale 2.0
+00:01 +15: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/qa_internal_pages_test.dart: internal long content remains usable at 320px scale 2.0
+00:01 +16: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/qa_internal_pages_test.dart: internal long content remains usable at 320px scale 2.0
+00:01 +17: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/qa_internal_pages_test.dart: internal long content remains usable at 320px scale 2.0
+00:01 +18: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/qa_internal_pages_test.dart: internal long content remains usable at 320px scale 2.0
+00:01 +19: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/drill_notifications_test.dart: screen defaults silent and recovers from platform error
+00:01 +19: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/meeting_place_test.dart: meeting form and map remain usable with large text
+  [1m[flutter_map][0m
+    We want to help keep OpenStreetMap available for everyone. Our examples
+    and demo app use the public tile servers, but they are NOT free to use by
+    everyone! Please review whether the OpenStreetMap tile servers are suitable
+    for your project.
+    See:
+      * https://operations.osmfoundation.org/policies/tiles (OSM Tile Usage Policy)
+      * https://docs.fleaflet.dev/osm-warn for more information about this warning
+00:01 +20: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/drill_notifications_test.dart: screen defaults silent and recovers from platform error
+00:01 +21: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/widget_test.dart: Korean home opens a clearly labeled drill and returns
+00:01 +22: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/widget_test.dart: Korean home opens a clearly labeled drill and returns
+00:01 +23: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/widget_test.dart: Korean home opens a clearly labeled drill and returns
+00:01 +24: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/widget_test.dart: Korean home opens a clearly labeled drill and returns
+00:01 +25: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/widget_test.dart: Korean home opens a clearly labeled drill and returns
+00:01 +26: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/widget_test.dart: Korean home opens a clearly labeled drill and returns
+00:02 +27: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/widget_test.dart: Korean home opens a clearly labeled drill and returns
+00:02 +28: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/app_completion_test.dart: bottom navigation switches screens and system back returns home
+00:02 +29: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/app_completion_test.dart: bottom navigation switches screens and system back returns home
+00:02 +30: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/app_completion_test.dart: bottom navigation switches screens and system back returns home
+00:02 +31: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/app_completion_test.dart: bottom navigation switches screens and system back returns home
+00:02 +32: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/app_completion_test.dart: bottom navigation switches screens and system back returns home
+00:02 +33: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/shelters_screen_test.dart: regional query caches results, failure preserves them, reopening needs no network
+00:02 +33: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/gps_map_test.dart: GPS is explicit, sorts loaded facilities and can be cleared
+  [1m[flutter_map][0m
+    We want to help keep OpenStreetMap available for everyone. Our examples
+    and demo app use the public tile servers, but they are NOT free to use by
+    everyone! Please review whether the OpenStreetMap tile servers are suitable
+    for your project.
+    See:
+      * https://operations.osmfoundation.org/policies/tiles (OSM Tile Usage Policy)
+      * https://docs.fleaflet.dev/osm-warn for more information about this warning
+00:02 +34: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/shelters_screen_test.dart: regional query caches results, failure preserves them, reopening needs no network
+00:03 +35: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/shelters_screen_test.dart: regional query caches results, failure preserves them, reopening needs no network
+00:03 +36: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/shelters_screen_test.dart: regional query caches results, failure preserves them, reopening needs no network
+00:03 +37: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/app_completion_test.dart: preparedness checks save, survive reopening and preserve prior value on failure
+00:03 +37: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/gps_map_test.dart: map centers on GPS and distinguishes location from facility pins
+  [1m[flutter_map][0m
+    We want to help keep OpenStreetMap available for everyone. Our examples
+    and demo app use the public tile servers, but they are NOT free to use by
+    everyone! Please review whether the OpenStreetMap tile servers are suitable
+    for your project.
+    See:
+      * https://operations.osmfoundation.org/policies/tiles (OSM Tile Usage Policy)
+      * https://docs.fleaflet.dev/osm-warn for more information about this warning
+00:03 +38: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/alert_guidance_test.dart: manual situation switches advice and resets when alert changes
+00:03 +39: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/alert_guidance_test.dart: manual situation switches advice and resets when alert changes
+00:03 +39: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/app_completion_test.dart: missing Kakao key keeps the app usable and shelter pin opens details
+  [1m[flutter_map][0m
+    We want to help keep OpenStreetMap available for everyone. Our examples
+    and demo app use the public tile servers, but they are NOT free to use by
+    everyone! Please review whether the OpenStreetMap tile servers are suitable
+    for your project.
+    See:
+      * https://operations.osmfoundation.org/policies/tiles (OSM Tile Usage Policy)
+      * https://docs.fleaflet.dev/osm-warn for more information about this warning
+00:03 +40: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/alert_guidance_test.dart: manual situation switches advice and resets when alert changes
+00:03 +41: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/alert_guidance_test.dart: manual situation switches advice and resets when alert changes
+00:03 +42: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/alert_guidance_test.dart: manual situation switches advice and resets when alert changes
+00:03 +43: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/alert_guidance_test.dart: manual situation switches advice and resets when alert changes
+00:03 +44: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/alert_guidance_test.dart: manual situation switches advice and resets when alert changes
+00:03 +45: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/alert_guidance_test.dart: manual situation switches advice and resets when alert changes
+00:03 +46: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/alert_guidance_test.dart: manual situation switches advice and resets when alert changes
+00:03 +47: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/alert_guidance_test.dart: manual situation switches advice and resets when alert changes
+00:03 +48: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/alert_guidance_test.dart: manual situation switches advice and resets when alert changes
+00:03 +49: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/alert_guidance_test.dart: manual situation switches advice and resets when alert changes
+00:03 +50: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/alert_guidance_test.dart: manual situation switches advice and resets when alert changes
+00:03 +51: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/map_and_saved_shelters_test.dart: same-location cluster can expose a facility list and select the intended shelter
+00:03 +52: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/map_and_saved_shelters_test.dart: same-location cluster can expose a facility list and select the intended shelter
+  [1m[flutter_map][0m
+    We want to help keep OpenStreetMap available for everyone. Our examples
+    and demo app use the public tile servers, but they are NOT free to use by
+    everyone! Please review whether the OpenStreetMap tile servers are suitable
+    for your project.
+    See:
+      * https://operations.osmfoundation.org/policies/tiles (OSM Tile Usage Policy)
+      * https://docs.fleaflet.dev/osm-warn for more information about this warning
+00:03 +53: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/map_and_saved_shelters_test.dart: same-location cluster can expose a facility list and select the intended shelter
+00:03 +54: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/map_and_saved_shelters_test.dart: same-location cluster can expose a facility list and select the intended shelter
+00:03 +55: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/map_and_saved_shelters_test.dart: same-location cluster can expose a facility list and select the intended shelter
+00:04 +56: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/local_store_test.dart: SQLite persists Korean plan across store instances, replaces and deletes
+00:04 +57: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/local_store_test.dart: SQLite persists Korean plan across store instances, replaces and deletes
+00:04 +58: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/region_and_refresh_test.dart: province-only suggestion clears district and prevents accidental query
+00:04 +59: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/region_and_refresh_test.dart: province-only suggestion clears district and prevents accidental query
+00:04 +60: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/saved_summary_test.dart: saved summary prioritizes map and aligns name with address
+00:04 +61: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/saved_summary_test.dart: saved summary prioritizes map and aligns name with address
+00:04 +62: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/saved_summary_test.dart: saved summary prioritizes map and aligns name with address
+00:04 +63: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/saved_summary_test.dart: saved summary prioritizes map and aligns name with address
+00:04 +64: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/saved_summary_test.dart: saved summary prioritizes map and aligns name with address
+00:04 +65: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/saved_summary_test.dart: saved summary prioritizes map and aligns name with address
+00:04 +66: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/saved_summary_test.dart: saved summary prioritizes map and aligns name with address
+00:04 +67: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/saved_summary_test.dart: saved summary prioritizes map and aligns name with address
+00:04 +68: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/local_store_test.dart: family form saves locally and confirms deletion
+00:04 +69: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/local_store_test.dart: family form saves locally and confirms deletion
+00:05 +70: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/local_store_test.dart: family form saves locally and confirms deletion
+00:05 +71: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/local_store_test.dart: family form saves locally and confirms deletion
+00:05 +72: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/local_store_test.dart: family form saves locally and confirms deletion
+00:05 +73: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/inner_alignment_test.dart: expanded guideline title and instructions share a content edge
+00:05 +74: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/inner_alignment_test.dart: expanded guideline title and instructions share a content edge
+00:05 +75: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/inner_alignment_test.dart: expanded guideline title and instructions share a content edge
+00:05 +76: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/local_store_test.dart: read failure blocks overwrite and write failure preserves input
+00:05 +77: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/local_store_test.dart: read failure blocks overwrite and write failure preserves input
+00:05 +78: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/local_store_test.dart: read failure blocks overwrite and write failure preserves input
+00:05 +79: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/meeting_share_test.dart: share failure keeps copy fallback available
+00:05 +80: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/meeting_share_test.dart: empty family plan still shows share action with an explanation
+00:06 +81: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/meeting_share_test.dart: long saved note does not push family sharing off screen
+00:06 +82: /Users/gimtaehyeong/Downloads/safe-korea-starter/test/meeting_share_test.dart: unsaved edits cannot share a stale saved snapshot
+00:06 +83: All tests passed!
+test_pcm_duration_and_no_clipping (test_drill_siren.SirenTests.test_pcm_duration_and_no_clipping) ... ok
+test_platform_assets_identical (test_drill_siren.SirenTests.test_platform_assets_identical) ... ok
+test_signal_timing_and_voice_assets (test_drill_siren.SirenTests.test_signal_timing_and_voice_assets) ... ok
+test_normalized_official_schema (test_import_shelters.ImportTests.test_normalized_official_schema) ... ok
+test_projected_or_invalid_coordinate_rejected (test_import_shelters.ImportTests.test_projected_or_invalid_coordinate_rejected) ... ok
+test_released_records_are_excluded (test_import_shelters.ImportTests.test_released_records_are_excluded) ... ok
+test_unknown_status_duplicate_date_and_missing_fields (test_import_shelters.ImportTests.test_unknown_status_duplicate_date_and_missing_fields) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.010s
+
+OK

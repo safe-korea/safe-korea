@@ -14,15 +14,20 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(theme: buildAppTheme(), home: const DrillScreen()),
       );
-      expect(find.text('대피시설 확인').hitTestable(), findsOneWidget);
+      expect(find.text('주변 대피소 보기').hitTestable(), findsOneWidget);
       expect(find.text('실내').hitTestable(), findsOneWidget);
-      expect(find.text('가까운 대피소로 이동').hitTestable(), findsOneWidget);
+      expect(find.text('지금 즉시 대피하세요').hitTestable(), findsOneWidget);
+      expect(find.text('물품을 찾느라 지체하지 마세요').hitTestable(), findsOneWidget);
+      expect(
+        tester.getTopLeft(find.text('주변 대피소 보기')).dy,
+        lessThan(tester.getTopLeft(find.text('지금 어디에 있나요?')).dy),
+      );
       await tester.ensureVisible(find.text('없으면 바로 대피하세요.'));
       expect(find.text('없으면 바로 대피하세요.').hitTestable(), findsOneWidget);
       expect(find.text('챙길 것 보기'), findsNothing);
       expect(find.text('준비된 배낭 · 물 · 상비약 · 손전등'), findsOneWidget);
       expect(
-        tester.getTopLeft(find.text('대피시설 확인')).dy,
+        tester.getTopLeft(find.text('주변 대피소 보기')).dy,
         lessThan(tester.getTopLeft(find.text('없으면 바로 대피하세요.')).dy),
       );
       expect(find.byType(Checkbox), findsNothing);

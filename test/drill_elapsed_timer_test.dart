@@ -32,7 +32,7 @@ void main() {
     tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
     await tester.pump();
     expect(find.text('71:09'), findsOneWidget);
-    expect(find.text('제한시간 아님'), findsOneWidget);
+    expect(find.text('대피 여유시간 아님'), findsOneWidget);
     await tester.pumpWidget(const SizedBox());
     expect(watch.stopped, isTrue);
     await tester.pump(const Duration(seconds: 2));

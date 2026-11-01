@@ -45,6 +45,7 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(find.text('대피시설 확인'), findsNothing);
+      expect(find.text('주변 대피소 보기'), findsNothing);
       await tester.ensureVisible(find.text('화학 공격 안내'));
       await tester.tap(find.text('화학 공격 안내'));
       await tester.pumpAndSettle();
@@ -53,6 +54,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('문·창문 닫기'), findsOneWidget);
       expect(find.text('대피시설 확인'), findsNothing);
+      expect(find.text('주변 대피소 보기'), findsNothing);
       expect(tester.takeException(), isNull);
     },
   );

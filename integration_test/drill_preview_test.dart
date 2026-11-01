@@ -11,7 +11,10 @@ void main() {
     await tester.tap(find.text('모의 공습경보 시작'));
     await tester.pumpAndSettle();
     await binding.takeScreenshot('drill');
-    expect(find.text('대피시설 확인').hitTestable(), findsOneWidget);
+    expect(find.text('주변 대피소 보기').hitTestable(), findsOneWidget);
+    expect(find.text('지금 즉시 대피하세요').hitTestable(), findsOneWidget);
+    expect(find.text('물품을 찾느라 지체하지 마세요').hitTestable(), findsOneWidget);
+    await tester.ensureVisible(find.text('없으면 바로 대피하세요.'));
     expect(find.text('없으면 바로 대피하세요.').hitTestable(), findsOneWidget);
     expect(find.text('챙길 것 보기'), findsNothing);
     expect(find.text('준비된 배낭 · 물 · 상비약 · 손전등'), findsOneWidget);

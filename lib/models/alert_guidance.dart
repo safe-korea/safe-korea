@@ -1,6 +1,6 @@
 /// Editorial summaries of MOIS guidance; never a detected or received alert.
 enum AlertKind {
-  air('공습경보', '지금 대피하세요'),
+  air('공습경보', '지금 즉시 대피하세요'),
   watch('경계경보', '대피를 준비하세요'),
   cbrn('화생방경보', '공격 종류를 확인하세요'),
   chemical('화학 공격', '오염된 공기를 피하세요'),

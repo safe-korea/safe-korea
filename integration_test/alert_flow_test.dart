@@ -41,6 +41,7 @@ void main() {
       await tester.tap(find.text('실내'));
       await tester.pumpAndSettle();
       expect(find.text('대피시설 확인'), findsNothing);
+      expect(find.text('주변 대피소 보기'), findsNothing);
       if (Platform.isIOS) await binding.takeScreenshot('chemical-indoor');
       await tester.pumpWidget(
         MaterialApp(

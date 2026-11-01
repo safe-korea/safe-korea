@@ -43,11 +43,24 @@ class _AlertGuideScreenState extends State<AlertGuideScreen> {
           style: const TextStyle(fontSize: 26, fontWeight: FontWeight.w800),
         ),
         const SizedBox(height: 16),
+        if (_kind == AlertKind.air) ...[
+          const Text('물품을 찾느라 지체하지 마세요'),
+          const SizedBox(height: 12),
+          FilledButton.icon(
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute<void>(builder: (_) => const SheltersScreen()),
+            ),
+            icon: const Icon(Icons.near_me_outlined),
+            label: const Text('주변 대피소 보기'),
+          ),
+          const SizedBox(height: 16),
+        ],
         AlertActions(
           kind: _kind,
           onKindChanged: (kind) => setState(() => _kind = kind),
         ),
-        if (_kind.offersShelters)
+        if (_kind.offersShelters && _kind != AlertKind.air)
           FilledButton.icon(
             onPressed: () => Navigator.push(
               context,

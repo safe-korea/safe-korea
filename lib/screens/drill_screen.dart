@@ -69,9 +69,9 @@ class _DrillScreenState extends State<DrillScreen> {
             children: [
               Text(
                 '${_kind.label} 연습',
-                style: const TextStyle(
+                style: TextStyle(
                   color: Colors.white,
-                  fontSize: 24,
+                  fontSize: _kind == AlertKind.air ? 18 : 24,
                   fontWeight: FontWeight.w800,
                 ),
               ),
@@ -80,17 +80,41 @@ class _DrillScreenState extends State<DrillScreen> {
                 _kind == AlertKind.air ? '실제 공습경보가 아닙니다' : '실제 경보가 아닙니다',
                 style: const TextStyle(color: Colors.white, fontSize: 14),
               ),
+              if (_kind == AlertKind.air) ...[
+                const SizedBox(height: 12),
+                const Text(
+                  '지금 즉시 대피하세요',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 28,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  '물품을 찾느라 지체하지 마세요',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
+              ],
               const SizedBox(height: 8),
               const DrillElapsedTimer(compact: true),
             ],
           ),
         ),
         const SizedBox(height: 16),
+        if (_kind == AlertKind.air) ...[
+          FilledButton.icon(
+            onPressed: () => _open(const SheltersScreen()),
+            icon: const Icon(Icons.near_me_outlined),
+            label: const Text('주변 대피소 보기'),
+          ),
+          const SizedBox(height: 16),
+        ],
         AlertActions(
           kind: _kind,
           onKindChanged: (kind) => setState(() => _kind = kind),
         ),
-        if (_kind.offersShelters)
+        if (_kind.offersShelters && _kind != AlertKind.air)
           FilledButton.icon(
             onPressed: () => _open(const SheltersScreen()),
             icon: const Icon(Icons.near_me_outlined),
