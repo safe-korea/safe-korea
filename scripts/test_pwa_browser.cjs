@@ -16,6 +16,10 @@ const origin = process.env.PWA_TEST_URL || 'http://127.0.0.1:8765';
       for (let slide = 0; slide < 3; slide++) {
         assert.equal(await page.locator('[data-slide][aria-current="step"]').count(), 1);
         await page.waitForFunction(() => { const image = document.getElementById('tour-image'); return image.complete && image.naturalWidth > 0; });
+        const geometry = await page.locator('#tour-image').evaluate(image => ({width:image.naturalWidth,height:image.naturalHeight,ratio:image.clientWidth/image.clientHeight}));
+        assert.equal(geometry.width,1206);
+        assert.equal(geometry.height,2622);
+        assert(Math.abs(geometry.ratio - 1206/2622) < .005, 'iPhone 17 Pro image must retain its full aspect ratio');
         await page.locator('#preview-open').click();
         assert(await page.locator('#preview-dialog').isVisible());
         assert.equal(await page.locator('#preview-full').getAttribute('src'),await page.locator('#tour-image').getAttribute('src'));

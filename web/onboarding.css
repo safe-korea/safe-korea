@@ -34,10 +34,10 @@ p { margin: 8px 0 16px; }
 .trust-note { font-size: .68rem; color: #53665e; margin: 6px 0 0; }
 .product-preview { position: relative; margin: 24px 0 0; display: flex; align-items: center; flex-direction: column; isolation: isolate; }
 .preview-backdrop { position: absolute; width: min(100%, 350px); height: 250px; bottom: 26px; border-radius: 50% 50% 24px 24px; background: #dfebe3; z-index: -1; }
-.phone-frame { padding: 0; cursor: zoom-in; width: 216px; height: 320px; border: 5px solid #17352d; border-bottom-width: 8px; border-radius: 26px; overflow: hidden; background: #f5f8f6; box-shadow: 0 16px 28px #17352d16; }
-.phone-frame img { display: block; width: 100%; height: auto; }
+.phone-frame { position: relative; padding: 0; cursor: zoom-in; width: 216px; height: auto; aspect-ratio: 1206 / 2622; box-sizing: content-box; border: 5px solid #17352d; border-bottom-width: 5px; border-radius: 26px; overflow: hidden; background: #f5f8f6; box-shadow: 0 16px 28px #17352d16; }
+.phone-frame img { display: block; width: 100%; height: auto; object-fit: contain; }
 figcaption { position: absolute; top: -22px; width: 100%; color: #53665e; font-size: .65rem; text-align: center; margin-top: 0; }
-.tour-actions { position: sticky; bottom: 0; background: #f5f8f6; padding: 16px 0 calc(12px + env(safe-area-inset-bottom)); margin-top: 4px; z-index: 2; }
+.tour-actions { position: static; background: #f5f8f6; padding: 16px 0 calc(12px + env(safe-area-inset-bottom)); margin-top: 4px; z-index: 2; }
 .tour-buttons { display: flex; gap: 10px; }
 #tour-next { flex: 1; }
 #tour-back { flex: 0 0 auto; }
@@ -73,12 +73,12 @@ nav button { background: white; border: 1px solid #8cab9d; color: #086b50; font-
   .tour-layout { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 32px; min-height: 540px; }
   .tour-copy { padding-bottom: 40px; }
   .intro { font-size: 1rem; }
-  .phone-frame { width: 270px; height: 430px; border-radius: 32px; }
+  .phone-frame { width: 248px; height: auto; border-radius: 32px; }
   .preview-backdrop { height: 350px; width: 400px; }
   .tour-actions { position: static; width: calc(50% - 16px); margin-top: 0; padding-bottom: 28px; }
 }
 @media(max-height: 750px) and (max-width: 759px) {
-  .phone-frame { width: 190px; height: 278px; }
+  .phone-frame { width: 174px; height: auto; }
   .product-preview { margin-top: 16px; }
 }
 @media(prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
@@ -93,3 +93,8 @@ nav button { background: white; border: 1px solid #8cab9d; color: #086b50; font-
 #preview-dialog::backdrop { background: #102b25bb; }
 #preview-dialog form { position: sticky; top: 0; text-align: right; margin: 0; padding-bottom: 8px; background: #f5f8f6; }
 #preview-full { display: block; width: 100%; height: auto; }
+
+/* Decorative device chrome stays inside the captured safe area. */
+.phone-frame::before { content: ""; position: absolute; top: 1.3%; left: 34.5%; width: 31%; height: 4.2%; border-radius: 999px; background: #111715; pointer-events: none; }
+/* Keep captions in flow so Safari font metrics cannot overlap the copy. */
+.product-preview figcaption { position: static; order: -1; margin: 0 0 10px; }

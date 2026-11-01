@@ -8,8 +8,8 @@
       description: '공습·화생방 등 비상 상황의 행동요령을\n쉽게 꺼내 보는 비상 대비 앱, SAFE KOREA.',
       benefit: '긴 설명보다, 먼저 할 행동부터',
       image: 'previews/air-guidance.png',
-      alt: '실제 공습 안내 화면: 실내를 선택하면 계단으로 이동하는 행동을 먼저 안내합니다.',
-      caption: '실제 웹 앱 화면 · 공습 행동요령',
+      alt: 'iPhone 17 Pro의 공습 안내 화면: 실내를 선택하면 계단으로 이동하는 행동을 먼저 안내합니다.',
+      caption: 'iPhone 17 Pro · 공습 행동요령',
       next: '내 상황에 맞는 안내 보기 →',
     },
     {
@@ -18,8 +18,8 @@
       description: '실내·실외·이동 중, 내 상황을 선택하세요.\n지금 할 일을 짧고 명확하게 확인할 수 있어요.',
       benefit: '위치 권한 없이, 직접 상황 선택',
       image: 'previews/outdoor-guidance.png',
-      alt: '실제 공습 안내 화면: 실외 선택 시 가까운 건물로 대피하라는 안내를 보여줍니다.',
-      caption: '실제 웹 앱 화면 · 실외 상황 선택',
+      alt: 'iPhone 17 Pro의 공습 안내 화면: 실외 선택 시 가까운 건물로 대피하라는 안내를 보여줍니다.',
+      caption: 'iPhone 17 Pro · 실외 상황 선택',
       next: '오프라인에서도 볼 수 있나요? →',
     },
     {
@@ -28,8 +28,8 @@
       description: '미리 저장한 행동요령은 인터넷 없이도.\n홈 화면에 두고 필요할 때 바로 꺼내 보세요.',
       benefit: '사전 저장 후 오프라인 이용 · 지도 제외',
       image: 'previews/guidance-list.png',
-      alt: '실제 행동요령 목록 화면: 공습·경계·화생방 등 상황별 안내를 선택합니다.',
-      caption: '실제 웹 앱 화면 · 상황별 행동요령',
+      alt: 'iPhone 17 Pro의 행동요령 목록 화면: 공습·경계·화생방 등 상황별 안내를 선택합니다.',
+      caption: 'iPhone 17 Pro · 상황별 행동요령',
       next: '내 폰에 준비하기 →',
     },
   ];

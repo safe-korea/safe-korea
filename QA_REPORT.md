@@ -283,3 +283,14 @@ UI UX Pro Max의 접근성·터치·반응형 체크리스트를 적용했습니
 - 서버 설명 정정: 공개 배포에 HTTPS 호스팅 서버는 필수입니다. 초기 배포안을 Cloudflare Pages Direct Upload로 구체화하고 _headers/404.html을 준비했습니다. 별도 API·DB 서버는 현재 미도입. 호스팅 전용 _headers가 오프라인 다운로드에 포함되지 않도록 제외/검사했습니다.
 - 외부 계정 생성·배포·push는 하지 않았습니다. 실제 iPhone 홈 화면 설치·VoiceOver·운영 호스팅의 헤더/HTTPS/업데이트 검증은 남아 있습니다.
 - 근거: artifacts/pwa-marketing-build.log, pwa-marketing-browser.log, pwa-marketing-verify.log, pwa-{chromium,webkit}-intro-*.png.
+
+## 2026-11-01 — iPhone 17 Pro 캡처와 앱 백엔드/클라우드 구분
+
+- 사용자 요청에 따라 공통 PWA 행동요령 위젯을 실제 iPhone 17 Pro/iOS 26.5 시뮬레이터에서 렌더링해 3장 재캡처했습니다. 각 PNG는 1206×2622이며, Safari 설치 테스트 증거와 구분합니다.
+- 고정 높이로 잘리던 온보딩 프레임을 원본 비율로 변경하고 모바일/데스크톱/가로에서도 전체 이미지를 유지합니다. 하단 버튼이 사진을 덮지 않도록 일반 흐름에 배치했습니다. 기기 상단 장식은 CSS이며 원본 이미지는 편집하지 않았습니다.
+- 네이티브 캡처 시나리오 통과, 이후 일반 앱 복구 완료. 위치/가족 DB/실제 경보에 접근하지 않았습니다.
+- 앱 서버 역할을 별도 문서화: Android와 PWA가 공유할 공식 시설 조회/검증/갱신/캐시 API. 현재 백엔드는 미구현이며 로그인/개인 동기화/실제 경보 서버도 미구현입니다.
+- Oracle 무료 VM은 초기 베타 API 실행 후보, Cloudflare Pages는 PWA 파일 제공용으로 구분했습니다. 2026-11-01 Oracle 공식 문서의 A1 총 2 OCPU/12 GB, 유휴 회수·생성 용량 조건 확인. 클라우드 계정 생성·서버 배포·결제는 하지 않았습니다.
+- Flutter 150건·Python 12건, format/analyze 통과. 근거: artifacts/iphone17-product-capture.log, iphone17-preview-verify.log, iphone17-preview-build.log, iphone17-preview-browser.log.
+
+- 최종 Chromium/WebKit 검사에서 3장 모두 1206×2622 원본 및 표시 종횡비 유지 확인. Safari 엔진의 percentage height 차이를 수정했고 오프라인 회귀 검사도 통과했습니다.
