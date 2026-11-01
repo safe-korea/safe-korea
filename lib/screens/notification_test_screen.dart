@@ -77,6 +77,7 @@ class _NotificationTestScreenState extends State<NotificationTestScreen> {
         const SizedBox(height: 12),
         Text(_kind.signal),
         SwitchListTile(
+          contentPadding: EdgeInsets.zero,
           title: Text(_kind.hasSiren ? '사이렌 켜기' : '음성 안내 켜기'),
           subtitle: Text(
             _kind.hasSiren
@@ -88,6 +89,7 @@ class _NotificationTestScreenState extends State<NotificationTestScreen> {
         ),
         if (defaultTargetPlatform == TargetPlatform.android)
           SwitchListTile(
+            contentPadding: EdgeInsets.zero,
             title: const Text('진동 켜기'),
             value: _vibration,
             onChanged: _busy
@@ -102,6 +104,7 @@ class _NotificationTestScreenState extends State<NotificationTestScreen> {
           icon: const Icon(Icons.notifications_outlined),
           label: Text(_busy ? '처리 중…' : '지금 테스트 알림 보내기'),
         ),
+        const SizedBox(height: 8),
         OutlinedButton(
           onPressed: _busy ? null : () => _perform(cancel: true),
           child: const Text('테스트 알림 지우기'),

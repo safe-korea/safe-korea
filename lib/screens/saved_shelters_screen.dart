@@ -78,7 +78,7 @@ class _SavedSheltersScreenState extends State<SavedSheltersScreen> {
         return PageBody(
           children: [
             const Text(
-              '기기에 저장된 목록 · 개방 여부는 현장 확인',
+              '이름·주소는 오프라인으로 확인할 수 있어요.\n지도·최신 자료 조회에는 인터넷이 필요해요.',
               style: TextStyle(fontSize: 14),
             ),
             const SizedBox(height: 12),

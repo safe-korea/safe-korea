@@ -152,6 +152,7 @@ class _MeetingShareScreenState extends State<MeetingShareScreen> {
           label: const Text('내용 복사'),
         ),
         ExpansionTile(
+          expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
           tilePadding: EdgeInsets.zero,
           title: const Text('전송 내용 전체 보기'),
           children: [

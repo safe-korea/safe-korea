@@ -171,7 +171,8 @@ class _DrillScreenState extends State<DrillScreen> {
         const Text('정부 방송·현장 지시를 우선하세요.', style: TextStyle(fontSize: 14)),
         if (_kind == AlertKind.air)
           ExpansionTile(
-            tilePadding: const EdgeInsets.symmetric(horizontal: 8),
+            expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
+            tilePadding: EdgeInsets.zero,
             title: const Text('행동요령 보기'),
             childrenPadding: const EdgeInsets.symmetric(vertical: 16),
             children: [
@@ -202,6 +203,7 @@ class _DrillScreenState extends State<DrillScreen> {
               ),
               const SizedBox(height: 16),
               ExpansionTile(
+                expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
                 tilePadding: EdgeInsets.zero,
                 title: const Text('대피 장소와 이동 방법 자세히'),
                 children: const [
@@ -214,6 +216,7 @@ class _DrillScreenState extends State<DrillScreen> {
                 ],
               ),
               ExpansionTile(
+                expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
                 tilePadding: EdgeInsets.zero,
                 title: const Text('연습 체크 · 선택 사항'),
                 subtitle: const Text('체크하지 않아도 모든 기능을 사용할 수 있어요'),

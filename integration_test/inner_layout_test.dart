@@ -6,6 +6,8 @@ import 'package:integration_test/integration_test.dart';
 import 'package:safe_korea/services/local_store.dart';
 import 'package:safe_korea/services/saved_shelters_controller.dart';
 import 'package:safe_korea/screens/family_screen.dart';
+import 'package:safe_korea/screens/notification_test_screen.dart';
+import 'package:safe_korea/screens/alert_guide_screen.dart';
 import 'package:safe_korea/screens/guidelines_screen.dart';
 import 'package:safe_korea/screens/readiness_screen.dart';
 import 'package:safe_korea/screens/shelters_screen.dart';
@@ -52,6 +54,10 @@ void main() {
       if (Platform.isIOS) await binding.takeScreenshot(name);
     }
 
+    await mount(const NotificationTestScreen());
+    await capture('notification-settings-review');
+    await mount(const AlertGuideScreen());
+    await capture('situational-guide-review');
     await mount(const GuidelinesScreen());
     await tester.tap(find.text('공습경보'));
     await tester.pumpAndSettle();
@@ -70,6 +76,7 @@ void main() {
     final catalog = fixture('11110', '테스트 지역', '정렬 검증');
     await saved.toggle(catalog, catalog.shelters.first.id);
     await mount(SheltersScreen(catalog: catalog, savedShelters: saved));
+    await capture('shelters-review');
     await tester.ensureVisible(find.text(catalog.shelters.first.name));
     await tester.tap(find.text(catalog.shelters.first.name));
     await tester.pumpAndSettle();

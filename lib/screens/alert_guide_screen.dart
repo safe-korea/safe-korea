@@ -80,6 +80,8 @@ class _AlertGuideScreenState extends State<AlertGuideScreen> {
         const SizedBox(height: 12),
         const Text('정부 방송·현장 지시를 우선하세요.', style: TextStyle(fontSize: 14)),
         ExpansionTile(
+          expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
+          tilePadding: EdgeInsets.zero,
           title: const Text('경보 신호와 출처'),
           children: [
             Text(_kind.signal),

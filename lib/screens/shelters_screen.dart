@@ -352,6 +352,17 @@ class _SheltersScreenState extends State<SheltersScreen> {
               ),
               const SizedBox(height: 12),
             ],
+            OutlinedButton.icon(
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute<void>(
+                  builder: (_) => SavedSheltersScreen(controller: _saved),
+                ),
+              ),
+              icon: const Icon(Icons.bookmark_outline),
+              label: const Text('저장한 대피소 · 오프라인 목록'),
+            ),
+            const SizedBox(height: 12),
             FilledButton.icon(
               onPressed: _locating || _suggesting ? null : _locate,
               icon: const Icon(Icons.my_location),
@@ -383,6 +394,7 @@ class _SheltersScreenState extends State<SheltersScreen> {
               ),
               const SizedBox(height: 12),
               ExpansionTile(
+                expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
                 tilePadding: EdgeInsets.zero,
                 title: const Text('현재 위치로 지역 찾기'),
                 children: [
@@ -566,6 +578,7 @@ class _SheltersScreenState extends State<SheltersScreen> {
               ],
               const SizedBox(height: 12),
               ExpansionTile(
+                expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
                 tilePadding: EdgeInsets.zero,
                 title: const Text('자료 출처와 조회 시각'),
                 children: [
@@ -705,6 +718,7 @@ class _SheltersScreenState extends State<SheltersScreen> {
             const SizedBox(height: 8),
             const Text('개방 여부·수용 여유는 현장 확인', style: TextStyle(fontSize: 14)),
             ExpansionTile(
+              expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
               tilePadding: EdgeInsets.zero,
               title: const Text('시설 자료 상세'),
               children: [

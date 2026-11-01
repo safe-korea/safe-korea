@@ -98,6 +98,7 @@ class _GuidelinesScreenState extends State<GuidelinesScreen> {
               style: TextStyle(fontSize: 14),
             ),
             ExpansionTile(
+              tilePadding: EdgeInsets.zero,
               title: const Text('출처와 확인 날짜'),
               expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
               children: [

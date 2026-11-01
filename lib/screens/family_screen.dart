@@ -349,6 +349,7 @@ class _FamilyScreenState extends State<FamilyScreen> {
                     ),
                   if (_savedPlan.note.isNotEmpty)
                     ExpansionTile(
+                      tilePadding: EdgeInsets.zero,
                       title: const Text('가족 약속 보기'),
                       expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [SelectableText(_savedPlan.note)],
@@ -436,6 +437,8 @@ class _FamilyScreenState extends State<FamilyScreen> {
                 if (_savedPlan.meetingPoint != null ||
                     _savedPlan.backupPoint != null)
                   ExpansionTile(
+                    expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
+                    tilePadding: EdgeInsets.zero,
                     title: const Text('저장된 좌표 상세'),
                     children: [
                       for (final entry in [
@@ -449,6 +452,7 @@ class _FamilyScreenState extends State<FamilyScreen> {
                     ],
                   ),
                 const ExpansionTile(
+                  tilePadding: EdgeInsets.zero,
                   title: Text('저장·보관 안내'),
                   expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
