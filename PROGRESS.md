@@ -515,3 +515,15 @@ Android API 36에서도 공식 서울시청 공개 사진 매칭/표시와 공�
 - config/api.production.json에 공개 URL 기록, 해당 설정으로 PWA release 빌드. 로컬 PWA→공개 Workers 연결을 Chromium/WebKit에서 검증: 실제 지역 선택·72곳·지도 버튼·오프라인 재조회 시 이전 결과/경고 유지 PASS.
 - 서버 단위 테스트 13건·TypeScript check·배포 전 dry-run 통과. 기존 Flutter 소스는 변경하지 않았으며 직전 163건/Python 12건 회귀 결과는 유지. 이번 검증 증거: artifacts/worker-production-{deploy.log,smoke.json,pwa-build.log,browser.log}.
 - 공개 PWA 사이트 호스팅과 기존 설치 앱 업데이트는 별개이며 실행하지 않음. 정확한 localhost origin 4개만 임시 허용; PWA 공개 도메인 결정 시 교체/추가 필요. 정부 자료 이용·재배포 조건, 운영 정책, 전국/다중 리전 부하·무료 한도 장기 검증은 출시 점검에 남음. GitHub push 없음.
+
+## 2026-11-01 — 공개 정책·문의·Play 제출 자료·브랜드 시안
+
+- 사용자 확인 정보: 공개 운영자 표시명 safeKor (safeK에서 최종 수정), 문의 taetaeg@gmail.com. 인증 계정 이메일을 임의로 공개하지 않음.
+- /privacy, /support 한국어 HTML 작성·공개 배포. 로그인이 필요 없고 HTML GET/HEAD만 제공하며 분석/추적 스크립트·폼·외부 폰트 없음. CSP·no-referrer·Permissions-Policy 적용. Workers 버전 6bb20891-6f66-4b9a-a3c8-8addb7585096. 기존 API health·실제 지역 조회 회귀 통과.
+- Android 데이터와 권한/PWA 홈에 공개 정책·문의·mailto 버튼 연결. 이메일 자동 전송 없음. 정책의 문의 종료 후 최대 90일 보관·삭제는 운영자가 메일함에서 수행할 절차로 명시; 자동화된 삭제가 있다고 주장하지 않음.
+- release/store/ko-KR에 앱 이름 24/30자, 짧은 설명 45/80자, 상세 설명 1295/4000자. 실제 정부 경보 미수신·비공식 앱·인터넷/오프라인 범위·시설 개방/경로 보장 금지를 명확히 구분.
+- API 36 실제 Android 위젯의 홈/행동강령/실내/실외 4장 캡처. 임시 1080×1920으로 촬영 후 원래 에뮬레이터 크기 복구, 일반 앱 재설치/실행. GPS·개인 계획·연락처 접근, 사이렌/테스트 알림 발송 없음. 원본 PNG와 제출용 JPEG(인코딩만 변환) 분리 보관.
+- 기존 집 모티브의 SVG/512px RGBA Play 아이콘, 1024×500 RGB 배너 시안 생성. 내장 image_gen으로 흰 진돗개 캐릭터 생성, 원본 PNG·프롬프트·적용 원칙 보존. 기존 Android launcher 및 긴급 UI는 변경하지 않음. 캐릭터는 온보딩/평상시 준비용 제안.
+- 데이터 보안 신고 작업지 작성. 기기 내 저장과 지도/CDN 전송, 시스템 Geocoder, 문의 메일, 사용자 선택 공유를 구분. kakao_map_sdk 1.3.1/native Android 2.15.2 확인. SDK 세부 자동 수집·보관/공유·국외 처리 최종 검토는 보류, 임의 No 신고/Play 제출 없음.
+- format/analyze 및 Flutter 163건·Python 12건·Workers 15건 통과. Android 캡처 통과/일반 앱 복구, PWA build 통과. Chromium/WebKit 공개 정책(360px·150% 글씨·무쿠키/추가 요청 없음), 온보딩/오프라인·공개 API 조회 회귀 통과.
+- 근거: artifacts/store-*.log, artifacts/public-*.png, release/ 자료. 공개 전 비밀 설정값 스캔 통과. 앱 ID·서명·Play 등록/심사·정책의 SDK 최종 검토·아이콘 최종 채택은 남음.

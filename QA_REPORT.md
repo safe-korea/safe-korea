@@ -312,3 +312,12 @@ UI UX Pro Max의 접근성·터치·반응형 체크리스트를 적용했습니
 - 공개 서버 /health 200, 지역 11140 실제 정부 자료 72/72곳 200, cache hit, 불필요한 위치 파라미터 400, 미허용 Origin 403 확인. `artifacts/worker-production-smoke.json`의 상태/건수/실제 경보 false 값 자동 단언 통과.
 - production API URL로 PWA release 빌드 후 Chromium/macOS WebKit 실연결 PASS. `SHELTER_TEST_API_URL=https://safe-korea-shelter-api.trovapp.workers.dev node scripts/test_worker_pwa.cjs`. 캡처는 기존 worker-pwa-{chromium,webkit}.png와 동일한 화면.
 - 원천 요청이 성공한 특정 지역/요청의 운영 검증이며 모든 지역·리전·장애 상황의 보장이 아님. PWA 사이트는 아직 로컬 호스팅, 실제 iPhone 설치/배포는 수행하지 않음.
+
+## 2026-11-01 스토어 준비/공개 개인정보 안내
+
+- 정적 분석 0 issues, Flutter 163·Python 12·Worker 15 tests PASS.
+- 공개 /privacy, /support: Chromium/macOS WebKit HTTP200, 확인된 운영자/이메일, 360px 화면 및 150% 글씨 가로 넘침 없음, JS/form/추가 요청/쿠키 없음. HEAD·후행 슬래시·POST405·API 경로 분리 단위 검증.
+- 공개 API 기존 지역 72곳·오프라인 오류 회귀와 PWA 온보딩·오프라인 회귀 모두 PASS. 새 페이지용 정적 라우팅이 기존 CORS/시설 검증을 바꾸지 않음.
+- Android API36에서 실제 앱 화면 4장 캡처 PASS(1080×1920). 촬영 후 wm size reset 및 정상 main.dart 앱 복구. 저장된 개인정보를 읽는 화면·지도·GPS·알림음을 캡처하지 않음.
+- Play 제출용 이미지: 원본 RGBA PNG와 내용 동일한 JPEG 4장(규격 확인), 아이콘 512×512 RGBA PNG <1MiB, 기능 배너 1024×500 RGB PNG. 텍스트 길이 title 24, short 45, full 1295.
+- 캐릭터는 AI 생성 제안으로 표기, 실제 앱 스크린샷과 분리. 앱 launcher 미교체. 스토어 입력/정책 공개가 심사 승인이나 법적/SDK 검증 완료를 의미하지 않음.

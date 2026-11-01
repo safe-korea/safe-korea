@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../widgets/common.dart';
+import '../widgets/public_support_links.dart';
 
-/// Factual in-app disclosure; the operator's published policy is still required.
+/// In-app disclosure plus the operator's public policy and contact links.
 class DataPermissionsScreen extends StatelessWidget {
   const DataPermissionsScreen({super.key});
   @override
@@ -63,6 +64,8 @@ class DataPermissionsScreen extends StatelessWidget {
           ],
         ),
         SizedBox(height: 16),
+        PublicSupportLinks(),
+        SizedBox(height: 20),
         Text('현재 앱 동작 안내 · 2026-11-01', style: TextStyle(fontSize: 14)),
       ],
     ),

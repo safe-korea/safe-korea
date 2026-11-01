@@ -10,6 +10,7 @@ import 'screens/pwa_shelters_screen.dart';
 import 'theme/app_theme.dart';
 import 'widgets/action_brief.dart';
 import 'widgets/common.dart';
+import 'widgets/public_support_links.dart';
 import 'widgets/guideline_step.dart';
 
 Future<void> main() async {
@@ -153,6 +154,8 @@ class _PwaGuidanceHomeState extends State<PwaGuidanceHome> {
                 ),
               ],
             ),
+            const SizedBox(height: 20),
+            const PublicSupportLinks(),
             TextButton(
               onPressed: () => showLicensePage(
                 context: context,

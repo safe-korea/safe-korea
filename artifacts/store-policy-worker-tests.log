@@ -1,0 +1,26 @@
+> test
+> node --test test/*.test.js
+
+✔ fixed official request, source date, canonical region and missing source update date (13.717208ms)
+✔ cache hits reuse timestamp without sharing CORS origin (1.659708ms)
+✔ no coordinates, arbitrary proxy URL, duplicate or unknown region accepted (0.481ms)
+✔ unknown browser origin denied, native requests allowed, POST rejected (0.409458ms)
+✔ CORS preflight and health never contact upstream (0.162916ms)
+✔ upstream failure returns explicitly stale bounded data, never renews retrieval date (0.557791ms)
+✔ invalid source never populates a cache or exposes raw upstream errors (0.208042ms)
+✔ source limiter returns Retry-After and is not consulted for valid cache hits (0.40275ms)
+✔ same-isolate concurrent source misses share one upstream request (12.560417ms)
+✔ cache storage failure does not hide fresh valid data (0.358542ms)
+✔ normalization preserves entrance, counts exclusions and rejects identity conflict (0.230084ms)
+✔ bounded upstream body rejects HTML, declared/chunked oversize and invalid UTF-8 (0.789458ms)
+✔ upstream redirects are rejected without following another host (0.141334ms)
+✔ policy and contact are public Korean HTML with confirmed identity and no scripts or forms (12.490709ms)
+✔ HEAD, trailing slash and unsupported methods preserve API route isolation (0.302542ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 76.646666

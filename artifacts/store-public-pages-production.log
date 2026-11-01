@@ -1,0 +1,2 @@
+chromium: https://safe-korea-shelter-api.trovapp.workers.dev policy/contact HTTP200, confirmed operator/email, narrow/large text, no extra requests/cookies PASS
+webkit: https://safe-korea-shelter-api.trovapp.workers.dev policy/contact HTTP200, confirmed operator/email, narrow/large text, no extra requests/cookies PASS

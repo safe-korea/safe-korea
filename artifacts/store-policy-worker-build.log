@@ -1,0 +1,14 @@
+> build
+> WRANGLER_SEND_METRICS=false wrangler deploy --dry-run --outdir dist
+
+
+ ⛅️ wrangler 4.156.0
+────────────────────
+Total Upload: 50.64 KiB / gzip: 12.99 KiB
+Your Worker has access to the following bindings:
+Binding                                                                     Resource
+env.UPSTREAM_REGION_LIMIT (1 requests/60s)                                  Rate Limit
+env.UPSTREAM_TOTAL_LIMIT (20 requests/60s)                                  Rate Limit
+env.ALLOWED_ORIGINS ("http://127.0.0.1:8765,http://127.0.0....")            Environment Variable
+
+--dry-run: exiting now.

@@ -1,0 +1,2 @@
+chromium: http://127.0.0.1:8787 policy/contact HTTP200, confirmed operator/email, narrow/large text, no extra requests/cookies PASS
+webkit: http://127.0.0.1:8787 policy/contact HTTP200, confirmed operator/email, narrow/large text, no extra requests/cookies PASS

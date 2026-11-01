@@ -28,5 +28,14 @@
         "period": 60
       }
     }
+  ],
+  "rules": [
+    {
+      "type": "Text",
+      "globs": [
+        "**/*.html"
+      ],
+      "fallthrough": true
+    }
   ]
 }

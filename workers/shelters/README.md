@@ -24,6 +24,10 @@ python3 -m http.server 8766 --bind 127.0.0.1 --directory build/web
 
 브라우저 `http://127.0.0.1:8766`에서 행동요령 → 지역별 대피소 찾기. Android도 `--dart-define=SHELTER_API_BASE_URL=https://운영-API-도메인`으로 동일 API를 사용합니다. 공개 API URL은 `config/api.production.json`에 저장했습니다. `./scripts/build_pwa.sh --dart-define-from-file=config/api.production.json` 또는 `./scripts/run_app.sh DEVICE --dart-define-from-file=config/api.production.json`으로 사용합니다. 별도 설정 없는 빌드는 기존 동작을 유지하며 이미 설치한 앱은 자동으로 바뀌지 않습니다. 배포 빌드에 localhost를 사용하지 마세요.
 
+## 공개 개인정보·문의 페이지
+
+`GET/HEAD /privacy`, `/support`는 로그인·CORS 제한 없이 열리는 정적 한국어 HTML입니다. 운영자 safeKor, 공개 문의 taetaeg@gmail.com. 외부 글꼴·스크립트·분석·입력 폼 없이 제공하고 CSP/Referrer-Policy를 적용합니다. 정부 데이터 API의 기존 지역 검증/CORS/캐시 규칙은 유지합니다. 개인정보 문서는 알려진 처리 흐름의 공개 안내이며 SDK·위탁·국외 처리 최종 검토가 끝났다는 의미는 아닙니다. 문의 종료 후 90일 삭제는 운영자의 메일함 운영 절차이며 자동화하지 않았습니다.
+
 ## 계약과 장애 처리
 
 - `GET /api/shelters?region=11140`: `assets/regions.json`에 있는 지역 코드 하나만 허용. 위도/경도·임의 URL·중복 파라미터는 400.
@@ -38,7 +42,7 @@ python3 -m http.server 8766 --bind 127.0.0.1 --directory build/web
 ## 배포 상태와 정식 출시 전에 남은 작업
 
 1. 정부 자료 이용·재배포·요청량 조건 확인, 필요 시 문서화된 공식 API로 교체.
-2. 사용자 배포 승인 완료. `wrangler.production.jsonc`의 `workers_dev:true`로 기본 도메인 배포, preview URL/observability는 끔. 개발 설정은 그대로 보존. 배포 명령: `WRANGLER_SEND_METRICS=false workers/shelters/node_modules/.bin/wrangler deploy --config workers/shelters/wrangler.production.jsonc`. 현재 버전 `f878347c-ddd7-4c94-bfa7-0f2e599effe8`.
+2. 사용자 배포 승인 완료. `wrangler.production.jsonc`의 `workers_dev:true`로 기본 도메인 배포, preview URL/observability는 끔. 개발 설정은 그대로 보존. 배포 명령: `WRANGLER_SEND_METRICS=false workers/shelters/node_modules/.bin/wrangler deploy --config workers/shelters/wrangler.production.jsonc`. 현재 버전 `6bb20891-6f66-4b9a-a3c8-8addb7585096`.
 3. PWA 사이트는 아직 미배포입니다. 현재는 로컬 브라우저 검증을 위한 정확한 localhost origin 4개만 허용하며 와일드카드는 없습니다. PWA 사이트 배포 시 실제 origin을 등록하고 localhost 제거 여부를 결정합니다. HTTPS 운영 API 주소로 앱 재빌드. CORS는 인증이 아니며 네이티브/Origin 없는 요청은 허용합니다.
 4. 기존 Worker 2개의 rate binding과 ID 충돌 없음 확인. 배포 시 Cloudflare API로 Free 플랜 확인. CPU 사용자 지정 한도는 무료 플랜에서 지원하지 않아 제거했고 무료 플랜 기본 제한을 사용합니다. 유료 플랜/결제 변경 없음.
 5. 배포된 URL에서 health 200, 정부 자료 72곳과 cache hit, 잘못된 파라미터 400, 미허용 Origin 403 확인. 대규모 CPU/메모리/무료 요청량·다중 리전 부하/장애 복구 검증은 남음. 로컬 성공은 무료 플랜 CPU 한도나 운영 SLA 보장이 아닙니다.

@@ -103,11 +103,13 @@ BYPASS_PERMISSION_LOCATION_ALWAYS=1 .tools/flutter/bin/flutter test integration_
 
 ## 데이터·개인정보
 
+운영자 **safeKor** · 문의 **taetaeg@gmail.com**. [공개 개인정보처리방침](https://safe-korea-shelter-api.trovapp.workers.dev/privacy) · [문의/삭제 안내](https://safe-korea-shelter-api.trovapp.workers.dev/support). 앱의 나의 준비 → 데이터와 권한에서도 열 수 있습니다. [스토어 설명·실제 Android 스크린샷·아이콘/캐릭터 시안·데이터 보안 작업지](release/README.md)는 제출 준비 자료이며 Play Console에 제출하지 않았습니다.
+
 [DATA_SOURCES.md](DATA_SOURCES.md)에 정부 원문, 확인일, 대피시설 확보 제한 및 연결 절차를 기록했습니다. 행동강령은 `assets/guidelines.json`, 시설 자료는 `assets/shelters.json`입니다. 원문의 확인일을 정부 자료 갱신일로 혼동하지 않습니다.
 
-GPS는 앱에서 저장하지 않습니다. **거리 계산**은 기기 안에서 처리합니다. **위치로 조회 지역 제안받기**는 별도 안내 후 사용자가 누를 때만 좌표를 Apple/Google 등 기기 주소 변환 서비스에 전달할 수 있습니다. 이 서비스는 [geocoding 공식 패키지](https://pub.dev/packages/geocoding)의 OS 기능을 사용하며 앱 자체 서버·유료 API 키는 추가하지 않습니다. 2분 이상 오래되거나 오차가 1km를 넘는 위치로는 지역 변환을 요청하지 않습니다. 공식 시설 조회에는 선택 지역 코드와 IP만 정부 사이트에 전달됩니다. 온라인 지도는 별도 선택 시 조회하며, 지도 제공자에 IP와 조회 범위가 전달됩니다. 지도는 오프라인 기능에 포함되지 않습니다. OSM 저작자 표시·앱 User-Agent·기본 타일 캐시를 사용하며 대량 다운로드는 하지 않습니다.
+GPS는 앱에서 저장하지 않습니다. **거리 계산**은 기기 안에서 처리합니다. **위치로 조회 지역 제안받기**는 별도 안내 후 사용자가 누를 때만 좌표를 Apple/Google 등 기기 주소 변환 서비스에 전달할 수 있습니다. 이 서비스는 [geocoding 공식 패키지](https://pub.dev/packages/geocoding)의 OS 기능을 사용하며 앱 자체 서버·유료 API 키는 추가하지 않습니다. 2분 이상 오래되거나 오차가 1km를 넘는 위치로는 지역 변환을 요청하지 않습니다. 시설 조회 시 지역 코드와 접속 IP가 설정된 Workers 또는 직접 정부 사이트에 전달됩니다. Workers는 원천 조회에 지역 코드만 사용하고 사용자 IP를 원천에 전달하지 않습니다. 온라인 지도는 별도 선택 시 조회하며, 지도 제공자에 IP와 조회 범위가 전달됩니다. 지도는 오프라인 기능에 포함되지 않습니다. OSM 저작자 표시·앱 User-Agent·기본 타일 캐시를 사용하며 대량 다운로드는 하지 않습니다.
 
-가족 계획은 암호화되지 않은 기기 내부 SQLite에 저장합니다. Android 앱 백업은 비활성화했고 iOS Documents는 저장 전 백업 대상에서 제외합니다. 자동 연락, 가족 위치 추적, 로그인, 분석 도구, 서버, Firebase는 없습니다. 기기 분실·고장에 대비해 종이 연락카드도 보관하세요.
+가족 계획은 암호화되지 않은 기기 내부 SQLite에 저장합니다. Android 앱 백업은 비활성화했고 iOS Documents는 저장 전 백업 대상에서 제외합니다. 자동 연락, 가족 위치 추적, 로그인, 개발자 분석 도구, 개인 정보 저장 서버, Firebase는 없습니다. 공용 시설 조회용 Workers는 별도로 운영하며 네트워크 제공자는 요청 정보를 처리합니다. 기기 분실·고장에 대비해 종이 연락카드도 보관하세요.
 
 ## iPhone 17 Pro 미리보기
 
