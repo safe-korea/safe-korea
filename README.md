@@ -28,10 +28,10 @@
 
 ## 실행
 
-현재 개발 위치는 `/Users/gimtaehyeong/Downloads/safe-korea-starter`입니다. Mac 전역 설정을 보존하기 위해 Flutter를 프로젝트 `.tools/flutter`에 설치했습니다.
+현재 개발 위치는 Orca 워크스페이스 `/Users/gimtaehyeong/orca/safe-korea`입니다. `feat/safe-korea-mvp` 브랜치를 체크아웃했습니다. 이전 Downloads 프로젝트는 보존되어 있으며, 이 Mac의 `.tools`는 이전 프로젝트의 로컬 SDK 폴더를 참조하므로 SDK를 분리하기 전에는 원본 `.tools`를 삭제하지 마세요. 카카오 키는 워크스페이스의 Git 제외 로컬 설정에만 보관합니다.
 
 ```sh
-cd /Users/gimtaehyeong/Downloads/safe-korea-starter
+cd /Users/gimtaehyeong/orca/safe-korea
 .tools/flutter/bin/flutter pub get
 .tools/flutter/bin/flutter devices
 ./scripts/run_app.sh emulator-5556
