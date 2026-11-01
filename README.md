@@ -2,6 +2,8 @@
 
 대한민국 시민을 위한 한국어 오프라인 비상 대비 Flutter MVP입니다. **비공식 프로토타입이며 실제 정부 경보를 수신하지 않습니다.** 모의 화면에는 항상 `훈련 / 테스트`가 표시됩니다.
 
+**출시 방향: Android는 Google Play 네이티브 앱, iPhone은 PWA.** iOS App Store 출시는 진행하지 않으며 기존 iOS 코드는 보존합니다. PWA는 아직 미구현입니다. [출시 점검](RELEASE_CHECKLIST.md) · [PWA 전환 계획](PWA_PLAN.md).
+
 ## 구현 상태
 
 | 기능 | 상태 |

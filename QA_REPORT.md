@@ -254,3 +254,8 @@ UI UX Pro Max의 접근성·터치·반응형 체크리스트를 적용했습니
 - 근거: artifacts/release-verify.log, release-design-iphone.log, release-design-android.log, release-offline-android.log, release-artifact-inspection.json.
 
 - 검사 종료 후 iPhone 17 Pro와 Android API 36에서 일반 lib/main.dart 앱 재실행 완료. 로그: artifacts/release-restore-iphone.log, release-restore-android.log.
+
+## 2026-11-01 — 출시 범위 변경
+- 사용자 결정: Android 네이티브 + iPhone PWA. Apple 네이티브 서명·App Store 심사는 출시 필수 항목에서 제외, 이전 iOS 코드/검사 이력 보존.
+- 출시 체크리스트와 README 수정, PWA_PLAN.md 추가. 현재 web/ 부재와 dart:io·sqflite·네이티브 지도/알림 의존 확인. PWA는 미구현이며 네이티브 테스트 결과를 웹 검증으로 취급하지 않음.
+- 이번 변경은 문서만 수정. git diff --check 확인, 앱 테스트/빌드는 재실행하지 않음.
