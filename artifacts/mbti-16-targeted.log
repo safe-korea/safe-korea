@@ -1,0 +1,26 @@
+00:00 +0: loading /Users/gimtaehyeong/orca/safe-korea/test/mbti_scenarios_test.dart
+00:00 +0: MBTI ISTJ: preparation survives reopening and can be revised
+00:00 +1: MBTI ISFJ: long family note does not hide places or sharing
+00:00 +2: MBTI INFJ: note opt-in can be revoked before another share
+00:00 +3: MBTI INTJ: saved source and time remain distinguishable from opening status
+00:00 +4: MBTI ISTP: explicit map pin selection identifies the chosen facility
+  [1m[flutter_map][0m
+    We want to help keep OpenStreetMap available for everyone. Our examples
+    and demo app use the public tile servers, but they are NOT free to use by
+    everyone! Please review whether the OpenStreetMap tile servers are suitable
+    for your project.
+    See:
+      * https://operations.osmfoundation.org/policies/tiles (OSM Tile Usage Policy)
+      * https://docs.fleaflet.dev/osm-warn for more information about this warning
+00:00 +5: MBTI ISFP: permission refusal and silent drill do not send notifications
+00:00 +6: MBTI INFP: preview and clipboard contain only selected public fields
+00:00 +7: MBTI INTP: chemical and nuclear exceptions are directly readable
+00:01 +8: MBTI ESTP: urgent primary action is reachable without a form
+00:01 +9: MBTI ESFP: share failure offers a functioning copy fallback
+00:01 +10: MBTI ENFP: backing out of an edit preserves the draft until a decision
+00:01 +11: MBTI ENTP: failed refresh does not trap the user or erase offline data
+00:01 +12: MBTI ESTJ: preparation count reflects successful writes only
+00:01 +13: MBTI ESFJ: closing share flow does not claim delivery or family safety
+00:01 +14: MBTI ENFJ: enlarged action text remains reachable when explaining to a companion
+00:01 +15: MBTI ENTJ: elapsed time never becomes an evacuation countdown
+00:01 +16: All tests passed!
