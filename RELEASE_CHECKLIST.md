@@ -69,4 +69,4 @@
 
 ## Workers API 추가 이후 배포 조건
 
-지역 API는 로컬 구현/검증만 완료했습니다. 공개 전 정부 자료 이용 조건, Cloudflare 계정·도메인·고유 rate namespace IDs, 실제 PWA CORS origin, HTTPS API URL 빌드 설정, 운영 CPU/요청량/장애 복구 검증, Cloudflare IP 처리 개인정보 고지를 확인합니다. 코드에 운영 URL을 임의로 넣거나 공개 배포하지 않았습니다. [상세](workers/shelters/README.md).
+지역 API는 2026-11-01 사용자 승인 후 Workers에 실제 배포했습니다. health·정부 자료 72곳·캐시·CORS 확인 완료. 공개 전 정부 자료 이용 조건, Cloudflare 계정·도메인·고유 rate namespace IDs, 실제 PWA CORS origin, HTTPS API URL 빌드 설정, 운영 CPU/요청량/장애 복구 검증, Cloudflare IP 처리 개인정보 고지를 확인합니다. 운영 URL은 config/api.production.json에 기록했습니다. API 배포와 PWA 사이트 공개·정식 앱 출시는 별개입니다. [상세](workers/shelters/README.md).

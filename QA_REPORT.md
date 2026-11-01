@@ -305,3 +305,10 @@ UI UX Pro Max의 접근성·터치·반응형 체크리스트를 적용했습니
 - Wrangler bundle dry-run/TypeScript check/PWA release 빌드 통과. Chromium·macOS WebKit 기존 온보딩·오프라인 재실행·캐시 복구 회귀 통과.
 - 미검증: 공개 Cloudflare 원천 연결/CPU/부하·무료 한도, 실제 iPhone Safari 설치, 운영 도메인 CORS/공식 자료 이용·재배포 조건. 실제 정부 경보 수신·발송은 추가하지 않음.
 - 추가 실연결 브라우저 검사: Chromium/WebKit 모두 지역 메뉴 선택, Worker 실제 응답 72곳, 시설 카드/지도 버튼 렌더링, 오프라인 재조회 시 기존 목록 유지/경고 표시 통과. Flutter의 메뉴는 접근성 menuitem으로 검사하고 목록은 스크롤 후 확인. 스크립트 `scripts/test_worker_pwa.cjs`, 증거 `artifacts/worker-pwa-integration.log` 및 402×874 화면 PNG. 외부 카카오 페이지 자체의 길찾기/개방 여부는 이 검사 범위가 아님.
+
+## 2026-11-01 실제 Workers 배포 검증
+
+- 사용자 승인 후 https://safe-korea-shelter-api.trovapp.workers.dev 에 API 배포, 버전 f878347c-ddd7-4c94-bfa7-0f2e599effe8. Free 플랜 확인, 무료 플랜 기본 CPU 제한 사용.
+- 공개 서버 /health 200, 지역 11140 실제 정부 자료 72/72곳 200, cache hit, 불필요한 위치 파라미터 400, 미허용 Origin 403 확인. `artifacts/worker-production-smoke.json`의 상태/건수/실제 경보 false 값 자동 단언 통과.
+- production API URL로 PWA release 빌드 후 Chromium/macOS WebKit 실연결 PASS. `SHELTER_TEST_API_URL=https://safe-korea-shelter-api.trovapp.workers.dev node scripts/test_worker_pwa.cjs`. 캡처는 기존 worker-pwa-{chromium,webkit}.png와 동일한 화면.
+- 원천 요청이 성공한 특정 지역/요청의 운영 검증이며 모든 지역·리전·장애 상황의 보장이 아님. PWA 사이트는 아직 로컬 호스팅, 실제 iPhone 설치/배포는 수행하지 않음.

@@ -1,0 +1,14 @@
+⛅️ wrangler 4.156.0
+────────────────────
+Total Upload: 35.25 KiB / gzip: 7.17 KiB
+Worker Startup Time: 1 ms
+Your Worker has access to the following bindings:
+Binding                                                                     Resource
+env.UPSTREAM_REGION_LIMIT (1 requests/60s)                                  Rate Limit
+env.UPSTREAM_TOTAL_LIMIT (20 requests/60s)                                  Rate Limit
+env.ALLOWED_ORIGINS ("http://127.0.0.1:8765,http://127.0.0....")            Environment Variable
+
+Uploaded safe-korea-shelter-api (1.23 sec)
+Deployed safe-korea-shelter-api triggers (0.71 sec)
+  https://safe-korea-shelter-api.trovapp.workers.dev
+Current Version ID: f878347c-ddd7-4c94-bfa7-0f2e599effe8

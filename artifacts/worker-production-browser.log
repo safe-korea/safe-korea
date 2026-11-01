@@ -1,0 +1,10 @@
+chromium: app ready
+chromium: region page
+chromium: province selected
+chromium: districts shown
+chromium: real government 72 facilities, regional request only, source metadata, retained results on offline failure PASS
+webkit: app ready
+webkit: region page
+webkit: province selected
+webkit: districts shown
+webkit: real government 72 facilities, regional request only, source metadata, retained results on offline failure PASS

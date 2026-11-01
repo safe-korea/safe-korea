@@ -6,7 +6,7 @@
 
 ## Cloudflare Workers 데이터 서버
 
-지역별 시설 조회·캐시 API와 Android/PWA 연결을 구현했습니다. **로컬 검증 상태이며 공개 배포하지 않았습니다.** PWA는 API 주소를 설정하면 지역별 목록과 외부 카카오 지도 연결을 사용할 수 있습니다. 기본 빌드는 정부 사이트 링크를 제공합니다. 로그인·개인 DB·실제 경보 서버는 추가하지 않았습니다. [실행 및 배포 전 확인](workers/shelters/README.md) · [서버 구성](SERVER_PLAN.md).
+지역별 시설 조회·캐시 API와 Android/PWA 연결을 구현했습니다. **2026-11-01 API 공개 배포 완료:** https://safe-korea-shelter-api.trovapp.workers.dev . PWA 사이트 호스팅은 아직 미배포입니다. PWA는 API 주소를 설정하면 지역별 목록과 외부 카카오 지도 연결을 사용할 수 있습니다. `--dart-define-from-file=config/api.production.json`으로 공개 API를 연결합니다. 설정 없는 기본 PWA 빌드는 정부 사이트 링크를 제공합니다. 로그인·개인 DB·실제 경보 서버는 추가하지 않았습니다. [실행 및 배포 전 확인](workers/shelters/README.md) · [서버 구성](SERVER_PLAN.md).
 
 ## 구현 상태
 

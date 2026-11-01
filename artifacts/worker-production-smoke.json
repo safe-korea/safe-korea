@@ -1,0 +1,85 @@
+{
+  "checkedAt": "2026-11-01T13:28:36.155777+00:00",
+  "api": "https://safe-korea-shelter-api.trovapp.workers.dev",
+  "checks": [
+    {
+      "path": "/health",
+      "origin": null,
+      "status": 200,
+      "cors": null,
+      "delivery": null,
+      "count": null,
+      "validCount": 0,
+      "retrievedAt": null,
+      "error": null,
+      "health": {
+        "service": "safe-korea-shelter-api",
+        "apiVersion": 1,
+        "status": "ok",
+        "governmentAlertReception": false
+      }
+    },
+    {
+      "path": "/api/shelters?region=11140",
+      "origin": "http://127.0.0.1:8766",
+      "status": 200,
+      "cors": "http://127.0.0.1:8766",
+      "delivery": {
+        "state": "miss",
+        "ageSeconds": 0,
+        "stale": false
+      },
+      "count": 72,
+      "validCount": 72,
+      "retrievedAt": "2026-11-01T13:28:38.682Z",
+      "error": null,
+      "health": null
+    },
+    {
+      "path": "/api/shelters?region=11140",
+      "origin": "http://127.0.0.1:8766",
+      "status": 200,
+      "cors": "http://127.0.0.1:8766",
+      "delivery": {
+        "state": "hit",
+        "ageSeconds": 0,
+        "stale": false
+      },
+      "count": 72,
+      "validCount": 72,
+      "retrievedAt": "2026-11-01T13:28:38.682Z",
+      "error": null,
+      "health": null
+    },
+    {
+      "path": "/api/shelters?region=11140&latitude=37",
+      "origin": null,
+      "status": 400,
+      "cors": null,
+      "delivery": null,
+      "count": null,
+      "validCount": 0,
+      "retrievedAt": null,
+      "error": {
+        "code": "invalid_region",
+        "message": "목록에 있는 시·군·구를 선택해 주세요."
+      },
+      "health": null
+    },
+    {
+      "path": "/api/shelters?region=11140",
+      "origin": "https://untrusted.example",
+      "status": 403,
+      "cors": null,
+      "delivery": null,
+      "count": null,
+      "validCount": 0,
+      "retrievedAt": null,
+      "error": {
+        "code": "origin_denied",
+        "message": "허용되지 않은 웹 주소입니다."
+      },
+      "health": null
+    }
+  ]
+}

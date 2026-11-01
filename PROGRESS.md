@@ -505,3 +505,13 @@ Android API 36에서도 공식 서울시청 공개 사진 매칭/표시와 공�
 - format/analyze 통과, Flutter 163건·Python 12건·Workers 13건 통과. TypeScript check와 Wrangler dry-run 통과. PWA release 빌드 및 Chromium/WebKit 온보딩·오프라인 회귀 통과. 작은 화면/150% 글씨·stale·재조회 실패 위젯 검사 통과.
 - 증거: artifacts/worker-full-verification.log, worker-tests.log, worker-typecheck.log, worker-dry-run.log, worker-live-check.json, worker-pwa-build.log, worker-pwa-browser.log, worker-pwa-widget-tests.log. 비밀 설정값이 변경 텍스트에 없는지 검사함.
 - 최종 `scripts/test_worker_pwa.cjs`: Chromium/macOS WebKit에서 실제 지역 선택→Workers→정부 시설 72곳→카카오 지도 버튼 표시→오프라인 재조회 실패 시 기존 목록/경고 유지 통과. 요청은 region=11140 하나이며 GPS/가족 파라미터 없음. 402×874 뷰포트 캡처 직접 확인. 실제 iPhone 설치 검증과 구분. 근거: artifacts/worker-pwa-integration.log, worker-pwa-{chromium,webkit}.png.
+
+## 2026-11-01 — 사용자 승인 후 Cloudflare Workers 실제 배포
+
+- 사용자의 “배포진행하자” 승인으로 기존 배포 금지를 이번 데이터 API 배포에 한해 해제. 기존 OAuth 계정 연결 확인, 다른 Worker 2개는 변경하지 않았고 rate namespace 충돌 없음 확인.
+- 개발 설정을 보존하고 `workers/shelters/wrangler.production.jsonc`로 실제 배포. URL: https://safe-korea-shelter-api.trovapp.workers.dev . Version: f878347c-ddd7-4c94-bfa7-0f2e599effe8.
+- 초기 배포에서 Cloudflare가 Free 플랜의 사용자 지정 CPU 제한을 거부(code 100328). 해당 옵션만 제거해 무료 플랜 기본 제한으로 정상 배포. 유료 플랜·결제 변경 없음. preview URLs/observability 비활성 유지.
+- 공개 HTTPS 검증: /health 200, 서울 중구 공식 72곳/유효 72곳 조회 200, 다음 요청 cache hit, 여분 파라미터 400, 미허용 Origin 403. 실제 정부 경보 수신은 false 그대로.
+- config/api.production.json에 공개 URL 기록, 해당 설정으로 PWA release 빌드. 로컬 PWA→공개 Workers 연결을 Chromium/WebKit에서 검증: 실제 지역 선택·72곳·지도 버튼·오프라인 재조회 시 이전 결과/경고 유지 PASS.
+- 서버 단위 테스트 13건·TypeScript check·배포 전 dry-run 통과. 기존 Flutter 소스는 변경하지 않았으며 직전 163건/Python 12건 회귀 결과는 유지. 이번 검증 증거: artifacts/worker-production-{deploy.log,smoke.json,pwa-build.log,browser.log}.
+- 공개 PWA 사이트 호스팅과 기존 설치 앱 업데이트는 별개이며 실행하지 않음. 정확한 localhost origin 4개만 임시 허용; PWA 공개 도메인 결정 시 교체/추가 필요. 정부 자료 이용·재배포 조건, 운영 정책, 전국/다중 리전 부하·무료 한도 장기 검증은 출시 점검에 남음. GitHub push 없음.
