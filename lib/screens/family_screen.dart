@@ -212,7 +212,11 @@ class _FamilyScreenState extends State<FamilyScreen> {
           ),
         ),
         icon: const Icon(Icons.map_outlined),
-        label: Text('$title 지도 보기'),
+        label: Semantics(
+          label: '$title 지도 보기',
+          excludeSemantics: true,
+          child: const Text('지도 보기'),
+        ),
       ),
     ],
   );
@@ -306,43 +310,50 @@ class _FamilyScreenState extends State<FamilyScreen> {
                     child: const Text('저장 내용 다시 읽기'),
                   ),
                 if (_savedPlan.hasMeetingPlan) ...[
-                  Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          const Text(
-                            '우리 가족의 만남 장소',
-                            style: TextStyle(
-                              fontSize: 23,
-                              fontWeight: FontWeight.bold,
+                  for (final place in [
+                    (
+                      label: '첫 번째 만남 장소',
+                      name: _savedPlan.meetingPlace,
+                      point: _savedPlan.meetingPoint,
+                    ),
+                    (
+                      label: '대체 장소',
+                      name: _savedPlan.backupPlace,
+                      point: _savedPlan.backupPoint,
+                    ),
+                  ])
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text(
+                              place.label,
+                              style: const TextStyle(fontSize: 14, color: teal),
                             ),
-                          ),
-                          const SizedBox(height: 16),
-                          SelectableText(
-                            '첫 번째 만남 장소\n${_savedPlan.meetingPlace.isEmpty ? '아직 정하지 않았어요' : _savedPlan.meetingPlace}',
-                          ),
-                          if (_savedPlan.meetingPoint != null)
-                            _pointSummary(
-                              _savedPlan.meetingPoint!,
-                              '첫 번째 만남 장소',
+                            const SizedBox(height: 6),
+                            SelectableText(
+                              place.name.isEmpty ? '아직 정하지 않았어요' : place.name,
+                              style: const TextStyle(
+                                fontSize: 20,
+                                height: 1.35,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
-                          const SizedBox(height: 12),
-                          SelectableText(
-                            '대체 장소\n${_savedPlan.backupPlace.isEmpty ? '아직 정하지 않았어요' : _savedPlan.backupPlace}',
-                          ),
-                          if (_savedPlan.backupPoint != null)
-                            _pointSummary(_savedPlan.backupPoint!, '대체 만남 장소'),
-                          if (_savedPlan.note.isNotEmpty)
-                            ExpansionTile(
-                              title: const Text('가족 약속 보기'),
-                              children: [SelectableText(_savedPlan.note)],
-                            ),
-                        ],
+                            if (place.point != null)
+                              _pointSummary(place.point!, place.label),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
+                  if (_savedPlan.note.isNotEmpty)
+                    ExpansionTile(
+                      title: const Text('가족 약속 보기'),
+                      expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [SelectableText(_savedPlan.note)],
+                    ),
+                  const SizedBox(height: 12),
                   if (!_editing)
                     FilledButton.tonalIcon(
                       onPressed: () => setState(() => _editing = true),
@@ -439,6 +450,7 @@ class _FamilyScreenState extends State<FamilyScreen> {
                   ),
                 const ExpansionTile(
                   title: Text('저장·보관 안내'),
+                  expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Padding(
                       padding: EdgeInsets.only(bottom: 16),

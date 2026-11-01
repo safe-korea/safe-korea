@@ -77,9 +77,11 @@ class _SavedSheltersScreenState extends State<SavedSheltersScreen> {
             .toList();
         return PageBody(
           children: [
-            const Notice(
-              '지역을 바꿔도 이 기기에 보관한 대피소를 볼 수 있습니다. 저장된 정보는 자동 갱신되지 않으므로 출입구와 현재 개방 여부는 다시 확인하세요.',
+            const Text(
+              '기기에 저장된 목록 · 개방 여부는 현장 확인',
+              style: TextStyle(fontSize: 14),
             ),
+            const SizedBox(height: 12),
             if (_refreshMessage != null)
               Semantics(liveRegion: true, child: Notice(_refreshMessage!)),
             if (_controller.loading)
@@ -116,31 +118,50 @@ class _SavedSheltersScreenState extends State<SavedSheltersScreen> {
               for (final entry in entries)
                 Card(
                   child: Padding(
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(16),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Text(
                           entry.shelter.name,
                           style: const TextStyle(
-                            fontSize: 22,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         const SizedBox(height: 8),
                         SelectableText(entry.shelter.address),
                         const SizedBox(height: 12),
-                        Text(
-                          '조회 지역: ${entry.snapshot.coverage}\n공식 자료 조회: ${_time(entry.snapshot.retrievedAt)}\n기기 저장: ${_time(entry.savedAt.toIso8601String())}',
+                        ExpansionTile(
+                          title: const Text('조회·저장 정보'),
+                          expandedCrossAxisAlignment:
+                              CrossAxisAlignment.stretch,
+                          children: [
+                            InfoLine(
+                              label: '조회 지역',
+                              value: entry.snapshot.coverage,
+                            ),
+                            InfoLine(
+                              label: '공식 자료 조회',
+                              value: _time(entry.snapshot.retrievedAt),
+                            ),
+                            InfoLine(
+                              label: '기기 저장',
+                              value: _time(entry.savedAt.toIso8601String()),
+                            ),
+                            if (entry.checkedAt != null)
+                              InfoLine(
+                                label: '최근 재확인',
+                                value: _time(
+                                  entry.checkedAt!.toIso8601String(),
+                                ),
+                              ),
+                          ],
                         ),
                         Text(_checkLabel(entry)),
-                        if (entry.checkedAt != null)
-                          Text(
-                            '최근 재확인: ${_time(entry.checkedAt!.toIso8601String())}',
-                          ),
                         const Text('현재 개방·수용 여유·이동 경로 안전 미확인'),
                         const SizedBox(height: 12),
-                        const Text('재확인 시 이 시설의 지역 코드와 IP가 국민안전24에 전달됩니다.'),
+                        const Text('재조회: 지역 코드·IP를 국민안전24에 전송합니다.'),
                         OutlinedButton.icon(
                           onPressed:
                               _controller.loaded &&

@@ -557,11 +557,20 @@ class _SheltersScreenState extends State<SheltersScreen> {
                 tilePadding: EdgeInsets.zero,
                 title: const Text('자료 출처와 조회 시각'),
                 children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: SelectableText(
-                      '국민안전24 등재 ${catalog.officialCount ?? catalog.shelters.length}건 · 좌표 제외 ${catalog.skippedCount}건\n전국 전체 목록이 아닙니다.\n출처: ${catalog.sourceName}\n자료 범위: ${catalog.coverage}\n마지막 조회: ${_formatTime(catalog.retrievedAt)}\n시설별 갱신일이 제공되지 않는 자료는 현장에서 다시 확인하세요.',
-                    ),
+                  InfoLine(label: '출처', value: catalog.sourceName),
+                  InfoLine(label: '자료 범위', value: catalog.coverage),
+                  InfoLine(
+                    label: '마지막 조회',
+                    value: _formatTime(catalog.retrievedAt),
+                  ),
+                  InfoLine(
+                    label: '집계',
+                    value:
+                        '등재 ${catalog.officialCount ?? catalog.shelters.length}건 · 좌표 제외 ${catalog.skippedCount}건',
+                  ),
+                  const Text(
+                    '전국 전체 목록이 아닙니다. 시설 상태는 현장에서 확인하세요.',
+                    style: TextStyle(fontSize: 14),
                   ),
                 ],
               ),
@@ -667,23 +676,13 @@ class _SheltersScreenState extends State<SheltersScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(top: 3, right: 10),
-                  child: Icon(Icons.home_work_outlined, color: teal),
-                ),
-                Expanded(
-                  child: Text(
-                    shelter.name,
-                    style: const TextStyle(
-                      fontSize: 21,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
+            Text(
+              shelter.name,
+              style: const TextStyle(
+                fontSize: 20,
+                height: 1.35,
+                fontWeight: FontWeight.w700,
+              ),
             ),
             const SizedBox(height: 8),
             Text(shelter.address, style: const TextStyle(fontSize: 16)),
@@ -697,8 +696,13 @@ class _SheltersScreenState extends State<SheltersScreen> {
               tilePadding: EdgeInsets.zero,
               title: const Text('시설 자료 상세'),
               children: [
-                Text(
-                  '원자료 갱신: ${shelter.updatedAt ?? '제공되지 않음'}\n현재 현장 위험과 이동 경로 안전은 확인되지 않았습니다.',
+                InfoLine(
+                  label: '원자료 갱신',
+                  value: shelter.updatedAt ?? '제공되지 않음',
+                ),
+                const InfoLine(
+                  label: '현장 상태',
+                  value: '개방·수용 여유 미확인\n이동 경로 안전 미확인',
                 ),
               ],
             ),

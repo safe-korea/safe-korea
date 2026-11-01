@@ -56,30 +56,19 @@ class _GuidelinesScreenState extends State<GuidelinesScreen> {
                   backgroundColor: item['id'] == 'air'
                       ? AppPalette.alertBackground
                       : AppPalette.surface,
-                  leading: ExcludeSemantics(
-                    child: Icon(
-                      switch (item['id']) {
-                        'air' => Icons.warning_amber_rounded,
-                        'watch' => Icons.hearing_outlined,
-                        'chemical' => Icons.masks_outlined,
-                        'biological' => Icons.health_and_safety_outlined,
-                        'release' => Icons.notifications_off_outlined,
-                        _ => Icons.backpack_outlined,
-                      },
-                      color: item['id'] == 'air'
-                          ? AppPalette.alert
-                          : AppPalette.green,
-                    ),
+                  tilePadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 4,
                   ),
                   title: Text(
                     item['title'] as String,
                     style: const TextStyle(
-                      fontSize: 20,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   subtitle: Text(item['summary'] as String),
-                  childrenPadding: const EdgeInsets.all(20),
+                  childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                   expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     if (AlertKind.fromName(item['id'] as String)
@@ -93,33 +82,47 @@ class _GuidelinesScreenState extends State<GuidelinesScreen> {
                         ),
                         child: const Text('내 상황에 맞춰 보기'),
                       ),
-                    for (final (index, step) in (item['steps'] as List).indexed)
+                    const SizedBox(height: 12),
+                    for (final step in item['steps'] as List)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16),
                         child: Text(
-                          '${index + 1}. $step',
-                          style: Theme.of(context).textTheme.bodyLarge,
+                          step as String,
+                          style: const TextStyle(fontSize: 16, height: 1.5),
                         ),
                       ),
                   ],
                 ),
               ),
-            const SizedBox(height: 20),
-            Text(data['notice'] as String),
-            const SizedBox(height: 12),
-            Text(
-              '출처: ${data['sourceName']}\n원문 확인: ${data['reviewedAt']}\n원문 자체 갱신일: 미표기',
+            const Text(
+              '최신 정부 방송·현장 지시를 우선하세요.',
+              style: TextStyle(fontSize: 14),
             ),
-            TextButton(
-              onPressed: () =>
-                  openExternal(context, Uri.parse(data['sourceUrl'] as String)),
-              child: const Text('정부 원문 열기 (인터넷 필요)'),
+            ExpansionTile(
+              title: const Text('출처와 확인 날짜'),
+              expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                InfoLine(label: '출처', value: data['sourceName'] as String),
+                InfoLine(label: '확인 날짜', value: data['reviewedAt'] as String),
+                const InfoLine(label: '원문 갱신', value: '미표기'),
+                Text(
+                  data['notice'] as String,
+                  style: const TextStyle(fontSize: 14),
+                ),
+                TextButton(
+                  onPressed: () => openExternal(
+                    context,
+                    Uri.parse(data['sourceUrl'] as String),
+                  ),
+                  child: const Text('정부 원문 열기 (인터넷 필요)'),
+                ),
+                if (data['additionalSourceUrl'] case final String url)
+                  TextButton(
+                    onPressed: () => openExternal(context, Uri.parse(url)),
+                    child: const Text('국민안전24 상세 행동요령'),
+                  ),
+              ],
             ),
-            if (data['additionalSourceUrl'] case final String url)
-              TextButton(
-                onPressed: () => openExternal(context, Uri.parse(url)),
-                child: const Text('국민안전24 상세 행동요령'),
-              ),
           ],
         );
       },

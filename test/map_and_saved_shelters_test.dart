@@ -219,7 +219,10 @@ void main() {
       await tester.tap(find.byTooltip('저장한 대피소 (1)'));
       await tester.pumpAndSettle();
       expect(find.text('테스트 시설 a'), findsOneWidget);
-      expect(find.textContaining('공식 자료 조회:'), findsOneWidget);
+      await tester.ensureVisible(find.text('조회·저장 정보'));
+      await tester.tap(find.text('조회·저장 정보'));
+      await tester.pumpAndSettle();
+      expect(find.text('공식 자료 조회'), findsOneWidget);
       await tester.ensureVisible(find.text('저장 해제'));
       await tester.tap(find.text('저장 해제'));
       await tester.pumpAndSettle();

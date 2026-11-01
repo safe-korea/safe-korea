@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/alert_guidance.dart';
 import '../theme/app_theme.dart';
+import 'common.dart';
 
 /// Short presentation of existing guidance. Conditions remain visible, never
 /// hidden behind an icon, truncation or a disclosure control.
@@ -145,51 +146,20 @@ class ActionBriefTile extends StatelessWidget {
   final bool primary;
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.symmetric(vertical: 10),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ExcludeSemantics(
-          child: Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: primary ? AppPalette.alert : AppPalette.surface,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(
-              brief.icon,
-              size: 28,
-              color: primary ? Colors.white : AppPalette.ink,
-            ),
-          ),
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+    child: IconTextBlock(
+      icon: brief.icon,
+      title: brief.title,
+      iconColor: primary ? Colors.white : AppPalette.ink,
+      iconBackground: primary ? AppPalette.alert : AppPalette.surface,
+      body: Text(
+        brief.detail,
+        style: const TextStyle(
+          fontSize: 16,
+          height: 1.4,
+          color: AppPalette.muted,
         ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                brief.title,
-                style: TextStyle(
-                  fontSize: 20,
-                  height: 1.3,
-                  fontWeight: primary ? FontWeight.w800 : FontWeight.w700,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                brief.detail,
-                style: const TextStyle(
-                  fontSize: 16,
-                  height: 1.4,
-                  color: AppPalette.muted,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
+      ),
     ),
   );
 }

@@ -62,7 +62,66 @@ Future<void> openExternal(BuildContext context, Uri uri) async {
   }
 }
 
-/// Compact, consistent navigation rows for everyday preparedness screens.
+/// Shared geometry for icon-led content: 44px icon + 12px gutter.
+/// The caller supplies the same 16px card inset on each screen.
+class IconTextBlock extends StatelessWidget {
+  const IconTextBlock({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.body,
+    this.color = AppPalette.ink,
+    this.iconColor = AppPalette.green,
+    this.iconBackground = AppPalette.background,
+    this.trailing,
+  });
+  final IconData icon;
+  final String title;
+  final Widget body;
+  final Color color, iconColor, iconBackground;
+  final Widget? trailing;
+  @override
+  Widget build(BuildContext context) => Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      ExcludeSemantics(
+        child: Container(
+          width: 44,
+          height: 44,
+          decoration: BoxDecoration(
+            color: iconBackground,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Icon(icon, color: iconColor, size: 28),
+        ),
+      ),
+      const SizedBox(width: 12),
+      Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 20,
+                height: 1.3,
+                fontWeight: FontWeight.w700,
+                color: color,
+              ),
+            ),
+            const SizedBox(height: 4),
+            body,
+          ],
+        ),
+      ),
+      if (trailing != null) ...[
+        const SizedBox(width: 12),
+        ExcludeSemantics(child: trailing!),
+      ],
+    ],
+  );
+}
+
 class ActionTile extends StatelessWidget {
   const ActionTile({
     super.key,
@@ -137,6 +196,47 @@ class PageIntro extends StatelessWidget {
           style: const TextStyle(color: AppPalette.muted, fontSize: 16),
         ),
       ],
+    ),
+  );
+}
+
+/// Structured metadata instead of newline-joined paragraphs.
+class InfoLine extends StatelessWidget {
+  const InfoLine({super.key, required this.label, required this.value});
+  final String label, value;
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 6),
+    child: LayoutBuilder(
+      builder: (context, constraints) {
+        final labelWidget = Text(
+          label,
+          style: const TextStyle(
+            fontSize: 14,
+            height: 1.4,
+            color: AppPalette.muted,
+          ),
+        );
+        final valueWidget = Text(
+          value,
+          style: const TextStyle(fontSize: 16, height: 1.4),
+        );
+        if (constraints.maxWidth < 280 ||
+            MediaQuery.textScalerOf(context).scale(16) > 24) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [labelWidget, const SizedBox(height: 4), valueWidget],
+          );
+        }
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(width: 100, child: labelWidget),
+            const SizedBox(width: 12),
+            Expanded(child: valueWidget),
+          ],
+        );
+      },
     ),
   );
 }

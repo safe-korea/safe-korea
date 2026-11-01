@@ -104,45 +104,32 @@ class _DrillScreenState extends State<DrillScreen> {
               color: AppPalette.surface,
               borderRadius: BorderRadius.circular(16),
             ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const ExcludeSemantics(
-                  child: Icon(
-                    Icons.backpack_outlined,
-                    size: 32,
-                    color: AppPalette.alert,
+            child: const IconTextBlock(
+              icon: Icons.backpack_outlined,
+              iconColor: AppPalette.alert,
+              title: '손 닿는 곳에 있으면 챙기세요',
+              body: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '없으면 바로 대피하세요.',
+                    style: TextStyle(
+                      fontSize: 16,
+                      height: 1.4,
+                      color: AppPalette.muted,
+                    ),
                   ),
-                ),
-                const SizedBox(width: 16),
-                const Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '손 닿는 곳에 있으면 챙기세요',
-                        style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      SizedBox(height: 6),
-                      Text(
-                        '없으면 바로 대피하세요.',
-                        style: TextStyle(fontSize: 16, color: AppPalette.muted),
-                      ),
-                      SizedBox(height: 4),
-                      Text(
-                        '준비된 배낭 · 물 · 상비약 · 손전등',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
+                  SizedBox(height: 4),
+                  Text(
+                    '준비된 배낭 · 물 · 상비약 · 손전등',
+                    style: TextStyle(
+                      fontSize: 16,
+                      height: 1.4,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],

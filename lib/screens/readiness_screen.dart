@@ -81,11 +81,6 @@ class _ReadinessScreenState extends State<ReadinessScreen> {
     appBar: AppBar(title: const Text('나의 준비')),
     body: PageBody(
       children: [
-        const PageIntro(
-          eyebrow: '평소에 준비',
-          title: '하나씩 챙겨 두세요',
-          subtitle: '가족과 약속하고, 비상배낭을 준비하세요.',
-        ),
         ActionTile(
           icon: Icons.people_outline,
           title: '가족 만남 장소',
@@ -98,7 +93,7 @@ class _ReadinessScreenState extends State<ReadinessScreen> {
         const SizedBox(height: 24),
         const Text(
           '비상배낭 체크리스트',
-          style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
         const Text('가볍게 준비하고 유효기간을 확인하세요.'),

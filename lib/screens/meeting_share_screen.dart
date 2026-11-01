@@ -98,22 +98,28 @@ class _MeetingShareScreenState extends State<MeetingShareScreen> {
         ])
           if (place.name.trim().isNotEmpty || place.point?.isValid == true)
             Card(
-              child: ListTile(
-                contentPadding: const EdgeInsets.all(16),
-                leading: const Icon(Icons.location_on_outlined),
-                title: Text(place.label, style: const TextStyle(fontSize: 14)),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    Text(
+                      place.label,
+                      style: const TextStyle(fontSize: 14, color: teal),
+                    ),
+                    const SizedBox(height: 6),
                     Text(
                       place.name.trim().isEmpty ? '지도에 지정한 장소' : place.name,
                       style: const TextStyle(
-                        fontSize: 21,
+                        fontSize: 20,
+                        height: 1.35,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
+                    const SizedBox(height: 6),
                     Text(
                       place.point?.isValid == true ? '지도 링크 포함' : '지도 위치 미지정',
+                      style: const TextStyle(fontSize: 14),
                     ),
                   ],
                 ),
