@@ -31,9 +31,9 @@ class HomeScreen extends StatelessWidget {
     body: PageBody(
       children: [
         const Text(
-          '미리 준비하고,\n바로 대피하세요',
+          '평소에 준비하세요',
           style: TextStyle(
-            fontSize: 30,
+            fontSize: 24,
             height: 1.25,
             fontWeight: FontWeight.w800,
           ),
@@ -131,7 +131,7 @@ class HomeScreen extends StatelessWidget {
         ActionTile(
           icon: Icons.people_outline,
           title: '가족 만남 장소',
-          subtitle: '만남 장소 · 지도 핀',
+          subtitle: '장소 정하기 · 카카오톡 등으로 공유',
           onTap: () => _open(context, const FamilyScreen()),
         ),
         ActionTile(

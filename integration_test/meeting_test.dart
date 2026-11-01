@@ -33,6 +33,17 @@ void main() {
         ),
       );
       final store = LocalStore(database: db);
+      await db.delete('plans'); // This database belongs only to this test.
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: buildAppTheme(),
+          home: FamilyScreen(key: const ValueKey('empty-plan'), store: store),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('가족에게 공유').hitTestable(), findsOneWidget);
+      expect(find.text('장소를 하나 저장하면 공유할 수 있어요.'), findsOneWidget);
+      if (Platform.isIOS) await binding.takeScreenshot('family-empty');
       await store.save(
         const FamilyPlan(
           contactName: 'legacy fixture',

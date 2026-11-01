@@ -72,11 +72,8 @@ class _MeetingShareScreenState extends State<MeetingShareScreen> {
     appBar: AppBar(title: const Text('가족에게 공유')),
     body: PageBody(
       children: [
-        const PageIntro(
-          eyebrow: '미리 알려 두세요',
-          title: '우리 가족의 만남 장소',
-          subtitle: '공유할 내용을 확인한 뒤 보낼 앱과 상대를 선택하세요.',
-        ),
+        const Text('보낼 장소를 확인하세요.'),
+        const SizedBox(height: 12),
         if (widget.plan.note.trim().isNotEmpty)
           CheckboxListTile(
             contentPadding: EdgeInsets.zero,
@@ -129,7 +126,7 @@ class _MeetingShareScreenState extends State<MeetingShareScreen> {
           ),
         const SizedBox(height: 16),
         const Text(
-          '장소 이름·좌표와 선택한 약속을 공유합니다. 다음 화면에서 카카오톡과 받을 사람을 직접 선택하세요. 자동 전송하지 않습니다.',
+          '장소·지도 링크·선택한 약속을 보냅니다.\n공유 앱과 상대는 직접 선택해요.',
           style: TextStyle(fontSize: 14),
         ),
         const SizedBox(height: 16),

@@ -112,6 +112,57 @@ void main() {
     await tester.pumpAndSettle();
     expect(copied, buildMeetingShareText(plan));
   });
+  testWidgets(
+    'empty family plan still shows share action with an explanation',
+    (tester) async {
+      await tester.binding.setSurfaceSize(const Size(402, 874));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      await tester.pumpWidget(
+        MaterialApp(home: FamilyScreen(store: MemoryStore())),
+      );
+      await tester.pumpAndSettle();
+      final button = find.widgetWithText(FilledButton, '가족에게 공유');
+      expect(button.hitTestable(), findsOneWidget);
+      expect(tester.widget<FilledButton>(button).onPressed, isNull);
+      expect(find.text('장소를 하나 저장하면 공유할 수 있어요.'), findsOneWidget);
+      await tester.enterText(
+        find.byKey(const ValueKey('family-field-2')),
+        '새 장소',
+      );
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('기기에 저장'));
+      await tester.tap(find.text('기기에 저장'));
+      await tester.pumpAndSettle();
+      await tester.pump(const Duration(seconds: 5));
+      expect(button.hitTestable(), findsOneWidget);
+      await tester.tap(button);
+      await tester.pumpAndSettle();
+      expect(find.byType(MeetingShareScreen), findsOneWidget);
+      expect(find.text('새 장소'), findsOneWidget);
+    },
+  );
+  testWidgets('long saved note does not push family sharing off screen', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(320, 640));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final store = MemoryStore()
+      ..plan = FamilyPlan(meetingPlace: '첫 장소', note: '긴 약속 ' * 100);
+    await tester.pumpWidget(
+      MaterialApp(
+        builder: (context, child) => MediaQuery(
+          data: MediaQuery.of(context)
+              .copyWith(textScaler: TextScaler.linear(2)),
+          child: child!,
+        ),
+        home: FamilyScreen(store: store),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('가족에게 공유').hitTestable(), findsOneWidget);
+    expect(find.textContaining('긴 약속'), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
   testWidgets('unsaved edits cannot share a stale saved snapshot', (
     tester,
   ) async {

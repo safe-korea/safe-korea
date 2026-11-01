@@ -214,10 +214,6 @@ class _FamilyScreenState extends State<FamilyScreen> {
         icon: const Icon(Icons.map_outlined),
         label: Text('$title 지도 보기'),
       ),
-      const Text(
-        '온라인 지도 · IP와 조회 범위가 지도 제공자에게 전달됩니다.',
-        style: TextStyle(fontSize: 13),
-      ),
     ],
   );
 
@@ -237,19 +233,69 @@ class _FamilyScreenState extends State<FamilyScreen> {
     },
     child: Scaffold(
       appBar: AppBar(title: const Text('가족 만남 장소')),
+      bottomNavigationBar: _loading
+          ? null
+          : SafeArea(
+              top: false,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (_loadFailed ||
+                        _dirty ||
+                        !canShareMeetingPlan(_savedPlan))
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Text(
+                          _loadFailed
+                              ? '저장 내용을 다시 읽은 뒤 공유할 수 있어요.'
+                              : _dirty
+                              ? '수정한 내용을 먼저 저장한 뒤 공유하세요.'
+                              : '장소를 하나 저장하면 공유할 수 있어요.',
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                      ),
+                    FilledButton.icon(
+                      onPressed:
+                          _loadFailed ||
+                              _dirty ||
+                              _saving ||
+                              !canShareMeetingPlan(_savedPlan)
+                          ? null
+                          : () => Navigator.push(
+                              context,
+                              MaterialPageRoute<void>(
+                                builder: (_) =>
+                                    MeetingShareScreen(plan: _savedPlan),
+                              ),
+                            ),
+                      icon: const Icon(Icons.share_outlined),
+                      label: const Text('가족에게 공유'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : PageBody(
               children: [
-                if (!_savedPlan.hasMeetingPlan)
-                  const PageIntro(
-                    eyebrow: '가족과 미리 약속',
-                    title: '어디서 다시 만날까요?',
-                    subtitle: '첫 번째 장소와 대체 장소를 정하세요.',
+                if (!_savedPlan.hasMeetingPlan) ...[
+                  const Text(
+                    '만날 장소를 정하세요',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
                   ),
+                  const SizedBox(height: 8),
+                ],
                 const Text(
-                  '가족끼리 정한 장소 · 공식 대피시설과 다를 수 있어요.',
+                  '가족 약속용 · 공식 대피시설과는 달라요.',
                   style: TextStyle(fontSize: 14),
+                ),
+                const Text(
+                  '온라인 지도 이용 시 IP·조회 범위가 지도 제공자에게 전달됩니다.',
+                  style: TextStyle(fontSize: 13),
                 ),
                 const SizedBox(height: 12),
                 if (_message != null)
@@ -288,31 +334,15 @@ class _FamilyScreenState extends State<FamilyScreen> {
                           ),
                           if (_savedPlan.backupPoint != null)
                             _pointSummary(_savedPlan.backupPoint!, '대체 만남 장소'),
-                          if (_savedPlan.note.isNotEmpty) ...[
-                            const SizedBox(height: 16),
-                            SelectableText(_savedPlan.note),
-                          ],
+                          if (_savedPlan.note.isNotEmpty)
+                            ExpansionTile(
+                              title: const Text('가족 약속 보기'),
+                              children: [SelectableText(_savedPlan.note)],
+                            ),
                         ],
                       ),
                     ),
                   ),
-                  if (canShareMeetingPlan(_savedPlan)) ...[
-                    FilledButton.icon(
-                      onPressed: _dirty || _saving
-                          ? null
-                          : () => Navigator.push(
-                              context,
-                              MaterialPageRoute<void>(
-                                builder: (_) =>
-                                    MeetingShareScreen(plan: _savedPlan),
-                              ),
-                            ),
-                      icon: const Icon(Icons.share_outlined),
-                      label: const Text('가족에게 공유'),
-                    ),
-                    if (_dirty) const Text('수정한 내용을 먼저 저장한 뒤 공유하세요.'),
-                    const SizedBox(height: 8),
-                  ],
                   if (!_editing)
                     FilledButton.tonalIcon(
                       onPressed: () => setState(() => _editing = true),
@@ -323,21 +353,6 @@ class _FamilyScreenState extends State<FamilyScreen> {
                 ],
                 if (_editing) ...[
                   for (final index in [2, 3, 4]) ...[
-                    if ([2, 3, 4].contains(index))
-                      Padding(
-                        padding: const EdgeInsets.only(top: 12, bottom: 12),
-                        child: Text(
-                          switch (index) {
-                            2 => '01  첫 번째 만남 장소',
-                            3 => '02  대체 만남 장소',
-                            _ => '가족끼리 정한 약속',
-                          },
-                          style: const TextStyle(
-                            fontSize: 21,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 16),
                       child: TextField(
@@ -369,10 +384,6 @@ class _FamilyScreenState extends State<FamilyScreen> {
                       ),
                     ),
                     if (index != 4) ...[
-                      const Text(
-                        '온라인 지도 · IP와 조회 범위가 지도 제공자에게 전달됩니다.',
-                        style: TextStyle(fontSize: 13),
-                      ),
                       if ((index == 2 ? _meetingPoint : _backupPoint)
                           case final point?)
                         Text(
@@ -404,10 +415,7 @@ class _FamilyScreenState extends State<FamilyScreen> {
                       const SizedBox(height: 16),
                     ],
                   ],
-                  const Text(
-                    '지도는 온라인입니다. 지도 제공자에게 IP와 조회 범위가 전달됩니다. 이름만 저장할 수도 있어요.',
-                    style: TextStyle(fontSize: 14),
-                  ),
+
                   const SizedBox(height: 12),
                   FilledButton(
                     onPressed: _saving || _loadFailed ? null : _save,
@@ -440,7 +448,6 @@ class _FamilyScreenState extends State<FamilyScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
                 const SizedBox(height: 12),
                 OutlinedButton(
                   onPressed: _saving || _loadFailed ? null : _clear,

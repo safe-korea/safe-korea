@@ -70,9 +70,7 @@ class _NotificationTestScreenState extends State<NotificationTestScreen> {
                 : (value) => setState(() => _vibration = value),
           ),
         const SizedBox(height: 12),
-        const Text(
-          '무음 모드·집중 모드·알림 채널 설정을 우회하지 않습니다. iPhone의 진동은 시스템 설정을 따르며 앱에서 별도로 보장할 수 없습니다.',
-        ),
+        const Text('소리·진동은 기기의 무음·집중 모드와 알림 설정을 따릅니다.'),
         const SizedBox(height: 20),
         FilledButton.icon(
           onPressed: _busy ? null : () => _perform(),
