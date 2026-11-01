@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../models/alert_guidance.dart';
+import '../theme/app_theme.dart';
 import 'action_brief.dart';
 import 'action_speech_button.dart';
 
@@ -73,7 +74,11 @@ class _AlertActionsState extends State<AlertActions> {
       ),
       const SizedBox(height: 8),
       for (final (index, brief) in actionBriefs(widget.kind, _setting).indexed)
-        ActionBriefTile(brief: brief, primary: index == 0),
+        ActionBriefTile(
+          brief: brief,
+          primary: index == 0,
+          accent: AppPalette.forAlert(widget.kind),
+        ),
       ActionSpeechButton(
         text:
             '${widget.training ? '훈련 안내입니다. 실제 경보가 아닙니다. ' : '선택한 상황의 행동요령입니다. '}${widget.kind.label}. ${immediateActions(widget.kind, _setting).join(' ')}',

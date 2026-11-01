@@ -7,6 +7,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../models/shelter.dart';
+import '../theme/app_theme.dart';
 import '../services/location_service.dart';
 import '../services/region_suggestion_service.dart';
 import '../services/shelter_repository.dart';
@@ -333,7 +334,7 @@ class _SheltersScreenState extends State<SheltersScreen> {
                 '공습용 대피시설 · 화학 공격은 별도 행동강령 확인',
                 style: TextStyle(
                   fontSize: 14,
-                  color: Color(0xFF8D421F),
+                  color: AppPalette.caution,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -502,7 +503,7 @@ class _SheltersScreenState extends State<SheltersScreen> {
                 child: const Text('정부 공식 시설 검색 열기'),
               ),
             if (_error != null) ...[
-              Notice(_error!),
+              Notice(_error!, warning: true),
               OutlinedButton(onPressed: _load, child: const Text('다시 읽기')),
             ],
             if (catalog == null && _error == null)

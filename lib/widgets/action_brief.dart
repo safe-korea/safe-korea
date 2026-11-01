@@ -141,9 +141,15 @@ List<ActionBrief> actionBriefs(
 };
 
 class ActionBriefTile extends StatelessWidget {
-  const ActionBriefTile({super.key, required this.brief, this.primary = false});
+  const ActionBriefTile({
+    super.key,
+    required this.brief,
+    this.primary = false,
+    this.accent = AppPalette.alert,
+  });
   final ActionBrief brief;
   final bool primary;
+  final Color accent;
   @override
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsets.symmetric(vertical: 12),
@@ -151,7 +157,7 @@ class ActionBriefTile extends StatelessWidget {
       icon: brief.icon,
       title: brief.title,
       iconColor: primary ? Colors.white : AppPalette.ink,
-      iconBackground: primary ? AppPalette.alert : AppPalette.surface,
+      iconBackground: primary ? accent : AppPalette.surface,
       body: Text(
         brief.detail,
         style: const TextStyle(

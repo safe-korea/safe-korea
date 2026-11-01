@@ -22,3 +22,5 @@ __pycache__/
 .swiftpm/
 android/.kotlin/
 config/kakao.local.json
+
+android/key.properties

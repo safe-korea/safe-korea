@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../models/alert_guidance.dart';
+
 abstract final class AppPalette {
   static const alert = Color(0xFFB42318);
   static const alertBackground = Color(0xFFFFF7F5);
@@ -10,13 +12,29 @@ abstract final class AppPalette {
   static const background = Color(0xFFF5F8F6);
   static const surface = Colors.white;
   static const muted = Color(0xFF53665E);
-  static const caution = Color(0xFF8D421F);
+  static const caution = Color(0xFFA5470A);
+  static const cautionBackground = Color(0xFFFFF4E5);
+  static const informationBackground = Color(0xFFE3F0EC);
+
+  // These colors describe actions, not a verified location/safety status.
+  static Color forAlert(AlertKind kind) => switch (kind) {
+    AlertKind.watch => caution,
+    AlertKind.release => ink,
+    _ => alert,
+  };
+  static Color backgroundForAlert(AlertKind kind) => switch (kind) {
+    AlertKind.watch => cautionBackground,
+    AlertKind.release => background,
+    _ => alertBackground,
+  };
 }
 
 ThemeData buildAppTheme() {
   final scheme = ColorScheme.fromSeed(seedColor: AppPalette.green).copyWith(
     primary: AppPalette.green,
     onPrimary: Colors.white,
+    error: AppPalette.alert,
+    onError: Colors.white,
     surface: AppPalette.surface,
     onSurface: AppPalette.ink,
     onSurfaceVariant: AppPalette.muted,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../models/saved_shelter.dart';
+import '../theme/app_theme.dart';
 import '../services/saved_shelters_controller.dart';
 import '../services/shelter_repository.dart';
 import '../widgets/common.dart';
@@ -93,7 +94,10 @@ class _SavedSheltersScreenState extends State<SavedSheltersScreen> {
             if (_controller.loading)
               const Center(child: CircularProgressIndicator()),
             if (_controller.error != null) ...[
-              Semantics(liveRegion: true, child: Notice(_controller.error!)),
+              Semantics(
+                liveRegion: true,
+                child: Notice(_controller.error!, warning: true),
+              ),
               OutlinedButton(
                 onPressed: _controller.loading || _controller.busy
                     ? null
@@ -145,13 +149,13 @@ class _SavedSheltersScreenState extends State<SavedSheltersScreen> {
   Widget _status(SavedShelter entry) => Container(
     padding: const EdgeInsets.all(12),
     decoration: BoxDecoration(
-      color: const Color(0xFFFFF3E5),
+      color: AppPalette.cautionBackground,
       borderRadius: BorderRadius.circular(12),
     ),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Icon(Icons.info_outline, size: 22, color: Color(0xFF854611)),
+        const Icon(Icons.info_outline, size: 22, color: AppPalette.caution),
         const SizedBox(width: 8),
         Expanded(
           child: Text(

@@ -16,6 +16,27 @@ void main() {
   testWidgets('native offline drill, guidance and isolated SQLite plan', (
     tester,
   ) async {
+    if (const bool.fromEnvironment('VERIFY_OFFLINE')) {
+      final client = HttpClient()
+        ..connectionTimeout = const Duration(seconds: 3);
+      var reachable = false;
+      try {
+        final request = await client
+            .getUrl(Uri.parse('https://www.kbs.co.kr/'))
+            .timeout(const Duration(seconds: 5));
+        await request.close().timeout(const Duration(seconds: 5));
+        reachable = true;
+      } on Exception {
+        // Explicit emulator network-off check; no location/user fields sent.
+      } finally {
+        client.close(force: true);
+      }
+      expect(
+        reachable,
+        isFalse,
+        reason: 'QA requires an unreachable external network',
+      );
+    }
     await tester.pumpWidget(const SafeKoreaApp());
     await tester.pumpAndSettle();
     await tester.ensureVisible(find.text('모의 공습경보 시작'));

@@ -35,7 +35,7 @@ class _DrillScreenState extends State<DrillScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    backgroundColor: AppPalette.alertBackground,
+    backgroundColor: AppPalette.backgroundForAlert(_kind),
     appBar: AppBar(
       title: const Text('훈련 / 테스트'),
       actions: [
@@ -52,7 +52,7 @@ class _DrillScreenState extends State<DrillScreen> {
           ],
         ),
       ],
-      backgroundColor: AppPalette.alert,
+      backgroundColor: AppPalette.forAlert(_kind),
       foregroundColor: Colors.white,
       systemOverlayStyle: SystemUiOverlayStyle.light,
     ),
@@ -70,7 +70,7 @@ class _DrillScreenState extends State<DrillScreen> {
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: AppPalette.alert,
+            color: AppPalette.forAlert(_kind),
             borderRadius: BorderRadius.circular(20),
           ),
           child: Column(
@@ -116,6 +116,10 @@ class _DrillScreenState extends State<DrillScreen> {
         const SizedBox(height: 16),
         if (_kind == AlertKind.air) ...[
           FilledButton.icon(
+            style: FilledButton.styleFrom(
+              backgroundColor: AppPalette.forAlert(_kind),
+              foregroundColor: Colors.white,
+            ),
             onPressed: () => _open(const SheltersScreen()),
             icon: const Icon(Icons.near_me_outlined),
             label: const Text('주변 대피소 보기'),
@@ -154,6 +158,10 @@ class _DrillScreenState extends State<DrillScreen> {
         ),
         if (_kind.offersShelters && _kind != AlertKind.air)
           FilledButton.icon(
+            style: FilledButton.styleFrom(
+              backgroundColor: AppPalette.forAlert(_kind),
+              foregroundColor: Colors.white,
+            ),
             onPressed: () => _open(const SheltersScreen()),
             icon: const Icon(Icons.near_me_outlined),
             label: const Text('대피시설 확인'),

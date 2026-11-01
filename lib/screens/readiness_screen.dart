@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
 import '../services/local_store.dart';
 import '../widgets/common.dart';
 import 'family_screen.dart';
 import 'radio_screen.dart';
 import 'supplies_screen.dart';
+import 'data_permissions_screen.dart';
 
 const preparednessItems = <String, String>{
   'water': '생수 · 간편식',
@@ -114,7 +116,7 @@ class _ReadinessScreenState extends State<ReadinessScreen> {
           ),
           const SizedBox(height: 12),
           if (_error != null)
-            Semantics(liveRegion: true, child: Notice(_error!)),
+            Semantics(liveRegion: true, child: Notice(_error!, warning: true)),
           if (_readFailed)
             OutlinedButton(onPressed: _load, child: const Text('체크리스트 다시 읽기')),
           Card(
@@ -167,17 +169,31 @@ class _ReadinessScreenState extends State<ReadinessScreen> {
             MaterialPageRoute<void>(builder: (_) => const RadioScreen()),
           ),
         ),
-        const SizedBox(height: 12),
-        ActionTile(
-          icon: Icons.shopping_bag_outlined,
-          title: '비상용품 준비',
-          subtitle: '구매 전 확인 · 판매처 준비 중',
-          onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute<void>(builder: (_) => const SuppliesScreen()),
+        // A supplier preview is useful in development, but is not a live store.
+        if (kDebugMode) ...[
+          const SizedBox(height: 12),
+          ActionTile(
+            icon: Icons.shopping_bag_outlined,
+            title: '비상용품 준비',
+            subtitle: '구매 전 확인 · 판매처 준비 중',
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute<void>(builder: (_) => const SuppliesScreen()),
+            ),
           ),
-        ),
+        ],
         const SizedBox(height: 24),
+        OutlinedButton.icon(
+          onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute<void>(
+              builder: (_) => const DataPermissionsScreen(),
+            ),
+          ),
+          icon: const Icon(Icons.privacy_tip_outlined),
+          label: const Text('데이터와 권한'),
+        ),
+        const SizedBox(height: 12),
         OutlinedButton.icon(
           onPressed: () =>
               showLicensePage(context: context, applicationName: 'SAFE KOREA'),

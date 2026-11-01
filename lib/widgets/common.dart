@@ -7,24 +7,49 @@ const ink = AppPalette.ink;
 const teal = AppPalette.green;
 
 class Notice extends StatelessWidget {
-  const Notice(this.text, {super.key, this.urgent = false});
+  const Notice(
+    this.text, {
+    super.key,
+    this.urgent = false,
+    this.warning = false,
+  });
   final String text;
   final bool urgent;
+  final bool warning;
   @override
   Widget build(BuildContext context) => Container(
     width: double.infinity,
     padding: const EdgeInsets.all(16),
     margin: const EdgeInsets.only(bottom: 16),
     decoration: BoxDecoration(
-      color: urgent ? const Color(0xFFFFE9DB) : const Color(0xFFE3F0EC),
+      color: urgent || warning
+          ? AppPalette.cautionBackground
+          : AppPalette.informationBackground,
       borderRadius: BorderRadius.circular(16),
     ),
-    child: Text(
-      text,
-      style: TextStyle(
-        color: urgent ? const Color(0xFF763010) : ink,
-        fontWeight: FontWeight.w600,
-      ),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ExcludeSemantics(
+          child: Icon(
+            urgent || warning
+                ? Icons.warning_amber_rounded
+                : Icons.info_outline,
+            color: urgent || warning ? AppPalette.caution : teal,
+            size: 24,
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(
+            text,
+            style: TextStyle(
+              color: urgent || warning ? AppPalette.caution : ink,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      ],
     ),
   );
 }

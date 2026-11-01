@@ -1,0 +1,6 @@
+# Copy to ignored android/key.properties only after choosing upload credentials.
+# Never commit a real keystore or password. storeFile may be an absolute path.
+storeFile=/absolute/path/to/upload-keystore.jks
+storePassword=REPLACE_LOCALLY
+keyAlias=REPLACE_LOCALLY
+keyPassword=REPLACE_LOCALLY

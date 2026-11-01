@@ -439,3 +439,18 @@ Android API 36에서도 공식 서울시청 공개 사진 매칭/표시와 공�
 - 최종 iPhone 17 Pro/iOS 26.5·Android API 36에서 준비 화면 → 비상용품/라디오 → 대피 후 라디오와 가족 공유 버튼 접근 통합 검사 통과. iPhone 캡처로 최종 정렬 확인. 외부 연결은 별도로 iPhone Safari에서 동일 KBS URL을 열어 공식 콩 안내 페이지 표시를 확인했으며, 앱 버튼에서 실제 방송 재생까지 검증한 것은 아닙니다.
 
 - 검사 후 iPhone/Android 일반 앱 재실행 완료. 최종 로그: `artifacts/radio-supplies-verify.log`, `artifacts/radio-supplies-iphone.log`, `artifacts/radio-supplies-android.log`.
+
+## 2026-11-01 — 의미별 색상과 출시 전 점검
+
+- 긴급 대응 빨강·경계/주의 주황·일반 행동 초록·보조 테두리 버튼으로 역할을 정리했습니다. 경보해제는 중립색으로 현장 확인 안내를 유지합니다. 경보명/훈련 문구/아이콘을 함께 사용합니다.
+- 나의 준비에 데이터와 권한 안내를 추가했습니다. GPS·지도·역지오코딩의 외부 전달, 사진·가족 정보의 기기 저장, 수동 공유, 삭제 방법을 설명합니다. 공식 개인정보처리방침을 대체하지 않습니다.
+- Android 릴리스의 debug 서명 자동 적용을 제거했습니다. 키 설정 예제만 추가하고 실제 서명 키는 생성하지 않았습니다. 미완료 제휴 판매 미리보기는 debug에서만 표시합니다.
+- 최종 format/analyze 통과, Flutter 147건·Python 10건 통과. 색 대비, 경보별 색, 375px 300%/568×320 200% 권한 안내 접근·넘침 검사 포함.
+- iPhone 17 Pro/iOS 26.5와 Android API 36에서 경보별 색/권한 안내 통합 시나리오 통과. iPhone 화면 캡처를 검토했습니다. 사이렌·알림을 발송하지 않았습니다.
+- Android 비행기 모드와 외부 HTTPS 실패를 확인한 상태에서 기존 네이티브 핵심 시나리오 통과: 훈련·동봉 행동요령·격리 SQLite 저장/재열기·체크리스트. 검사 후 기존 네트워크 상태 복원. 사용자 가족/시설 DB는 테스트에 사용하지 않았습니다.
+- Android AAB 및 iOS release 미서명 빌드 성공. Android target 36/min 24, iOS min 15. 64비트 라이브러리 7개의 ELF 16KB 정렬 통과. 실제 16KB 실행과 생성 APK ZIP 정렬은 미검증입니다.
+- 카카오 포함 iOS privacy manifest를 확인했습니다. SDK가 일부 데이터 수집을 선언하므로 자체 서버가 없다는 이유로 스토어 ‘수집 없음’을 선택하면 안 됩니다.
+- 출시 보류 항목과 공식 근거는 RELEASE_CHECKLIST.md: 소유자/식별자·서명·공개 정책·SDK 데이터 공개·브랜드 아이콘·카카오 배포 인증·실기기/접근성·Apple 위치 기반 비상 서비스 정책 검토. 실제 정부 경보 수신은 미구현.
+- 근거: artifacts/release-verify.log, release-design-iphone.log, release-design-android.log, release-offline-android.log, release-artifact-inspection.json.
+
+- 검사 종료 후 iPhone 17 Pro와 Android API 36에서 일반 lib/main.dart 앱 재실행 완료. 로그: artifacts/release-restore-iphone.log, release-restore-android.log.
