@@ -67,7 +67,7 @@ JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home .tools/
 BYPASS_PERMISSION_LOCATION_ALWAYS=1 .tools/flutter/bin/flutter test integration_test/app_test.dart -d E3A83EF7-8FD6-4656-AE84-EFA2E3136351 --no-uninstall
 ```
 
-2026-11-01 로컬 검증 결과: `flutter analyze` 이슈 0, Flutter 테스트 82건, Python 테스트 7건 통과. Android API 36과 iOS 26.5 시뮬레이터에서 기본 앱 통합 테스트 및 실시간 공식 시설 조회·지도·SQLite 재열기 통합 테스트 통과. 공식 종로구 응답 107건을 확인했습니다. Android에서 실제 권한 거부/일회 허용 후 모의 GPS 좌표·오차·시각 표시를 확인했습니다. 국내 실기기 GPS 정확도는 아직 검증하지 않았습니다.
+2026-11-01 로컬 검증 결과: `flutter analyze` 이슈 0, Flutter 테스트 83건, Python 테스트 7건 통과. Android API 36과 iOS 26.5 시뮬레이터에서 기본 앱 통합 테스트 및 실시간 공식 시설 조회·지도·SQLite 재열기 통합 테스트 통과. 공식 종로구 응답 107건을 확인했습니다. Android에서 실제 권한 거부/일회 허용 후 모의 GPS 좌표·오차·시각 표시를 확인했습니다. 국내 실기기 GPS 정확도는 아직 검증하지 않았습니다.
 
 Android 개발용 APK: `build/app/outputs/flutter-apk/app-debug.apk`. iOS 시뮬레이터 앱: `build/ios/iphonesimulator/Runner.app`. 결과 로그와 화면은 `artifacts/`에 보관합니다. 전체 검증은 `./scripts/verify.sh`로 다시 실행할 수 있습니다.
 
@@ -181,3 +181,5 @@ GPS는 앱에서 저장하지 않습니다. **거리 계산**은 기기 안에�
 ### 현재 위치 사용
 
 대피소 화면 상단의 **GPS 현재 위치 확인**을 누르면 권한을 요청하고 한 번 위치를 가져옵니다. 조회한 지역의 시설을 직선거리순으로 정렬하며, **온라인 지도 열기**에서 마지막 확인 위치를 파란 표시로 보여줍니다. 확인 시각과 오차를 확인하세요. 실시간 추적/안전한 경로 안내는 아닙니다. **현재 위치 표시 지우기**로 위치를 제거할 수 있습니다. 지도 열기는 별도 동작이며, 현재 위치 주변의 지도 조회 범위가 지도 제공자에게 전달됩니다. 다른 지역 시설은 **지역 변경 → 현재 위치로 지역 찾기** 또는 직접 선택으로 조회하세요.
+
+저장한 대피소는 시설명·주소·현장 확인 안내와 지도 버튼을 먼저 보여줍니다. 재조회/출처/저장 해제는 **조회·저장 정보**를 펼쳐 이용하세요. 행동강령의 각 문단은 짧은 소제목과 상황별 아이콘으로 구분합니다.

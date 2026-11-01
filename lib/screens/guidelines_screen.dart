@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../widgets/common.dart';
+import '../widgets/guideline_step.dart';
 import '../theme/app_theme.dart';
 import '../models/alert_guidance.dart';
 import 'alert_guide_screen.dart';
@@ -83,13 +84,11 @@ class _GuidelinesScreenState extends State<GuidelinesScreen> {
                         child: const Text('내 상황에 맞춰 보기'),
                       ),
                     const SizedBox(height: 12),
-                    for (final step in item['steps'] as List)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
-                        child: Text(
-                          step as String,
-                          style: const TextStyle(fontSize: 16, height: 1.5),
-                        ),
+                    for (final (index, step) in (item['steps'] as List).indexed)
+                      GuidelineStep(
+                        kind: item['id'] as String,
+                        index: index,
+                        text: step as String,
                       ),
                   ],
                 ),

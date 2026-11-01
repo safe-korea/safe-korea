@@ -76,6 +76,7 @@ void main() {
     await tester.tap(find.text('시설 자료 상세'));
     await capture('shelter-detail-alignment');
     await mount(SavedSheltersScreen(controller: saved));
+    await capture('saved-shelter-summary');
     await tester.ensureVisible(find.text('조회·저장 정보'));
     await tester.tap(find.text('조회·저장 정보'));
     await capture('saved-shelter-alignment');

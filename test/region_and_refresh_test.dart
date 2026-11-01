@@ -383,6 +383,9 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('조회·저장 정보'));
+      await tester.tap(find.text('조회·저장 정보'));
+      await tester.pumpAndSettle();
       await tester.ensureVisible(find.text('공식 자료 다시 확인'));
       await tester.tap(find.text('공식 자료 다시 확인'));
       await tester.pumpAndSettle();

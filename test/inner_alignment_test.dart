@@ -14,7 +14,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('공습경보'));
       await tester.pumpAndSettle();
-      final titleX = tester.getTopLeft(find.text('공습경보')).dx;
+      final titleX = tester.getTopLeft(find.text('대피 장소')).dx;
       final step = find.text('민방위 대피소나 지하시설, 또는 콘크리트 건물 안 유리창 없는 곳으로 대피하세요.');
       expect(tester.getTopLeft(step).dx, titleX);
       expect(tester.takeException(), isNull);
