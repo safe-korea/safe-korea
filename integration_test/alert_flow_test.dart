@@ -24,11 +24,11 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('실내'));
       await tester.pumpAndSettle();
-      expect(find.text('계단으로 지하나 아래층으로 이동하세요.'), findsOneWidget);
+      expect(find.text('계단으로 이동'), findsOneWidget);
       if (Platform.isIOS) await binding.takeScreenshot('air-indoor');
       await tester.tap(find.text('실외'));
       await tester.pumpAndSettle();
-      expect(find.text('가까운 지하시설이나 콘크리트 건물 안으로 대피하세요.'), findsOneWidget);
+      expect(find.text('가까운 건물로 대피'), findsOneWidget);
       if (Platform.isIOS) await binding.takeScreenshot('air-outdoor');
       await tester.pumpWidget(
         MaterialApp(

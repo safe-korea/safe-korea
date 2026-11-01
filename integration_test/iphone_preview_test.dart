@@ -54,7 +54,8 @@ void main() {
       await tester.pump(const Duration(seconds: 1));
     }
     expect(find.textContaining('건 저장 · 목록은 오프라인 사용 가능'), findsOneWidget);
-    await tester.ensureVisible(find.text('지역 변경'));
+    await tester.ensureVisible(find.text('시설을 누르면 상세 정보와 저장 버튼이 나와요.'));
+    await tester.pumpAndSettle();
     await binding.takeScreenshot('shelter-list');
     await tester.ensureVisible(find.text('온라인 지도 열기'));
     await tester.tap(find.text('온라인 지도 열기'));

@@ -58,9 +58,15 @@ ThemeData buildAppTheme() {
       foregroundColor: AppPalette.ink,
       systemOverlayStyle: SystemUiOverlayStyle.dark,
       centerTitle: false,
+      titleSpacing: 20,
       scrolledUnderElevation: 0,
     ),
+    expansionTileTheme: const ExpansionTileThemeData(
+      tilePadding: EdgeInsets.zero,
+      expandedAlignment: Alignment.centerLeft,
+    ),
     cardTheme: CardThemeData(
+      margin: const EdgeInsets.symmetric(vertical: 4),
       color: AppPalette.surface,
       elevation: 0,
       shape: RoundedRectangleBorder(

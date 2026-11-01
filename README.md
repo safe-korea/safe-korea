@@ -67,7 +67,7 @@ JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home .tools/
 BYPASS_PERMISSION_LOCATION_ALWAYS=1 .tools/flutter/bin/flutter test integration_test/app_test.dart -d E3A83EF7-8FD6-4656-AE84-EFA2E3136351 --no-uninstall
 ```
 
-2026-11-01 로컬 검증 결과: `flutter analyze` 이슈 0, Flutter 테스트 72건, Python 테스트 7건 통과. Android API 36과 iOS 26.5 시뮬레이터에서 기본 앱 통합 테스트 및 실시간 공식 시설 조회·지도·SQLite 재열기 통합 테스트 통과. 공식 종로구 응답 107건을 확인했습니다. Android에서 실제 권한 거부/일회 허용 후 모의 GPS 좌표·오차·시각 표시를 확인했습니다. 국내 실기기 GPS 정확도는 아직 검증하지 않았습니다.
+2026-11-01 로컬 검증 결과: `flutter analyze` 이슈 0, Flutter 테스트 74건, Python 테스트 7건 통과. Android API 36과 iOS 26.5 시뮬레이터에서 기본 앱 통합 테스트 및 실시간 공식 시설 조회·지도·SQLite 재열기 통합 테스트 통과. 공식 종로구 응답 107건을 확인했습니다. Android에서 실제 권한 거부/일회 허용 후 모의 GPS 좌표·오차·시각 표시를 확인했습니다. 국내 실기기 GPS 정확도는 아직 검증하지 않았습니다.
 
 Android 개발용 APK: `build/app/outputs/flutter-apk/app-debug.apk`. iOS 시뮬레이터 앱: `build/ios/iphonesimulator/Runner.app`. 결과 로그와 화면은 `artifacts/`에 보관합니다. 전체 검증은 `./scripts/verify.sh`로 다시 실행할 수 있습니다.
 
@@ -170,3 +170,8 @@ GPS는 앱에서 저장하지 않습니다. **거리 계산**은 기기 안에�
 - 화생방 종류 미확인·화학 공격 안내에는 일반 지하 대피소 버튼을 표시하지 않습니다. 핵 안내는 폭발 전 대피와 폭발 인지 시 몸 보호를 구분합니다. 최신 정부·현장 지시가 우선입니다.
 - 대피소 화면은 지역·시설명·주소·조회 시각을 우선 표시하고, 거리 정렬 및 자료 상세를 접어 보여줍니다.
 - Android/iOS의 화면 흐름과 음원 번들 포함을 검증했습니다. 실제 휴대폰의 소리·진동, OS 무음/집중 모드별 청취는 별도 검증이 필요합니다.
+
+
+### 행동 그림과 목록 정렬 (2026-11-01)
+훈련과 상황별 행동 화면은 계단·건물·창문·방송 등의 픽토그램, 짧은 행동 제목, 설명 한 줄로 구성합니다. 긴 설명을 아이콘으로만 대체하지 않고 침수·화학·핵 등 행동이 달라지는 조건을 바로 표시합니다. 글씨 확대 시 줄 수를 제한하거나 말줄임표로 숨기지 않습니다.
+대피소 목록에서는 시설명·주소·직선거리를 확인하고 **시설을 눌러 상세 정보와 저장 버튼**을 엽니다. 저장한 시설 목록과 지도 핀 상세에서도 기존 저장 기능을 이용할 수 있습니다.

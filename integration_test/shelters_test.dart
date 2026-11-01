@@ -62,6 +62,11 @@ void main() {
           ),
           findsWidgets,
         );
+        await tester.ensureVisible(
+          find.text(catalog.shelters.first.name).first,
+        );
+        await tester.tap(find.text(catalog.shelters.first.name).first);
+        await tester.pumpAndSettle();
         await tester.ensureVisible(find.text('대피소 저장').first);
         await tester.tap(find.text('대피소 저장').first);
         await tester.pumpAndSettle();
@@ -89,7 +94,7 @@ void main() {
           ),
         );
         await tester.pumpAndSettle();
-        expect(find.textContaining('현재 표시 범위: 서울특별시 종로구'), findsOneWidget);
+        expect(find.textContaining('서울특별시 종로구 · 지도 표시'), findsOneWidget);
         expect(
           (await repository.cached())!.shelters.length,
           catalog.shelters.length,

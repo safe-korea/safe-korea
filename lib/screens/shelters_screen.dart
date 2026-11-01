@@ -566,6 +566,14 @@ class _SheltersScreenState extends State<SheltersScreen> {
                 ],
               ),
               const SizedBox(height: 16),
+              if (items.isNotEmpty) ...[
+                const Text('개방·수용 여유는 현장 확인', style: TextStyle(fontSize: 14)),
+                const Text(
+                  '시설을 누르면 상세 정보와 저장 버튼이 나와요.',
+                  style: TextStyle(fontSize: 14),
+                ),
+                const SizedBox(height: 8),
+              ],
               for (final shelter in items.take(50)) _shelterCard(shelter),
               if (items.length > 50)
                 const Text(
@@ -599,8 +607,60 @@ class _SheltersScreenState extends State<SheltersScreen> {
     return '${time.year}.${two(time.month)}.${two(time.day)} ${two(time.hour)}:${two(time.minute)}';
   }
 
-  Widget _shelterCard(Shelter shelter, {ShelterCatalog? catalog}) {
+  Widget _shelterCard(
+    Shelter shelter, {
+    ShelterCatalog? catalog,
+    bool detail = false,
+  }) {
     final source = catalog ?? _catalog;
+    if (!detail) {
+      return Card(
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: () => _showShelter(shelter, source),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        shelter.name,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          height: 1.35,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        shelter.address,
+                        style: const TextStyle(fontSize: 15, height: 1.4),
+                      ),
+                      if (_position != null) ...[
+                        const SizedBox(height: 6),
+                        Text(
+                          '직선거리 ${(shelter.distanceFrom(_position!.latitude, _position!.longitude) / 1000).toStringAsFixed(2)}km',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 12),
+                const ExcludeSemantics(child: Icon(Icons.chevron_right)),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -694,7 +754,7 @@ class _SheltersScreenState extends State<SheltersScreen> {
           child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(16),
-              child: _shelterCard(shelter, catalog: catalog),
+              child: _shelterCard(shelter, catalog: catalog, detail: true),
             ),
           ),
         ),

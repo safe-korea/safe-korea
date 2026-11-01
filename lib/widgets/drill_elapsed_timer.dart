@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 
 /// Elapsed time for this drill session, never a safe evacuation deadline.
 class DrillElapsedTimer extends StatefulWidget {
-  const DrillElapsedTimer({super.key, this.stopwatch});
+  const DrillElapsedTimer({super.key, this.stopwatch, this.compact = false});
   final Stopwatch? stopwatch;
+  final bool compact;
 
   @override
   State<DrillElapsedTimer> createState() => _DrillElapsedTimerState();
@@ -73,9 +74,9 @@ class _DrillElapsedTimerState extends State<DrillElapsedTimer>
           Text(
             '$minutes:$seconds',
             key: const ValueKey('drill-elapsed'),
-            style: const TextStyle(
+            style: TextStyle(
               color: Colors.white,
-              fontSize: 24,
+              fontSize: widget.compact ? 16 : 24,
               fontWeight: FontWeight.w700,
               fontFeatures: [FontFeature.tabularFigures()],
             ),

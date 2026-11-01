@@ -1,0 +1,207 @@
+Formatted 62 files (0 changed) in 0.11 seconds.
+Analyzing safe-korea-starter...
+No issues found! (ran in 2.1s)
+00:00 +0: loading ./test/action_brief_test.dart
+00:00 +0: ./test/map_loading_test.dart: stalled tiles time out; retries ignore results from old requests
+00:00 +1: ./test/map_loading_test.dart: stalled tiles time out; retries ignore results from old requests
+00:00 +2: ./test/map_loading_test.dart: stalled tiles time out; retries ignore results from old requests
+00:00 +3: ./test/map_loading_test.dart: stalled tiles time out; retries ignore results from old requests
+00:00 +4: ./test/map_loading_test.dart: stalled tiles time out; retries ignore results from old requests
+00:00 +5: ./test/map_loading_test.dart: stalled tiles time out; retries ignore results from old requests
+00:00 +6: ./test/map_loading_test.dart: stalled tiles time out; retries ignore results from old requests
+00:00 +7: ./test/map_loading_test.dart: stalled tiles time out; retries ignore results from old requests
+00:00 +8: ./test/drill_notifications_test.dart: screen defaults silent and recovers from platform error
+00:00 +9: ./test/drill_notifications_test.dart: screen defaults silent and recovers from platform error
+00:00 +9: ./test/map_loading_test.dart: failed background keeps facility list usable and retry recovers without moving camera
+  [1m[flutter_map][0m
+    We want to help keep OpenStreetMap available for everyone. Our examples
+    and demo app use the public tile servers, but they are NOT free to use by
+    everyone! Please review whether the OpenStreetMap tile servers are suitable
+    for your project.
+    See:
+      * https://operations.osmfoundation.org/policies/tiles (OSM Tile Usage Policy)
+      * https://docs.fleaflet.dev/osm-warn for more information about this warning
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+00:00 +10: ./test/drill_notifications_test.dart: screen defaults silent and recovers from platform error
+00:00 +11: ./test/meeting_place_test.dart: editing and clearing meeting places preserves legacy contacts
+00:00 +11: ./test/map_loading_test.dart: failed background keeps facility list usable and retry recovers without moving camera
+  [1m[flutter_map][0m
+    We want to help keep OpenStreetMap available for everyone. Our examples
+    and demo app use the public tile servers, but they are NOT free to use by
+    everyone! Please review whether the OpenStreetMap tile servers are suitable
+    for your project.
+    See:
+      * https://operations.osmfoundation.org/policies/tiles (OSM Tile Usage Policy)
+      * https://docs.fleaflet.dev/osm-warn for more information about this warning
+00:00 +12: ./test/meeting_place_test.dart: editing and clearing meeting places preserves legacy contacts
+00:00 +13: ./test/meeting_place_test.dart: editing and clearing meeting places preserves legacy contacts
+00:00 +14: ./test/meeting_place_test.dart: editing and clearing meeting places preserves legacy contacts
+00:00 +15: ./test/widget_test.dart: guidance loads bundled content with chemical-specific instructions
+00:00 +15: ./test/meeting_place_test.dart: map requires precise selection and returns a chosen point
+  [1m[flutter_map][0m
+    We want to help keep OpenStreetMap available for everyone. Our examples
+    and demo app use the public tile servers, but they are NOT free to use by
+    everyone! Please review whether the OpenStreetMap tile servers are suitable
+    for your project.
+    See:
+      * https://operations.osmfoundation.org/policies/tiles (OSM Tile Usage Policy)
+      * https://docs.fleaflet.dev/osm-warn for more information about this warning
+00:00 +16: ./test/meeting_place_test.dart: map requires precise selection and returns a chosen point
+00:01 +17: ./test/meeting_place_test.dart: map requires precise selection and returns a chosen point
+00:01 +18: ./test/meeting_place_test.dart: map requires precise selection and returns a chosen point
+00:01 +19: ./test/meeting_place_test.dart: map requires precise selection and returns a chosen point
+00:01 +20: ./test/meeting_place_test.dart: map requires precise selection and returns a chosen point
+00:01 +21: ./test/shelter_repository_test.dart: conflicting records with the same regional ID are rejected rather than replacing a saved facility
+00:01 +22: ./test/widget_test.dart: home controls have accessible labels and Android tap sizes
+00:01 +23: ./test/widget_test.dart: home controls have accessible labels and Android tap sizes
+00:01 +24: ./test/widget_test.dart: home controls have accessible labels and Android tap sizes
+00:01 +24: ./test/meeting_place_test.dart: failed map cannot confirm a new pin and can be cancelled
+  [1m[flutter_map][0m
+    We want to help keep OpenStreetMap available for everyone. Our examples
+    and demo app use the public tile servers, but they are NOT free to use by
+    everyone! Please review whether the OpenStreetMap tile servers are suitable
+    for your project.
+    See:
+      * https://operations.osmfoundation.org/policies/tiles (OSM Tile Usage Policy)
+      * https://docs.fleaflet.dev/osm-warn for more information about this warning
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+Exception: Invalid image data
+00:01 +25: ./test/meeting_place_test.dart: failed map cannot confirm a new pin and can be cancelled
+00:01 +26: ./test/app_completion_test.dart: bottom navigation switches screens and system back returns home
+00:01 +26: ./test/meeting_place_test.dart: meeting form and map remain usable with large text
+  [1m[flutter_map][0m
+    We want to help keep OpenStreetMap available for everyone. Our examples
+    and demo app use the public tile servers, but they are NOT free to use by
+    everyone! Please review whether the OpenStreetMap tile servers are suitable
+    for your project.
+    See:
+      * https://operations.osmfoundation.org/policies/tiles (OSM Tile Usage Policy)
+      * https://docs.fleaflet.dev/osm-warn for more information about this warning
+00:01 +27: ./test/app_completion_test.dart: bottom navigation switches screens and system back returns home
+00:01 +28: ./test/app_completion_test.dart: bottom navigation switches screens and system back returns home
+00:01 +29: ./test/app_completion_test.dart: bottom navigation switches screens and system back returns home
+00:01 +30: ./test/app_completion_test.dart: bottom navigation switches screens and system back returns home
+00:02 +31: ./test/app_completion_test.dart: bottom navigation switches screens and system back returns home
+00:02 +32: ./test/app_completion_test.dart: bottom navigation switches screens and system back returns home
+00:02 +33: ./test/app_completion_test.dart: bottom navigation switches screens and system back returns home
+00:02 +34: ./test/app_completion_test.dart: bottom navigation switches screens and system back returns home
+00:02 +35: ./test/alert_guidance_test.dart: manual situation switches advice and resets when alert changes
+00:02 +36: ./test/alert_guidance_test.dart: manual situation switches advice and resets when alert changes
+00:02 +37: ./test/alert_guidance_test.dart: manual situation switches advice and resets when alert changes
+00:02 +38: ./test/alert_guidance_test.dart: manual situation switches advice and resets when alert changes
+00:02 +39: ./test/alert_guidance_test.dart: manual situation switches advice and resets when alert changes
+00:02 +39: ./test/app_completion_test.dart: missing Kakao key keeps the app usable and shelter pin opens details
+  [1m[flutter_map][0m
+    We want to help keep OpenStreetMap available for everyone. Our examples
+    and demo app use the public tile servers, but they are NOT free to use by
+    everyone! Please review whether the OpenStreetMap tile servers are suitable
+    for your project.
+    See:
+      * https://operations.osmfoundation.org/policies/tiles (OSM Tile Usage Policy)
+      * https://docs.fleaflet.dev/osm-warn for more information about this warning
+00:02 +40: ./test/shelters_screen_test.dart: regional query caches results, failure preserves them, reopening needs no network
+00:02 +41: ./test/shelters_screen_test.dart: regional query caches results, failure preserves them, reopening needs no network
+00:02 +42: ./test/local_store_test.dart: family form saves locally and confirms deletion
+00:02 +43: ./test/local_store_test.dart: family form saves locally and confirms deletion
+00:02 +44: ./test/local_store_test.dart: family form saves locally and confirms deletion
+00:02 +45: ./test/local_store_test.dart: family form saves locally and confirms deletion
+00:02 +46: ./test/local_store_test.dart: family form saves locally and confirms deletion
+00:02 +47: ./test/local_store_test.dart: family form saves locally and confirms deletion
+00:02 +48: ./test/map_and_saved_shelters_test.dart: same-location cluster can expose a facility list and select the intended shelter
+  [1m[flutter_map][0m
+    We want to help keep OpenStreetMap available for everyone. Our examples
+    and demo app use the public tile servers, but they are NOT free to use by
+    everyone! Please review whether the OpenStreetMap tile servers are suitable
+    for your project.
+    See:
+      * https://operations.osmfoundation.org/policies/tiles (OSM Tile Usage Policy)
+      * https://docs.fleaflet.dev/osm-warn for more information about this warning
+00:03 +49: ./test/map_and_saved_shelters_test.dart: same-location cluster can expose a facility list and select the intended shelter
+00:03 +50: ./test/map_and_saved_shelters_test.dart: same-location cluster can expose a facility list and select the intended shelter
+00:03 +51: ./test/map_and_saved_shelters_test.dart: same-location cluster can expose a facility list and select the intended shelter
+00:03 +52: ./test/map_and_saved_shelters_test.dart: same-location cluster can expose a facility list and select the intended shelter
+00:03 +53: ./test/map_and_saved_shelters_test.dart: same-location cluster can expose a facility list and select the intended shelter
+00:03 +54: ./test/map_and_saved_shelters_test.dart: same-location cluster can expose a facility list and select the intended shelter
+00:03 +55: ./test/map_and_saved_shelters_test.dart: same-location cluster can expose a facility list and select the intended shelter
+00:03 +56: ./test/map_and_saved_shelters_test.dart: same-location cluster can expose a facility list and select the intended shelter
+00:03 +57: ./test/map_and_saved_shelters_test.dart: same-location cluster can expose a facility list and select the intended shelter
+00:03 +58: ./test/region_and_refresh_test.dart: province-only suggestion clears district and prevents accidental query
+00:03 +59: ./test/map_and_saved_shelters_test.dart: save from a query, view offline saved list, remove and synchronize original screen
+00:03 +60: ./test/map_and_saved_shelters_test.dart: save from a query, view offline saved list, remove and synchronize original screen
+00:03 +61: ./test/map_and_saved_shelters_test.dart: save from a query, view offline saved list, remove and synchronize original screen
+00:03 +62: ./test/map_and_saved_shelters_test.dart: save from a query, view offline saved list, remove and synchronize original screen
+00:03 +63: ./test/map_and_saved_shelters_test.dart: save from a query, view offline saved list, remove and synchronize original screen
+00:03 +64: ./test/preparedness_design_test.dart: redesigned everyday screens support narrow large text
+00:03 +65: ./test/preparedness_design_test.dart: redesigned everyday screens support narrow large text
+00:03 +66: ./test/preparedness_design_test.dart: redesigned everyday screens support narrow large text
+00:03 +67: ./test/meeting_share_test.dart: sharing is explicit, previews note selection, supplies popover anchor
+00:04 +68: ./test/meeting_share_test.dart: sharing is explicit, previews note selection, supplies popover anchor
+00:04 +69: ./test/meeting_share_test.dart: compact preview hides raw links until expanded
+00:04 +70: ./test/meeting_share_test.dart: share failure keeps copy fallback available
+00:04 +71: ./test/meeting_share_test.dart: empty family plan still shows share action with an explanation
+00:04 +72: ./test/meeting_share_test.dart: long saved note does not push family sharing off screen
+00:04 +73: ./test/meeting_share_test.dart: unsaved edits cannot share a stale saved snapshot
+00:04 +74: All tests passed!
+test_pcm_duration_and_no_clipping (test_drill_siren.SirenTests.test_pcm_duration_and_no_clipping) ... ok
+test_platform_assets_identical (test_drill_siren.SirenTests.test_platform_assets_identical) ... ok
+test_signal_timing_and_voice_assets (test_drill_siren.SirenTests.test_signal_timing_and_voice_assets) ... ok
+test_normalized_official_schema (test_import_shelters.ImportTests.test_normalized_official_schema) ... ok
+test_projected_or_invalid_coordinate_rejected (test_import_shelters.ImportTests.test_projected_or_invalid_coordinate_rejected) ... ok
+test_released_records_are_excluded (test_import_shelters.ImportTests.test_released_records_are_excluded) ... ok
+test_unknown_status_duplicate_date_and_missing_fields (test_import_shelters.ImportTests.test_unknown_status_duplicate_date_and_missing_fields) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.010s
+
+OK

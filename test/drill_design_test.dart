@@ -16,10 +16,7 @@ void main() {
       );
       expect(find.text('대피시설 확인').hitTestable(), findsOneWidget);
       expect(find.text('실내').hitTestable(), findsOneWidget);
-      expect(
-        find.text('민방위 대피소나 가까운 지하시설로 즉시 대피하세요.').hitTestable(),
-        findsOneWidget,
-      );
+      expect(find.text('가까운 대피소로 이동').hitTestable(), findsOneWidget);
       await tester.ensureVisible(find.text('없으면 바로 대피하세요.'));
       expect(find.text('없으면 바로 대피하세요.').hitTestable(), findsOneWidget);
       expect(find.text('챙길 것 보기'), findsNothing);

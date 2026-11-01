@@ -204,11 +204,17 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
+      expect(find.text('대피소 저장'), findsNothing);
+      await tester.ensureVisible(find.text('테스트 시설 a'));
+      await tester.tap(find.text('테스트 시설 a'));
+      await tester.pumpAndSettle();
       await tester.ensureVisible(find.text('대피소 저장'));
       await tester.tap(find.text('대피소 저장'));
       await tester.pumpAndSettle();
       expect(controller.entries.length, 1);
       await tester.pump(const Duration(seconds: 5));
+      await tester.pumpAndSettle();
+      Navigator.of(tester.element(find.text('대피소 저장 해제'))).pop();
       await tester.pumpAndSettle();
       await tester.tap(find.byTooltip('저장한 대피소 (1)'));
       await tester.pumpAndSettle();

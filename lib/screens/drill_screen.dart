@@ -59,7 +59,7 @@ class _DrillScreenState extends State<DrillScreen> {
     body: PageBody(
       children: [
         Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: AppPalette.alert,
             borderRadius: BorderRadius.circular(20),
@@ -69,14 +69,9 @@ class _DrillScreenState extends State<DrillScreen> {
             children: [
               Text(
                 '${_kind.label} 연습',
-                style: const TextStyle(color: Colors.white, fontSize: 17),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                _kind.headline,
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 28,
+                  fontSize: 24,
                   fontWeight: FontWeight.w800,
                 ),
               ),
@@ -86,7 +81,7 @@ class _DrillScreenState extends State<DrillScreen> {
                 style: const TextStyle(color: Colors.white, fontSize: 14),
               ),
               const SizedBox(height: 8),
-              const DrillElapsedTimer(),
+              const DrillElapsedTimer(compact: true),
             ],
           ),
         ),
@@ -102,9 +97,9 @@ class _DrillScreenState extends State<DrillScreen> {
             label: const Text('대피시설 확인'),
           ),
         if (_kind == AlertKind.air) ...[
-          const SizedBox(height: 20),
+          const SizedBox(height: 12),
           Container(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: AppPalette.surface,
               borderRadius: BorderRadius.circular(16),
@@ -127,7 +122,7 @@ class _DrillScreenState extends State<DrillScreen> {
                       Text(
                         '손 닿는 곳에 있으면 챙기세요',
                         style: TextStyle(
-                          fontSize: 20,
+                          fontSize: 17,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -136,7 +131,7 @@ class _DrillScreenState extends State<DrillScreen> {
                         '없으면 바로 대피하세요.',
                         style: TextStyle(fontSize: 16, color: AppPalette.muted),
                       ),
-                      SizedBox(height: 12),
+                      SizedBox(height: 4),
                       Text(
                         '준비된 배낭 · 물 · 상비약 · 손전등',
                         style: TextStyle(

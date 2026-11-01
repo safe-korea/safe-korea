@@ -20,7 +20,7 @@ class _AlertGuideScreenState extends State<AlertGuideScreen> {
     body: PageBody(
       children: [
         const Text(
-          '받은 정부 경보를 선택하세요. 앱이 경보를 수신하거나 위치 상황을 판단하지 않습니다.',
+          '경보·현재 상황 직접 선택 · 자동 수신·판정 없음',
           style: TextStyle(fontSize: 14),
         ),
         const SizedBox(height: 12),

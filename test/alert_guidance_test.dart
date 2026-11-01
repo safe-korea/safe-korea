@@ -28,13 +28,13 @@ void main() {
     'manual situation switches advice and resets when alert changes',
     (tester) async {
       await tester.pumpWidget(const MaterialApp(home: AlertGuideScreen()));
-      expect(find.text('민방위 대피소나 가까운 지하시설로 즉시 대피하세요.'), findsOneWidget);
+      expect(find.text('가까운 대피소로 이동'), findsOneWidget);
       await tester.tap(find.text('실내'));
       await tester.pumpAndSettle();
-      expect(find.text('계단으로 지하나 아래층으로 이동하세요.'), findsOneWidget);
+      expect(find.text('계단으로 이동'), findsOneWidget);
       await tester.tap(find.text('실외'));
       await tester.pumpAndSettle();
-      expect(find.text('가까운 지하시설이나 콘크리트 건물 안으로 대피하세요.'), findsOneWidget);
+      expect(find.text('가까운 건물로 대피'), findsOneWidget);
       await tester.pumpWidget(
         const MaterialApp(
           home: AlertGuideScreen(
@@ -51,7 +51,7 @@ void main() {
       await tester.ensureVisible(find.text('실내'));
       await tester.tap(find.text('실내'));
       await tester.pumpAndSettle();
-      expect(find.text('문과 창문을 닫고 외부 공기 유입을 차단하세요.'), findsOneWidget);
+      expect(find.text('문·창문 닫기'), findsOneWidget);
       expect(find.text('대피시설 확인'), findsNothing);
       expect(tester.takeException(), isNull);
     },
