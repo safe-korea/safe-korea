@@ -15,9 +15,7 @@ String buildMeetingShareText(FamilyPlan plan, {bool includeNote = false}) {
     if (point?.isValid ?? false) {
       final latitude = point!.latitude.toStringAsFixed(6);
       final longitude = point.longitude.toStringAsFixed(6);
-      lines.add(
-        '지도: https://www.openstreetmap.org/?mlat=$latitude&mlon=$longitude#map=17/$latitude/$longitude',
-      );
+      lines.add('지도: https://map.kakao.com/link/map/$latitude,$longitude');
     } else {
       lines.add('지도 위치 미지정');
     }

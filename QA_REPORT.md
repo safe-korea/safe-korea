@@ -214,3 +214,16 @@ UI UX Pro Max의 접근성·터치·반응형 체크리스트를 적용했습니
 - 네이티브 재검증: iPhone 17 Pro/iOS 26.5와 Android API 36에서 내부 화면 및 새 사진·기록·상태 공유 시나리오 2건씩 통과. iPhone 캡처는 `artifacts/iphone17-pro-design-*.png`, 실행 로그는 `artifacts/design-qa-iphone.log`, `artifacts/design-qa-android.log`.
 
 - 검사 후 iPhone/Android 일반 앱으로 재실행했습니다.
+
+## 2026-11-01 — 가족 카카오 지도 통일 UX/UI QA
+
+- 가족 장소 선택·보기는 로컬 키가 있는 경우 카카오 네이티브 SDK를 사용하며, 공유 링크도 공식 카카오 좌표 링크로 변경했습니다. 기존 저장 좌표/이름/약속과 개인정보 제외 정책은 유지합니다.
+- 지도 위 긴 설명을 하단 스크롤 영역으로 옮겨 작은 높이에서도 지도 영역을 확보했습니다. 온라인 필요 표시, 가족 약속/공식 시설 구분, 48px 확대·축소 버튼, 중앙 핀 배치와 최종 선택 버튼의 우선순위를 점검했습니다.
+- 오류 복구는 UI UX Pro Max `network failure recovery` 결과를 참고: 재시도 제공, 저장 좌표 보존, 뒤로 돌아가 기존 장소 정보 보기. 네이티브 초기화 실패를 주입하여 좌표 유지·선택 차단·재시도 2회 호출을 확인했습니다.
+- 추가 QA 4건: 375×812 글씨 300%, 568×320 글씨 200%, 1024×768 글씨 200%에서 선택 버튼 접근/overflow 검사, 카카오 초기화 실패/재시도 검사. 반응형 테스트의 지도 배경은 fixture이며 실제 카카오 렌더 검사는 별도 통합 검사입니다.
+- 전체 format/analyze, Flutter 137건·Python 7건 통과. 실기기 GPS/비행기 모드/스크린리더 검증과 실제 카카오톡 수신은 이번 검사에 포함하지 않습니다.
+- 지도 중앙 선택의 네이티브 검사에서는 SDK가 반환하는 실제 카메라 좌표와 저장 결과를 비교합니다. 요청 좌표는 화면 좌표 처리로 미세하게 달라질 수 있어 문자열 완전 일치 대신 요청점 근접성과 실제 선택 좌표 일치를 각각 검사합니다.
+
+- 네이티브 검증: iPhone 17 Pro/iOS 26.5, Android API 36에서 카카오 인증·배경·핀·확대·중앙 위치 선택·좌표 반환·읽기 전용 재열기 통과. Android 등록 핀 자동 검사와 양쪽 화면 캡처를 확인했습니다. 테스트는 공개 좌표를 사용하고 사용자 가족 DB에 쓰거나 메시지를 전송하지 않았습니다. 로그: `artifacts/meeting-map-iphone.log`, `artifacts/meeting-map-android.log`.
+
+- 검사 후 iPhone/Android 일반 앱 재실행 완료. 최종 format/analyze, Flutter 137건·Python 7건 통과 (`artifacts/meeting-map-verify.log`).

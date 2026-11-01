@@ -122,3 +122,10 @@
 - [Seoul City Hall in 2026](https://commons.wikimedia.org/wiki/File:Seoul_City_Hall_in_2026.jpg): 저작자 Sadopaul(Gyuwon Lee), 촬영 2026-06-03. [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) 명시. Wikimedia가 제공하는 1280px 축소본(193,518바이트)을 추가 편집 없이 동봉. 출처·저작자·라이선스·축소본 표시를 앱과 `assets/public_photos/ATTRIBUTION.md`에 유지.
 - 직접 사진을 확인: 전면 옛 청사(서울도서관) 뒤 유리 건물이 서울시청. ‘서울시청 외관 · 뒤편 유리 건물’, ‘대피 출입구 사진 아님’ 표시. 내부 대피 공간이나 개방 여부를 이 사진으로 확인한 것은 아님.
 - 런타임은 출처/지역/시설번호/정확한 시설명/주소 경계/기준 좌표 150m 이내를 모두 확인한 경우만 자동 표시한다. 다른 시설명·유사 주소·재사용 식별자·이동 좌표는 연결하지 않는다. 저장 목록의 공식 조회 미발견/불완전 상태에서는 인라인 사진을 숨긴다. 전국 사진 검색·추정 매칭·자동 크롤링은 하지 않는다.
+
+## 가족 지도 통일 및 오프라인 라디오 검토 (2026-11-01)
+- 가족 만남 장소 선택/보기에도 대피소와 같은 Kakao 네이티브 SDK를 사용. 공유 링크는 공식 좌표 링크 `https://map.kakao.com/link/map/{latitude},{longitude}`. [공식 링크 가이드](https://apis.map.kakao.com/web/guide/).
+- 지도 데이터 다운로드나 오프라인 지도 기능을 추가한 것이 아님. 키 없는 개발 환경은 기존 OSM 경로를 유지하며 이 경로도 인터넷이 필요함. 가족 좌표·이름·약속의 기기 저장은 지도 배경과 별개.
+- [삼성 FM 안내](https://www.samsung.com/in/support/mobile-devices/using-the-radio-app-on-my-samsung-phone/): 지원 Galaxy 기기의 기본 라디오로 인터넷 없이 수신 가능, 유선 이어폰이 필요한 기기가 있음. 모든 Galaxy/Android가 지원하는 것으로 일반화하지 않음.
+- [Galaxy FM SDK](https://developer.samsung.com/galaxy-fm-radio/overview.html): FM 하드웨어를 갖춘 Android 10 이상 삼성 기기 및 파트너 가입 조건. 현재 앱의 FM 수신 기능은 미구현이며 파트너 신청/기기 지원 검증을 하지 않음.
+- [Apple Music 개인정보 안내](https://images.apple.com/legal/privacy/data/en/apple-music/): 방송 재생 시 방송사로 네트워크 연결. 온라인 라디오를 통신 두절용 오프라인 수신 기능으로 안내하지 않음. 별도 휴대용 라디오 또는 실제 지원 기기 기본 앱이 대안이며, 앱만으로 FM 수신 하드웨어를 대체할 수 없음.

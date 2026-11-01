@@ -6,6 +6,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:kakao_map_sdk/kakao_map_sdk.dart' as kakao;
 
 import '../models/shelter.dart';
+import '../services/map_sdk.dart';
 import '../models/shelter_cluster.dart';
 import 'common.dart';
 import 'map_load_status.dart';
@@ -50,7 +51,6 @@ class _ShelterMapState extends State<ShelterMap> {
   int _nativeRevision = 0;
   Future<void>? _initialization;
   Timer? _watchdog;
-  static Future<void>? _sdkInitialization;
   LatLng get _center =>
       widget.currentLocation ??
       (widget.shelters.isEmpty
@@ -66,9 +66,7 @@ class _ShelterMapState extends State<ShelterMap> {
       _watchdog = Timer(const Duration(seconds: 25), () {
         if (mounted) setState(() => _failed = true);
       });
-      _initialization = _sdkInitialization ??= kakao.KakaoMapSdk.instance
-          .initialize(widget.configuration.nativeAppKey)
-          .timeout(const Duration(seconds: 15));
+      _initialization = initializeMapSdk(widget.configuration.nativeAppKey);
     }
   }
 

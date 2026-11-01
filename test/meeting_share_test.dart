@@ -23,7 +23,10 @@ void main() {
   test('share text includes only meeting fields and optional note', () {
     final text = buildMeetingShareText(plan);
     expect(text, contains('첫 장소'));
-    expect(text, contains('mlat=37.566500&mlon=126.978000'));
+    expect(
+      text,
+      contains('https://map.kakao.com/link/map/37.566500,126.978000'),
+    );
     expect(text, contains('대체 장소: 대체 장소\n지도 위치 미지정'));
     expect(text, isNot(contains('hidden-')));
     expect(text, isNot(contains('개인 약속')));

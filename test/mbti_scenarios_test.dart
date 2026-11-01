@@ -221,7 +221,7 @@ void main() {
       await mount(tester, const MeetingShareScreen(plan: plan));
       await tap(tester, '전송 내용 전체 보기');
       expect(
-        find.textContaining('https://www.openstreetmap.org'),
+        find.textContaining('https://map.kakao.com/link/map/'),
         findsOneWidget,
       );
       expect(copied, isNull);

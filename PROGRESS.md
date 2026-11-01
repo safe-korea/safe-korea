@@ -417,3 +417,14 @@ Android API 36에서도 공식 서울시청 공개 사진 매칭/표시와 공�
 - 네이티브 재검증: iPhone 17 Pro/iOS 26.5와 Android API 36에서 내부 화면 및 새 사진·기록·상태 공유 시나리오 2건씩 통과. iPhone 캡처는 `artifacts/iphone17-pro-design-*.png`, 실행 로그는 `artifacts/design-qa-iphone.log`, `artifacts/design-qa-android.log`.
 
 - 검사 후 iPhone/Android 일반 앱으로 재실행했습니다.
+
+## 2026-11-01 — 가족 지도와 공유 링크 카카오 통일
+- 가족 장소 선택/보기의 카카오 지도·확대/축소·탭 선택·중앙 핀·좌표 반환·읽기 전용 보기 구현. 지도 SDK 초기화는 대피소와 공유하며 실패 시 다시 시도 가능.
+- 가족 공유 링크를 카카오 좌표 URL로 변경. 기존 저장 정보 보존, 이름/약속 저장과 온라인 지도 배경 구분.
+- 작은 높이에서 긴 설명이 지도를 밀어내지 않도록 하단 스크롤 안내로 정리. 확대/축소 터치 영역 48px, 연결 실패 안내/재시도/기존 좌표 유지.
+- 신규 위젯 QA 4건 포함 Flutter 137건, Python 7건, 정적 분석 통과.
+- 오프라인 라디오 가능 여부 조사: 일부 FM 하드웨어 탑재 Galaxy와 SDK 파트너 조건으로 제한. 아이폰 온라인 방송을 오프라인으로 오인시키지 않으며 수신 기능은 미구현. 근거와 제한은 DATA_SOURCES.md 기록.
+
+- 네이티브 검증: iPhone 17 Pro/iOS 26.5, Android API 36에서 카카오 인증·배경·핀·확대·중앙 위치 선택·좌표 반환·읽기 전용 재열기 통과. Android 등록 핀 자동 검사와 양쪽 화면 캡처를 확인했습니다. 테스트는 공개 좌표를 사용하고 사용자 가족 DB에 쓰거나 메시지를 전송하지 않았습니다. 로그: `artifacts/meeting-map-iphone.log`, `artifacts/meeting-map-android.log`.
+
+- 검사 후 iPhone/Android 일반 앱 재실행 완료. 최종 format/analyze, Flutter 137건·Python 7건 통과 (`artifacts/meeting-map-verify.log`).
