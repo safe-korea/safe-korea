@@ -53,6 +53,8 @@
 
 ## 검증
 
+- Android/iPhone 실제 앱에서 8종 행동강령·훈련·가족·저장 시설·복귀를 연속 순회하는 회귀 테스트 통과. 핵심 MVP 구현 완료와 출시 검증 미완료를 구분.
+
 - 추가 QA: 긴 장소명·320px/200% 내부 상세 버튼 접근, Android 공식 시설/SQLite, iPhone 상황별 행동 안내·기본 공유 창 확인. [QA_REPORT.md](QA_REPORT.md)에 결과와 미검증 범위 기록.
 
 - `./scripts/verify.sh`: format, analyze 이슈 0, Flutter 테스트 83건, Python 테스트 7건 통과.
