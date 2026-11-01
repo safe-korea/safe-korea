@@ -22,6 +22,18 @@ void main() {
         tester.getTopLeft(find.text('주변 대피소 보기')).dy,
         lessThan(tester.getTopLeft(find.text('지금 어디에 있나요?')).dy),
       );
+      final chips = find.byType(ChoiceChip);
+      final chipBounds = [
+        for (var i = 0; i < 4; i++) tester.getRect(chips.at(i)),
+      ];
+      expect(chipBounds[0].width, chipBounds[1].width);
+      expect(chipBounds[0].left, chipBounds[2].left);
+      expect(chipBounds[1].right, chipBounds[3].right);
+      await tester.tap(find.text('실내'));
+      await tester.pumpAndSettle();
+      for (var i = 0; i < 4; i++) {
+        expect(tester.getRect(chips.at(i)), chipBounds[i]);
+      }
       await tester.ensureVisible(find.text('없으면 바로 대피하세요.'));
       expect(find.text('없으면 바로 대피하세요.').hitTestable(), findsOneWidget);
       expect(find.text('챙길 것 보기'), findsNothing);

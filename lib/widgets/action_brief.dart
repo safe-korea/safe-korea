@@ -146,7 +146,7 @@ class ActionBriefTile extends StatelessWidget {
   final bool primary;
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+    padding: const EdgeInsets.symmetric(vertical: 12),
     child: IconTextBlock(
       icon: brief.icon,
       title: brief.title,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../models/alert_guidance.dart';
+import '../theme/app_theme.dart';
 import '../widgets/alert_actions.dart';
 import '../widgets/common.dart';
 import 'shelters_screen.dart';
@@ -56,9 +57,16 @@ class _AlertGuideScreenState extends State<AlertGuideScreen> {
           ),
           const SizedBox(height: 16),
         ],
-        AlertActions(
-          kind: _kind,
-          onKindChanged: (kind) => setState(() => _kind = kind),
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: AppPalette.surface,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: AlertActions(
+            kind: _kind,
+            onKindChanged: (kind) => setState(() => _kind = kind),
+          ),
         ),
         if (_kind.offersShelters && _kind != AlertKind.air)
           FilledButton.icon(

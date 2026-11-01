@@ -29,22 +29,40 @@ class _AlertActionsState extends State<AlertActions> {
         style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
       ),
 
-      Wrap(
-        spacing: 8,
-        children: [
-          for (final setting in [
-            UserSetting.indoors,
-            UserSetting.outdoors,
-            UserSetting.vehicle,
-            UserSetting.unknown,
-          ])
-            ChoiceChip(
-              label: Text(setting.label),
-              selected: setting == _setting,
-              onSelected: (_) => setState(() => _setting = setting),
-              materialTapTargetSize: MaterialTapTargetSize.padded,
-            ),
-        ],
+      const SizedBox(height: 12),
+      LayoutBuilder(
+        builder: (context, constraints) {
+          final columns =
+              constraints.maxWidth < MediaQuery.textScalerOf(context).scale(230)
+              ? 1
+              : 2;
+          final width = (constraints.maxWidth - 8 * (columns - 1)) / columns;
+          return Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final setting in [
+                UserSetting.indoors,
+                UserSetting.outdoors,
+                UserSetting.vehicle,
+                UserSetting.unknown,
+              ])
+                SizedBox(
+                  width: width,
+                  child: ChoiceChip(
+                    label: SizedBox(
+                      width: double.infinity,
+                      child: Text(setting.label, textAlign: TextAlign.center),
+                    ),
+                    showCheckmark: false,
+                    selected: setting == _setting,
+                    onSelected: (_) => setState(() => _setting = setting),
+                    materialTapTargetSize: MaterialTapTargetSize.padded,
+                  ),
+                ),
+            ],
+          );
+        },
       ),
       const SizedBox(height: 8),
       for (final (index, brief) in actionBriefs(widget.kind, _setting).indexed)

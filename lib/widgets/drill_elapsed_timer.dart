@@ -62,30 +62,53 @@ class _DrillElapsedTimerState extends State<DrillElapsedTimer>
       label:
           '훈련 시작 후 경과 ${elapsed.inMinutes}분 ${elapsed.inSeconds % 60}초. 대피 제한시간이 아닙니다.',
       excludeSemantics: true,
-      child: Wrap(
-        crossAxisAlignment: WrapCrossAlignment.center,
-        spacing: 12,
-        runSpacing: 4,
-        children: [
-          const Text(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final label = const Text(
             '훈련 시작 후 경과',
-            style: TextStyle(color: Colors.white, fontSize: 16),
-          ),
-          Text(
+            style: TextStyle(color: Colors.white, fontSize: 14, height: 1.4),
+          );
+          final clock = Text(
             '$minutes:$seconds',
             key: const ValueKey('drill-elapsed'),
             style: TextStyle(
               color: Colors.white,
-              fontSize: widget.compact ? 16 : 24,
+              fontSize: widget.compact ? 18 : 24,
               fontWeight: FontWeight.w700,
-              fontFeatures: [FontFeature.tabularFigures()],
+              fontFeatures: const [FontFeature.tabularFigures()],
             ),
-          ),
-          const Text(
-            '대피 여유시간 아님',
-            style: TextStyle(color: Colors.white, fontSize: 13),
-          ),
-        ],
+          );
+          final stacked =
+              constraints.maxWidth <
+              MediaQuery.textScalerOf(context).scale(240);
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (stacked)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [label, const SizedBox(height: 4), clock],
+                )
+              else
+                Row(
+                  children: [
+                    Expanded(child: label),
+                    const SizedBox(width: 12),
+                    clock,
+                  ],
+                ),
+              const SizedBox(height: 4),
+              const Text(
+                '대피 여유시간 아님',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 13,
+                  height: 1.4,
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

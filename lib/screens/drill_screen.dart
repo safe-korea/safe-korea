@@ -96,7 +96,10 @@ class _DrillScreenState extends State<DrillScreen> {
                   style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
               ],
-              const SizedBox(height: 8),
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 12),
+                child: Divider(color: Colors.white38, height: 1),
+              ),
               const DrillElapsedTimer(compact: true),
             ],
           ),
@@ -110,9 +113,16 @@ class _DrillScreenState extends State<DrillScreen> {
           ),
           const SizedBox(height: 16),
         ],
-        AlertActions(
-          kind: _kind,
-          onKindChanged: (kind) => setState(() => _kind = kind),
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: AppPalette.surface,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: AlertActions(
+            kind: _kind,
+            onKindChanged: (kind) => setState(() => _kind = kind),
+          ),
         ),
         if (_kind.offersShelters && _kind != AlertKind.air)
           FilledButton.icon(
