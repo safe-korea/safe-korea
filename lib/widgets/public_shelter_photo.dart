@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/public_shelter_photo.dart';
 import 'common.dart';
+import 'photo_viewer.dart';
 
 class PublicShelterPhotoCard extends StatelessWidget {
   const PublicShelterPhotoCard({super.key, required this.photo});
@@ -39,26 +40,12 @@ class PublicShelterPhotoCard extends StatelessWidget {
         onPressed: () => Navigator.push(
           context,
           MaterialPageRoute<void>(
-            builder: (_) => Scaffold(
-              appBar: AppBar(title: const Text('공개 건물 사진 · 출입구 아님')),
-              body: SafeArea(
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: Center(
-                        child: InteractiveViewer(maxScale: 4, child: _image()),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Text(
-                        '${photo.author} · CC BY-SA 4.0\n촬영 ${photo.takenOn} · Wikimedia Commons',
-                        style: const TextStyle(fontSize: 14),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+            builder: (_) => PhotoViewerScreen(
+              title: '공개 건물 사진',
+              image: _image(),
+              caption:
+                  '대피 출입구 사진 아님 · 현재 개방 여부는 현장에서 확인하세요.\n'
+                  '${photo.author} · CC BY-SA 4.0\n촬영 ${photo.takenOn} · Wikimedia Commons',
             ),
           ),
         ),

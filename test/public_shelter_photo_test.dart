@@ -83,7 +83,8 @@ void main() {
       await tester.ensureVisible(find.text('공개 사진 크게 보기'));
       await tester.tap(find.text('공개 사진 크게 보기'));
       await tester.pumpAndSettle();
-      expect(find.text('공개 건물 사진 · 출입구 아님'), findsOneWidget);
+      expect(find.text('공개 건물 사진'), findsOneWidget);
+      expect(find.textContaining('대피 출입구 사진 아님 · 현재 개방 여부'), findsOneWidget);
       expect(
         find.textContaining('촬영 2026-06-03 · Wikimedia Commons'),
         findsOneWidget,

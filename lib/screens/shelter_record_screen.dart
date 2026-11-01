@@ -6,6 +6,7 @@ import '../models/saved_shelter.dart';
 import '../services/saved_shelters_controller.dart';
 import '../services/shelter_photo_importer.dart';
 import '../widgets/common.dart';
+import '../widgets/photo_viewer.dart';
 
 Future<bool> confirmPersonalRecordRemoval(
   BuildContext context,
@@ -162,11 +163,20 @@ class _ShelterRecordScreenState extends State<ShelterRecordScreen> {
       appBar: AppBar(title: const Text('출입구 사진·메모')),
       bottomNavigationBar: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: FilledButton.icon(
-            onPressed: _busy ? null : _save,
-            icon: const Icon(Icons.save_outlined),
-            label: Text(_busy ? '처리 중…' : '기기에 저장'),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          child: Center(
+            heightFactor: 1,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 720),
+              child: SizedBox(
+                width: double.infinity,
+                child: FilledButton.icon(
+                  onPressed: _busy ? null : _save,
+                  icon: const Icon(Icons.save_outlined),
+                  label: Text(_busy ? '처리 중…' : '기기에 저장'),
+                ),
+              ),
+            ),
           ),
         ),
       ),
@@ -311,17 +321,10 @@ class PersonalShelterPhoto extends StatelessWidget {
         onPressed: () => Navigator.push(
           context,
           MaterialPageRoute<void>(
-            builder: (_) => Scaffold(
-              appBar: AppBar(title: Text('개인 사진 $index · 확대')),
-              body: SafeArea(
-                child: Center(
-                  child: InteractiveViewer(
-                    minScale: 1,
-                    maxScale: 5,
-                    child: _image(full: true),
-                  ),
-                ),
-              ),
+            builder: (_) => PhotoViewerScreen(
+              title: '개인 사진 $index',
+              image: _image(full: true),
+              caption: '직접 저장한 개인 기록 · 공식 사진 아님',
             ),
           ),
         ),

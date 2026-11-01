@@ -777,7 +777,9 @@ class _SheltersScreenState extends State<SheltersScreen> {
                   _saved.contains(source, shelter.id) ? '대피소 저장 해제' : '대피소 저장',
                 ),
               ),
-            if (source != null && _saved.entryFor(source, shelter.id) != null)
+            if (source != null &&
+                _saved.entryFor(source, shelter.id) != null) ...[
+              const SizedBox(height: 12),
               OutlinedButton.icon(
                 onPressed: () => Navigator.push(
                   context,
@@ -791,6 +793,7 @@ class _SheltersScreenState extends State<SheltersScreen> {
                 icon: const Icon(Icons.photo_library_outlined),
                 label: const Text('우선순위·사진·메모 추가'),
               ),
+            ],
             if (!_saved.loaded && !_saved.loading)
               TextButton(
                 onPressed: _saved.load,

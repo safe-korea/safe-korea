@@ -406,3 +406,14 @@
 Android API 36에서도 공식 서울시청 공개 사진 매칭/표시와 공식 시설 로드뷰 버튼 통합 2개 시나리오 통과(`artifacts/public-imagery-android.log`). Android 제공자 브라우저의 실제 거리 사진 수동 확인은 이번에 수행하지 않았으며 iPhone Safari 수동 확인과 구분합니다.
 
 일반 앱 복원: iPhone 17 Pro와 Android API 36에 최신 `lib/main.dart` 빌드·설치·실행 성공. 실행 증거는 `artifacts/public-imagery-run-{iphone,android}.log`. 개인 데이터·로컬 설정은 보존했습니다.
+
+## 2026-11-01 — 디자인 QA: 사진 확대와 내부 화면 정렬
+- 실제 iPhone 캡처 및 큰 글씨/가로/태블릿 위젯 검사로 공개 사진의 272px overflow를 재현했습니다.
+- 공통 사진 뷰어: 설명 영역 높이 제한·스크롤, 사진 영역 확보, 확대/축소/원래 크기 버튼. 공개/개인 사진 구분과 출처 유지.
+- 기록 저장 버튼 여백/최대 폭을 본문과 통일하고, 대피소 상세의 저장/기록 버튼 사이 12px 간격 추가.
+- 신규 디자인 회귀 시나리오 5건 추가. 정적 분석, Flutter 133건, Python 7건 통과(검증 로그: artifacts/design-qa-verify.log).
+- 상세 검사 범위와 미검증 접근성 항목은 QA_REPORT.md에 기록했습니다.
+
+- 네이티브 재검증: iPhone 17 Pro/iOS 26.5와 Android API 36에서 내부 화면 및 새 사진·기록·상태 공유 시나리오 2건씩 통과. iPhone 캡처는 `artifacts/iphone17-pro-design-*.png`, 실행 로그는 `artifacts/design-qa-iphone.log`, `artifacts/design-qa-android.log`.
+
+- 검사 후 iPhone/Android 일반 앱으로 재실행했습니다.
