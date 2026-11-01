@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 
 import '../widgets/common.dart';
 import '../theme/app_theme.dart';
+import '../models/alert_guidance.dart';
+import 'alert_guide_screen.dart';
 
 class GuidelinesScreen extends StatefulWidget {
   const GuidelinesScreen({super.key});
@@ -33,11 +35,19 @@ class _GuidelinesScreenState extends State<GuidelinesScreen> {
         final data = snapshot.data!;
         return PageBody(
           children: [
-            const PageIntro(
-              eyebrow: '오프라인 저장됨',
-              title: '상황에 맞게 행동하세요',
-              subtitle: '경보 종류를 누르면 행동 순서가 나옵니다.',
+            FilledButton.icon(
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute<void>(
+                  builder: (_) => const AlertGuideScreen(),
+                ),
+              ),
+              icon: const Icon(Icons.touch_app_outlined),
+              label: const Text('내 상황에 맞는 행동 보기'),
             ),
+            const SizedBox(height: 8),
+            const Text('실내·실외·이동 중 안내 · 오프라인 저장됨'),
+            const SizedBox(height: 16),
             for (final item in data['items'] as List)
               Card(
                 margin: const EdgeInsets.only(bottom: 12),
@@ -72,6 +82,17 @@ class _GuidelinesScreenState extends State<GuidelinesScreen> {
                   childrenPadding: const EdgeInsets.all(20),
                   expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    if (AlertKind.fromName(item['id'] as String)
+                        case final kind?)
+                      FilledButton.tonal(
+                        onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute<void>(
+                            builder: (_) => AlertGuideScreen(initialKind: kind),
+                          ),
+                        ),
+                        child: const Text('내 상황에 맞춰 보기'),
+                      ),
                     for (final (index, step) in (item['steps'] as List).indexed)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16),
@@ -94,6 +115,11 @@ class _GuidelinesScreenState extends State<GuidelinesScreen> {
                   openExternal(context, Uri.parse(data['sourceUrl'] as String)),
               child: const Text('정부 원문 열기 (인터넷 필요)'),
             ),
+            if (data['additionalSourceUrl'] case final String url)
+              TextButton(
+                onPressed: () => openExternal(context, Uri.parse(url)),
+                child: const Text('국민안전24 상세 행동요령'),
+              ),
           ],
         );
       },

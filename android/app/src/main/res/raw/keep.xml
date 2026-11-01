@@ -1,1 +1,1 @@
-<resources xmlns:tools="http://schemas.android.com/tools" tools:keep="@raw/drill_siren,@drawable/ic_notification" />
+<resources xmlns:tools="http://schemas.android.com/tools" tools:keep="@raw/drill_*,@drawable/ic_notification" />

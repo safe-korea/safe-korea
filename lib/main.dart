@@ -16,10 +16,11 @@ void main() {
     DrillNotifications.instance.attach(() async {
       final navigator = _navigatorKey.currentState;
       if (navigator == null || _notificationDrillOpen) return;
+      final kind = DrillNotifications.instance.openedKind;
       _notificationDrillOpen = true;
       try {
         await navigator.push(
-          MaterialPageRoute<void>(builder: (_) => const DrillScreen()),
+          MaterialPageRoute<void>(builder: (_) => DrillScreen(kind: kind)),
         );
       } finally {
         _notificationDrillOpen = false;

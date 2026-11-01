@@ -1,0 +1,7 @@
+00:00 +0: loading ./integration_test/alert_flow_test.dart
+Running Gradle task 'assembleDebug'...                             12.2s
+✓ Built build/app/outputs/flutter-apk/app-debug.apk
+Installing build/app/outputs/flutter-apk/app-debug.apk...        1,378ms
+00:00 +0: offline context guidance and signal selection without playing audio
+00:05 +1: (tearDownAll)
+00:05 +1: All tests passed!

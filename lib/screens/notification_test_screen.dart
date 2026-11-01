@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../services/drill_notifications.dart';
+import '../models/alert_guidance.dart';
+import 'drill_screen.dart';
 import '../widgets/common.dart';
 
 class NotificationTestScreen extends StatefulWidget {
@@ -14,6 +16,7 @@ class NotificationTestScreen extends StatefulWidget {
 class _NotificationTestScreenState extends State<NotificationTestScreen> {
   bool _sound = false, _vibration = false, _busy = false;
   String? _status;
+  AlertKind _kind = AlertKind.air;
   DrillNotifications get _notifications =>
       widget.notifications ?? DrillNotifications.instance;
 
@@ -27,6 +30,7 @@ class _NotificationTestScreenState extends State<NotificationTestScreen> {
       } else {
         final allowed = await _notifications.send(
           sound: _sound,
+          kind: _kind,
           vibration: _vibration,
         );
         message = allowed
@@ -51,13 +55,34 @@ class _NotificationTestScreenState extends State<NotificationTestScreen> {
       children: [
         const PageIntro(
           eyebrow: '훈련 / 테스트',
-          title: '사이렌으로 알아차리기',
+          title: '경보 구분 연습',
           subtitle: '직접 보내는 테스트 알림입니다. 실제 정부 경보가 아닙니다.',
         ),
         const SizedBox(height: 16),
+        DropdownButtonFormField<AlertKind>(
+          initialValue: _kind,
+          isExpanded: true,
+          decoration: const InputDecoration(labelText: '연습할 경보'),
+          items: [
+            for (final kind in AlertKind.values)
+              DropdownMenuItem(value: kind, child: Text(kind.label)),
+          ],
+          onChanged: _busy
+              ? null
+              : (kind) => setState(() {
+                  _kind = kind!;
+                  _sound = false;
+                }),
+        ),
+        const SizedBox(height: 12),
+        Text(_kind.signal),
         SwitchListTile(
-          title: const Text('사이렌 켜기'),
-          subtitle: const Text('6초 사이렌 · 테스트 버튼을 누르면 울립니다'),
+          title: Text(_kind.hasSiren ? '사이렌 켜기' : '음성 안내 켜기'),
+          subtitle: Text(
+            _kind.hasSiren
+                ? '8초 훈련용 합성음 · 실제 신호 1분 중 한 주기'
+                : '훈련임을 밝히는 합성 음성 · 정부 방송 녹음 아님',
+          ),
           value: _sound,
           onChanged: _busy ? null : (value) => setState(() => _sound = value),
         ),
@@ -80,6 +105,21 @@ class _NotificationTestScreenState extends State<NotificationTestScreen> {
         OutlinedButton(
           onPressed: _busy ? null : () => _perform(cancel: true),
           child: const Text('테스트 알림 지우기'),
+        ),
+        TextButton(
+          onPressed: _busy
+              ? null
+              : () => Navigator.push(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (_) => DrillScreen(kind: _kind),
+                  ),
+                ),
+          child: const Text('소리 없이 행동 연습'),
+        ),
+        const Text(
+          '공습·핵 경보는 같은 사이렌입니다. 종류는 문자·방송으로 확인하세요.',
+          style: TextStyle(fontSize: 14),
         ),
         if (_status != null) Semantics(liveRegion: true, child: Text(_status!)),
       ],

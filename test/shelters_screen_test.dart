@@ -68,7 +68,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(requests, 1);
       expect(find.text('합성 테스트 대피소'), findsOneWidget);
-      expect(find.textContaining('1건을 받아 기기에 저장했습니다'), findsOneWidget);
+      expect(find.textContaining('1건 저장 · 목록은 오프라인 사용 가능'), findsOneWidget);
       expect(store.cached, isNotNull);
       fail = true;
       await tester.ensureVisible(find.text('지역 변경'));

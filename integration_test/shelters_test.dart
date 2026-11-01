@@ -47,7 +47,7 @@ void main() {
         ) {
           await tester.pump(const Duration(seconds: 1));
         }
-        expect(find.textContaining('건을 받아 기기에 저장했습니다'), findsOneWidget);
+        expect(find.textContaining('건 저장 · 목록은 오프라인 사용 가능'), findsOneWidget);
         final catalog = await repository.cached();
         expect(catalog, isNotNull);
         expect(catalog!.areaCode, '11110');

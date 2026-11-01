@@ -139,7 +139,7 @@ class _SheltersScreenState extends State<SheltersScreen> {
         if (mounted) {
           setState(
             () => _networkMessage =
-                '공식 지도에서 ${catalog.shelters.length}건을 받아 기기에 저장했습니다. 인터넷 없이 목록을 다시 볼 수 있습니다.',
+                '공식 지도에서 ${catalog.shelters.length}건 저장 · 목록은 오프라인 사용 가능',
           );
         }
       } catch (_) {
@@ -353,11 +353,11 @@ class _SheltersScreenState extends State<SheltersScreen> {
               const SizedBox(height: 12),
             ],
             if (_provinces.isNotEmpty && _choosingRegion) ...[
-              const PageIntro(
-                eyebrow: '공식 시설 찾기',
-                title: '어느 지역을 찾으세요?',
-                subtitle: '지역을 선택하면 지도와 목록으로 볼 수 있어요.',
+              const Text(
+                '지역을 선택하세요',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
               ),
+              const SizedBox(height: 12),
               ExpansionTile(
                 tilePadding: EdgeInsets.zero,
                 title: const Text('현재 위치로 지역 찾기'),
@@ -425,9 +425,7 @@ class _SheltersScreenState extends State<SheltersScreen> {
                     : (value) => setState(() => _district = value!),
               ),
               const SizedBox(height: 12),
-              const Text(
-                '조회 시 선택한 지역 코드와 IP만 국민안전24에 전달됩니다. GPS 좌표는 보내지 않습니다.',
-              ),
+              const Text('조회 시 지역 코드·IP를 국민안전24에 전송합니다. 위치 전송 없음.'),
               const SizedBox(height: 12),
               FilledButton.icon(
                 onPressed: _fetching || _suggesting || _district == null
@@ -458,8 +456,12 @@ class _SheltersScreenState extends State<SheltersScreen> {
                   '저장된 대피시설이 없습니다.\n위에서 지역을 선택해 공식 대피소를 조회하세요. 조회한 목록은 이 기기에 저장됩니다.',
                 ),
               if (catalog.retrievedAt != null)
-                Notice(
-                  '${catalog.coverage} · 지도 표시 ${catalog.shelters.length}곳\n선택 지역 자료입니다. 시설 정보는 변경될 수 있습니다.',
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: Text(
+                    '${catalog.coverage} · 지도 표시 ${catalog.shelters.length}곳\n조회 ${_formatTime(catalog.retrievedAt)} · 국민안전24',
+                    style: const TextStyle(fontSize: 14),
+                  ),
                 ),
               if (catalog.shelters.isEmpty && catalog.retrievedAt != null)
                 const Notice(
@@ -485,7 +487,7 @@ class _SheltersScreenState extends State<SheltersScreen> {
               const Padding(
                 padding: EdgeInsets.only(bottom: 12),
                 child: Text(
-                  '온라인 지도는 조회 지역과 IP를 지도 제공자에게 전달합니다. 연결되지 않으면 목록을 이용하세요.',
+                  '온라인 지도: 조회 범위·IP를 지도 제공자에게 전송합니다.',
                   style: TextStyle(fontSize: 14),
                 ),
               ),
@@ -533,21 +535,24 @@ class _SheltersScreenState extends State<SheltersScreen> {
                 ),
               ],
               const SizedBox(height: 12),
-              const Text(
-                '내 위치로 거리 확인',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ExpansionTile(
+                tilePadding: EdgeInsets.zero,
+                title: const Text('가까운 순으로 보기'),
+                subtitle: const Text('GPS 선택 사용 · 직선거리 기준'),
+                children: [
+                  const Text('위치는 기기 안에서 거리 계산에만 사용합니다.'),
+                  FilledButton.icon(
+                    onPressed: _locating || _suggesting ? null : _locate,
+                    icon: const Icon(Icons.my_location),
+                    label: Text(_locating ? '위치 확인 중…' : 'GPS 현재 위치 확인'),
+                  ),
+                  if (_locationMessage != null)
+                    Semantics(
+                      liveRegion: true,
+                      child: Notice(_locationMessage!),
+                    ),
+                ],
               ),
-              const SizedBox(height: 8),
-              const Text('선택 사항 · 위치는 기기 안에서 거리 계산에만 사용합니다.'),
-              const SizedBox(height: 16),
-              FilledButton.icon(
-                onPressed: _locating || _suggesting ? null : _locate,
-                icon: const Icon(Icons.my_location),
-                label: Text(_locating ? '위치 확인 중…' : 'GPS 현재 위치 확인'),
-              ),
-              const SizedBox(height: 12),
-              if (_locationMessage != null)
-                Semantics(liveRegion: true, child: Notice(_locationMessage!)),
               ExpansionTile(
                 tilePadding: EdgeInsets.zero,
                 title: const Text('자료 출처와 조회 시각'),
@@ -620,13 +625,22 @@ class _SheltersScreenState extends State<SheltersScreen> {
                 ),
               ],
             ),
-            Text(shelter.address),
+            const SizedBox(height: 8),
+            Text(shelter.address, style: const TextStyle(fontSize: 16)),
             if (_position != null)
               Text(
                 '직선거리 ${(shelter.distanceFrom(_position!.latitude, _position!.longitude) / 1000).toStringAsFixed(2)}km · 이동 경로 아님',
               ),
-            Text(
-              '원자료 갱신: ${shelter.updatedAt ?? '제공되지 않음'}\n현재 개방·수용 여유·현장 위험 미확인',
+            const SizedBox(height: 8),
+            const Text('개방 여부·수용 여유는 현장 확인', style: TextStyle(fontSize: 14)),
+            ExpansionTile(
+              tilePadding: EdgeInsets.zero,
+              title: const Text('시설 자료 상세'),
+              children: [
+                Text(
+                  '원자료 갱신: ${shelter.updatedAt ?? '제공되지 않음'}\n현재 현장 위험과 이동 경로 안전은 확인되지 않았습니다.',
+                ),
+              ],
             ),
             const SizedBox(height: 12),
             if (source != null)

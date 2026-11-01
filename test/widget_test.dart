@@ -53,6 +53,9 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(find.textContaining('저장된 대피시설이 없습니다.'), findsOneWidget);
+      await tester.ensureVisible(find.text('가까운 순으로 보기'));
+      await tester.tap(find.text('가까운 순으로 보기'));
+      await tester.pumpAndSettle();
       await tester.ensureVisible(find.text('GPS 현재 위치 확인'));
       await tester.tap(find.text('GPS 현재 위치 확인'));
       await tester.pumpAndSettle();

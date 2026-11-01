@@ -4,30 +4,37 @@ import 'package:safe_korea/screens/drill_screen.dart';
 import 'package:safe_korea/theme/app_theme.dart';
 
 void main() {
-  testWidgets('first viewport prioritizes evacuation and a prepared bag', (
-    tester,
-  ) async {
-    tester.view.physicalSize = const Size(402, 874);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
-    await tester.pumpWidget(
-      MaterialApp(theme: buildAppTheme(), home: const DrillScreen()),
-    );
-    expect(find.text('대피시설 확인').hitTestable(), findsOneWidget);
-    expect(find.text('없으면 바로 대피하세요.').hitTestable(), findsOneWidget);
-    expect(find.text('챙길 것 보기'), findsNothing);
-    expect(find.text('준비된 배낭 · 물 · 상비약 · 손전등'), findsOneWidget);
-    expect(
-      tester.getTopLeft(find.text('대피시설 확인')).dy,
-      lessThan(tester.getTopLeft(find.text('없으면 바로 대피하세요.')).dy),
-    );
-    expect(find.byType(Checkbox), findsNothing);
-    final semantics = tester.ensureSemantics();
-    await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
-    await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
-    semantics.dispose();
-  });
+  testWidgets(
+    'first viewport prioritizes situational action; bag remains reachable',
+    (tester) async {
+      tester.view.physicalSize = const Size(402, 874);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      await tester.pumpWidget(
+        MaterialApp(theme: buildAppTheme(), home: const DrillScreen()),
+      );
+      expect(find.text('대피시설 확인').hitTestable(), findsOneWidget);
+      expect(find.text('실내').hitTestable(), findsOneWidget);
+      expect(
+        find.text('민방위 대피소나 가까운 지하시설로 즉시 대피하세요.').hitTestable(),
+        findsOneWidget,
+      );
+      await tester.ensureVisible(find.text('없으면 바로 대피하세요.'));
+      expect(find.text('없으면 바로 대피하세요.').hitTestable(), findsOneWidget);
+      expect(find.text('챙길 것 보기'), findsNothing);
+      expect(find.text('준비된 배낭 · 물 · 상비약 · 손전등'), findsOneWidget);
+      expect(
+        tester.getTopLeft(find.text('대피시설 확인')).dy,
+        lessThan(tester.getTopLeft(find.text('없으면 바로 대피하세요.')).dy),
+      );
+      expect(find.byType(Checkbox), findsNothing);
+      final semantics = tester.ensureSemantics();
+      await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
+      await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
+      semantics.dispose();
+    },
+  );
 
   testWidgets('small landscape and enlarged text retain scroll access', (
     tester,

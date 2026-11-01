@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:safe_korea/models/alert_guidance.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter/services.dart';
@@ -107,6 +108,41 @@ void main() {
       expect(opened, 2);
     },
   );
+  test(
+    'every alert routes only its allowlisted type and correct sound',
+    () async {
+      final service = DrillNotifications();
+      AlertKind? opened;
+      service.attach(() => opened = service.openedKind);
+      for (final kind in AlertKind.values) {
+        await service.send(sound: true, vibration: false, kind: kind);
+        final call = calls.lastWhere((call) => call.method == 'show');
+        expect(call.arguments['platformSpecifics']['sound'], kind.soundAsset);
+        service.handlePayload(call.arguments['payload'] as String);
+        expect(opened, kind);
+      }
+      expect(AlertKind.air.soundAsset, AlertKind.nuclear.soundAsset);
+      expect(AlertKind.watch.hasSiren, isFalse);
+      final before = opened;
+      service.handlePayload('safe_korea:drill:v2:unknown');
+      expect(opened, before);
+    },
+  );
+  test('iOS voice-only alert uses bundled speech rather than siren', () async {
+    debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+    addTearDown(() => debugDefaultTargetPlatformOverride = null);
+    IOSFlutterLocalNotificationsPlugin.registerWith();
+    await DrillNotifications().send(
+      sound: true,
+      vibration: false,
+      kind: AlertKind.cbrn,
+    );
+    final call = calls.lastWhere((call) => call.method == 'show');
+    expect(
+      call.arguments['platformSpecifics']['sound'],
+      'drill_cbrn_voice.wav',
+    );
+  });
   testWidgets('screen defaults silent and recovers from platform error', (
     tester,
   ) async {
