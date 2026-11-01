@@ -24,3 +24,8 @@ android/.kotlin/
 config/kakao.local.json
 
 android/key.properties
+workers/**/node_modules/
+workers/**/.wrangler/
+workers/**/dist/
+workers/**/.dev.vars
+workers/**/.dev.vars.*

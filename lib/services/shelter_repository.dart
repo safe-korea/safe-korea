@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 
 import '../models/shelter.dart';
 import 'local_store.dart';
+import 'shelter_api_client.dart';
 
 class IncompleteShelterResponse extends FormatException {
   const IncompleteShelterResponse(this.total, this.mapCount)
@@ -16,13 +17,21 @@ class ConflictingShelterIdentity extends FormatException {
 }
 
 /// Read-only adapter for the official website's public, undocumented list call.
-/// No website API keys, authentication, proxy endpoints or GPS are used.
+/// An optional configured Worker provides the same validated regional catalog.
+/// No website API keys, authentication or GPS are sent.
 class ShelterRepository {
-  ShelterRepository({http.Client? client, LocalStore? store})
-    : _client = client ?? http.Client(),
-      _store = store ?? LocalStore();
+  ShelterRepository({
+    http.Client? client,
+    LocalStore? store,
+    String apiBaseUrl = shelterApiBaseUrl,
+  }) : _client = client ?? http.Client(),
+       _store = store ?? LocalStore(),
+       // Keep the public configuration argument readable at call sites.
+       // ignore: prefer_initializing_formals
+       _apiBaseUrl = apiBaseUrl;
   final http.Client _client;
   final LocalStore _store;
+  final String _apiBaseUrl;
   void close() => _client.close();
 
   Future<ShelterCatalog?> cached() async {
@@ -36,6 +45,12 @@ class ShelterRepository {
   Future<ShelterCatalog> fetch(String code, String regionName) async {
     if (!RegExp(r'^\d{5}$').hasMatch(code) || regionName.trim().isEmpty) {
       throw const FormatException('지역 코드를 확인해 주세요.');
+    }
+    if (_apiBaseUrl.isNotEmpty) {
+      return ShelterApiClient(
+        client: _client,
+        baseUrl: _apiBaseUrl,
+      ).fetch(code);
     }
     final response = await _client
         .post(

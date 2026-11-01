@@ -64,6 +64,7 @@ class ShelterCatalog {
       sourceUrl = json['sourceUrl'] as String,
       retrievedAt = json['retrievedAt'] as String?,
       coverage = json['coverage'] as String,
+      deliveryStatus = json['deliveryStatus'] as String?,
       areaCode = json['areaCode'] as String?,
       skippedCount = json['skippedCount'] as int? ?? 0,
       officialCount = json['officialCount'] as int?,
@@ -87,7 +88,7 @@ class ShelterCatalog {
     }
   }
   final String sourceName, sourceUrl, coverage;
-  final String? retrievedAt, areaCode;
+  final String? retrievedAt, areaCode, deliveryStatus;
   final int skippedCount;
   final int? officialCount;
   final List<Shelter> shelters;
@@ -96,6 +97,7 @@ class ShelterCatalog {
     'sourceName': sourceName,
     'sourceUrl': sourceUrl,
     'retrievedAt': retrievedAt,
+    if (deliveryStatus != null) 'deliveryStatus': deliveryStatus,
     'coverage': coverage,
     'status': 'verified',
     'areaCode': areaCode,

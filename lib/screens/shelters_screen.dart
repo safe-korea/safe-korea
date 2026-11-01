@@ -513,6 +513,11 @@ class _SheltersScreenState extends State<SheltersScreen> {
                 const Notice(
                   '저장된 대피시설이 없습니다.\n위에서 지역을 선택해 공식 대피소를 조회하세요. 조회한 목록은 이 기기에 저장됩니다.',
                 ),
+              if (catalog.deliveryStatus == 'stale')
+                const Notice(
+                  '원본 재조회가 되지 않아 이전 자료를 표시합니다. 조회 시각과 현장 안내를 확인하세요.',
+                  warning: true,
+                ),
               if (catalog.retrievedAt != null)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 12),

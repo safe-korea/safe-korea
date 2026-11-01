@@ -1,0 +1,4 @@
+00:00 +0: loading /Users/gimtaehyeong/orca/safe-korea/test/pwa_shelters_test.dart
+00:00 +0: unconfigured service keeps official fallback and does not offer broken fetch
+00:00 +1: region selection, stale and retry states fit a narrow large-text screen
+00:00 +2: All tests passed!

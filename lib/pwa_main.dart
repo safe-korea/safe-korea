@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'models/alert_guidance.dart';
+import 'screens/pwa_shelters_screen.dart';
 import 'theme/app_theme.dart';
 import 'widgets/action_brief.dart';
 import 'widgets/common.dart';
@@ -113,7 +114,19 @@ class _PwaGuidanceHomeState extends State<PwaGuidanceHome> {
                   ),
                 ),
               ),
-            const Notice('웹 지도·GPS·가족 저장은 준비 중입니다. 대피시설은 정부 사이트에서 확인할 수 있습니다.'),
+            ActionTile(
+              icon: Icons.location_city_outlined,
+              title: '지역별 대피소 찾기',
+              subtitle: '시·군·구 선택 · 인터넷 필요',
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute<void>(
+                  builder: (_) => const PwaSheltersScreen(),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            const Notice('앱 안의 지도·GPS·가족 저장은 준비 중입니다.'),
             OutlinedButton.icon(
               onPressed: () => openExternal(
                 context,

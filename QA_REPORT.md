@@ -294,3 +294,14 @@ UI UX Pro Max의 접근성·터치·반응형 체크리스트를 적용했습니
 - Flutter 150건·Python 12건, format/analyze 통과. 근거: artifacts/iphone17-product-capture.log, iphone17-preview-verify.log, iphone17-preview-build.log, iphone17-preview-browser.log.
 
 - 최종 Chromium/WebKit 검사에서 3장 모두 1206×2622 원본 및 표시 종횡비 유지 확인. Safari 엔진의 percentage height 차이를 수정했고 오프라인 회귀 검사도 통과했습니다.
+
+## 2026-11-01 Cloudflare Workers / 공통 지역 API
+
+- `flutter analyze`: 0 issues. Flutter 163건, Python 12건 통과.
+- Workers Node 13건: 고정 호스트/지역, CORS 분리, 잘못된 파라미터, 완전성/동일 ID 충돌, cache hit/stale/24시간 만료, 원천 제한, 동시 요청 합침, 캐시 쓰기 실패, 스트림 크기/HTML/UTF-8/리다이렉트 거부.
+- 공통 Dart 클라이언트: 지역 코드만 요청, 지역·출처·버전·건수·전달 상태 검증, 잘못된 서버 주소 사전 거부, 429/네트워크 오류, 설정 API 장애 시 정부 직접 조회로 숨겨서 전환하지 않음, stale 저장 복원.
+- PWA 위젯: 미설정 연결 안내/정부 원문 대안, 360×800·150% 글씨, 지역 선택, 이전 자료 안내, 재시도 실패 시 기존 결과 유지.
+- local workerd 실제 정부 응답: 11140/서울 중구 공식 건수 72, 유효 건수 72, 두 번째 요청 hit, localhost PWA CORS 확인. 증거 `artifacts/worker-live-check.json`.
+- Wrangler bundle dry-run/TypeScript check/PWA release 빌드 통과. Chromium·macOS WebKit 기존 온보딩·오프라인 재실행·캐시 복구 회귀 통과.
+- 미검증: 공개 Cloudflare 원천 연결/CPU/부하·무료 한도, 실제 iPhone Safari 설치, 운영 도메인 CORS/공식 자료 이용·재배포 조건. 실제 정부 경보 수신·발송은 추가하지 않음.
+- 추가 실연결 브라우저 검사: Chromium/WebKit 모두 지역 메뉴 선택, Worker 실제 응답 72곳, 시설 카드/지도 버튼 렌더링, 오프라인 재조회 시 기존 목록 유지/경고 표시 통과. Flutter의 메뉴는 접근성 menuitem으로 검사하고 목록은 스크롤 후 확인. 스크립트 `scripts/test_worker_pwa.cjs`, 증거 `artifacts/worker-pwa-integration.log` 및 402×874 화면 PNG. 외부 카카오 페이지 자체의 길찾기/개방 여부는 이 검사 범위가 아님.

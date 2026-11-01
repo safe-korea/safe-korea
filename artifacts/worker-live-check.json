@@ -1,0 +1,15 @@
+{
+  "scope": "local workerd, actual government regional request",
+  "region": "11140",
+  "status": 200,
+  "cors": "http://127.0.0.1:8766",
+  "delivery": {
+    "state": "hit",
+    "ageSeconds": 30,
+    "stale": false
+  },
+  "officialCount": 72,
+  "validCount": 72,
+  "retrievedAt": "2026-11-01T13:11:16.449Z",
+  "cloudDeployed": false
+}

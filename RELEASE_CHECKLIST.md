@@ -66,3 +66,7 @@
 - [Apple SDK 개인정보 요건](https://developer.apple.com/support/third-party-SDK-requirements/): 포함 SDK의 개인정보 manifest·서명 검토.
 - [Google Play 사용자 데이터 정책](https://support.google.com/googleplay/android-developer/answer/10144311?hl=en): 공개 정책과 앱 내부 안내, 데이터 처리의 정확한 공개 필요.
 - [Play 신규 개인 계정 테스트](https://support.google.com/googleplay/android-developer/answer/14151465?hl=en): 해당 계정의 테스트 기간/인원 및 production 신청 확인.
+
+## Workers API 추가 이후 배포 조건
+
+지역 API는 로컬 구현/검증만 완료했습니다. 공개 전 정부 자료 이용 조건, Cloudflare 계정·도메인·고유 rate namespace IDs, 실제 PWA CORS origin, HTTPS API URL 빌드 설정, 운영 CPU/요청량/장애 복구 검증, Cloudflare IP 처리 개인정보 고지를 확인합니다. 코드에 운영 URL을 임의로 넣거나 공개 배포하지 않았습니다. [상세](workers/shelters/README.md).

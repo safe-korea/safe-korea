@@ -494,3 +494,14 @@ Android API 36에서도 공식 서울시청 공개 사진 매칭/표시와 공�
 - Flutter 150건·Python 12건, format/analyze 통과. 근거: artifacts/iphone17-product-capture.log, iphone17-preview-verify.log, iphone17-preview-build.log, iphone17-preview-browser.log.
 
 - 최종 Chromium/WebKit 검사에서 3장 모두 1206×2622 원본 및 표시 종횡비 유지 확인. Safari 엔진의 percentage height 차이를 수정했고 오프라인 회귀 검사도 통과했습니다.
+
+## 2026-11-01 — Cloudflare Workers 공통 대피소 API
+
+- 사용자 선택에 따라 Oracle VM/Flask 후보를 Workers로 대체. `workers/shelters`에 고정 정부 호스트·허용 지역 조회, 출처/전체 건수/좌표/중복 검증, 15분 캐시·24시간 미만 장애 대체, 8초/2 MiB 한도와 원천 재조회 rate binding 구현.
+- 실제 local workerd에서 서울 중구 72곳 조회 및 캐시 hit/CORS 확인. workerd가 지원하지 않는 redirect:error를 manual + 3xx 거부로 수정하고 회귀 테스트 추가. 로컬 성공을 클라우드 처리 성능/무료 CPU 한도 검증으로 간주하지 않음.
+- Android는 빌드 변수 SHELTER_API_BASE_URL로 공통 API 선택. 기본값은 기존 정부 직접 조회 유지. 출처/지역/건수/전달 상태 검증 및 stale 정보 로컬 저장·표시. 설정된 API 장애를 숨기고 직접 조회로 바꾸지 않음.
+- PWA 지역 선택→공식 시설 목록→외부 카카오 지도 링크 추가. 조회 중 중복 방지, 결과 20곳씩 표시, 이전 자료/실패/빈 결과/출처와 조회 시각 표시. GPS·가족 정보를 서버에 보내지 않음. PWA 시설 오프라인 저장과 내장 지도/GPS/가족 저장은 미구현.
+- 개인정보 설명, 서버 구성, 실행/설정·운영 전 체크 문서 갱신. 공개 route/preview/observability 비활성화, 원격 배포·계정 로그인·결제·Git push 없음. 운영 도메인·자료 이용 조건·배포 승인은 남음.
+- format/analyze 통과, Flutter 163건·Python 12건·Workers 13건 통과. TypeScript check와 Wrangler dry-run 통과. PWA release 빌드 및 Chromium/WebKit 온보딩·오프라인 회귀 통과. 작은 화면/150% 글씨·stale·재조회 실패 위젯 검사 통과.
+- 증거: artifacts/worker-full-verification.log, worker-tests.log, worker-typecheck.log, worker-dry-run.log, worker-live-check.json, worker-pwa-build.log, worker-pwa-browser.log, worker-pwa-widget-tests.log. 비밀 설정값이 변경 텍스트에 없는지 검사함.
+- 최종 `scripts/test_worker_pwa.cjs`: Chromium/macOS WebKit에서 실제 지역 선택→Workers→정부 시설 72곳→카카오 지도 버튼 표시→오프라인 재조회 실패 시 기존 목록/경고 유지 통과. 요청은 region=11140 하나이며 GPS/가족 파라미터 없음. 402×874 뷰포트 캡처 직접 확인. 실제 iPhone 설치 검증과 구분. 근거: artifacts/worker-pwa-integration.log, worker-pwa-{chromium,webkit}.png.

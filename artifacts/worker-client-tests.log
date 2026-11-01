@@ -1,0 +1,13 @@
+00:00 +0: loading /Users/gimtaehyeong/orca/safe-korea/test/shelter_api_client_test.dart
+00:00 +0: region-only request and stale metadata survive native storage serialization
+00:00 +1: configured API failures never silently fall back to government
+00:00 +2: rejects invalid version metadata
+00:00 +3: rejects invalid region metadata
+00:00 +4: rejects invalid source metadata
+00:00 +5: rejects invalid count metadata
+00:00 +6: rejects invalid age metadata
+00:00 +7: rejects invalid state metadata
+00:00 +8: rejects invalid stale metadata
+00:00 +9: rejects insecure or credential-bearing configuration before any request
+00:00 +10: rate limit and network failures have recoverable messages
+00:00 +11: All tests passed!
