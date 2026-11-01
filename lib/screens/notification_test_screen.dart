@@ -56,7 +56,7 @@ class _NotificationTestScreenState extends State<NotificationTestScreen> {
         const PageIntro(
           eyebrow: '훈련 / 테스트',
           title: '경보 구분 연습',
-          subtitle: '직접 보내는 테스트 알림입니다. 실제 정부 경보가 아닙니다.',
+          subtitle: '직접 보내는 연습 알림 · 실제 경보 아님',
         ),
         const SizedBox(height: 16),
         DropdownButtonFormField<AlertKind>(
@@ -80,9 +80,7 @@ class _NotificationTestScreenState extends State<NotificationTestScreen> {
           contentPadding: EdgeInsets.zero,
           title: Text(_kind.hasSiren ? '사이렌 켜기' : '음성 안내 켜기'),
           subtitle: Text(
-            _kind.hasSiren
-                ? '8초 훈련용 합성음 · 실제 신호 1분 중 한 주기'
-                : '훈련임을 밝히는 합성 음성 · 정부 방송 녹음 아님',
+            _kind.hasSiren ? '8초 훈련용 합성음 · 실제 신호의 일부' : '훈련용 합성 음성 · 정부 방송 아님',
           ),
           value: _sound,
           onChanged: _busy ? null : (value) => setState(() => _sound = value),
@@ -97,7 +95,7 @@ class _NotificationTestScreenState extends State<NotificationTestScreen> {
                 : (value) => setState(() => _vibration = value),
           ),
         const SizedBox(height: 12),
-        const Text('소리·진동은 기기의 무음·집중 모드와 알림 설정을 따릅니다.'),
+        const Text('무음·집중 모드에서는 소리가 나지 않을 수 있어요.'),
         const SizedBox(height: 20),
         FilledButton.icon(
           onPressed: _busy ? null : () => _perform(),

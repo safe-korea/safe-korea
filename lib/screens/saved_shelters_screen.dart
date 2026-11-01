@@ -5,6 +5,7 @@ import '../services/saved_shelters_controller.dart';
 import '../services/shelter_repository.dart';
 import '../widgets/common.dart';
 import '../widgets/shelter_map.dart';
+import 'shelters_screen.dart';
 
 class SavedSheltersScreen extends StatefulWidget {
   const SavedSheltersScreen({super.key, this.controller, this.repository});
@@ -95,12 +96,24 @@ class _SavedSheltersScreenState extends State<SavedSheltersScreen> {
                 child: const Text('저장 목록 다시 읽기'),
               ),
             ],
-            if (_controller.loaded && _controller.entries.isEmpty)
+            if (_controller.loaded && _controller.entries.isEmpty) ...[
               const IconTextBlock(
                 icon: Icons.bookmark_border,
                 title: '저장한 대피소가 아직 없어요.',
                 body: Text('대피소 상세에서 저장을 눌러 두세요.'),
               ),
+              const SizedBox(height: 20),
+              FilledButton.icon(
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (_) => SheltersScreen(savedShelters: _controller),
+                  ),
+                ),
+                icon: const Icon(Icons.search),
+                label: const Text('대피소 찾아서 저장하기'),
+              ),
+            ],
             if (_controller.entries.isNotEmpty) ...[
               TextField(
                 decoration: const InputDecoration(

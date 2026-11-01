@@ -363,7 +363,7 @@ class _SheltersScreenState extends State<SheltersScreen> {
               label: const Text('저장한 대피소 · 오프라인 목록'),
             ),
             const SizedBox(height: 12),
-            FilledButton.icon(
+            OutlinedButton.icon(
               onPressed: _locating || _suggesting ? null : _locate,
               icon: const Icon(Icons.my_location),
               label: Text(_locating ? '위치 확인 중…' : 'GPS 현재 위치 확인'),
@@ -503,6 +503,20 @@ class _SheltersScreenState extends State<SheltersScreen> {
                 const Notice(
                   '해당 지역의 공식 조회 결과가 0건입니다. 실제 시설이 없다는 뜻으로 단정하지 말고 정부 사이트나 지자체에 확인하세요.',
                 ),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 12),
+                child: Text(
+                  '온라인 지도: 조회 범위·IP를 지도 제공자에게 전송합니다.',
+                  style: TextStyle(fontSize: 14),
+                ),
+              ),
+              if (!_map)
+                FilledButton.icon(
+                  onPressed: () => setState(() => _map = true),
+                  icon: const Icon(Icons.map_outlined),
+                  label: const Text('온라인 지도 열기'),
+                ),
+              const SizedBox(height: 16),
               if (catalog.shelters.isNotEmpty) ...[
                 TextField(
                   onChanged: (value) => setState(() {
@@ -520,19 +534,6 @@ class _SheltersScreenState extends State<SheltersScreen> {
                 ),
                 const SizedBox(height: 12),
               ],
-              const Padding(
-                padding: EdgeInsets.only(bottom: 12),
-                child: Text(
-                  '온라인 지도: 조회 범위·IP를 지도 제공자에게 전송합니다.',
-                  style: TextStyle(fontSize: 14),
-                ),
-              ),
-              if (!_map)
-                OutlinedButton.icon(
-                  onPressed: () => setState(() => _map = true),
-                  icon: const Icon(Icons.map_outlined),
-                  label: const Text('온라인 지도 열기'),
-                ),
               if (_map) ...[
                 SizedBox(
                   height: 360,

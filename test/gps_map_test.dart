@@ -29,6 +29,10 @@ void main() {
     );
     await tester.pumpAndSettle();
     expect(location.calls, 0);
+    expect(
+      tester.getTopLeft(find.text('온라인 지도 열기')).dy,
+      lessThan(tester.getTopLeft(find.byType(TextField)).dy),
+    );
     expect(find.text('GPS 현재 위치 확인').hitTestable(), findsOneWidget);
     await tester.tap(find.text('GPS 현재 위치 확인'));
     await tester.pumpAndSettle();

@@ -197,6 +197,7 @@ class _MeetingPointScreenState extends State<MeetingPointScreen> {
                                 : () => _select(_controller.camera.center),
                             child: const Text('지도 중앙에 핀 놓기'),
                           ),
+                          const SizedBox(height: 8),
                           FilledButton(
                             onPressed:
                                 _point == null ||

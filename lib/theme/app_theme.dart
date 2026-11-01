@@ -98,7 +98,7 @@ ThemeData buildAppTheme() {
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: scheme.outlineVariant),
+        borderSide: const BorderSide(color: AppPalette.muted),
       ),
       filled: true,
       fillColor: AppPalette.surface,
