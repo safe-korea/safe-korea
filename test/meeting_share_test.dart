@@ -125,6 +125,9 @@ void main() {
       expect(button.hitTestable(), findsOneWidget);
       expect(tester.widget<FilledButton>(button).onPressed, isNull);
       expect(find.text('장소를 하나 저장하면 공유할 수 있어요.'), findsOneWidget);
+      expect(find.text('기기에 저장').hitTestable(), findsOneWidget);
+      await tester.ensureVisible(find.text('저장·보관 안내'));
+      expect(find.text('기기에 저장').hitTestable(), findsOneWidget);
       await tester.enterText(
         find.byKey(const ValueKey('family-field-2')),
         '새 장소',

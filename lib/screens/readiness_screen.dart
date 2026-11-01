@@ -116,10 +116,13 @@ class _ReadinessScreenState extends State<ReadinessScreen> {
           if (_readFailed)
             OutlinedButton(onPressed: _load, child: const Text('체크리스트 다시 읽기')),
           Card(
+            clipBehavior: Clip.antiAlias,
             child: Column(
               children: [
                 for (final entry in preparednessItems.entries)
                   CheckboxListTile(
+                    selected: _checked.contains(entry.key),
+                    selectedTileColor: const Color(0xFFE3F0EC),
                     secondary: ExcludeSemantics(
                       child: Icon(switch (entry.key) {
                         'water' => Icons.water_drop_outlined,

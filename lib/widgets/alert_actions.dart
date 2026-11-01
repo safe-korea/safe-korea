@@ -54,7 +54,7 @@ class _AlertActionsState extends State<AlertActions> {
                       width: double.infinity,
                       child: Text(setting.label, textAlign: TextAlign.center),
                     ),
-                    showCheckmark: false,
+                    showCheckmark: true,
                     selected: setting == _setting,
                     onSelected: (_) => setState(() => _setting = setting),
                     materialTapTargetSize: MaterialTapTargetSize.padded,

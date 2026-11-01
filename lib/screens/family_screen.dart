@@ -241,44 +241,72 @@ class _FamilyScreenState extends State<FamilyScreen> {
           ? null
           : SafeArea(
               top: false,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    if (_loadFailed ||
-                        _dirty ||
-                        !canShareMeetingPlan(_savedPlan))
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: Text(
-                          _loadFailed
-                              ? '저장 내용을 다시 읽은 뒤 공유할 수 있어요.'
-                              : _dirty
-                              ? '수정한 내용을 먼저 저장한 뒤 공유하세요.'
-                              : '장소를 하나 저장하면 공유할 수 있어요.',
-                          style: const TextStyle(fontSize: 14),
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  border: Border(top: BorderSide(color: Color(0xFFDCE7E1))),
+                ),
+                child: Center(
+                  heightFactor: 1,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: 760,
+                      maxHeight: MediaQuery.sizeOf(context).height * 0.42,
+                    ),
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            if (_editing) ...[
+                              FilledButton.icon(
+                                onPressed: _saving || _loadFailed
+                                    ? null
+                                    : _save,
+                                icon: const Icon(Icons.save_outlined),
+                                label: Text(_saving ? '저장 중…' : '기기에 저장'),
+                              ),
+                              const SizedBox(height: 8),
+                            ],
+                            if (_loadFailed ||
+                                _dirty ||
+                                !canShareMeetingPlan(_savedPlan))
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 8),
+                                child: Text(
+                                  _loadFailed
+                                      ? '저장 내용을 다시 읽은 뒤 공유할 수 있어요.'
+                                      : _dirty
+                                      ? '수정한 내용을 먼저 저장한 뒤 공유하세요.'
+                                      : '장소를 하나 저장하면 공유할 수 있어요.',
+                                  style: const TextStyle(fontSize: 14),
+                                ),
+                              ),
+                            FilledButton.icon(
+                              onPressed:
+                                  _loadFailed ||
+                                      _dirty ||
+                                      _saving ||
+                                      !canShareMeetingPlan(_savedPlan)
+                                  ? null
+                                  : () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute<void>(
+                                        builder: (_) => MeetingShareScreen(
+                                          plan: _savedPlan,
+                                        ),
+                                      ),
+                                    ),
+                              icon: const Icon(Icons.share_outlined),
+                              label: const Text('가족에게 공유'),
+                            ),
+                          ],
                         ),
                       ),
-                    FilledButton.icon(
-                      onPressed:
-                          _loadFailed ||
-                              _dirty ||
-                              _saving ||
-                              !canShareMeetingPlan(_savedPlan)
-                          ? null
-                          : () => Navigator.push(
-                              context,
-                              MaterialPageRoute<void>(
-                                builder: (_) =>
-                                    MeetingShareScreen(plan: _savedPlan),
-                              ),
-                            ),
-                      icon: const Icon(Icons.share_outlined),
-                      label: const Text('가족에게 공유'),
                     ),
-                  ],
+                  ),
                 ),
               ),
             ),
@@ -391,6 +419,11 @@ class _FamilyScreenState extends State<FamilyScreen> {
                             '추가 연락처 이름',
                             '추가 연락처 전화번호',
                           ][index],
+                          prefixIcon: Icon(switch (index) {
+                            2 => Icons.place_outlined,
+                            3 => Icons.alt_route,
+                            _ => Icons.edit_note_outlined,
+                          }),
                           alignLabelWithHint: true,
                         ),
                       ),
@@ -427,12 +460,6 @@ class _FamilyScreenState extends State<FamilyScreen> {
                       const SizedBox(height: 16),
                     ],
                   ],
-
-                  const SizedBox(height: 12),
-                  FilledButton(
-                    onPressed: _saving || _loadFailed ? null : _save,
-                    child: Text(_saving ? '저장 중…' : '기기에 저장'),
-                  ),
                 ],
                 if (_savedPlan.meetingPoint != null ||
                     _savedPlan.backupPoint != null)
