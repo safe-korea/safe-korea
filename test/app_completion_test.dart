@@ -29,6 +29,8 @@ void main() {
       expect(find.textContaining('오프라인 저장됨'), findsOneWidget);
       await tester.tap(find.byType(NavigationDestination).at(1));
       await tester.pumpAndSettle();
+      await tester.ensureVisible(find.byKey(const ValueKey('province-11')));
+      await tester.pumpAndSettle();
       await tester.tap(find.byKey(const ValueKey('province-11')));
       await tester.pumpAndSettle();
       await tester.tap(find.text('부산광역시').last);

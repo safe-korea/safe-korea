@@ -70,3 +70,14 @@
 ## Workers API 추가 이후 배포 조건
 
 지역 API는 2026-11-01 사용자 승인 후 Workers에 실제 배포했습니다. health·정부 자료 72곳·캐시·CORS 확인 완료. 공개 전 정부 자료 이용 조건, Cloudflare 계정·도메인·고유 rate namespace IDs, 실제 PWA CORS origin, HTTPS API URL 빌드 설정, 운영 CPU/요청량/장애 복구 검증, Cloudflare IP 처리 개인정보 고지를 확인합니다. 운영 URL은 config/api.production.json에 기록했습니다. API 배포와 PWA 사이트 공개·정식 앱 출시는 별개입니다. [상세](workers/shelters/README.md).
+
+## 2026-11-02 보안 점검
+
+- Git 전체 refs의 blob 1,490개에서 알려진 로컬 서비스키 일치 및 주요 GitHub 토큰/개인키 패턴 검사: 일치 없음. key.properties/keystore/local config 추적 없음. 이미지/OCR·알 수 없는 모든 키 형식까지 보증하는 검사는 아님.
+- GitHub public 저장소: secret scanning/push protection 활성화, 열린 탐지 0건. 비활성 Dependabot alerts/security updates를 활성화하고 열린 경고 0건 확인. GitHub 로그인 계정 2FA·복구수단 상태는 확인하지 않음.
+- npm audit 전체 의존성 알려진 취약점 0건. OSV querybatch Pub 생태계에 공개 패키지명/버전 135개만 전달해 일치 0건. 원본 코드·키·개인정보 전송 없음. 네이티브 Kakao 등 Gradle/CocoaPods 전체 공급망 취약점을 검증한 것으로 확대하지 않음.
+- Worker: 고정 정부 URL/지역 허용목록/응답 크기 제한/시간 초과/리다이렉트 금지/외부 원본 헤더 미전달 확인. CORS는 인증이 아니며 공개 시설 API는 origin 없는 요청도 허용. 상위 조회 제한은 위치별 근사치이며 글로벌 과금 상한 보장은 아님.
+- Android 소스: 최소 위치/알림/인터넷 권한, 백그라운드 위치·주소록·마이크 없음, 백업 차단. 기존 서명 AAB debuggable=false 검사 기록 유지. 최신 변경을 담은 최종 제출 AAB는 별도로 다시 빌드·확인해야 함.
+- PWA에 frame-ancestors/X-Frame-Options/object/base/form 제한과 same-origin geolocation·카메라/마이크 차단 헤더 추가. JS 전체 CSP 제한은 Flutter 호환 검증 없이 임의 적용하지 않음.
+- CI 추가: public GitHub-hosted runner, read-only token, checkout 자격증명 미보존, 공식 Action SHA 고정, 운영 키/배포 비밀 없음. Python/Worker 검사와 npm audit, 경량 Git 비밀 탐지. Flutter 전수 검사와 실기기 검증은 이 CI에 포함하지 않음.
+- 출시 보류 조건은 유지: 실제 경보 전달 미완성, 카카오 배포 인증·데이터 보안 최종 신고·Play 계정별 테스트·실기기 점검. 보안 검사 통과를 앱 출시 완료로 취급하지 않음.

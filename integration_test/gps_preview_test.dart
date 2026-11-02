@@ -52,8 +52,10 @@ void main() {
     }
     expect(find.bySemanticsLabel('내 위치 · 마지막 GPS 확인 지점'), findsOneWidget);
     if (Platform.isIOS) await binding.takeScreenshot('gps-map');
-    await tester.ensureVisible(find.text('현재 위치 표시 지우기'));
-    await tester.tap(find.text('현재 위치 표시 지우기'));
+    await tester.ensureVisible(find.byTooltip('내 위치 옵션'));
+    await tester.tap(find.byTooltip('내 위치 옵션'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('내 위치 사용 해제'));
     await tester.pumpAndSettle();
     expect(find.byType(ShelterMap), findsNothing);
     await tester.pumpWidget(const SizedBox());

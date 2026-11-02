@@ -10,6 +10,7 @@ import '../models/shelter.dart';
 import '../services/shelter_api_client.dart';
 import '../services/location_service.dart';
 import '../widgets/common.dart';
+import '../widgets/location_controls.dart';
 
 /// Optional one-shot location for on-device distance sorting; region-only API.
 class PwaSheltersScreen extends StatefulWidget {
@@ -150,26 +151,17 @@ class _PwaSheltersScreenState extends State<PwaSheltersScreen> {
             const SizedBox(height: 8),
             const Text('GPS 없이도 찾을 수 있어요. 시설 조회와 지도 연결은 인터넷이 필요해요.'),
             const SizedBox(height: 16),
-            OutlinedButton.icon(
-              onPressed: _locating ? null : _locate,
-              icon: const Icon(Icons.my_location),
-              label: Text(_locating ? '위치 확인 중…' : 'GPS 현재 위치 확인'),
+            LocationControls(
+              position: _position,
+              busy: _locating,
+              message: _locationMessage,
+              onLocate: _locate,
+              onClear: () => setState(() {
+                _position = null;
+                _locationMessage = null;
+                _shown = 20;
+              }),
             ),
-            const SizedBox(height: 8),
-            const Text('위치는 거리 계산에만 사용해요. 조회할 시·군·구는 아래에서 선택하세요.'),
-            if (_locationMessage != null) ...[
-              const SizedBox(height: 8),
-              Semantics(liveRegion: true, child: Text(_locationMessage!)),
-            ],
-            if (_position != null)
-              TextButton(
-                onPressed: () => setState(() {
-                  _position = null;
-                  _locationMessage = null;
-                  _shown = 20;
-                }),
-                child: const Text('현재 위치 표시 지우기'),
-              ),
             const SizedBox(height: 20),
             if (!_api.configured)
               const Notice('대피소 조회 연결을 준비하고 있어요. 아래 정부 사이트에서 확인해 주세요.'),
