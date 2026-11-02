@@ -1,15 +1,20 @@
+import 'dart:async';
 import 'dart:convert';
+
+import 'package:geolocator/geolocator.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../models/shelter.dart';
 import '../services/shelter_api_client.dart';
+import '../services/location_service.dart';
 import '../widgets/common.dart';
 
-/// Region-only lookup; no location permissions or personal data uploads.
+/// Optional one-shot location for on-device distance sorting; region-only API.
 class PwaSheltersScreen extends StatefulWidget {
-  const PwaSheltersScreen({super.key, this.api});
+  const PwaSheltersScreen({super.key, this.api, this.locationService});
+  final LocationService? locationService;
   final ShelterApiClient? api;
   @override
   State<PwaSheltersScreen> createState() => _PwaSheltersScreenState();
@@ -20,7 +25,55 @@ class _PwaSheltersScreenState extends State<PwaSheltersScreen> {
   late final _regions = _loadRegions();
   String? _province, _district, _error;
   ShelterCatalog? _catalog;
-  bool _busy = false;
+  bool _busy = false, _locating = false;
+  Position? _position;
+  String? _locationMessage;
+
+  Future<void> _locate() async {
+    if (_locating) return;
+    setState(() {
+      _locating = true;
+      _position = null;
+      _locationMessage = null;
+    });
+    try {
+      final position = await (widget.locationService ?? LocationService())
+          .current();
+      if (!mounted) return;
+      setState(() {
+        _position = position;
+        _shown = 20;
+        _locationMessage =
+            '현재 위치 확인 · 오차 약 ${position.accuracy.round()}m · '
+            '${position.timestamp.toLocal().toString().split('.').first} 확인';
+      });
+    } on LocationFailure catch (error) {
+      if (mounted) setState(() => _locationMessage = error.message);
+    } on TimeoutException {
+      if (mounted) {
+        setState(
+          () => _locationMessage = '위치 확인 시간이 초과됐어요. 다시 시도하거나 지역을 직접 선택하세요.',
+        );
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(
+          () => _locationMessage = '위치를 확인하지 못했어요. 지역 선택은 계속 사용할 수 있어요.',
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _locating = false);
+    }
+  }
+
+  String _distance(Shelter shelter) {
+    final position = _position!;
+    final meters = shelter.distanceFrom(position.latitude, position.longitude);
+    return meters < 1000
+        ? '${meters.round()}m'
+        : '${(meters / 1000).toStringAsFixed(1)}km';
+  }
+
   int _shown = 20;
 
   Future<List<Map<String, dynamic>>> _loadRegions() async {
@@ -76,6 +129,17 @@ class _PwaSheltersScreenState extends State<PwaSheltersScreen> {
         final districts = ((selected?['districts'] as List?) ?? [])
             .cast<Map<String, dynamic>>();
         final catalog = _catalog;
+        final shelters = [...?catalog?.shelters];
+        final position = _position;
+        if (position != null) {
+          shelters.sort(
+            (a, b) => a
+                .distanceFrom(position.latitude, position.longitude)
+                .compareTo(
+                  b.distanceFrom(position.latitude, position.longitude),
+                ),
+          );
+        }
         return ListView(
           padding: const EdgeInsets.all(20),
           children: [
@@ -85,6 +149,27 @@ class _PwaSheltersScreenState extends State<PwaSheltersScreen> {
             ),
             const SizedBox(height: 8),
             const Text('GPS 없이도 찾을 수 있어요. 시설 조회와 지도 연결은 인터넷이 필요해요.'),
+            const SizedBox(height: 16),
+            OutlinedButton.icon(
+              onPressed: _locating ? null : _locate,
+              icon: const Icon(Icons.my_location),
+              label: Text(_locating ? '위치 확인 중…' : 'GPS 현재 위치 확인'),
+            ),
+            const SizedBox(height: 8),
+            const Text('위치는 거리 계산에만 사용해요. 조회할 시·군·구는 아래에서 선택하세요.'),
+            if (_locationMessage != null) ...[
+              const SizedBox(height: 8),
+              Semantics(liveRegion: true, child: Text(_locationMessage!)),
+            ],
+            if (_position != null)
+              TextButton(
+                onPressed: () => setState(() {
+                  _position = null;
+                  _locationMessage = null;
+                  _shown = 20;
+                }),
+                child: const Text('현재 위치 표시 지우기'),
+              ),
             const SizedBox(height: 20),
             if (!_api.configured)
               const Notice('대피소 조회 연결을 준비하고 있어요. 아래 정부 사이트에서 확인해 주세요.'),
@@ -174,7 +259,13 @@ class _PwaSheltersScreenState extends State<PwaSheltersScreen> {
               ),
               if (catalog.shelters.isEmpty)
                 const Text('확인된 시설이 없어요. 정부 사이트와 현장 안내를 확인하세요.'),
-              for (final shelter in catalog.shelters.take(_shown))
+              Text(
+                position == null
+                    ? '위치 미사용 · 원본 순서'
+                    : '선택한 지역 안에서 직선거리 가까운 순 · 이동 경로 아님',
+              ),
+              const SizedBox(height: 12),
+              for (final shelter in shelters.take(_shown))
                 Card(
                   child: Padding(
                     padding: const EdgeInsets.all(16),
@@ -190,6 +281,13 @@ class _PwaSheltersScreenState extends State<PwaSheltersScreen> {
                         ),
                         const SizedBox(height: 8),
                         Text(shelter.address),
+                        if (position != null) ...[
+                          const SizedBox(height: 8),
+                          Text(
+                            '현재 위치에서 직선거리 ${_distance(shelter)}',
+                            style: const TextStyle(fontWeight: FontWeight.w700),
+                          ),
+                        ],
                         const SizedBox(height: 12),
                         OutlinedButton.icon(
                           onPressed: () => openExternal(

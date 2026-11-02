@@ -6,6 +6,15 @@ import 'package:safe_korea/screens/pwa_shelters_screen.dart';
 import 'package:safe_korea/services/shelter_api_client.dart';
 
 import 'shelter_api_client_test.dart' show payload;
+import 'region_and_refresh_test.dart' show FixtureLocation;
+
+import 'package:safe_korea/services/location_service.dart';
+
+class DeniedLocation extends LocationService {
+  @override
+  Future<Never> current() async =>
+      throw const LocationFailure('위치 권한을 허용하지 않았어요.');
+}
 
 class FakeApi extends ShelterApiClient {
   FakeApi() : super(baseUrl: 'https://api.example.org');
@@ -25,6 +34,44 @@ class FakeApi extends ShelterApiClient {
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   setUp(() => rootBundle.evict('assets/regions.json'));
+  testWidgets('PWA GPS is opt-in, clears and makes no facility request', (
+    tester,
+  ) async {
+    final location = FixtureLocation();
+    final api = FakeApi();
+    addTearDown(api.close);
+    await tester.pumpWidget(
+      MaterialApp(
+        home: PwaSheltersScreen(api: api, locationService: location),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(location.calls, 0);
+    await tester.tap(find.text('GPS 현재 위치 확인'));
+    await tester.pumpAndSettle();
+    expect(location.calls, 1);
+    expect(api.calls, 0);
+    expect(find.textContaining('현재 위치 확인 · 오차'), findsOneWidget);
+    await tester.ensureVisible(find.text('현재 위치 표시 지우기'));
+    await tester.tap(find.text('현재 위치 표시 지우기'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('현재 위치 확인 · 오차'), findsNothing);
+  });
+  testWidgets('PWA denied GPS retains region selection', (tester) async {
+    final api = FakeApi();
+    addTearDown(api.close);
+    await tester.pumpWidget(
+      MaterialApp(
+        home: PwaSheltersScreen(api: api, locationService: DeniedLocation()),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('GPS 현재 위치 확인'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('위치 권한을 허용하지'), findsOneWidget);
+    expect(find.byType(DropdownButtonFormField<String>), findsNWidgets(2));
+    expect(api.calls, 0);
+  });
   testWidgets(
     'unconfigured service keeps official fallback and does not offer broken fetch',
     (tester) async {

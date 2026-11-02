@@ -2,7 +2,7 @@
 
 확정: 앱 아이콘은 `icon-concepts/c-jindo-minimal-v2.png`, 온보딩 캐릭터는 기존 전신 `mascot-jindo-v1.png`를 사용합니다. 긴급 행동 화면에는 캐릭터를 넣지 않습니다.
 
-- icon-play-512.png: 확정한 진돗개 얼굴을 512px로 내보낸 Play 파일. Android launcher는 아직 변경하지 않음.
+- icon-play-512.png: 확정한 진돗개 얼굴을 512px로 내보낸 Play 파일. Android/PWA launcher 적용 완료. iOS 시뮬레이터도 동일 원본으로 규격별 아이콘 적용.
 - mascot-jindo-v1.png: 내장 image_gen 도구로 생성한 진돗개 캐릭터 시안. 이름·상표는 미확정. 온보딩에 도입할 경우 장식 이미지로 접근성을 처리하고 긴급 화면에는 넣지 않음. PWA 온보딩 소개 화면에 장식 이미지로 적용.
 - feature-graphic-1024x500.png: 실제 제공 기능을 설명하는 스토어 배너 후보. 앱 UI 스크린샷은 별도 실제 Android 캡처로 제공하며 AI로 앱 화면을 만들지 않음.
 
