@@ -12,7 +12,8 @@ NON_CIVIL_TYPES = frozenset(('AI 가뭄 가축질병 강풍 건조 교통 교통
                             '화재 환경오염사고 황사').split())
 LEVELS = frozenset(('위급재난', '긴급재난', '안전안내'))
 HINTS = {
-    'drill': ('훈련', '연습', '테스트'),
+    'drill': ('훈련', '연습', '테스트', 'civil defense exercise',
+              'civil defence exercise', 'civil defense drill', 'civil defence drill'),
     'correction': ('정정', '오발령', '오 발령', '잘못 발령'),
     'release_or_cancel': ('해제', '취소', '종료'),
     'air_raid': ('공습',),
@@ -40,7 +41,7 @@ def review_record(record):
     message = normalized(record.get('MSG_CN'))
     if not kind or not level or not message:
         return result
-    hints = sorted(name for name, words in HINTS.items() if any(word in message for word in words))
+    hints = sorted(name for name, words in HINTS.items() if any(word.casefold() in message.casefold() for word in words))
     result['hints'] = hints
     flags = []
     if 'drill' in hints:
