@@ -1,5 +1,6 @@
 """Single, read-only official API probe. Never emits credentials or message text."""
 import argparse
+from review_alert_scope import summarize_scope
 import json
 from pathlib import Path
 import ssl
@@ -68,7 +69,8 @@ def summarize(raw):
             'record_count': len(rows), 'duplicate_ids': len(ids) - len(set(ids)),
             'documented_fields_seen': sorted(FIELDS.intersection(set().union(*(r.keys() for r in rows)))),
             'missing_documented_fields': sorted(set().union(*(FIELDS - r.keys() for r in rows))),
-            'delivery_latency_verified': False, 'alert_delivery_enabled': False}
+            'delivery_latency_verified': False, 'alert_delivery_enabled': False,
+            'scope_review': summarize_scope(rows) if complete else None}
 
 
 def probe(config_path):
