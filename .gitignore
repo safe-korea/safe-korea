@@ -38,3 +38,6 @@ config/alert-review.sqlite*
 
 # Wrangler local deployment cache
 .wrangler/
+
+# Local unedited simulator footage; keep the final captioned demo tracked.
+artifacts/demo/*_raw.mp4
