@@ -20,6 +20,7 @@ void main() {
     await tester.pumpWidget(const SafeKoreaApp());
     expect(find.text('SAFE KOREA'), findsOneWidget);
     expect(find.textContaining('실제 정부 경보 수신 기능 없음'), findsOneWidget);
+    await tester.ensureVisible(find.text('모의 공습경보 시작'));
     await tester.tap(find.text('모의 공습경보 시작'));
     await tester.pumpAndSettle();
     expect(find.text('훈련 / 테스트'), findsOneWidget);
@@ -51,7 +52,8 @@ void main() {
         MaterialApp(home: SheltersScreen(locationService: DeniedLocation())),
       );
       await tester.pumpAndSettle();
-      expect(find.textContaining('공식 대피시설 데이터 미연동'), findsOneWidget);
+      expect(find.textContaining('저장된 대피시설이 없습니다.'), findsOneWidget);
+      await tester.ensureVisible(find.text('GPS 현재 위치 확인'));
       await tester.tap(find.text('GPS 현재 위치 확인'));
       await tester.pumpAndSettle();
       expect(find.textContaining('위치 권한 없이도 시설 검색'), findsOneWidget);
@@ -84,4 +86,15 @@ void main() {
       }
     },
   );
+  testWidgets('home controls have accessible labels and Android tap sizes', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+
+    await tester.pumpWidget(const SafeKoreaApp());
+    await tester.pumpAndSettle();
+    await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
+    await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
+    semantics.dispose();
+  });
 }

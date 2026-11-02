@@ -1,0 +1,8 @@
+Analyzing safe-korea-starter...
+
+   info • Statements in an if should be enclosed in a block. Try wrapping the statement in a block • lib/screens/meeting_share_screen.dart:46:9 • curly_braces_in_flow_control_structures
+   info • Statements in an if should be enclosed in a block. Try wrapping the statement in a block • lib/screens/meeting_share_screen.dart:51:9 • curly_braces_in_flow_control_structures
+   info • Statements in an if should be enclosed in a block. Try wrapping the statement in a block • lib/screens/meeting_share_screen.dart:63:9 • curly_braces_in_flow_control_structures
+   info • Statements in an if should be enclosed in a block. Try wrapping the statement in a block • lib/services/meeting_share.dart:29:5 • curly_braces_in_flow_control_structures
+
+4 issues found. (ran in 4.2s)

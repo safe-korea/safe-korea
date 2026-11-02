@@ -6,6 +6,34 @@ import 'package:flutter/services.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as path;
 
+class MeetingPoint {
+  const MeetingPoint(this.latitude, this.longitude);
+  final double latitude, longitude;
+  bool get isValid =>
+      latitude.isFinite &&
+      longitude.isFinite &&
+      latitude >= -90 &&
+      latitude <= 90 &&
+      longitude >= -180 &&
+      longitude <= 180;
+  Map<String, double> toJson() => {
+    'latitude': latitude,
+    'longitude': longitude,
+  };
+  static MeetingPoint? fromJson(dynamic value) {
+    if (value is! Map ||
+        value['latitude'] is! num ||
+        value['longitude'] is! num) {
+      return null;
+    }
+    final point = MeetingPoint(
+      (value['latitude'] as num).toDouble(),
+      (value['longitude'] as num).toDouble(),
+    );
+    return point.isValid ? point : null;
+  }
+}
+
 class FamilyPlan {
   const FamilyPlan({
     this.contactName = '',
@@ -13,14 +41,43 @@ class FamilyPlan {
     this.meetingPlace = '',
     this.backupPlace = '',
     this.note = '',
+    this.backupContactName = '',
+    this.backupPhone = '',
+    this.meetingPoint,
+    this.backupPoint,
   });
-  final String contactName, phone, meetingPlace, backupPlace, note;
-  Map<String, String> toJson() => {
+  final String contactName,
+      phone,
+      meetingPlace,
+      backupPlace,
+      note,
+      backupContactName,
+      backupPhone;
+  final MeetingPoint? meetingPoint, backupPoint;
+  bool get hasMeetingPlan =>
+      meetingPlace.trim().isNotEmpty ||
+      backupPlace.trim().isNotEmpty ||
+      note.trim().isNotEmpty ||
+      meetingPoint != null ||
+      backupPoint != null;
+  bool get isEmpty =>
+      !hasMeetingPlan &&
+      [
+        contactName,
+        phone,
+        backupContactName,
+        backupPhone,
+      ].every((value) => value.trim().isEmpty);
+  Map<String, dynamic> toJson() => {
     'contactName': contactName,
     'phone': phone,
     'meetingPlace': meetingPlace,
     'backupPlace': backupPlace,
     'note': note,
+    'backupContactName': backupContactName,
+    'backupPhone': backupPhone,
+    if (meetingPoint?.isValid ?? false) 'meetingPoint': meetingPoint!.toJson(),
+    if (backupPoint?.isValid ?? false) 'backupPoint': backupPoint!.toJson(),
   };
   factory FamilyPlan.fromJson(Map<String, dynamic> json) => FamilyPlan(
     contactName: json['contactName'] as String? ?? '',
@@ -28,6 +85,10 @@ class FamilyPlan {
     meetingPlace: json['meetingPlace'] as String? ?? '',
     backupPlace: json['backupPlace'] as String? ?? '',
     note: json['note'] as String? ?? '',
+    backupContactName: json['backupContactName'] as String? ?? '',
+    backupPhone: json['backupPhone'] as String? ?? '',
+    meetingPoint: MeetingPoint.fromJson(json['meetingPoint']),
+    backupPoint: MeetingPoint.fromJson(json['backupPoint']),
   );
 }
 
@@ -49,6 +110,100 @@ class LocalStore {
       onCreate: (db, version) => db.execute(
         'CREATE TABLE plans (id INTEGER PRIMARY KEY, content TEXT NOT NULL)',
       ),
+    );
+  }
+
+  Future<void> _ensureCatalogTable() async => (await database).execute(
+    'CREATE TABLE IF NOT EXISTS shelter_catalog (id INTEGER PRIMARY KEY, content TEXT NOT NULL)',
+  );
+  Future<Map<String, dynamic>?> loadShelterCatalog() async {
+    await _ensureCatalogTable();
+    final rows = await (await database).query(
+      'shelter_catalog',
+      where: 'id = ?',
+      whereArgs: [1],
+    );
+    if (rows.isEmpty) return null;
+    return jsonDecode(rows.first['content'] as String) as Map<String, dynamic>;
+  }
+
+  Future<void> saveShelterCatalog(Map<String, dynamic> catalog) async {
+    await _ensureCatalogTable();
+    await (await database).insert('shelter_catalog', {
+      'id': 1,
+      'content': jsonEncode(catalog),
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  Future<void> _ensurePreparationTable() async => (await database).execute(
+    'CREATE TABLE IF NOT EXISTS preparation (id INTEGER PRIMARY KEY, content TEXT NOT NULL)',
+  );
+  Future<Set<String>> loadPreparation() async {
+    await _ensurePreparationTable();
+    final rows = await (await database).query(
+      'preparation',
+      where: 'id = ?',
+      whereArgs: [1],
+    );
+    if (rows.isEmpty) return {};
+    return (jsonDecode(rows.first['content'] as String) as List)
+        .cast<String>()
+        .toSet();
+  }
+
+  Future<void> savePreparation(Set<String> values) async {
+    await _ensurePreparationTable();
+    await (await database).insert('preparation', {
+      'id': 1,
+      'content': jsonEncode(values.toList()..sort()),
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  Future<void> _ensureSavedSheltersTable() async => (await database).execute(
+    'CREATE TABLE IF NOT EXISTS saved_shelters (id TEXT PRIMARY KEY, content TEXT NOT NULL, saved_at TEXT NOT NULL)',
+  );
+  Future<List<Map<String, dynamic>>> loadSavedShelters() async {
+    await _ensureSavedSheltersTable();
+    final rows = await (await database).query(
+      'saved_shelters',
+      orderBy: 'saved_at DESC, id ASC',
+    );
+    return rows
+        .map(
+          (row) => jsonDecode(row['content'] as String) as Map<String, dynamic>,
+        )
+        .toList();
+  }
+
+  Future<void> saveSavedShelter(String id, Map<String, dynamic> entry) async {
+    await _ensureSavedSheltersTable();
+    await (await database).insert('saved_shelters', {
+      'id': id,
+      'content': jsonEncode(entry),
+      'saved_at': entry['savedAt'],
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  /// Role reassignment and personal records must commit together.
+  Future<void> saveSavedShelters(List<Map<String, dynamic>> entries) async {
+    await _ensureSavedSheltersTable();
+    await (await database).transaction((txn) async {
+      for (final entry in entries) {
+        await txn.insert('saved_shelters', {
+          'id': entry['storageKey'],
+          'content': jsonEncode({...entry}..remove('storageKey')),
+          'saved_at': entry['savedAt'],
+        }, conflictAlgorithm: ConflictAlgorithm.replace);
+      }
+    });
+  }
+
+  Future<void> removeSavedShelter(String id) async {
+    await _ensureSavedSheltersTable();
+    await (await database).delete(
+      'saved_shelters',
+      where: 'id = ?',
+      whereArgs: [id],
     );
   }
 

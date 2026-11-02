@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <base href="$FLUTTER_BASE_HREF">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#086B50">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="description" content="공습·화생방 등 상황별 행동요령을 내 상황에 맞게 확인하고 미리 저장하세요. SAFE KOREA는 실제 정부 경보를 수신하지 않는 비공식 비상 대비 앱입니다.">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="onboarding.css">
+  <title>SAFE KOREA · 비상 대비</title>
+</head>
+<body>
+  <main id="onboarding" aria-labelledby="welcome-title">
+    <header class="brand-bar">
+      <div class="brand"><img src="branding/icon-jindo.png" width="38" height="38" alt=""><span>SAFE KOREA<small>나와 가까운 비상 대비</small></span></div>
+      <button class="text-button" id="quick-start">먼저 둘러보기</button>
+    </header>
+    <section id="product-tour" aria-label="SAFE KOREA 소개">
+      <div class="tour-progress" aria-label="소개 페이지">
+        <button aria-label="1. 어떤 앱인가요" aria-current="step" data-slide="0"><span></span></button>
+        <button aria-label="2. 내 상황에 맞는 행동" data-slide="1"><span></span></button>
+        <button aria-label="3. 오프라인 안내" data-slide="2"><span></span></button>
+        <span id="tour-count" aria-live="polite">01 / 03</span>
+      </div>
+      <div class="tour-layout">
+        <div class="tour-copy">
+          <p class="eyebrow" id="tour-eyebrow">평소에는 준비로, 비상시에는 행동으로</p>
+          <h1 id="welcome-title" tabindex="-1">미리 준비해 두세요.<br>필요한 순간, <em>바로 꺼내도록.</em></h1>
+          <p class="intro" id="tour-description">공습·화생방 등 비상 상황의 행동요령을<br>쉽게 꺼내 보는 비상 대비 앱, SAFE KOREA.</p>
+          <p class="benefit" id="tour-benefit"><span aria-hidden="true">✓</span> 긴 설명보다, 먼저 할 행동부터</p>
+          <p class="trust-note">정부 원문을 바탕으로 정리한 비공식 안내</p>
+        </div>
+        <figure class="product-preview">
+          <div class="preview-backdrop" aria-hidden="true"></div>
+          <img class="tour-mascot" src="branding/mascot-jindo.png" width="1024" height="1536" alt="" aria-hidden="true">
+          <button class="phone-frame" id="preview-open" aria-label="실제 앱 화면 크게 보기"><img id="tour-image" src="previews/air-guidance.png" width="1206" height="2622" alt="실제 공습 안내 화면: 실내를 선택하면 계단으로 이동하는 행동을 먼저 안내합니다."></button>
+          <figcaption id="preview-caption">iPhone 17 Pro · 공습 행동요령</figcaption>
+        </figure>
+      </div>
+      <div class="tour-actions">
+        <div class="tour-buttons"><button class="secondary" id="tour-back" hidden>이전</button><button class="primary" id="tour-next">내 상황에 맞는 안내 보기 <span aria-hidden="true">→</span></button></div>
+        <p class="small">실제 정부 경보를 수신하는 앱은 아닙니다.</p>
+      </div>
+    </section>
+    <section id="setup" aria-labelledby="setup-title" hidden>
+      <button class="text-button" id="tour-return">← 앱 소개 다시 보기</button>
+      <p class="eyebrow">오늘의 준비를, 필요할 때 바로</p>
+      <h1 id="setup-title" tabindex="-1">이제 내 폰에<br>준비해 두세요.</h1>
+      <p class="intro">앱스토어 대신 홈 화면에 추가하세요.<br>회원가입 없이 시작할 수 있어요.</p>
+    <section class="step" aria-labelledby="install-title">
+      <span class="number" aria-hidden="true">1</span><div><h2 id="install-title">홈 화면에 추가</h2><p id="install-summary">Safari의 공유 메뉴에서 추가할 수 있어요.</p>
+      <button class="secondary" id="install-help" aria-expanded="false" aria-controls="install-detail">추가하는 방법 보기</button>
+      <div id="install-detail" hidden><ol><li>Safari에서 이 페이지를 여세요.</li><li><strong>공유</strong> 메뉴를 누르세요.</li><li><strong>홈 화면에 추가 → 추가</strong>를 누르세요.</li></ol><p>다른 브라우저는 메뉴의 앱 설치 기능을 확인하세요. 추가한 아이콘으로 열면 됩니다.</p></div></div>
+    </section>
+    <section class="step" aria-labelledby="save-title">
+      <span class="number" aria-hidden="true">2</span><div><h2 id="save-title">오프라인 안내 저장</h2><p>약 17 MB의 앱과 행동요령을 내려받아요.<br>지도는 저장되지 않습니다.</p>
+      <button class="primary" id="prepare">이 기기에 저장하기</button>
+      <p id="cache-status" role="status" aria-live="polite">아직 오프라인 저장을 확인하지 않았어요.</p></div>
+    </section>
+    <aside><strong>실제 정부 경보를 수신하지 않습니다.</strong><p>재난문자·정부 방송·현장 지시를 우선하세요.</p></aside>
+    <button class="start" id="start">행동요령 바로 보기</button>
+    <p class="small">설치·로그인·위치 허용 없이도 시작할 수 있어요.</p>
+    <details><summary>저장 정보와 현재 제공 범위</summary><p>설치 안내 확인 여부만 이 브라우저에 저장합니다. 오프라인 저장을 선택하면 앱 파일과 행동요령을 캐시에 보관합니다. 브라우저 데이터 삭제·저장공간 정리로 지워질 수 있으니 가끔 오프라인 실행을 확인하세요.</p><p>서버 계정·분석·광고·푸시 기능은 없습니다. 호스팅 제공자는 접속 IP 등 기본 요청 정보를 처리할 수 있습니다. 지역별 대피소 조회는 데이터 서버 연결 후 사용할 수 있으며 지역 코드·IP를 Cloudflare가 처리합니다. 시설 목록은 오프라인 저장되지 않습니다. 지도 링크를 열면 시설 좌표를 카카오에 전달합니다. 앱 안의 지도·GPS·가족 저장은 아직 제공하지 않습니다. 공개 정책과 운영자 정보는 배포 전 준비합니다.</p></details>
+    </section>
+  </main>
+  <dialog id="preview-dialog" aria-label="실제 앱 화면 미리보기">
+    <form method="dialog"><button class="secondary">닫기</button></form>
+    <img id="preview-full" width="1206" height="2622" alt="">
+  </dialog>
+  <div id="app-shell" hidden><nav aria-label="웹 앱 도움말"><span>SAFE KOREA · 웹 미리보기</span><button id="reopen">설치·오프라인</button></nav><div id="flutter-host"></div></div>
+  <p id="boot-error" role="alert" hidden>앱을 불러오지 못했습니다. 연결을 확인한 뒤 다시 시도하세요. <button id="retry">다시 시도</button></p>
+  <noscript>행동요령 앱을 사용하려면 JavaScript가 필요합니다. 최신 재난문자와 정부 방송을 확인하세요.</noscript>
+  <script src="onboarding.js" defer></script>
+</body>
+</html>

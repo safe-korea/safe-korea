@@ -1,0 +1,10 @@
+{
+  "source": "https://www.safekorea.go.kr/safekorea-kor/flsm/flsm/facilityDataList.do",
+  "districtCode": "11110",
+  "totalCount": 107,
+  "mapListCount": 107,
+  "pagedListCount": 5,
+  "responseSha256": "cf54b17ea2119a1c90d7d877390769318e39e4ba4674e192a6d3e3a5a179a280",
+  "observedAt": "2026-10-31T07:36:17.068378+00:00",
+  "note": "Read-only public website regional lookup; no credentials. Timestamp is verification record time, not source update date."
+}

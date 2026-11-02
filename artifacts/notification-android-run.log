@@ -1,0 +1,26 @@
+Launching lib/main.dart on sdk gphone64 arm64 in debug mode...
+Running Gradle task 'assembleDebug'...                             14.5s
+✓ Built build/app/outputs/flutter-apk/app-debug.apk
+Installing build/app/outputs/flutter-apk/app-debug.apk...        1,073ms
+I/FlutterActivityAndFragmentDelegate(20416): If you are attempting to set --enable-dart-profiling via Intent extras to launch a Flutter component outside of using the Flutter CLI, note that support for setting engine flags on Android via Intent will soon be dropped; see https://github.com/flutter/flutter/issues/180686 for more information on this breaking change. To migrate, set --enable-dart-profiling or any other flags specified via Intent extras on the command line instead or see https://github.com/flutter/flutter/blob/main/docs/engine/Flutter-Android-Engine-Flags.md for alternative methods.
+D/FlutterJNI(20416): Beginning load of flutter...
+D/FlutterJNI(20416): flutter (null) was loaded normally!
+I/flutter (20416): [IMPORTANT:flutter/shell/platform/android/android_context_gl_impeller.cc(104)] Using the Impeller rendering backend (OpenGLES).
+D/FlutterGeolocator(20416): Attaching Geolocator to activity
+D/FlutterRenderer(20416): Width is zero. 0,0
+D/FlutterGeolocator(20416): Creating service.
+D/FlutterGeolocator(20416): Binding to location service.
+I/Choreographer(20416): Skipped 40 frames!  The application may be doing too much work on its main thread.
+I/WindowExtensionsImpl(20416): Initializing Window Extensions, vendor API level=9, activity embedding enabled=true
+I/mple.safe_korea(20416): Compiler allocated 5111KB to compile void android.view.ViewRootImpl.performTraversals()
+D/FlutterRenderer(20416): Width is zero. 0,0
+D/FlutterJNI(20416): Sending viewport metrics to the engine.
+D/FlutterGeolocator(20416): Geolocator foreground service connected
+D/FlutterGeolocator(20416): Initializing Geolocator services
+D/FlutterGeolocator(20416): Flutter engine connected. Connected engine count 1
+D/FlutterJNI(20416): Sending viewport metrics to the engine.
+D/WindowLayoutComponentImpl(20416): Register WindowLayoutInfoListener on Context=kr.example.safe_korea.MainActivity@354f678, of which baseContext=android.app.ContextImpl@8f26d8e
+D/FlutterJNI(20416): Sending viewport metrics to the engine.
+D/InsetsController(20416): hide(ime(), fromIme=false)
+I/ImeTracker(20416): kr.example.safe_korea:e7be0bf9: onCancelled at PHASE_CLIENT_ALREADY_HIDDEN
+Syncing files to device sdk gphone64 arm64...                      113ms

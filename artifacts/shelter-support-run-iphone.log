@@ -1,0 +1,8 @@
+Launching lib/main.dart on iPhone 17 Pro in debug mode...
+The following plugins do not support Swift Package Manager for ios:
+  - flutter_tts
+This will become an error in a future version of Flutter. Please contact the plugin maintainers to request Swift Package Manager adoption.
+Running Xcode build...                                          
+Xcode build done.                                           12.6s
+[IMPORTANT:flutter/shell/platform/darwin/graphics/FlutterDarwinContextMetalImpeller.mm(45)] Using the Impeller rendering backend (Metal).
+Syncing files to device iPhone 17 Pro...                           197ms

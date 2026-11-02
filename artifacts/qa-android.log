@@ -1,0 +1,7 @@
+00:00 +0: loading ./integration_test/app_test.dart
+Running Gradle task 'assembleDebug'...                             10.4s
+✓ Built build/app/outputs/flutter-apk/app-debug.apk
+Installing build/app/outputs/flutter-apk/app-debug.apk...          677ms
+00:00 +0: native offline drill, guidance and isolated SQLite plan
+00:07 +1: (tearDownAll)
+00:07 +1: All tests passed!

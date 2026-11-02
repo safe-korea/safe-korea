@@ -1,0 +1,7 @@
+00:00 +0: loading /Users/gimtaehyeong/Downloads/safe-korea-starter/integration_test/kakao_map_test.dart
+Running Xcode build...                                          
+Xcode build done.                                           21.1s
+00:00 +0: Kakao authenticates and creates official shelter pins
+KAKAO_NATIVE_CAMERA_VERIFIED: capture rendered pins now
+01:05 +1: (tearDownAll)
+01:05 +1: All tests passed!

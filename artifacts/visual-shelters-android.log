@@ -1,0 +1,15 @@
+00:00 +0: loading ./integration_test/shelters_test.dart
+Running Gradle task 'assembleDebug'...                              9.6s
+✓ Built build/app/outputs/flutter-apk/app-debug.apk
+Installing build/app/outputs/flutter-apk/app-debug.apk...          874ms
+00:00 +0: official Jongno response appears on map and reopens from SQLite
+  [1m[flutter_map][0m
+    We want to help keep OpenStreetMap available for everyone. Our examples
+    and demo app use the public tile servers, but they are NOT free to use by
+    everyone! Please review whether the OpenStreetMap tile servers are suitable
+    for your project.
+    See:
+      * https://operations.osmfoundation.org/policies/tiles (OSM Tile Usage Policy)
+      * https://docs.fleaflet.dev/osm-warn for more information about this warning
+00:08 +1: (tearDownAll)
+00:08 +1: All tests passed!

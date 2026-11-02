@@ -1,155 +1,149 @@
 import 'package:flutter/material.dart';
 
+import '../theme/app_theme.dart';
 import '../widgets/common.dart';
+import 'alert_guide_screen.dart';
+import 'offline_hub_screen.dart';
 import 'drill_screen.dart';
+import 'notification_test_screen.dart';
 import 'guidelines_screen.dart';
 import 'family_screen.dart';
 import 'shelters_screen.dart';
+import 'readiness_screen.dart';
+import 'saved_shelters_screen.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({
+    super.key,
+    this.onShelters,
+    this.onGuidelines,
+    this.onReadiness,
+  });
+  final VoidCallback? onShelters, onGuidelines, onReadiness;
   void _open(BuildContext context, Widget page) =>
       Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => page));
+
+  Widget _shortcut({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) => Padding(
+    padding: const EdgeInsets.only(bottom: 8),
+    child: OutlinedButton.icon(
+      style: OutlinedButton.styleFrom(
+        alignment: Alignment.centerLeft,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      ),
+      onPressed: onTap,
+      icon: Icon(icon),
+      label: Text(title),
+    ),
+  );
+
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
       title: const Text(
         'SAFE KOREA',
-        style: TextStyle(fontWeight: FontWeight.w900, letterSpacing: 2),
+        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
       ),
     ),
     body: PageBody(
       children: [
         const Text(
-          '평소의 준비가,\n위기의 나를 지킵니다.',
-          style: TextStyle(
-            fontSize: 30,
-            fontWeight: FontWeight.w800,
-            height: 1.3,
-            color: ink,
-          ),
+          '지금 필요한 안내',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800),
+        ),
+        const SizedBox(height: 8),
+        const Text(
+          '비공식 대비 앱 · 실제 정부 경보 수신 기능 없음',
+          style: TextStyle(fontSize: 13, color: AppPalette.muted),
         ),
         const SizedBox(height: 16),
-        const Notice('비공식 대비 앱 · 실제 정부 경보 수신 기능 없음'),
-        Container(
-          padding: const EdgeInsets.all(24),
-          decoration: BoxDecoration(
-            color: ink,
-            borderRadius: BorderRadius.circular(24),
+        FilledButton.icon(
+          style: FilledButton.styleFrom(
+            backgroundColor: AppPalette.alert,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                '미리 연습해 보세요',
-                style: TextStyle(
-                  color: Color(0xFFA7E2D1),
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                '공습경보가 울린다면?',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 12),
-              const Text(
-                '실제 경보가 아닌 조용한 대피 연습입니다.',
-                style: TextStyle(color: Colors.white, fontSize: 17),
-              ),
-              const SizedBox(height: 20),
-              FilledButton.icon(
-                onPressed: () => _open(context, const DrillScreen()),
-                icon: const Icon(Icons.shield_outlined),
-                label: const Text('모의 공습경보 시작'),
-              ),
-            ],
+          onPressed: () => _open(
+            context,
+            const AlertGuideScreen(requireKindSelection: true),
           ),
+          icon: const Icon(Icons.touch_app_outlined),
+          label: const Text('지금 할 행동 보기'),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 8),
         const Text(
-          '지금 준비할 수 있는 일',
-          style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
+          '경보 종류와 실내·실외·차량을 직접 선택하세요.',
+          style: TextStyle(fontSize: 14),
+        ),
+        const SizedBox(height: 20),
+        const Text(
+          '미리 저장한 준비',
+          style: TextStyle(fontSize: 19, fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: 12),
-        _tile(
-          context,
-          Icons.near_me_outlined,
-          '주변 대피시설',
-          '공식 자료 · 위치 · 지도',
-          const SheltersScreen(),
+        _shortcut(
+          icon: Icons.bookmark_outline,
+          title: '저장한 대피소',
+          onTap: () => _open(context, const SavedSheltersScreen()),
         ),
-        _tile(
-          context,
-          Icons.menu_book_outlined,
-          '상황별 행동강령',
-          '인터넷 없이 읽는 대응 안내',
-          const GuidelinesScreen(),
+        _shortcut(
+          icon: Icons.people_outline,
+          title: '가족 만남 장소',
+          onTap: () => _open(context, const FamilyScreen()),
         ),
-        _tile(
-          context,
-          Icons.people_outline,
-          '가족 안전 계획',
-          '비상연락처와 만남 장소 저장',
-          const FamilyScreen(),
+        _shortcut(
+          icon: Icons.backpack_outlined,
+          title: '비상배낭 체크리스트',
+          onTap: onReadiness ?? () => _open(context, const ReadinessScreen()),
+        ),
+        const Text(
+          '이 기기에 저장한 내용 · 인터넷 없이 확인',
+          style: TextStyle(fontSize: 13, color: AppPalette.muted),
+        ),
+        const SizedBox(height: 20),
+        ActionTile(
+          icon: Icons.near_me_outlined,
+          title: '주변 대피시설',
+          subtitle: '새 시설 조회·지도 · 인터넷 필요',
+          onTap: onShelters ?? () => _open(context, const SheltersScreen()),
+        ),
+        const SizedBox(height: 20),
+        const Text(
+          '평소에 익혀 두세요',
+          style: TextStyle(fontSize: 19, fontWeight: FontWeight.w700),
+        ),
+        const SizedBox(height: 12),
+        OutlinedButton.icon(
+          onPressed: () => _open(context, const DrillScreen()),
+          icon: const Icon(Icons.shield_outlined),
+          label: const Text('모의 공습경보 시작'),
+        ),
+        ActionTile(
+          icon: Icons.menu_book_outlined,
+          title: '상황별 행동강령',
+          subtitle: '전체 안내 · 인터넷 없이 확인',
+          onTap: onGuidelines ?? () => _open(context, const GuidelinesScreen()),
+        ),
+        ActionTile(
+          icon: Icons.wifi_off,
+          title: '오프라인 기능 모아보기',
+          subtitle: '통신이 끊겨도 쓸 수 있는 기능',
+          onTap: () => _open(context, const OfflineHubScreen()),
+        ),
+        ActionTile(
+          icon: Icons.notifications_outlined,
+          title: '테스트 알림 설정',
+          subtitle: '훈련용 사이렌 · 진동 · 권한',
+          onTap: () => _open(context, const NotificationTestScreen()),
         ),
         const SizedBox(height: 16),
         const Text(
-          '실제 상황에서는 재난문자, 정부 방송과 현장 통제 안내를 우선하세요. 이 앱은 이동 경로의 안전을 판단하지 않습니다.',
-        ),
-        const SizedBox(height: 12),
-        TextButton(
-          onPressed: () =>
-              showLicensePage(context: context, applicationName: 'SAFE KOREA'),
-          child: const Text('오픈소스 라이선스'),
+          '실제 상황에서는 재난문자·정부 방송과 현장 안내를 우선하세요.',
+          style: TextStyle(fontSize: 14, color: AppPalette.muted),
         ),
       ],
-    ),
-  );
-
-  Widget _tile(
-    BuildContext context,
-    IconData icon,
-    String title,
-    String subtitle,
-    Widget page,
-  ) => Padding(
-    padding: const EdgeInsets.only(bottom: 12),
-    child: Card(
-      margin: EdgeInsets.zero,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(12),
-        onTap: () => _open(context, page),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Row(
-            children: [
-              Icon(icon, size: 32, color: teal),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(subtitle),
-                  ],
-                ),
-              ),
-              const Icon(Icons.chevron_right),
-            ],
-          ),
-        ),
-      ),
     ),
   );
 }

@@ -1,0 +1,15 @@
+{
+  "name": "safe-korea-shelter-api",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "WRANGLER_SEND_METRICS=false wrangler dev --local --ip 127.0.0.1 --port 8787",
+    "test": "node --test test/*.test.js",
+    "check": "tsc --noEmit",
+    "build": "WRANGLER_SEND_METRICS=false wrangler deploy --dry-run --outdir dist"
+  },
+  "devDependencies": {
+    "wrangler": "4.156.0",
+    "typescript": "~5.9.3"
+  }
+}

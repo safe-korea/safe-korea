@@ -2,8 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>직접 선택한 대피소·출입구 사진을 기기에 저장합니다.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>주변 민방위 대피시설을 거리순으로 확인할 때만 현재 위치를 사용합니다. 위치는 저장하거나 서버로 보내지 않습니다.</string>
+	<string>대피시설 거리 계산·지도 표시 또는 사용자가 요청한 조회 지역 제안에 현재 위치를 사용합니다. 위치는 저장하지 않습니다. 지역 제안을 요청하면 좌표가 기기의 주소 변환 서비스에 전달될 수 있습니다.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>

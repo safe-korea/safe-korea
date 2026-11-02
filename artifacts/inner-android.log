@@ -1,0 +1,24 @@
+Launching lib/main.dart on sdk gphone64 arm64 in debug mode...
+Running Gradle task 'assembleDebug'...                              6.9s
+✓ Built build/app/outputs/flutter-apk/app-debug.apk
+Installing build/app/outputs/flutter-apk/app-debug.apk...        1,762ms
+I/FlutterActivityAndFragmentDelegate(24513): If you are attempting to set --enable-dart-profiling via Intent extras to launch a Flutter component outside of using the Flutter CLI, note that support for setting engine flags on Android via Intent will soon be dropped; see https://github.com/flutter/flutter/issues/180686 for more information on this breaking change. To migrate, set --enable-dart-profiling or any other flags specified via Intent extras on the command line instead or see https://github.com/flutter/flutter/blob/main/docs/engine/Flutter-Android-Engine-Flags.md for alternative methods.
+D/FlutterJNI(24513): Beginning load of flutter...
+D/FlutterJNI(24513): flutter (null) was loaded normally!
+I/flutter (24513): [IMPORTANT:flutter/shell/platform/android/android_context_gl_impeller.cc(104)] Using the Impeller rendering backend (OpenGLES).
+D/FlutterGeolocator(24513): Attaching Geolocator to activity
+D/FlutterRenderer(24513): Width is zero. 0,0
+D/FlutterGeolocator(24513): Creating service.
+D/FlutterGeolocator(24513): Binding to location service.
+D/FlutterRenderer(24513): Width is zero. 0,0
+D/FlutterJNI(24513): Sending viewport metrics to the engine.
+D/FlutterGeolocator(24513): Geolocator foreground service connected
+D/FlutterGeolocator(24513): Initializing Geolocator services
+D/FlutterGeolocator(24513): Flutter engine connected. Connected engine count 1
+D/FlutterJNI(24513): Sending viewport metrics to the engine.
+D/WindowLayoutComponentImpl(24513): Register WindowLayoutInfoListener on Context=kr.example.safe_korea.MainActivity@c1f0224, of which baseContext=android.app.ContextImpl@82bd49a
+D/FlutterJNI(24513): Sending viewport metrics to the engine.
+Syncing files to device sdk gphone64 arm64...
+D/InsetsController(24513): hide(ime(), fromIme=false)
+I/ImeTracker(24513): kr.example.safe_korea:1cd6bae9: onCancelled at PHASE_CLIENT_ALREADY_HIDDEN
+Syncing files to device sdk gphone64 arm64...                       86ms

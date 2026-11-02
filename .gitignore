@@ -1,4 +1,4 @@
-.tools/
+.tools
 .dart_tool/
 .packages
 .pub-cache/
@@ -20,3 +20,15 @@ ios/Flutter/flutter_export_environment.sh
 __pycache__/
 *.pyc
 .swiftpm/
+android/.kotlin/
+config/kakao.local.json
+
+android/key.properties
+workers/**/node_modules/
+workers/**/.wrangler/
+workers/**/dist/
+workers/**/.dev.vars
+workers/**/.dev.vars.*
+
+# Server-side official alert API probe only; never bundle in Flutter/PWA.
+config/safetydata.local.json
