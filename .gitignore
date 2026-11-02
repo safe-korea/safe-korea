@@ -32,3 +32,6 @@ workers/**/.dev.vars.*
 
 # Server-side official alert API probe only; never bundle in Flutter/PWA.
 config/safetydata.local.json
+
+# Local alert review ledger (hashes only).
+config/alert-review.sqlite*

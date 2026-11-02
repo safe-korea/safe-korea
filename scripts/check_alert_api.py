@@ -1,5 +1,6 @@
 """Single, read-only official API probe. Never emits credentials or message text."""
 import argparse
+from alert_review_store import record_batch, ReviewStoreError
 from datetime import datetime, timezone
 from review_alert_delivery import summarize_delivery_review
 from review_alert_scope import summarize_scope
@@ -28,7 +29,7 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
         return None
 
 
-def summarize(raw, started_at=None):
+def summarize(raw, started_at=None, state_db=None):
     """Summarize only structure. API free text and unknown fields never escape."""
     if len(raw) > LIMIT:
         return {'status': 'response_too_large'}
@@ -67,7 +68,14 @@ def summarize(raw, started_at=None):
     complete = all(FIELDS <= row.keys() and all(
         isinstance(row.get(field), (str, int)) and not isinstance(row.get(field), bool)
         and str(row[field]).strip() for field in FIELDS) for row in rows)
+    stored = None
+    if complete and state_db is not None:
+        try:
+            stored = record_batch(state_db, rows)
+        except ReviewStoreError:
+            return {'status': 'review_store_error', 'alert_delivery_enabled': False}
     return {'status': 'records_observed' if complete else 'records_incomplete',
+            'persistent_review': stored,
             'record_count': len(rows), 'duplicate_ids': len(ids) - len(set(ids)),
             'documented_fields_seen': sorted(FIELDS.intersection(set().union(*(r.keys() for r in rows)))),
             'missing_documented_fields': sorted(set().union(*(FIELDS - r.keys() for r in rows))),
@@ -77,7 +85,7 @@ def summarize(raw, started_at=None):
                 rows, started_at or datetime.now(timezone.utc)) if complete else None}
 
 
-def probe(config_path, sample_size=3):
+def probe(config_path, sample_size=3, state_db=None):
     if isinstance(sample_size, bool) or not isinstance(sample_size, int) or not 1 <= sample_size <= 100:
         return {'status': 'invalid_sample_size'}
     started_at = datetime.now(timezone.utc)
@@ -100,7 +108,7 @@ def probe(config_path, sample_size=3):
                                         urllib.request.HTTPSHandler(context=ssl.create_default_context()))
     try:
         with opener.open(ENDPOINT + '?' + query, timeout=15) as response:
-            return summarize(response.read(LIMIT + 1), started_at)
+            return summarize(response.read(LIMIT + 1), started_at, state_db)
     except urllib.error.HTTPError as error:
         # No error string/URL/body logging, no redirects or retries.
         return {'status': 'http_error', 'http_status': error.code}
@@ -113,8 +121,9 @@ def main():
     parser.add_argument('--config', default='config/safetydata.local.json')
     parser.add_argument('--sample-size', type=int, default=3, choices=range(1, 101),
                         metavar='1..100', help='One bounded request; no automatic pagination')
+    parser.add_argument('--state-db', help='Optional private SQLite ledger; stores hashes only')
     args = parser.parse_args()
-    result = probe(args.config, args.sample_size)
+    result = probe(args.config, args.sample_size, args.state_db)
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0 if result['status'] == 'records_observed' else 1
 
