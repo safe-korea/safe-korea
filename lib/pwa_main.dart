@@ -1,3 +1,4 @@
+import 'screens/offline_map_screen.dart';
 import 'widgets/situation_selector.dart';
 
 import 'dart:convert';
@@ -164,6 +165,17 @@ class _PwaGuidanceHomeState extends State<PwaGuidanceHome> {
                 child: const Text('연결 다시 확인'),
               ),
             ],
+            ActionTile(
+              icon: Icons.map_outlined,
+              title: '잠실 주변 오프라인 지도',
+              subtitle: '앱에 동봉된 도로·건물·대피소 위치',
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute<void>(
+                  builder: (_) => const OfflineMapScreen(),
+                ),
+              ),
+            ),
             for (final item
                 in (data['items'] as List).cast<Map<String, dynamic>>())
               Padding(
@@ -195,7 +207,9 @@ class _PwaGuidanceHomeState extends State<PwaGuidanceHome> {
                 ),
               ),
             const SizedBox(height: 16),
-            const Notice('앱 안의 지도·GPS·가족 저장은 준비 중입니다.'),
+            const Notice(
+              '오프라인 지도는 잠실 주변만 제공해요. 다른 지역 지도는 인터넷이 필요하고, 가족 저장은 웹에서 아직 제공하지 않아요.',
+            ),
             OutlinedButton.icon(
               onPressed: () => openExternal(
                 context,

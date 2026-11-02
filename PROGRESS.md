@@ -745,3 +745,14 @@ Android API 36에서도 공식 서울시청 공개 사진 매칭/표시와 공�
 - WebKit 테스트 엔진 모의 위치 timestamp가 Date.now()의 1000배로 반환되는 것을 관측하여 테스트 래퍼에서만 ms로 보정. 제품의 2분/오차 검증은 유지. 조회 실패 테스트는 라우트 abort와 offline 상태를 주입하고 접근성 버튼 동작으로 요청 발생을 검증. 실제 iPhone Safari 권한·홈 화면 설치는 실물 확인 필요.
 - 공개 Workers/PWA 배포 완료: `339888df-a042-4fdb-92f9-9f42ef6d8fc5`, https://safe-korea-shelter-api.trovapp.workers.dev . manifest 시작 URL과 설치 진입 응답/위치 권한 헤더 확인. 기존 Android release AAB는 재생성하지 않음.
 - 배포 후 공개 주소에서도 Chromium/WebKit 시작 화면 및 실제 공식 조회/실패 복구 검사 재통과(`/private/tmp/safe-nearby-production-launch.log`, `/private/tmp/safe-nearby-production-gps.log`). 일반 iOS 앱 최종 복원 완료.
+
+## 2026-11-02 — 앱에 직접 동봉한 잠실 오프라인 지도
+
+- 사용자에게 이미지 준비를 요구하던 방식 보완: 잠실역 주변 약 2.1×1.9km의 실제 도로·건물·공원·수역 3,049개 도형을 앱에 직접 동봉. 원자료는 고정 날짜 Geofabrik 대한민국 OSM 추출본이며 ODbL 출처/원본 해시/재생성 스크립트 제공.
+- 행정안전부 공식 Songpa 조회(2026-11-02) 중 범위 내 22개 시설을 별도 레이어로 표시. 핀·목록 선택, 이름/주소, 확대/전체 범위, 북쪽·200m 축척, 출처/조회 시점 제공. OSM 시설 태그를 공식 대피소로 사용하지 않음.
+- 네이티브 오프라인 허브, 범위 내 저장/시설 상세 카드, PWA 오프라인 홈에 연결. 사용자가 파일을 추가하지 않아도 열림. 기존 개인 사진은 보존.
+- 지도 공급자에 런타임 요청하지 않음. 공원 아래 호수가 가려지던 레이어 순서와 지도 글꼴의 외부 폴백 요청을 실제 테스트로 발견해 수정. 앱 내 한글 폰트 사용.
+- 검증: dart format, flutter analyze 문제 0, flutter test 181개, Python 68개 통과. 1.5배 글씨 세로/가로 위젯 검증, iPhone 17 Pro 통합 테스트·실제 화면 확인, Chromium/WebKit 인터넷 차단 후 재시작·지도 열기·확대·복귀 및 외부 요청 제한 검증 통과. PWA 오프라인 자원 40개/20.8MiB.
+- 제한: 전국 오프라인 지도가 아니며 현재 GPS 점·경로·출입구·실시간 개방 여부는 제공하지 않음. PWA는 온라인에서 사전 저장 필요. Android 출시 AAB 재생성/실기기 검증은 이번 변경에서 수행하지 않음.
+- 공개 PWA 배포: Worker 버전 `2d127ada-7719-4e0c-b87b-1dc4b0e77d3f`. iPhone 시뮬레이터는 테스트 전용 화면을 종료하고 정상 앱으로 복원. 저장소 보안 검사 matching_paths 없음.
+- 공개 배포 주소에서도 Chromium/WebKit 사전 저장 후 인터넷 차단·새로고침·지도 확대·행동요령 복귀 전체 시나리오 통과.

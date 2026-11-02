@@ -1,3 +1,5 @@
+import 'offline_map_screen.dart';
+
 import 'dart:async';
 import 'dart:convert';
 
@@ -354,6 +356,7 @@ class _PwaSheltersScreenState extends State<PwaSheltersScreen> {
                         ),
                         const SizedBox(height: 8),
                         Text(shelter.address),
+                        OfflineMapLink(shelter: shelter),
                         if (position != null) ...[
                           const SizedBox(height: 8),
                           Text(

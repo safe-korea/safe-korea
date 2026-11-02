@@ -337,3 +337,12 @@ UI UX Pro Max의 접근성·터치·반응형 체크리스트를 적용했습니
 - 경계/잘못된 위치/조회 실패는 수동 선택 및 이전 자료 안내로 복구. 현재 위치 새 결과가 없는데 성공 카드가 나오지 않음을 단위 검사.
 - 설치 실행은 저장 기록이 없거나 접근이 차단돼도 바로 앱 진입. 소개/설치 안내는 수동 메뉴로 접근 가능. 실제 홈 화면 설치 UI는 실기기 검증이 남음.
 - 자동화 WebKit 위치 시각 보정, 네트워크 실패 주입과 접근성 버튼 실행 범위는 PROGRESS.md에 명시. 시각 근거: `artifacts/nearby-pwa-{chromium,webkit}.png`, `artifacts/pwa-launch-*.png`.
+
+## 2026-11-02 — 동봉 지도 QA
+
+- 실제 Geofabrik OSM 지형 + 독립된 공식 시설 목록(잠실 범위 22곳), 임의 시설 없음.
+- 세로 390×844 / 가로 844×390, 글씨 1.5배: 선택 시설 주소·확대·전체 범위·출처 대화상자, overflow 없음.
+- iPhone 17 Pro: 기본/확대 스크린샷 직접 확인. 공원/호수 순서 수정 후 수역 표시 확인.
+- Chromium + WebKit: 사전 저장 → 인터넷 차단 → 새로고침 → 동봉 지도 열기 → 확대/전체 범위 → 행동요령 복귀 통과. 외부 지도/글꼴 요청 없음(설정된 health 검사만 허용).
+- 전체 검증: analyze 0, Flutter 181, Python 68. 증거: `artifacts/visual-qa/bundled-offline-map-{ios,chromium,webkit}.png`, `bundled-offline-map-zoom-ios.png`.
+- 시연: 오프라인 기능 모아보기 → 미리 준비된 오프라인 지도 → 20번 잠실역 시설 선택 → 확대. PWA는 잠실 주변 오프라인 지도 버튼. 범위 밖 시설까지 제공되는 것처럼 시연하지 않음.

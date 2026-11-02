@@ -1,3 +1,5 @@
+import 'offline_map_screen.dart';
+
 import 'dart:async';
 import 'dart:convert';
 
@@ -798,6 +800,7 @@ class _SheltersScreenState extends State<SheltersScreen> {
               ),
               const SizedBox(height: 12),
             ],
+            OfflineMapLink(shelter: shelter),
             ShelterStreetViewButton(shelter: shelter),
             ExpansionTile(
               expandedCrossAxisAlignment: CrossAxisAlignment.stretch,

@@ -7,6 +7,7 @@ import 'alert_guide_screen.dart';
 import 'saved_shelters_screen.dart';
 import 'family_screen.dart';
 import 'readiness_screen.dart';
+import 'offline_map_screen.dart';
 
 class OfflineHubScreen extends StatelessWidget {
   const OfflineHubScreen({super.key, this.monitor});
@@ -44,6 +45,12 @@ class OfflineHubScreen extends StatelessWidget {
               label: const Text('지금 할 행동 보기'),
             ),
             const SizedBox(height: 8),
+            ActionTile(
+              icon: Icons.map_outlined,
+              title: '미리 준비된 오프라인 지도',
+              subtitle: '잠실역 주변 · 도로와 대피소 위치',
+              onTap: () => _open(context, const OfflineMapScreen()),
+            ),
             ActionTile(
               icon: Icons.bookmark_outline,
               title: '저장한 대피소',

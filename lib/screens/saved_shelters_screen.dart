@@ -1,3 +1,5 @@
+import 'offline_map_screen.dart';
+
 import 'package:flutter/material.dart';
 
 import '../models/saved_shelter.dart';
@@ -220,6 +222,7 @@ class _SavedSheltersScreenState extends State<SavedSheltersScreen> {
             const SizedBox(height: 8),
           ],
           _identity(entry),
+          OfflineMapLink(shelter: entry.shelter),
           if (entry.entranceNote.isNotEmpty) ...[
             const SizedBox(height: 16),
             IconTextBlock(
@@ -384,6 +387,7 @@ class _SavedSheltersScreenState extends State<SavedSheltersScreen> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       _identity(entry),
+                      OfflineMapLink(shelter: entry.shelter),
                       const SizedBox(height: 12),
                       ShelterStreetViewButton(
                         shelter: entry.shelter,
