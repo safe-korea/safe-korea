@@ -416,7 +416,8 @@ test("strict civil-defense parsing excludes training, future context, releases a
   );
   assert.equal(koreanTimestamp("2026-02-30 21:30:00"), null);
   assert(regionMatches("11710", ["11"]));
-  assert(!regionMatches("11", ["11710"]));
+  assert(regionMatches("11", ["11710"]));
+  assert(!regionMatches("11", ["26110"]));
   assert(!regionMatches("26110", ["11"]));
 });
 test("official adapter is gated, fresh, exact-region and independent from numeric disaster ID guesses", async () => {
@@ -820,4 +821,48 @@ test("signed collector needs no browser Origin, keeps dispatch gated, rejects re
     ).status,
     403,
   );
+});
+
+test("province registration dispatches district notice inside selected city, never to another city (synthetic only)", async () => {
+  const now = Date.now();
+  const row = {
+    SN: 542,
+    CRT_DT: new Date(now + 9 * 3600000)
+      .toISOString()
+      .slice(0, 19)
+      .replace("T", " "),
+    MDFCN_YMD: "synthetic",
+    MSG_CN: "공습경보를 발령합니다.",
+    RCPTN_RGN_ID: "internal",
+    RCPTN_RGN_NM: "서울특별시 송파구",
+    DST_SE_NM: "민방공",
+    EMRG_STEP_NM: "위급재난",
+  };
+  for (const [region, expected] of [
+    ["11", 1],
+    ["28", 0],
+  ]) {
+    const f = await fixture();
+    f.body.region = region;
+    await pushRoute(req("subscribe", f.body), f.env, { now: () => now });
+    Object.assign(f.env, {
+      GOV_ALERT_TRANSPORT: "collector",
+      COLLECTOR_HMAC_KEY: collectorSecret,
+      GOV_ALERT_SEMANTICS_VERIFIED: "true",
+    });
+    let sent = 0;
+    const response = await pushRoute(
+      await collectorRequest(collectorValue(now, [row])),
+      f.env,
+      {
+        now: () => now,
+        upstream: async () => {
+          sent++;
+          return new Response(null, { status: 201 });
+        },
+      },
+    );
+    assert.equal(response.status, 200);
+    assert.equal(sent, expected, region);
+  }
 });

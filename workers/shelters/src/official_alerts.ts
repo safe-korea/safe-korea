@@ -27,14 +27,15 @@ export function regionMatches(selected: string, targets: string[]): boolean {
     (code) =>
       code === "nationwide" ||
       code === selected ||
-      (code.length === 2 && selected.startsWith(code)),
+      (code.length === 2 && selected.startsWith(code)) ||
+      (selected.length === 2 && code.startsWith(selected)),
   );
 }
 export function civilKind(body: string): CivilKind | null {
   const t = body.normalize("NFKC").replace(/\s+/g, "").toLowerCase();
   if (
     t.length > 8000 ||
-    /훈련|연습|모의|테스트|drill|exercise|test|예정|예고|예시|가정|오발령|잘못발령|정정|취소|해제|종료|발령시|발령할경우|발령될경우|발령된경우|발령하지|발령되지|발령된것이아니|화재|산불|태풍|지진|호우|홍수|폭염|누출|유출|사고/.test(
+    /훈련|연습|모의|테스트|drill|exercise|test|예정|예고|예시|가정|오발령|잘못발령|정정|취소|해제|종료|아닙니다|아님|사실이아니|표준문안|발령시|발령할경우|발령될경우|발령된경우|발령하지|발령되지|발령된것이아니|화재|산불|태풍|지진|호우|홍수|폭염|누출|유출|사고/.test(
       t,
     )
   )
@@ -142,7 +143,7 @@ export async function fetchOfficial(
   now: number,
   upstream: typeof fetch = fetch,
 ): Promise<SourceResult> {
-  const date = new Date(now + 9 * 3600000)
+  const date = new Date(now - 120000 + 9 * 3600000)
     .toISOString()
     .slice(0, 10)
     .replaceAll("-", "");

@@ -18,6 +18,13 @@ ENDPOINT = 'https://www.safetydata.go.kr/V2/api/DSSP-IF-00247'
 WORKER = 'https://safe-korea-shelter-api.trovapp.workers.dev'
 FIELDS = {'SN', 'CRT_DT', 'MSG_CN', 'RCPTN_RGN_NM', 'EMRG_STEP_NM', 'DST_SE_NM',
           'REG_YMD', 'MDFCN_YMD', 'RCPTN_RGN_ID', 'EMRG_STEP_ID', 'DST_SE_ID'}
+FRESHNESS_MS = 120000
+
+
+def query_start_date(now_ms):
+    # The first polls after KST midnight must still include fresh prior-day rows.
+    return datetime.fromtimestamp((now_ms - FRESHNESS_MS) / 1000, timezone.utc).astimezone(
+        timezone(timedelta(hours=9))).strftime('%Y%m%d')
 
 class NoRedirect(urllib.request.HTTPRedirectHandler):
     def redirect_request(self, *args):
@@ -78,6 +85,7 @@ def snapshot(raw, now_ms):
                 break
         return out
     complete = (len(rows) <= 100 and len(totals) == 1 and totals[0] == len(rows)
+                and len({str(r['SN']) for r in rows}) == len(rows)
                 and all(FIELDS <= r.keys() and all(isinstance(r[f], (str, int))
                     and not isinstance(r[f], bool) and str(r[f]).strip() for f in FIELDS) for r in rows))
     out.update(state='source_observed' if complete else 'source_incomplete',
@@ -138,7 +146,7 @@ def run(config_path, reset=False, opener=None):
     connection.execute('DELETE FROM budget WHERE day<?', ((datetime.fromtimestamp(now / 1000, timezone.utc) - timedelta(days=7)).date().isoformat(),))
     connection.commit()
     client = opener or urllib.request.build_opener(urllib.request.ProxyHandler({}), NoRedirect())
-    date = datetime.fromtimestamp(now / 1000, timezone.utc).astimezone(timezone(timedelta(hours=9))).strftime('%Y%m%d')
+    date = query_start_date(now)
     url = ENDPOINT + '?' + urllib.parse.urlencode({'serviceKey': key.strip(), 'returnType': 'json', 'pageNo': 1, 'numOfRows': 100, 'crtDt': date})
     result = {'protocolVersion': 1, 'collectedAt': now, 'sourceReadAt': now,
               'state': 'source_network_error', 'complete': False, 'recordCount': 0, 'totalCount': 0, 'rows': []}
@@ -149,6 +157,10 @@ def run(config_path, reset=False, opener=None):
         result = snapshot(bounded_read(error), int(time.time() * 1000))
         if 300 <= error.code < 400:
             result['state'] = 'source_redirect_rejected'
+        elif result['state'] not in ('source_ip_denied', 'source_auth_error', 'source_quota'):
+            result['state'] = 'source_http_error'
+        result['complete'] = False
+        result['rows'] = []
     except (OSError, ValueError):
         pass
     if result['state'] in ('source_ip_denied', 'source_auth_error', 'source_quota'):
