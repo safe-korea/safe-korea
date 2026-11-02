@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 from review_alert_delivery import summarize_delivery_review
 from review_alert_scope import summarize_scope
 import json
+import re
 from pathlib import Path
 import ssl
 import urllib.error
@@ -85,7 +86,18 @@ def summarize(raw, started_at=None, state_db=None):
                 rows, started_at or datetime.now(timezone.utc)) if complete else None}
 
 
-def probe(config_path, sample_size=3, state_db=None):
+def probe(config_path, sample_size=3, state_db=None, since=None, region=None):
+    # Documented crtDt is a start date, never an exact-day or freshness guarantee.
+    if since is not None:
+        if not isinstance(since, str) or not re.fullmatch(r'[0-9]{8}', since):
+            return {'status': 'invalid_start_date'}
+        try:
+            datetime.strptime(since, '%Y%m%d')
+        except ValueError:
+            return {'status': 'invalid_start_date'}
+    if region is not None and (not isinstance(region, str) or not region.strip()
+                               or len(region) > 80 or any(ord(c) < 32 for c in region)):
+        return {'status': 'invalid_region_filter'}
     if isinstance(sample_size, bool) or not isinstance(sample_size, int) or not 1 <= sample_size <= 100:
         return {'status': 'invalid_sample_size'}
     started_at = datetime.now(timezone.utc)
@@ -101,8 +113,12 @@ def probe(config_path, sample_size=3, state_db=None):
             return {'status': 'missing_local_key'}
     except (OSError, ValueError, KeyError):
         return {'status': 'missing_or_invalid_local_config'}
-    query = urllib.parse.urlencode({'serviceKey': key, 'numOfRows': sample_size,
-                                   'pageNo': 1, 'returnType': 'json'})
+    params = {'serviceKey': key, 'numOfRows': sample_size, 'pageNo': 1, 'returnType': 'json'}
+    if since is not None:
+        params['crtDt'] = since
+    if region is not None:
+        params['rgnNm'] = region.strip()
+    query = urllib.parse.urlencode(params)
     # Explicitly avoid environment proxies: only the official HTTPS host gets the key.
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), NoRedirect(),
                                         urllib.request.HTTPSHandler(context=ssl.create_default_context()))
@@ -122,8 +138,10 @@ def main():
     parser.add_argument('--sample-size', type=int, default=3, choices=range(1, 101),
                         metavar='1..100', help='One bounded request; no automatic pagination')
     parser.add_argument('--state-db', help='Optional private SQLite ledger; stores hashes only')
+    parser.add_argument('--since', metavar='YYYYMMDD', help='Start date, not an exact-day filter')
+    parser.add_argument('--region', help='Explicit public region query; never taken from GPS')
     args = parser.parse_args()
-    result = probe(args.config, args.sample_size, args.state_db)
+    result = probe(args.config, args.sample_size, args.state_db, args.since, args.region)
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0 if result['status'] == 'records_observed' else 1
 

@@ -1,4 +1,5 @@
 import json
+from contextlib import closing
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 import sqlite3
@@ -21,7 +22,7 @@ class PersistentReviewTests(unittest.TestCase):
         self.assertEqual(record_batch(self.path, [self.row])['record_counts'], {'duplicate': 1})
         changed = dict(self.row, MSG_CN='synthetic correction')
         self.assertEqual(record_batch(self.path, [changed, self.row])['record_counts'], {'duplicate': 1, 'revision_review': 1})
-        with sqlite3.connect(self.path) as db:
+        with closing(sqlite3.connect(self.path)) as db, db:
             self.assertEqual(db.execute('SELECT count(*) FROM reviewed_versions').fetchone()[0], 2)
         raw = self.path.read_bytes()
         for value in self.row.values():
@@ -35,13 +36,13 @@ class PersistentReviewTests(unittest.TestCase):
         self.assertEqual(record_batch(self.path, [dict(self.row, SN='new')])['record_counts'], {'first_seen_review': 1})
 
     def test_foreign_database_and_future_version_are_preserved(self):
-        with sqlite3.connect(self.path) as db:
+        with closing(sqlite3.connect(self.path)) as db, db:
             db.execute('CREATE TABLE user_data (value TEXT)')
             db.execute("INSERT INTO user_data VALUES ('keep')")
         self.path.chmod(0o600)
         with self.assertRaises(ReviewStoreError):
             record_batch(self.path, [self.row])
-        with sqlite3.connect(self.path) as db:
+        with closing(sqlite3.connect(self.path)) as db, db:
             self.assertEqual(db.execute('SELECT value FROM user_data').fetchone()[0], 'keep')
             db.execute('PRAGMA user_version=99')
         with self.assertRaises(ReviewStoreError):
