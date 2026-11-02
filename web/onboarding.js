@@ -26,7 +26,7 @@
       eyebrow: '필요할 때 검색부터 하지 않도록',
       title: '연결이 끊겨도,<br>준비한 안내는 <em>곁에.</em>',
       description: '미리 저장한 행동요령은 인터넷 없이도.\n홈 화면에 두고 필요할 때 바로 꺼내 보세요.',
-      benefit: '사전 저장 후 오프라인 이용 · 지도 제외',
+      benefit: '사전 저장 후 오프라인 행동요령 확인',
       image: 'previews/guidance-list.png',
       alt: 'iPhone 17 Pro의 행동요령 목록 화면: 공습·경계·화생방 등 상황별 안내를 선택합니다.',
       caption: 'iPhone 17 Pro · 상황별 행동요령',
@@ -109,7 +109,7 @@
       let result = await workerCheck(ready.active);
       if (!result.ready) result = await workerCheck(ready.active, 'REPAIR_OFFLINE');
       if (!result.ready) throw Error('incomplete');
-      status(registration.waiting ? '기존 안내는 저장되어 있어요. 새 버전 적용은 이 앱의 모든 창을 닫은 뒤 다시 열어 주세요.' : '오프라인 안내 저장 완료 · 지도는 인터넷이 필요해요.', 'ready');
+      status(registration.waiting ? '기존 안내는 저장되어 있어요. 새 버전 적용은 이 앱의 모든 창을 닫은 뒤 다시 열어 주세요.' : '오프라인 안내 저장 완료', 'ready');
       $('prepare').textContent = '저장 상태 다시 확인';
     } catch (_) {
       if (cachedReady) {

@@ -47,7 +47,7 @@ class OfflineHubScreen extends StatelessWidget {
             ActionTile(
               icon: Icons.bookmark_outline,
               title: '저장한 대피소',
-              subtitle: '주소 · 저장한 약도·사진 · 출입구 메모',
+              subtitle: '저장한 주변 지도 · 주소 · 출입구 메모',
               onTap: () => _open(context, const SavedSheltersScreen()),
             ),
             ActionTile(
@@ -71,7 +71,7 @@ class OfflineHubScreen extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             const Text(
-              '대피소를 저장하고 사진·약도·메모를 추가해 두세요. 저장하지 않은 자료는 오프라인에서 볼 수 없어요.',
+              '대피소를 저장하면 그 주변 지도도 함께 저장해요. 저장하지 않은 자료는 오프라인에서 볼 수 없어요.',
             ),
             if (status == LinkStatus.limited)
               const Text('네트워크는 감지됐지만 서버 응답을 확인하지 못했어요. 인터넷 또는 서버 문제일 수 있어요.'),

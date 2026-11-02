@@ -1,0 +1,13 @@
+{
+  "displayName": "safeKor",
+  "packageName": "kr.safekor.app",
+  "defaultLanguage": "ko-KR",
+  "appType": "APPLICATION",
+  "pricing": "FREE",
+  "containsAds": false,
+  "requiresLogin": false,
+  "contactEmail": "taetaeg@gmail.com",
+  "privacyPolicy": "https://safe-korea-shelter-api.trovapp.workers.dev/privacy",
+  "supportUrl": "https://safe-korea-shelter-api.trovapp.workers.dev/support",
+  "consoleSubmissionStatus": "app_created_user_reported; listing_and_policy_submission_not_verified"
+}

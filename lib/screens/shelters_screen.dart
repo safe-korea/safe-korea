@@ -826,7 +826,11 @@ class _SheltersScreenState extends State<SheltersScreen> {
                       : Icons.bookmark_add_outlined,
                 ),
                 label: Text(
-                  _saved.contains(source, shelter.id) ? '대피소 저장 해제' : '대피소 저장',
+                  _saved.busy
+                      ? '대피소·지도 저장 중…'
+                      : (_saved.contains(source, shelter.id)
+                            ? '대피소 저장 해제'
+                            : '대피소 저장'),
                 ),
               ),
             if (source != null &&
@@ -871,7 +875,9 @@ class _SheltersScreenState extends State<SheltersScreen> {
       SnackBar(
         content: Text(
           result
-              ? (wasSaved ? '저장한 대피소에서 해제했습니다.' : '이 기기에 대피소를 저장했습니다.')
+              ? (wasSaved
+                    ? '저장한 대피소에서 해제했습니다.'
+                    : (_saved.mapMessage ?? '이 기기에 대피소를 저장했습니다.'))
               : '대피소 저장 변경에 실패했습니다. 다시 시도해 주세요.',
         ),
       ),

@@ -195,7 +195,9 @@ class _PwaGuidanceHomeState extends State<PwaGuidanceHome> {
                 ),
               ),
             const SizedBox(height: 16),
-            const Notice('앱 안의 지도·GPS·가족 저장은 준비 중입니다.'),
+            const Notice(
+              '웹에서는 지도 연결에 인터넷이 필요해요. 대피소·주변 지도 저장과 가족 저장은 Android 앱에서 이용하세요.',
+            ),
             OutlinedButton.icon(
               onPressed: () => openExternal(
                 context,

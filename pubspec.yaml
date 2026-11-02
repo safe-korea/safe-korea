@@ -83,6 +83,7 @@ flutter:
     - assets/fonts/OFL.txt
     - assets/guidelines.json
     - assets/shelters.json
+    - assets/offline_maps/
     - assets/regions.json
     - assets/region_boundaries.json
     - assets/REGION_BOUNDARIES.md
