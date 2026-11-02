@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 
 import 'home_screen.dart';
+import 'offline_hub_screen.dart';
+import '../services/connection_monitor.dart';
 import 'shelters_screen.dart';
 import 'guidelines_screen.dart';
 import 'readiness_screen.dart';
 
 class AppShell extends StatefulWidget {
-  const AppShell({super.key});
+  const AppShell({super.key, this.monitor});
+  final ConnectionMonitor? monitor;
   @override
   State<AppShell> createState() => _AppShellState();
 }
@@ -43,9 +46,18 @@ class _AppShellState extends State<AppShell> {
       if (!didPop) _select(0);
     },
     child: Scaffold(
-      body: IndexedStack(
-        index: _selected,
-        children: [for (final page in _pages) page ?? const SizedBox()],
+      body: ValueListenableBuilder<LinkStatus>(
+        valueListenable: widget.monitor ?? ConnectionMonitor.instance,
+        builder: (context, status, _) => IndexedStack(
+          index: _selected,
+          children: [
+            if (status.needsOfflineTools)
+              OfflineHubScreen(monitor: widget.monitor)
+            else
+              _pages[0]!,
+            for (final page in _pages.skip(1)) page ?? const SizedBox(),
+          ],
+        ),
       ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selected,

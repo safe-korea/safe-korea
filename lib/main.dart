@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'screens/app_shell.dart';
+import 'screens/offline_hub_screen.dart';
+import 'services/connection_monitor.dart';
 import 'screens/drill_screen.dart';
 import 'services/drill_notifications.dart';
 import 'theme/app_theme.dart';
@@ -12,6 +14,7 @@ bool _notificationDrillOpen = false;
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const SafeKoreaApp());
+  ConnectionMonitor.instance.start();
   WidgetsBinding.instance.addPostFrameCallback((_) {
     DrillNotifications.instance.attach(() async {
       final navigator = _navigatorKey.currentState;
@@ -32,7 +35,8 @@ void main() {
 }
 
 class SafeKoreaApp extends StatelessWidget {
-  const SafeKoreaApp({super.key});
+  const SafeKoreaApp({super.key, this.monitor});
+  final ConnectionMonitor? monitor;
   @override
   Widget build(BuildContext context) => MaterialApp(
     navigatorKey: _navigatorKey,
@@ -42,6 +46,41 @@ class SafeKoreaApp extends StatelessWidget {
     supportedLocales: const [Locale('ko')],
     localizationsDelegates: GlobalMaterialLocalizations.delegates,
     theme: buildAppTheme(),
-    home: const AppShell(),
+    builder: (context, child) => ValueListenableBuilder<LinkStatus>(
+      valueListenable: monitor ?? ConnectionMonitor.instance,
+      builder: (context, status, _) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (status.needsOfflineTools)
+            Material(
+              color: AppPalette.cautionBackground,
+              child: SafeArea(
+                bottom: false,
+                child: TextButton.icon(
+                  onPressed: () => _navigatorKey.currentState?.push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => OfflineHubScreen(monitor: monitor),
+                    ),
+                  ),
+                  icon: const Icon(Icons.wifi_off),
+                  label: Text(
+                    status == LinkStatus.offline
+                        ? '연결 없음 · 오프라인 기능 보기'
+                        : '연결 확인 필요 · 오프라인 기능 보기',
+                  ),
+                ),
+              ),
+            ),
+          Expanded(
+            child: MediaQuery.removePadding(
+              context: context,
+              removeTop: status.needsOfflineTools,
+              child: child!,
+            ),
+          ),
+        ],
+      ),
+    ),
+    home: AppShell(monitor: monitor),
   );
 }

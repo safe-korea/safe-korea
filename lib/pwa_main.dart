@@ -8,12 +8,15 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'models/alert_guidance.dart';
+import 'services/connection_monitor.dart';
 import 'screens/pwa_shelters_screen.dart';
 import 'theme/app_theme.dart';
 import 'widgets/action_brief.dart';
 import 'widgets/common.dart';
 import 'widgets/public_support_links.dart';
 import 'widgets/guideline_step.dart';
+
+final _pwaNavigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,6 +29,7 @@ Future<void> main() async {
     ..addFont(rootBundle.load('assets/fonts/NanumGothic-Regular.ttf'));
   await fonts.load();
   runApp(const SafeKoreaPwa());
+  ConnectionMonitor.instance.start();
 }
 
 /// A separate entry point keeps unfinished native plugins out of the web app.
@@ -35,6 +39,7 @@ class SafeKoreaPwa extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = buildAppTheme(fontFamily: 'SafeKoreaWeb');
     return MaterialApp(
+      navigatorKey: _pwaNavigatorKey,
       title: 'SAFE KOREA',
       debugShowCheckedModeBanner: false,
       locale: const Locale('ko'),
@@ -51,6 +56,35 @@ class SafeKoreaPwa extends StatelessWidget {
           ),
         ),
       ),
+      builder: (context, child) => ValueListenableBuilder<LinkStatus>(
+        valueListenable: ConnectionMonitor.instance,
+        builder: (context, status, _) => Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (status.needsOfflineTools)
+              Material(
+                color: AppPalette.cautionBackground,
+                child: SafeArea(
+                  bottom: false,
+                  child: TextButton.icon(
+                    onPressed: () => _pwaNavigatorKey.currentState?.popUntil(
+                      (route) => route.isFirst,
+                    ),
+                    icon: const Icon(Icons.wifi_off),
+                    label: const Text('연결 확인 필요 · 저장된 행동요령 보기'),
+                  ),
+                ),
+              ),
+            Expanded(
+              child: MediaQuery.removePadding(
+                context: context,
+                removeTop: status.needsOfflineTools,
+                child: child!,
+              ),
+            ),
+          ],
+        ),
+      ),
       home: const PwaGuidanceHome(),
     );
   }
@@ -63,13 +97,35 @@ class PwaGuidanceHome extends StatefulWidget {
 }
 
 class _PwaGuidanceHomeState extends State<PwaGuidanceHome> {
+  @override
+  void initState() {
+    super.initState();
+    ConnectionMonitor.instance.addListener(_connectionChanged);
+  }
+
+  void _connectionChanged() {
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void dispose() {
+    ConnectionMonitor.instance.removeListener(_connectionChanged);
+    super.dispose();
+  }
+
   late Future<Map<String, dynamic>> _data = _load();
   Future<Map<String, dynamic>> _load() async =>
       jsonDecode(await rootBundle.loadString('assets/guidelines.json'))
           as Map<String, dynamic>;
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('상황별 행동요령')),
+    appBar: AppBar(
+      title: Text(
+        ConnectionMonitor.instance.value.needsOfflineTools
+            ? '오프라인 행동요령'
+            : '상황별 행동요령',
+      ),
+    ),
     body: FutureBuilder<Map<String, dynamic>>(
       future: _data,
       builder: (context, snapshot) {
@@ -99,6 +155,15 @@ class _PwaGuidanceHomeState extends State<PwaGuidanceHome> {
             ),
             const SizedBox(height: 12),
             const Notice('비공식 준비용 안내 · 실제 경보 수신 없음'),
+            if (ConnectionMonitor.instance.value.needsOfflineTools) ...[
+              const Notice(
+                '연결을 확인할 수 없어요. 저장된 행동요령을 먼저 확인하세요. 지도·새 시설 조회에는 인터넷이 필요해요.',
+              ),
+              OutlinedButton(
+                onPressed: ConnectionMonitor.instance.refresh,
+                child: const Text('연결 다시 확인'),
+              ),
+            ],
             for (final item
                 in (data['items'] as List).cast<Map<String, dynamic>>())
               Padding(
@@ -117,17 +182,18 @@ class _PwaGuidanceHomeState extends State<PwaGuidanceHome> {
                   ),
                 ),
               ),
-            ActionTile(
-              icon: Icons.location_city_outlined,
-              title: '지역별 대피소 찾기',
-              subtitle: '시·군·구 선택 · 인터넷 필요',
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute<void>(
-                  builder: (_) => const PwaSheltersScreen(),
+            if (!ConnectionMonitor.instance.value.needsOfflineTools)
+              ActionTile(
+                icon: Icons.location_city_outlined,
+                title: '지역별 대피소 찾기',
+                subtitle: '시·군·구 선택 · 인터넷 필요',
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (_) => const PwaSheltersScreen(),
+                  ),
                 ),
               ),
-            ),
             const SizedBox(height: 16),
             const Notice('앱 안의 지도·GPS·가족 저장은 준비 중입니다.'),
             OutlinedButton.icon(

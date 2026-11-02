@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../models/shelter.dart';
+import 'connection_monitor.dart' show ConnectionMonitor;
 
 const shelterApiBaseUrl = String.fromEnvironment('SHELTER_API_BASE_URL');
 
@@ -55,6 +56,7 @@ class ShelterApiClient {
           .get(endpoint)
           .timeout(const Duration(seconds: 15));
     } catch (_) {
+      ConnectionMonitor.instance.reportServiceFailure();
       throw const ShelterApiException('데이터 서버에 연결하지 못했습니다. 인터넷 연결을 확인해 주세요.');
     }
     if (response.statusCode == 429) {

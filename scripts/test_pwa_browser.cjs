@@ -72,6 +72,8 @@ const origin = process.env.PWA_TEST_URL || 'http://127.0.0.1:8765';
       await page.reload();
       await page.waitForFunction(() => window.safeFlutterReady === true, {timeout:60000});
       await page.locator('flt-semantics-placeholder').evaluate(element => element.click());
+      await page.getByText('오프라인 행동요령', {exact:true}).waitFor();
+      assert.equal(await page.getByText('지역별 대피소 찾기', {exact:true}).count(), 0);
       await page.getByText('공습경보 가까운 대피시설로 이동하세요', {exact:true}).click();
       await page.getByRole('checkbox', {name:'실내',exact:true}).click();
       await page.getByText('계단으로 이동', {exact:true}).waitFor();
@@ -88,7 +90,7 @@ const origin = process.env.PWA_TEST_URL || 'http://127.0.0.1:8765';
       await page.locator('#prepare').click();
       await page.waitForFunction(() => !document.getElementById('prepare').disabled);
       assert.equal(await page.locator('#cache-status').getAttribute('data-state'),'ready');
-      assert.deepEqual(external,[], 'No remote font/CDN dependency in the core flow');
+      assert(external.every(url => url === 'https://safe-korea-shelter-api.trovapp.workers.dev/health'), 'Only the configured service health check may leave the local origin: ' + JSON.stringify(external));
       assert.deepEqual(errors,[], 'Browser runtime errors');
       await context.close();
       // Failed storage must remain retryable; skipping must not depend on permissions.
@@ -137,7 +139,7 @@ const origin = process.env.PWA_TEST_URL || 'http://127.0.0.1:8765';
       assert.equal(await installedPage.locator('#install-help').isVisible(),false);
       assert.equal(await installedPage.locator('#install-summary').innerText(),'홈 화면 앱으로 열었어요.');
       await installed.close();
-      console.log(`${name}: 3-slide product tour, screenshot zoom, back/skip, mobile/desktop/landscape, install help, cache verification, offline reload/detail, cache repair, no external requests, storage failure, skip, standalone detection, responsive layout PASS`);
+      console.log(`${name}: 3-slide product tour, screenshot zoom, back/skip, mobile/desktop/landscape, install help, cache verification, offline reload/detail, cache repair, health-only external requests, storage failure, skip, standalone detection, responsive layout PASS`);
     } finally { await browser.close(); }
   }
 })().catch(error => {console.error(error);process.exitCode=1;});

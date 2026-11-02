@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../widgets/common.dart';
 import 'alert_guide_screen.dart';
+import 'offline_hub_screen.dart';
 import 'drill_screen.dart';
 import 'notification_test_screen.dart';
 import 'guidelines_screen.dart';
@@ -124,6 +125,12 @@ class HomeScreen extends StatelessWidget {
           title: '상황별 행동강령',
           subtitle: '전체 안내 · 인터넷 없이 확인',
           onTap: onGuidelines ?? () => _open(context, const GuidelinesScreen()),
+        ),
+        ActionTile(
+          icon: Icons.wifi_off,
+          title: '오프라인 기능 모아보기',
+          subtitle: '통신이 끊겨도 쓸 수 있는 기능',
+          onTap: () => _open(context, const OfflineHubScreen()),
         ),
         ActionTile(
           icon: Icons.notifications_outlined,

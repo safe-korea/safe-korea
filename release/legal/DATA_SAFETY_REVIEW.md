@@ -50,3 +50,5 @@ Google은 기기 밖으로 전송하는 SDK 처리도 개발자가 신고하도�
 - https://osmfoundation.org/wiki/Privacy_Policy — 타일 서비스의 IP·기기·요청 정보
 
 공개 정책 원본: workers/shelters/public/privacy.html. 문의 원본: workers/shelters/public/support.html.
+
+2026-11-02 연결 감지 추가: connectivity_plus는 OS 네트워크 유무만 읽고, 앱 실행/복귀·연결 변화·수동 재확인에서 설정된 기존 Cloudflare API의 `/health`를 호출합니다. 지역 코드·GPS·가족 데이터·사용자 ID를 포함하지 않으나 요청 IP는 서버가 처리합니다. 온라인 요청이 시설 검색 버튼에서만 발생한다고 분류하지 마세요. 고정 주기 백그라운드 폴링은 없습니다.
