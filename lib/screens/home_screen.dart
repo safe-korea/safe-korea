@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
 import '../theme/app_theme.dart';
 import '../widgets/common.dart';
 import 'alert_guide_screen.dart';
+import 'system_civil_alert_settings_screen.dart';
 import 'offline_hub_screen.dart';
 import 'drill_screen.dart';
 import 'notification_test_screen.dart';
@@ -132,12 +134,20 @@ class HomeScreen extends StatelessWidget {
           subtitle: '통신이 끊겨도 쓸 수 있는 기능',
           onTap: () => _open(context, const OfflineHubScreen()),
         ),
-        ActionTile(
-          icon: Icons.notifications_outlined,
-          title: '테스트 알림 설정',
-          subtitle: '훈련용 사이렌 · 진동 · 권한',
-          onTap: () => _open(context, const NotificationTestScreen()),
-        ),
+        if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android)
+          ActionTile(
+            icon: Icons.notifications_active_outlined,
+            title: '휴대전화 경보 연결',
+            subtitle: '시스템 민방공 알림 · 직접 동의 필요',
+            onTap: () => _open(context, const SystemCivilAlertSettingsScreen()),
+          ),
+        if (!kIsWeb)
+          ActionTile(
+            icon: Icons.notifications_outlined,
+            title: '테스트 알림 설정',
+            subtitle: '훈련용 사이렌 · 진동 · 권한',
+            onTap: () => _open(context, const NotificationTestScreen()),
+          ),
         const SizedBox(height: 16),
         const Text(
           '실제 상황에서는 재난문자·정부 방송과 현장 안내를 우선하세요.',

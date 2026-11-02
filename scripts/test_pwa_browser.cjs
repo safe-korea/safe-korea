@@ -52,11 +52,11 @@ const origin = process.env.PWA_TEST_URL || 'http://127.0.0.1:8765';
       await page.locator('#start').click();
       await page.waitForFunction(() => window.safeFlutterReady === true, {timeout:60000});
       await page.locator('flt-semantics-placeholder').evaluate(element => element.click());
-      await page.getByText('어떤 안내가 필요한가요?',{exact:true}).waitFor();
+      await page.getByText('지금 필요한 안내',{exact:true}).waitFor();
       await page.waitForTimeout(350);
       await page.screenshot({path:`artifacts/pwa-${name}-guidance.png`});
       await page.locator('#reopen').click();
-      assert(await page.locator('#onboarding').isVisible());
+      assert(await page.locator('#setup').isVisible());
       // Simulate browser eviction of one resource and verify a retry repairs it.
       await page.evaluate(async () => {
         const name = (await caches.keys()).find(n => n.startsWith('safe-korea-pwa-'));
@@ -74,9 +74,10 @@ const origin = process.env.PWA_TEST_URL || 'http://127.0.0.1:8765';
       await page.reload();
       await page.waitForFunction(() => window.safeFlutterReady === true, {timeout:60000});
       await page.locator('flt-semantics-placeholder').evaluate(element => element.click());
-      await page.getByText('오프라인 행동요령', {exact:true}).waitFor();
-      assert.equal(await page.getByText('지역별 대피소 찾기', {exact:true}).count(), 0);
-      await page.getByText('공습경보 가까운 대피시설로 이동하세요', {exact:true}).click();
+      await page.getByText('오프라인 기능', {exact:true}).waitFor();
+      await page.getByRole('button',{name:'지금 할 행동 보기',exact:true}).click();
+      await page.getByRole('button',{name:/받은 경보를 선택하세요/}).click();
+      await page.getByRole('menuitem',{name:'공습경보',exact:true}).click();
       await page.getByRole('checkbox', {name:'실내',exact:true}).click();
       await page.getByText('계단으로 이동', {exact:true}).waitFor();
       assert.equal(await page.getByRole('checkbox',{name:'실내',exact:true}).isChecked(),true);
@@ -84,7 +85,7 @@ const origin = process.env.PWA_TEST_URL || 'http://127.0.0.1:8765';
       await page.waitForTimeout(350); // Capture after the selection transition.
       await page.screenshot({path:`artifacts/pwa-${name}-offline-detail.png`});
       await page.getByRole('button', {name:'뒤로'}).click();
-      await page.getByText('어떤 안내가 필요한가요?',{exact:true}).waitFor();
+      await page.getByText('오프라인 기능',{exact:true}).waitFor();
       await page.waitForTimeout(350);
       await page.screenshot({path:`artifacts/pwa-${name}-offline.png`});
       assert.equal(await page.locator('#boot-error').isVisible(),false);
@@ -130,7 +131,7 @@ const origin = process.env.PWA_TEST_URL || 'http://127.0.0.1:8765';
         await tour.waitForFunction(() => window.safeFlutterReady === true);
         await tour.locator('#reopen').click();
         await tour.locator('#tour-return').click();
-        assert(await tour.locator('#product-tour').isVisible());
+        assert(await tour.locator('#app-shell').isVisible());
         await preview.close();
       }
       const installed = await browser.newContext();

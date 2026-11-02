@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:safe_korea/pwa_main.dart';
+import 'package:safe_korea/models/alert_guidance.dart';
 
 void main() {
   testWidgets('web guidance opens contextual advice without native plugins', (
@@ -8,15 +9,17 @@ void main() {
   ) async {
     await tester.pumpWidget(const SafeKoreaPwa());
     await tester.pumpAndSettle();
-    expect(find.text('경보를 들었다면, 상황에 맞는 행동을 확인하세요.'), findsOneWidget);
-    final externalButton = tester.element(find.text('정부 대피시설 찾기 · 인터넷 필요'));
-    expect(
-      DefaultTextStyle.of(externalButton).style.fontFamily,
-      'SafeKoreaWeb',
-    );
-    await tester.tap(find.text('공습경보'));
+    expect(find.text('지금 필요한 안내'), findsOneWidget);
+    expect(find.text('저장한 대피소'), findsOneWidget);
+    expect(find.text('가족 만남 장소'), findsOneWidget);
+    final action = tester.element(find.text('지금 할 행동 보기'));
+    expect(DefaultTextStyle.of(action).style.fontFamily, 'SafeKoreaWeb');
+    await tester.tap(find.text('지금 할 행동 보기'));
     await tester.pumpAndSettle();
-    expect(find.text('행동요령 확인 · 실제 경보가 아닙니다'), findsOneWidget);
+    await tester.tap(find.byType(DropdownButtonFormField<AlertKind>));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('공습경보').last);
+    await tester.pumpAndSettle();
     await tester.tap(find.text('실내'));
     await tester.pumpAndSettle();
     expect(find.text('계단으로 이동'), findsOneWidget);

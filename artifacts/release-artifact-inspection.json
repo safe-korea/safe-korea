@@ -149,7 +149,7 @@
       "compatible_16kb": true
     }
   ],
-  "aab_bytes": 75608970,
+  "aab_bytes": 77030208,
   "ios": {
     "CFBundleIdentifier": "kr.example.safeKorea",
     "MinimumOSVersion": "15.0",

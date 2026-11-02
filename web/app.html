@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <base href="$FLUTTER_BASE_HREF">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#086B50">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="../manifest.json">
+  <link rel="apple-touch-icon" href="../icons/icon-192.png">
+  <link rel="icon" href="../icons/icon-192.png" type="image/png">
+  <link rel="stylesheet" href="onboarding.css">
+  <title>safeKor</title>
+</head>
+<body>
+  <div id="app-shell"><nav aria-label="앱 도움말"><span>safeKor</span><button id="reopen">설치·오프라인</button></nav><div id="flutter-host"></div></div>
+  <p id="boot-error" role="alert" hidden>앱을 불러오지 못했어요. 연결을 확인하고 다시 시도해 주세요. <button id="retry">다시 시도</button></p>
+  <!--APP_SETTINGS-->
+  <noscript>앱을 사용하려면 JavaScript가 필요합니다.</noscript>
+  <script src="app_entry.js" defer></script>
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+</html>

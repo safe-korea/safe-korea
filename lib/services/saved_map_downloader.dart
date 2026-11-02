@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:http/http.dart' as http;
 
 import '../models/shelter.dart';
@@ -27,7 +29,11 @@ class SavedMapDownloader {
           y++
         ) {
           final response = await client
-              .get(Uri.parse('$baseUrl/offline-packs/$x-$y.json'))
+              .get(
+                kIsWeb
+                    ? Uri.base.resolve('../offline-packs/$x-$y.json')
+                    : Uri.parse('$baseUrl/offline-packs/$x-$y.json'),
+              )
               .timeout(const Duration(seconds: 15));
           if (response.statusCode != 200 ||
               response.bodyBytes.length > 8000000) {
