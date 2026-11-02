@@ -663,3 +663,12 @@ Android API 36에서도 공식 서울시청 공개 사진 매칭/표시와 공�
 - 영문 훈련 표현(Civil Defense/Defence Exercise/Drill) 힌트와 대소문자 처리 보완. 실제 표본에서 영문 병기 사례 확인, 영문 단독·철자 변형은 합성 테스트.
 - 새 합성 회귀 6건: 네 문맥/영문/일반 exercise 구분/부정문/역순 재시작·수정/훈련 해제 영향 검사. Python 61건 PASS, ResourceWarning 오류 모드 통과. Flutter 변경 없음, 직전 analyze/169건 결과 유지.
 - 원문·지역·SN·키 Git 미포함. 실제 경보 발송·기관 문의·배포 없음.
+
+## 2026-11-02 — 출시 준비 및 에뮬레이터 로컬 알림 검증
+
+- 사용자 ‘앱 마무리 후 배포’ 승인, Play 개발자 계정 개설/로그인 가능 확인. PR #8 머지(f2be2aa), feat/release-preparation 분기. 실제 자동 경보 검증은 별도로 유지.
+- 사용자 에뮬레이터 시험 요청에 따라 Android API36 emulator-5556에서 실제 플러그인 무음/무진동 알림 전송. 전면: 공습→핵→해제 유형별 테스트 제목/본문/동일 ID 교체 1건/취소 통합 테스트 PASS.
+- debug 전용 수동 실행 harness에서 15초 후 로컬 테스트 알림: 백그라운드 OS 표시, 프로세스 종료(pid 없음) 후 알림 탭→핵 훈련 화면, 화면 꺼짐(Asleep) 중 OS 알림 등록 확인. sound/vibration=null. 시험 종료 시 화면 깨움 및 POST_NOTIFICATIONS 원래 denied 상태 복구. 서버 push/정부 경보/실기기/Doze/강제종료 후 새 알림/사이렌 청취 검증은 아님.
+- 새 harness는 test_driver/에만 존재하며 release 진입점에 미포함. 실제 알림 통합 검사 추가. 제품 알림 기능 변경 없음.
+- 선택된 진돗개 디자인을 Android/PWA 아이콘 크기로 출력, 웹 favicon과 공개 정책/문의 링크 연결. Worker에 같은 출처의 PWA 정적 파일 연결, /api 및 /health는 API 경로 유지. 공개 정보 페이지 기존 처리 유지.
+- format/analyze, Flutter 169건/Python 61건 PASS. Workers 17건/TypeScript PASS. PWA release 빌드, Chromium/WebKit 온보딩/반응형/캐시 복구/오프라인 PASS. Workers 정적 파일 포함 dry-run PASS. 실제 배포 결과는 아래 별도 기록.

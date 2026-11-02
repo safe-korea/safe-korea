@@ -3,7 +3,7 @@ import {REGION_NAMES, UPSTREAM_URL, boundedJson, normalizeCatalog} from './catal
 export const FRESH_SECONDS = 15 * 60;
 export const MAX_STALE_SECONDS = 24 * 60 * 60;
 /** @typedef {{limit: (input:{key:string}) => Promise<{success:boolean}>}} Limiter */
-/** @typedef {{ALLOWED_ORIGINS?:string, UPSTREAM_REGION_LIMIT:Limiter, UPSTREAM_TOTAL_LIMIT:Limiter}} Env */
+/** @typedef {{ASSETS?:{fetch:(request:Request)=>Promise<Response>}, ALLOWED_ORIGINS?:string, UPSTREAM_REGION_LIMIT:Limiter, UPSTREAM_TOTAL_LIMIT:Limiter}} Env */
 /** @typedef {{waitUntil:(promise:Promise<unknown>)=>void}} Context */
 /** @typedef {{match:(request:Request)=>Promise<Response|undefined>,put:(request:Request,response:Response)=>Promise<void>}} DataCache */
 /** @typedef {ReturnType<typeof normalizeCatalog>} Catalog */
