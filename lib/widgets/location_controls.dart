@@ -23,7 +23,7 @@ class LocationControls extends StatelessWidget {
     final point = position;
     final time = point?.timestamp.toLocal();
     final status = point == null
-        ? message ?? '위치를 확인하면 선택한 지역 안에서 가까운 순으로 보여드려요.'
+        ? message ?? '선택한 지역 내 거리순 정렬'
         : '현재 위치 확인 · 오차 약 ${point.accuracy.round()}m\n'
               '${time!.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')} 확인 · 실시간 추적 아님';
     return Card(

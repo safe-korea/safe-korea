@@ -341,6 +341,11 @@ class _SheltersScreenState extends State<SheltersScreen> {
               ),
             ),
             if (!_choosingRegion && catalog != null) ...[
+              const Text(
+                '조회 지역',
+                style: TextStyle(fontSize: 14, color: AppPalette.muted),
+              ),
+              const SizedBox(height: 4),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

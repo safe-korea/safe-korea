@@ -44,7 +44,7 @@ const apiBase=process.env.SHELTER_TEST_API_URL || 'http://127.0.0.1:8787';
    await page.mouse.wheel(0,500);
    await page.waitForTimeout(400);
    await page.getByRole('button',{name:'카카오 지도로 열기',exact:true}).first().waitFor();
-   await page.getByText('현재 위치에서 직선거리',{exact:false}).first().waitFor();
+   await page.locator('[aria-label*="현재 위치에서 직선거리"]').first().waitFor({state:'attached'});
    assert.deepEqual(requests,[apiBase+'/api/shelters?region=11140']);
    await page.waitForTimeout(600);
    await page.screenshot({path:`artifacts/worker-pwa-${name}.png`});

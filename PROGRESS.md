@@ -715,3 +715,6 @@ Android API 36에서도 공식 서울시청 공개 사진 매칭/표시와 공�
 - 메뉴를 통한 해제·지도 위치 제거·원본 순서 복구 검사, 좁은 화면의 지역 선택 스크롤 검사 갱신. analyze/Flutter 173건/Python 66건 PASS. iPhone 시뮬레이터 일반 앱 업데이트.
 - 사용자 GitHub 포함 보안 점검 요청: 전체 Git 이력/로컬 키 패턴 일치 없음(1,490 blobs). npm audit 0건, Pub 135개 OSV 조회 0건. GitHub secret scan 0건, Dependabot alerts 및 자동 보안 수정 PR 활성화.
 - 최소권한·Action SHA 고정 CI와 주간 의존성 갱신 설정, PWA 프레임 삽입 방지/권한 헤더 추가. API 기존 보안 제어 및 Android 권한 확인. 계정 2FA/최종 native 공급망/최신 제출 빌드 검증 등 미확인 항목은 RELEASE_CHECKLIST.md에 기록.
+- GitHub main 보호 적용/read-back 확인: PR 필수·security-checks 성공 필수·최신 main 기준 검사·관리자 포함·강제 push/삭제 금지. 독립 리뷰어 승인 수는 0(개인 저장소)이며 코드 리뷰를 대체하지 않음. 최초 Actions 실제 실행 41397857762 PASS.
+- 최종 analyze/Flutter 173건/Python 68건, Worker 17건/TypeScript PASS. Chromium/WebKit GPS·지역 조회·오프라인 재조회 회귀 PASS. 거리 레이블은 Flutter 접근성 aria-label로 검증하도록 자동 검사 수정, 실제 화면에도 거리 표시 확인.
+- 공개 PWA 보안 헤더·위치 UI 배포 완료: Workers 7883c46c-42c5-4f67-92b0-fe37b55826d7. 최신 제출 AAB 재빌드 검증은 별도 후속 기록.
