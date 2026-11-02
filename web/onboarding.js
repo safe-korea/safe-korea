@@ -3,10 +3,10 @@
   const $ = id => document.getElementById(id);
   const slides = [
     {
-      eyebrow: '평소에는 준비로, 비상시에는 행동으로',
-      title: '미리 준비해 두세요.<br>필요한 순간, <em>바로 꺼내도록.</em>',
-      description: '공습·화생방 등 비상 상황의 행동요령을\n쉽게 꺼내 보는 비상 대비 앱, SAFE KOREA.',
-      benefit: '긴 설명보다, 먼저 할 행동부터',
+      eyebrow: '경보가 울린 순간, 무엇을 할지 바로.',
+      title: '사이렌에<br><em>당황하지 마세요.</em>',
+      description: '내 상황에 맞는 행동을 바로 확인하세요.\n첫 행동부터 함께하는 비상 대비 앱, safeKor.',
+      benefit: '긴 설명 대신, 먼저 할 행동부터',
       image: 'previews/air-guidance.png',
       alt: 'iPhone 17 Pro의 공습 안내 화면: 실내를 선택하면 계단으로 이동하는 행동을 먼저 안내합니다.',
       caption: 'iPhone 17 Pro · 공습 행동요령',
@@ -14,7 +14,7 @@
     },
     {
       eyebrow: '실내인지, 실외인지에 따라 다르니까',
-      title: '내가 있는 곳에 맞춰,<br><em>다음 행동을.</em>',
+      title: '지금 있는 곳에 맞춰,<br><em>첫 행동부터.</em>',
       description: '실내·실외·차량, 내 상황을 선택하세요.\n지금 할 일을 짧고 명확하게 확인할 수 있어요.',
       benefit: '위치 권한 없이, 직접 상황 선택',
       image: 'previews/outdoor-guidance.png',
@@ -24,8 +24,8 @@
     },
     {
       eyebrow: '필요할 때 검색부터 하지 않도록',
-      title: '연결이 끊겨도,<br>준비한 안내는 <em>곁에.</em>',
-      description: '미리 저장한 행동요령은 인터넷 없이도.\n홈 화면에 두고 필요할 때 바로 꺼내 보세요.',
+      title: '연결이 끊겨도,<br><em>행동요령은 내 폰에.</em>',
+      description: '한 번 저장해 두세요.\n필요한 순간, 인터넷 없이 꺼내 볼 수 있어요.',
       benefit: '사전 저장 후 오프라인 행동요령 확인',
       image: 'previews/guidance-list.png',
       alt: 'iPhone 17 Pro의 행동요령 목록 화면: 공습·경계·화생방 등 상황별 안내를 선택합니다.',

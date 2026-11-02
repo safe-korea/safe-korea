@@ -41,6 +41,8 @@ const origin = process.env.PWA_TEST_URL || 'http://127.0.0.1:8765';
       await page.getByRole('button',{name:'추가하는 방법 보기'}).click();
       assert.equal(await page.locator('#install-help').getAttribute('aria-expanded'),'true');
       assert(await page.locator('#install-detail').isVisible());
+      assert(await page.locator('#install-detail').getByText('더보기(⋯)',{exact:true}).isVisible());
+      assert(await page.locator('#install-detail').getByText('홈 화면에 추가 → 추가',{exact:true}).isVisible());
       await page.getByRole('button',{name:'추가하는 방법 보기'}).click();
       assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
       await page.screenshot({path:`artifacts/pwa-${name}-onboarding.png`,fullPage:true});
