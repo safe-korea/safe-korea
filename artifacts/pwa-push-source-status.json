@@ -5,8 +5,10 @@
     "state": "source_ip_denied",
     "complete": false,
     "records": 0,
-    "gatewayCode": "32",
+    "checkedAt": 1793631584276,
+    "receivedAt": 1793631584350,
+    "transport": "signed_collector",
     "semanticsVerified": false,
-    "checkedAt": 1793626082970
+    "gatewayCode": "32"
   }
 }

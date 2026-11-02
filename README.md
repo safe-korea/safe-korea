@@ -6,7 +6,7 @@
 
 ## Cloudflare Workers 데이터 서버
 
-지역별 시설 조회·캐시 API와 Android/PWA 연결을 구현했습니다. **2026-11-01 API 공개 배포 완료:** https://safe-korea-shelter-api.trovapp.workers.dev . 2026-11-02 같은 주소에 PWA 미리보기 호스팅도 배포했습니다. PWA는 API 주소를 설정하면 지역별 목록과 외부 카카오 지도 연결을 사용할 수 있습니다. `--dart-define-from-file=config/api.production.json`으로 공개 API를 연결합니다. 설정 없는 기본 PWA 빌드는 정부 사이트 링크를 제공합니다. 로그인은 없으며, PWA 웹 알림을 명시적으로 연결한 경우에만 구독 주소·암호화 키·선택 지역을 D1에 보관합니다. 정부 API 운영 조회는 미등록 IP 오류로 제한되어 실제 경보 자동 발송은 비활성입니다. [실행 및 배포 전 확인](workers/shelters/README.md) · [서버 구성](SERVER_PLAN.md).
+지역별 시설 조회·캐시 API와 Android/PWA 연결을 구현했습니다. **2026-11-01 API 공개 배포 완료:** https://safe-korea-shelter-api.trovapp.workers.dev . 2026-11-02 같은 주소에 PWA 미리보기 호스팅도 배포했습니다. PWA는 API 주소를 설정하면 지역별 목록과 외부 카카오 지도 연결을 사용할 수 있습니다. `--dart-define-from-file=config/api.production.json`으로 공개 API를 연결합니다. 설정 없는 기본 PWA 빌드는 정부 사이트 링크를 제공합니다. 로그인은 없으며, PWA 웹 알림을 명시적으로 연결한 경우에만 구독 주소·암호화 키·선택 지역을 D1에 보관합니다. 정부 API는 승인된 기존 Oracle 서버의 수집기를 통해 조회하도록 배치했습니다. 서명 전송은 성공했지만 원천은 미등록 IP 오류로 제한되어 실제 경보 자동 발송은 비활성입니다. [Oracle 운영/재검사](deployment/alert_collector/README.md). [실행 및 배포 전 확인](workers/shelters/README.md) · [서버 구성](SERVER_PLAN.md).
 
 ## 구현 상태
 
@@ -330,6 +330,6 @@ PWA 직접 시작: https://safe-korea-shelter-api.trovapp.workers.dev/?launch=ap
 
 사람들에게 전달할 링크는 **https://safe-korea-shelter-api.trovapp.workers.dev/intro/** 입니다. 일반 브라우저는 소개·설치 방법을 유지하며 이전 방문 기록으로 앱에 들어가지 않습니다. 홈 화면 아이콘은 manifest의 `/app/`으로 시작합니다. 소개에서 설치 도움말을 눌러도 실제 앱을 열지 않습니다.
 
-설치한 아이콘 → 상단 **알림 연결** → 지역 선택/정보 처리 동의 → **알림 허용하고 연결** → **이 기기에 테스트 알림 보내기** 순서입니다. 실제 iPhone의 허용 동작은 사용자가 직접 해야 합니다. 서버 접수/기기 서비스워커의 표시 확인/알림 열기는 서로 구분해 표시합니다. 일반 Chromium의 FCM 경로는 지원하지 않으며 iPhone·Safari의 Apple Web Push를 직접 사용합니다.
+설치한 아이콘 → 첫 실행 알림 팝업 또는 **나의 준비 → 알림 설정** → 지역 선택/정보 처리 동의 → **알림 허용하고 연결** → **이 기기에 테스트 알림 보내기** 순서입니다. 실제 iPhone의 허용 동작은 사용자가 직접 해야 합니다. 서버 접수/기기 서비스워커의 표시 확인/알림 열기는 서로 구분해 표시합니다. 일반 Chromium의 FCM 경로는 지원하지 않으며 iPhone·Safari의 Apple Web Push를 직접 사용합니다.
 
 정부 API Secret 등록과 주기 조회 코드는 구현·배포했으나, **운영 Cloudflare 출구 IP에 오류 32가 반환되어 실제 정부 경보 자동 발송은 켜지 않았습니다.** API 인증 오류는 6시간 동안 다시 조회하지 않으며, 운영 접근 조건을 수정한 뒤 검증이 필요합니다. 지역 이름·생성 시각·훈련/정정/해제 제외·완전 조회·중복 검사와 실제 iPhone 전달 검증을 충족하기 전 실제 수신 완료로 간주하지 않습니다. [구성 및 운영 점검](workers/shelters/PUSH_OPERATIONS.md).

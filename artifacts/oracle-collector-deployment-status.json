@@ -1,0 +1,9 @@
+{
+  "managed_schedules": 1,
+  "folder_permissions": "0o700",
+  "config_permissions": "0o600",
+  "scheduled_run_observed": true,
+  "last_run": {
+    "status": "source_backoff"
+  }
+}
