@@ -12,7 +12,9 @@ ENDPOINT = 'https://www.safetydata.go.kr/V2/api/DSSP-IF-00247'
 LIMIT = 2 * 1024 * 1024
 ERRORS = {'22': 'daily_quota_exceeded', '30': 'unregistered_key',
           '31': 'expired_key', '32': 'unregistered_ip', '33': 'missing_key',
-          '20': 'access_denied'}
+          '20': 'access_denied', '01': 'application_error', '02': 'service_timeout',
+          '10': 'invalid_parameter', '11': 'missing_parameter', '12': 'service_not_found',
+          '13': 'unsupported_method', '34': 'multiple_keys', '99': 'unknown_gateway_error'}
 FIELDS = {'SN', 'CRT_DT', 'MSG_CN', 'RCPTN_RGN_NM', 'EMRG_STEP_NM',
           'DST_SE_NM', 'REG_YMD', 'MDFCN_YMD', 'RCPTN_RGN_ID',
           'EMRG_STEP_ID', 'DST_SE_ID'}
@@ -54,10 +56,14 @@ def summarize(raw):
     visit(data)
     if any(code in ERRORS for code in codes):
         return {'status': next(ERRORS[code] for code in codes if code in ERRORS)}
+    if any(code not in ('00', '0') for code in codes):
+        return {'status': 'unrecognized_gateway_code'}
     if not rows:
         return {'status': 'no_records_schema_unverified'}
     ids = [str(row['SN']) for row in rows]
-    complete = all(FIELDS <= row.keys() for row in rows)
+    complete = all(FIELDS <= row.keys() and all(
+        isinstance(row.get(field), (str, int)) and not isinstance(row.get(field), bool)
+        and str(row[field]).strip() for field in FIELDS) for row in rows)
     return {'status': 'records_observed' if complete else 'records_incomplete',
             'record_count': len(rows), 'duplicate_ids': len(ids) - len(set(ids)),
             'documented_fields_seen': sorted(FIELDS.intersection(set().union(*(r.keys() for r in rows)))),
@@ -70,7 +76,10 @@ def probe(config_path):
         path = Path(config_path)
         if path.stat().st_mode & 0o077:
             return {'status': 'config_requires_mode_600'}
-        key = json.loads(path.read_text())['serviceKey']
+        config = json.loads(path.read_text())
+        if not isinstance(config, dict):
+            return {'status': 'missing_or_invalid_local_config'}
+        key = config['serviceKey']
         if not isinstance(key, str) or not key.strip():
             return {'status': 'missing_local_key'}
     except (OSError, ValueError, KeyError):
