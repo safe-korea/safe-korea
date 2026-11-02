@@ -20,7 +20,7 @@ class SituationSelector extends StatelessWidget {
         children: [
           const Expanded(
             child: Text(
-              '지금 어디에 있나요?',
+              '현재 있는 곳',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
             ),
           ),

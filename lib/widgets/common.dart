@@ -108,10 +108,9 @@ class IconTextBlock extends StatelessWidget {
   final Widget? trailing;
   final double titleSize;
   @override
-  Widget build(BuildContext context) => Row(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      ExcludeSemantics(
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, constraints) {
+      final iconBox = ExcludeSemantics(
         child: Container(
           width: 44,
           height: 44,
@@ -121,31 +120,56 @@ class IconTextBlock extends StatelessWidget {
           ),
           child: Icon(icon, color: iconColor, size: 28),
         ),
-      ),
-      const SizedBox(width: 12),
-      Expanded(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: titleSize,
-                height: 1.3,
-                fontWeight: FontWeight.w700,
-                color: color,
-              ),
+      );
+      final content = Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: titleSize,
+              height: 1.3,
+              fontWeight: FontWeight.w700,
+              color: color,
             ),
-            const SizedBox(height: 4),
-            body,
+          ),
+          const SizedBox(height: 4),
+          body,
+        ],
+      );
+      // Keep enlarged Korean text out of a narrow column beside the icon.
+      final stacked =
+          constraints.maxWidth - 56 <
+          MediaQuery.textScalerOf(context).scale(180);
+      if (stacked) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                iconBox,
+                const Spacer(),
+                if (trailing != null) ExcludeSemantics(child: trailing!),
+              ],
+            ),
+            const SizedBox(height: 12),
+            content,
           ],
-        ),
-      ),
-      if (trailing != null) ...[
-        const SizedBox(width: 12),
-        ExcludeSemantics(child: trailing!),
-      ],
-    ],
+        );
+      }
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          iconBox,
+          const SizedBox(width: 12),
+          Expanded(child: content),
+          if (trailing != null) ...[
+            const SizedBox(width: 12),
+            ExcludeSemantics(child: trailing!),
+          ],
+        ],
+      );
+    },
   );
 }
 

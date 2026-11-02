@@ -36,7 +36,7 @@ List<ActionBrief> actionBriefs(
       UserSetting.unknown => const ActionBrief(
         Icons.home_work_outlined,
         '가까운 대피소로 이동',
-        '민방위 대피소나 지하시설로 즉시 대피.',
+        '민방위 대피소 또는 지하시설로.',
       ),
     },
     const ActionBrief(
@@ -153,12 +153,6 @@ class ActionBriefTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.symmetric(vertical: 12),
-    decoration: primary
-        ? BoxDecoration(
-            color: accent.withValues(alpha: 0.08),
-            borderRadius: BorderRadius.circular(12),
-          )
-        : null,
     child: IconTextBlock(
       icon: brief.icon,
       title: brief.title,

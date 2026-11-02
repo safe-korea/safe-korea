@@ -34,7 +34,7 @@ class _NotificationTestScreenState extends State<NotificationTestScreen> {
           vibration: _vibration,
         );
         message = allowed
-            ? '테스트 알림을 요청했습니다. 알림 센터에서 눌러 훈련 화면을 여세요. 표시·소리·진동은 기기 설정에 따라 달라집니다.'
+            ? '알림 센터에서 테스트 알림을 눌러 훈련을 시작하세요. 표시·소리·진동은 기기 설정에 따라 달라집니다.'
             : '알림 권한이 없습니다. 기기 설정에서 SAFE KOREA 알림을 허용하세요. 알림 없이도 홈에서 훈련할 수 있습니다.';
       }
     } catch (_) {
@@ -58,7 +58,6 @@ class _NotificationTestScreenState extends State<NotificationTestScreen> {
           title: '경보 구분 연습',
           subtitle: '직접 보내는 연습 알림 · 실제 경보 아님',
         ),
-        const SizedBox(height: 16),
         DropdownButtonFormField<AlertKind>(
           initialValue: _kind,
           isExpanded: true,
@@ -75,12 +74,11 @@ class _NotificationTestScreenState extends State<NotificationTestScreen> {
                 }),
         ),
         const SizedBox(height: 12),
-        Text(_kind.signal),
         SwitchListTile(
           contentPadding: EdgeInsets.zero,
           title: Text(_kind.hasSiren ? '사이렌 켜기' : '음성 안내 켜기'),
           subtitle: Text(
-            _kind.hasSiren ? '8초 훈련용 합성음 · 실제 신호의 일부' : '훈련용 합성 음성 · 정부 방송 아님',
+            _kind.hasSiren ? '8초 훈련용 합성음' : '훈련용 합성 음성 · 정부 방송 아님',
           ),
           value: _sound,
           onChanged: _busy ? null : (value) => setState(() => _sound = value),
@@ -95,17 +93,17 @@ class _NotificationTestScreenState extends State<NotificationTestScreen> {
                 : (value) => setState(() => _vibration = value),
           ),
         const SizedBox(height: 12),
-        const Text('무음·집중 모드에서는 소리가 나지 않을 수 있어요.'),
+        const Text('소리는 기기의 무음·집중 모드 설정을 따릅니다.'),
         const SizedBox(height: 20),
         FilledButton.icon(
           onPressed: _busy ? null : () => _perform(),
           icon: const Icon(Icons.notifications_outlined),
-          label: Text(_busy ? '처리 중…' : '지금 테스트 알림 보내기'),
+          label: Text(_busy ? '처리 중…' : '알림 보내기'),
         ),
         const SizedBox(height: 8),
         OutlinedButton(
           onPressed: _busy ? null : () => _perform(cancel: true),
-          child: const Text('테스트 알림 지우기'),
+          child: const Text('알림 지우기'),
         ),
         TextButton(
           onPressed: _busy
@@ -118,11 +116,29 @@ class _NotificationTestScreenState extends State<NotificationTestScreen> {
                 ),
           child: const Text('소리 없이 행동 연습'),
         ),
-        const Text(
-          '공습·핵 경보는 같은 사이렌입니다. 종류는 문자·방송으로 확인하세요.',
-          style: TextStyle(fontSize: 14),
+        if (_status != null) ...[
+          const SizedBox(height: 16),
+          Semantics(liveRegion: true, child: Notice(_status!)),
+        ],
+        const SizedBox(height: 16),
+        ExpansionTile(
+          title: const Text('소리 안내 자세히'),
+          expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
+          childrenPadding: const EdgeInsets.only(bottom: 16),
+          children: [
+            Text(_kind.signal),
+            const SizedBox(height: 8),
+            const Text(
+              '공습·핵 경보는 같은 사이렌입니다. 종류는 문자·방송으로 확인하세요.',
+              style: TextStyle(fontSize: 14),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              '테스트 소리는 실제 신호의 일부를 재현한 합성음입니다.',
+              style: TextStyle(fontSize: 14),
+            ),
+          ],
         ),
-        if (_status != null) Semantics(liveRegion: true, child: Text(_status!)),
       ],
     ),
   );
