@@ -1,4 +1,4 @@
-package kr.example.safe_korea
+package kr.safekor.app
 
 import io.flutter.embedding.android.FlutterActivity
 

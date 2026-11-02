@@ -35,3 +35,6 @@ config/safetydata.local.json
 
 # Local alert review ledger (hashes only).
 config/alert-review.sqlite*
+
+# Wrangler local deployment cache
+.wrangler/

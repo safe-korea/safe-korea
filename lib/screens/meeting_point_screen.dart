@@ -253,7 +253,7 @@ class _MeetingPointScreenState extends State<MeetingPointScreen> {
                           key: ValueKey(_status.generation),
                           urlTemplate:
                               'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                          userAgentPackageName: 'kr.example.safe_korea',
+                          userAgentPackageName: 'kr.safekor.app',
                           tileProvider: _tiles,
                           tileBuilder: (context, child, tile) =>
                               ObservedMapTile(

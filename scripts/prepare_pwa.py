@@ -17,6 +17,7 @@ def prepare(root=Path('build/web')):
         digest.update(p.relative_to(root).as_posix().encode())
         digest.update(p.read_bytes())
     template = Path('web/safe-worker.template.js').read_text()
+    digest.update(template.encode())
     worker = template.replace('__VERSION__', digest.hexdigest()[:20]).replace(
         '__FILES__', json.dumps({p.relative_to(root).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest() for p in files}))
     (root / 'safe-worker.js').write_text(worker)

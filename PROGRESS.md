@@ -672,3 +672,13 @@ Android API 36에서도 공식 서울시청 공개 사진 매칭/표시와 공�
 - 새 harness는 test_driver/에만 존재하며 release 진입점에 미포함. 실제 알림 통합 검사 추가. 제품 알림 기능 변경 없음.
 - 선택된 진돗개 디자인을 Android/PWA 아이콘 크기로 출력, 웹 favicon과 공개 정책/문의 링크 연결. Worker에 같은 출처의 PWA 정적 파일 연결, /api 및 /health는 API 경로 유지. 공개 정보 페이지 기존 처리 유지.
 - format/analyze, Flutter 169건/Python 61건 PASS. Workers 17건/TypeScript PASS. PWA release 빌드, Chromium/WebKit 온보딩/반응형/캐시 복구/오프라인 PASS. Workers 정적 파일 포함 dry-run PASS. 실제 배포 결과는 아래 별도 기록.
+
+## 2026-11-02 — Android 식별자 확정·서명·PWA 공개 검증
+
+- 사용자 승인 applicationId/namespace `kr.safekor.app` 적용, Kotlin 경로·OSM user agent 정리. 이전 개발 앱/데이터 보존, 자동 데이터 이전 없음.
+- 로컬 업로드 키 및 key.properties 생성(600/Git 제외). release AAB 75.6MB 생성, jarsigner 서명 검증 PASS(자체 서명 인증서 경고는 출력). target36/min24, debuggable=false, allowBackup=false, native ELF 7개 16KB 정렬 확인. Play App Signing·카카오 새 패키지/배포 해시 등록 및 실기기 검증은 남음.
+- 일반 main.dart 앱을 emulator-5556에 새 ID로 설치/실행. 앞선 로컬 테스트 알림 QA는 기존 개발 ID에서 수행했으며 실제 정부 push 검증은 아님.
+- 공개 PWA: https://safe-korea-shelter-api.trovapp.workers.dev/ . Workers 버전 25bc1704-8997-47a9-bbb8-854b481bad33. 초기 공개 검증에서 index.html 리다이렉트 캐시로 오프라인 reload 실패를 발견·수정. 서비스워커 변경도 캐시 버전에 반영하고 정책/API 탐색은 앱 셸에서 제외.
+- 수정 배포 후 공개 URL Chromium/WebKit 온보딩·반응형·캐시 복구·오프라인 reload/detail PASS. PWA는 행동요령/지역 시설 목록 미리보기이며 네이티브 GPS·가족 저장·푸시와 동등하지 않음.
+- Play Console은 현재 소개 페이지로 열려 로그인 확인 요청. 앱 생성/업로드/심사 제출은 미실행. SDK 데이터 보안 신고·카카오 배포 인증·계정별 테스트 요건 확인 후 진행 필요.
+- 최종 변경 후 scripts/verify.sh 재검증 PASS: analyze, Flutter 169건, Python 61건. 업로드 서명 파일 Git 제외 재확인.
