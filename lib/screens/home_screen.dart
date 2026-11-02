@@ -73,7 +73,7 @@ class HomeScreen extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         const Text(
-          '경보 종류와 실내·실외·이동 중을 직접 선택하세요.',
+          '경보 종류와 실내·실외·차량을 직접 선택하세요.',
           style: TextStyle(fontSize: 14),
         ),
         const SizedBox(height: 20),

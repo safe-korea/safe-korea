@@ -1,3 +1,5 @@
+import 'widgets/situation_selector.dart';
+
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
@@ -200,22 +202,9 @@ class _PwaGuidanceDetailState extends State<PwaGuidanceDetail> {
           ),
           const SizedBox(height: 16),
           if (kind != null) ...[
-            const Text(
-              '지금 어디에 있나요?',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                for (final setting in UserSetting.values)
-                  ChoiceChip(
-                    label: Text(setting.label),
-                    selected: setting == _setting,
-                    onSelected: (_) => setState(() => _setting = setting),
-                  ),
-              ],
+            SituationSelector(
+              value: _setting,
+              onChanged: (setting) => setState(() => _setting = setting),
             ),
             const SizedBox(height: 20),
             for (final (index, brief) in actionBriefs(kind, _setting).indexed)

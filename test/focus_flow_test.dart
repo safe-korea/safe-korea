@@ -47,10 +47,14 @@ void main() {
         MaterialApp(theme: buildAppTheme(), home: const AlertGuideScreen()),
       );
       await tester.pumpAndSettle();
+      expect(
+        tester.getTopLeft(find.text('실내')).dy,
+        tester.getTopLeft(find.text('차량')).dy,
+      );
       for (final pair in [
         ('실내', '계단으로 이동'),
         ('실외', '가까운 건물로 대피'),
-        ('이동 중', '운전 중이면 정차 후 대피'),
+        ('차량', '운전 중이면 정차 후 대피'),
       ]) {
         expect(find.text(pair.$1).hitTestable(), findsOneWidget);
         await tester.tap(find.text(pair.$1));
@@ -63,9 +67,12 @@ void main() {
       }
       expect(
         tester.getRect(find.byType(ActionBriefTile).first).bottom,
-        lessThanOrEqualTo(620),
+        lessThanOrEqualTo(560),
         reason: 'The complete primary instruction, including its conditions, must fit',
       );
+      await tester.tap(find.byTooltip('선택 초기화'));
+      await tester.pumpAndSettle();
+      expect(find.text('가까운 대피소로 이동').hitTestable(), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
   );

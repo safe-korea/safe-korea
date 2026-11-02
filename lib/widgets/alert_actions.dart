@@ -4,6 +4,7 @@ import '../models/alert_guidance.dart';
 import '../theme/app_theme.dart';
 import 'action_brief.dart';
 import 'action_speech_button.dart';
+import 'situation_selector.dart';
 
 /// No GPS inference: selection is optional and stays only in this widget.
 class AlertActions extends StatefulWidget {
@@ -32,45 +33,9 @@ class _AlertActionsState extends State<AlertActions> {
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
-      const Text(
-        '지금 어디에 있나요?',
-        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-      ),
-
-      const SizedBox(height: 12),
-      LayoutBuilder(
-        builder: (context, constraints) {
-          final columns =
-              constraints.maxWidth < MediaQuery.textScalerOf(context).scale(230)
-              ? 1
-              : 2;
-          final width = (constraints.maxWidth - 8 * (columns - 1)) / columns;
-          return Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              for (final setting in [
-                UserSetting.indoors,
-                UserSetting.outdoors,
-                UserSetting.vehicle,
-                UserSetting.unknown,
-              ])
-                SizedBox(
-                  width: width,
-                  child: ChoiceChip(
-                    label: SizedBox(
-                      width: double.infinity,
-                      child: Text(setting.label, textAlign: TextAlign.center),
-                    ),
-                    showCheckmark: true,
-                    selected: setting == _setting,
-                    onSelected: (_) => setState(() => _setting = setting),
-                    materialTapTargetSize: MaterialTapTargetSize.padded,
-                  ),
-                ),
-            ],
-          );
-        },
+      SituationSelector(
+        value: _setting,
+        onChanged: (setting) => setState(() => _setting = setting),
       ),
       const SizedBox(height: 8),
       for (final (index, brief) in actionBriefs(widget.kind, _setting).indexed)

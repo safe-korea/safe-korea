@@ -1,0 +1,4 @@
+00:00 +0: loading /Users/gimtaehyeong/orca/safe-korea/test/focus_flow_test.dart
+00:00 +0: core actions are reachable from the initial phone home without scrolling
+00:00 +1: one context tap reveals first action on a small phone, without scrolling
+00:00 +2: All tests passed!

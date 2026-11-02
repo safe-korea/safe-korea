@@ -15,7 +15,7 @@
     {
       eyebrow: '실내인지, 실외인지에 따라 다르니까',
       title: '내가 있는 곳에 맞춰,<br><em>다음 행동을.</em>',
-      description: '실내·실외·이동 중, 내 상황을 선택하세요.\n지금 할 일을 짧고 명확하게 확인할 수 있어요.',
+      description: '실내·실외·차량, 내 상황을 선택하세요.\n지금 할 일을 짧고 명확하게 확인할 수 있어요.',
       benefit: '위치 권한 없이, 직접 상황 선택',
       image: 'previews/outdoor-guidance.png',
       alt: 'iPhone 17 Pro의 공습 안내 화면: 실외 선택 시 가까운 건물로 대피하라는 안내를 보여줍니다.',

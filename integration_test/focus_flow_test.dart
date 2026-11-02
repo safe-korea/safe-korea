@@ -60,7 +60,7 @@ void main() {
     for (final pair in [
       ('실내', '계단으로 이동'),
       ('실외', '가까운 건물로 대피'),
-      ('이동 중', '운전 중이면 정차 후 대피'),
+      ('차량', '운전 중이면 정차 후 대피'),
     ]) {
       await tester.tap(find.text(pair.$1));
       await tester.pumpAndSettle();

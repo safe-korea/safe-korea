@@ -76,7 +76,7 @@ const origin = process.env.PWA_TEST_URL || 'http://127.0.0.1:8765';
       await page.getByRole('checkbox', {name:'실내',exact:true}).click();
       await page.getByText('계단으로 이동', {exact:true}).waitFor();
       assert.equal(await page.getByRole('checkbox',{name:'실내',exact:true}).isChecked(),true);
-      assert.equal(await page.getByRole('checkbox',{name:'모르겠어요',exact:true}).isChecked(),false);
+      assert(await page.getByRole('button',{name:'선택 초기화',exact:true}).isEnabled());
       await page.waitForTimeout(350); // Capture after the selection transition.
       await page.screenshot({path:`artifacts/pwa-${name}-offline-detail.png`});
       await page.getByRole('button', {name:'뒤로'}).click();

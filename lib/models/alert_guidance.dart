@@ -27,7 +27,7 @@ enum UserSetting {
   unknown('모르겠어요'),
   indoors('실내'),
   outdoors('실외'),
-  vehicle('이동 중');
+  vehicle('차량');
 
   const UserSetting(this.label);
   final String label;
