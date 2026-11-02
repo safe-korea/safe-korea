@@ -26,6 +26,27 @@ class AlertProbeTests(unittest.TestCase):
         for raw in [b'{}', b'<html>login</html>', b'broken', b'{"body":[{"SN":1}]}', b'x' * (LIMIT + 1)]:
             self.assertNotEqual(summarize(raw)['status'], 'records_observed')
 
+    def test_error_header_cannot_be_overridden_by_records(self):
+        row = dict.fromkeys(FIELDS, 'example')
+        for code in ['01', '99', 'unexpected-code']:
+            raw = json.dumps({'header': {'resultCode': code}, 'body': [row]}).encode()
+            self.assertNotEqual(summarize(raw)['status'], 'records_observed')
+
+    def test_null_or_empty_fields_are_incomplete(self):
+        for value in [None, '', ' ', {}, [], False]:
+            row = dict.fromkeys(FIELDS, 'example')
+            row['MSG_CN'] = value
+            self.assertEqual(summarize(json.dumps({'body': [row]}).encode())['status'],
+                             'records_incomplete')
+
+    def test_non_object_config_never_calls_network(self):
+        with tempfile.TemporaryDirectory() as directory, patch('urllib.request.build_opener') as opener:
+            file = Path(directory) / 'key.json'
+            file.write_text('[]')
+            file.chmod(0o600)
+            self.assertEqual(probe(file)['status'], 'missing_or_invalid_local_config')
+            opener.assert_not_called()
+
     def test_no_redirect(self):
         self.assertIsNone(NoRedirect().redirect_request(None, None, 302, '', {}, 'https://other.example'))
 
