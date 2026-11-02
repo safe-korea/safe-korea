@@ -79,16 +79,17 @@ class _CivilAlertScreenState extends State<CivilAlertScreen> {
             child: const Text('공격 종류 다시 확인'),
           ),
         const SizedBox(height: 12),
-        FilledButton.icon(
-          onPressed: () => Navigator.push(
-            context,
-            MaterialPageRoute<void>(
-              builder: (_) => const SavedSheltersScreen(),
+        if ((_selected ?? notice.kind).offersShelters)
+          FilledButton.icon(
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute<void>(
+                builder: (_) => const SavedSheltersScreen(),
+              ),
             ),
+            icon: const Icon(Icons.bookmark_outline),
+            label: const Text('저장한 대피소 확인'),
           ),
-          icon: const Icon(Icons.bookmark_outline),
-          label: const Text('저장한 대피소 확인'),
-        ),
         const SizedBox(height: 12),
         const Text('재난문자·정부 방송과 현장 지시를 우선하세요.'),
         ExpansionTile(

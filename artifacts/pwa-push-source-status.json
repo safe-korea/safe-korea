@@ -1,0 +1,12 @@
+{
+  "transportReady": true,
+  "officialEnabled": false,
+  "source": {
+    "state": "source_ip_denied",
+    "complete": false,
+    "records": 0,
+    "gatewayCode": "32",
+    "semanticsVerified": false,
+    "checkedAt": 1793626082970
+  }
+}

@@ -14,7 +14,7 @@ const station=catalog.items.find(s=>s.name.includes('승강장'));
    p=await c.newPage();const errors=[];p.on('pageerror',e=>errors.push(e.message));
    async function ready(){await p.waitForFunction(()=>window.safeFlutterReady===true,null,{timeout:60000});await p.locator('flt-semantics-placeholder').evaluate(e=>e.click());}
    async function restart(){await p.reload();await ready();}
-   await p.goto(origin+'/?launch=app');await ready();
+   await p.goto(origin+'/app/');await ready();
    await p.getByText('지금 필요한 안내',{exact:true}).waitFor();
    for(const tab of ['홈','대피소','행동강령','나의 준비'])assert(await p.getByRole('tab',{name:tab,exact:true}).isVisible());
    assert.equal(await p.locator('#onboarding').isVisible(),false);

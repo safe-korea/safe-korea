@@ -1,0 +1,2 @@
+chromium: no automatic permission request; explicit region/consent + gesture subscribe; own-device test; forged source rejected; authenticated synthetic notice opens response/indoor actions; unsubscribe/deletion PASS (browser API fixtures)
+webkit: no automatic permission request; explicit region/consent + gesture subscribe; own-device test; forged source rejected; authenticated synthetic notice opens response/indoor actions; unsubscribe/deletion PASS (browser API fixtures)

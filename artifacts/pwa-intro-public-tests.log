@@ -1,0 +1,2 @@
+chromium: marketing stays on intro after previous visit/reload/install-help clicks; manifest-installed launch/relaunch opens actual app with blocked storage PASS
+webkit: marketing stays on intro after previous visit/reload/install-help clicks; manifest-installed launch/relaunch opens actual app with blocked storage PASS
