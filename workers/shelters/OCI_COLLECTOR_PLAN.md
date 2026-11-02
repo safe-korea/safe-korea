@@ -8,6 +8,6 @@
 
 Oracle 사용자 crontab에2분 작업 등록 완료. 기존 작업 보존·동일 블록 재설치 방지·최초 백업을 구현했습니다. 상태 로그는 마지막1회만 덮어써 증가하지 않습니다. SQLite 일일900회 제한과 IP/인증/한도 오류6시간 backoff를 적용합니다. Cloudflare cron은 수집기 모드에서 만료 자료 정리만 하므로 정부 API에 중복 접속하지 않습니다.
 
-현재 실제 검증: Oracle 정부 API는 여전히 오류32(미등록 IP), 그 실패 요약을 Oracle→Cloudflare로 서명 전송하여 accepted=true 확인. 공개 상태 transport=signed_collector 확인. 포털 로그인 세션 만료로 허용 IP 등록이 남았습니다. `GOV_ALERT_SEMANTICS_VERIFIED=false`, 실제 경보 발송 비활성. 정상 원천 조회·분류/지역/지연/이용 조건·실제 기기 전달은 후속 검증입니다. [재검사/중단 방법](../../deployment/alert_collector/README.md).
+현재 실제 검증: 2026-11-03 포털의 단일 IPv4 형식 검증을 확인한 뒤 개발용 Mac 주소를 운영 Oracle 주소로 변경했습니다. 이전 주소는 비공개 로컬 기록으로 보존했고 API 키·호출량1000·전화번호·SMS 설정은 유지했습니다. 서버 출구 주소 일치 확인, 초기32 이후 정상 조회, 전날14건/전체14건/문서 필드11개, 당일0건 complete=true 및 서명 전송 accepted=true를 확인했습니다. 공개 상태 source_observed/transport=signed_collector 확인. `GOV_ALERT_SEMANTICS_VERIFIED=false`, 실제 경보 발송 비활성. 분류/지역/지연/이용 조건·실제 기기 전달은 후속 검증입니다. [재검사/중단 방법](../../deployment/alert_collector/README.md).
 
 Oracle Always Free 자원은 유휴 회수될 수 있습니다. 기존 인스턴스를 영구 운영 보장으로 안내하지 않으며 원천 마지막 정상 시각/장애 상태를 유지해야 합니다. 무의미한 CPU 사용으로 무료 정책을 우회하지 않습니다. 기존 서비스의 자원·업무에 영향이 생기면 공용 서버 배치는 중단하고 별도 운영 방안을 확인합니다.

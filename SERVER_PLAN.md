@@ -10,6 +10,6 @@ Android/iPhone PWA 공통 Cloudflare Workers를 운영합니다. 소개와 앱·
 - 서명키: Worker 안에서 생성·보관, 공개 API는 공개키만 반환. 정부 API 키: 사용자 승인 후 Cloudflare Secret에 등록, 앱과 Git에는 없음.
 - 정부 API 수집: 사용자 승인한 기존 Oracle 서버 별도 폴더의2분 cron → HMAC 서명 → Cloudflare. 일일900회 상한, 오류6시간 대기, 전체 건수·분류·시각·지역·중복 검사. 기존 서비스/방화벽/요금제 변경 없음.
 
-현재 정부 API는 Workers와 Oracle 모두 오류32(미등록 IP), Mac에서는 조회됩니다. Oracle→Cloudflare 서명 전송은 성공했으며 포털 로그인 후 Oracle 공인 IP 허용 등록이 남았습니다. [수집기 배치/복구](deployment/alert_collector/README.md). 운영 출구 IP/이용 조건 해결 전 실제 정부 경보 발송 게이트는 false로 유지합니다. Cloudflare의 변동 가능한 출구를 고정 IP로 가정하거나 전체 IP 허용으로 바꾸지 않았습니다.
+2026-11-03 정부 포털의 단일 허용 IP를 기존 Mac에서 Oracle 운영 서버로 변경했습니다. 첫 재조회는 오류32였으나 이후 Oracle에서 정상 조회·전날14건/전체14건/문서 필드11개를 검증했습니다. 당일0건의 완전한 스냅샷도 Cloudflare가 서명 검증 후 수락했습니다. [수집기 배치/복구](deployment/alert_collector/README.md). 원천 접근 문제는 해결됐지만 분류/지역/지연·이용 조건과 실제 iPhone 전달 검증 전 실제 정부 경보 발송 게이트는 false로 유지합니다. Cloudflare의 변동 가능한 출구를 고정 IP로 가정하거나 전체 IP 허용으로 바꾸지 않았습니다.
 
 푸시 구현/배포는 실제 iPhone의 설치·권한 동의·알림 표시/탭 검증과 다릅니다. 대규모 경보 발송 부하·종단 지연·누락은 검증하지 않았습니다. [운영/복구/검증](workers/shelters/PUSH_OPERATIONS.md)을 참고하세요. 무료 한도에 따른 가용성도 보장하지 않습니다.

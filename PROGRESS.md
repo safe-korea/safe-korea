@@ -832,3 +832,12 @@ Android API 36에서도 공식 서울시청 공개 사진 매칭/표시와 공�
 - 실제 Oracle→Cloudflare 서명 전송 accepted=true, source.transport=signed_collector 확인. 초기 Python 기본 User-Agent 요청은 비JSON403이었으며 수집기 식별 User-Agent를 명시한 뒤 성공했습니다. 정부 원천은 **Oracle에서도 오류32 미등록 IP**입니다. 포털 세션은 로그인 화면으로 만료되어 허용 IP 등록이 남았습니다. 실제 경보 발송 게이트는 false이며, 서버 배치 성공을 정부 경보 수신 완료로 보고하지 않습니다. 기존 공인 IP를 보존했고 예약 IP/서버 재생성 이후 주소 유지·무료 VM 영구 가용성을 보장하지 않습니다.
 - 검증: dart format/analyze 문제0, Flutter187개·Python73개 통과. Workers34개(서명 변조/시간 만료/잘못된 분류/게이트/중복/직접 조회 중단 포함), TypeScript 통과, 의존성 감사0건. Chromium/WebKit에서 첫 안내/권한 자동 요청 없음/사용자 제스처 구독/나의 준비 설정/위조 입력 차단/합성 대응/해제 및 소개·설치 재시작 회귀 통과. 실제 APNs/iPhone 전달 검증은 별도입니다. 저장소/이력 비밀정보 검사 matching_paths 없음.
 - 공개 Worker 버전 `5caaea1b-544d-4c4d-9ca8-338a3a7a619d`. 원천 상태 artifacts/pwa-push-source-status.json, 서버 상태 artifacts/oracle-collector-deployment-status.json, 운영/재검사 deployment/alert_collector/README.md. 남은 단계: 포털 허용 IP 등록 → 실제 원천 정상 조회 → 분류/지역/지연·조건/기기 수신 검증 → 발송 활성화 판단.
+
+## 2026-11-03 — Oracle 운영 IP 등록·정부 API 정상 조회 확인
+
+- 사용자 로그인 후 정부 신청25864의 변경 화면에서 단일 IPv4 형식 검증을 확인했습니다. 기존 개발 PC 주소를 운영 Oracle 공인 IP로 변경하고 상세 화면에서 저장을 확인했습니다. 기존 주소는 로컬 비공개 기록으로 보존. API 키·일일1000호출·연락처·SMS 동의 설정은 유지, 전체 IP 허용으로 완화하지 않았습니다.
+- Chrome Apple Events JavaScript가 꺼진 상태를 유지하고 기존 접근성 권한의 화면/키보드 조작으로 신청했습니다. 키를 출력하거나 외부에 전송하지 않았습니다. 운영 서버 출구 IP가 등록 주소와 일치함을 확인했습니다.
+- 최초 재조회는 여전히32, 이후 재조회는 **source_observed/complete=true/당일0건/snapshot_accepted=true**로 정상화됐습니다. 반영 지연 원인/시간은 확정하지 않습니다. 새벽 당일0건만으로 스키마 완료를 주장하지 않도록 전날 시작 조건 단발 조회도 추가: **실제14건/전체14건/문서 필드11개 완전, 민방공 후보0건** 확인. 원문·식별자·키는 기록하지 않았고 실제 발송도 수행하지 않았습니다.
+- 공개 Workers 상태 source_observed/transport=signed_collector/최근 checkedAt 확인. 원천 IP 문제는 해결됐지만 GOV_ALERT_SEMANTICS_VERIFIED=false 유지. 실제 경보 분류/세부 지역/종단 지연·누락/이용 조건 및 iPhone 수신·열기 검증은 별도이며 실제 경보 자동 수신 완료로 보고하지 않습니다.
+- 증거: artifacts/pwa-push-source-status.json, artifacts/oracle-government-api-verification.json. 이번 단계는 정부 포털 설정·읽기 전용 운영 검증·문서 변경이며 Flutter 코드 변경 없음. 직전 검증 Flutter187/Python73/Workers34 통과 및 PR23 CI 성공을 유지합니다.
+- 후속 예약 검증: 수동 실행이 아닌2분 cron의 last-run.json에서도 source_observed/complete=true/snapshot_accepted=true와 새 실행 시각 확인. 공개 상태 checkedAt도 같은 예약 실행으로 갱신됨을 확인했습니다.

@@ -12,7 +12,7 @@
 
 ## 허용 IP 등록 후 재검사
 
-국민안전데이터포털 신청25864의 허용 IP에 기존 Oracle 공인 IP를 등록합니다. 전체 IP 허용으로 바꾸지 않습니다. 서버 재생성으로 IP가 바뀌면 다시 등록해야 합니다.
+국민안전데이터포털 신청25864의 허용 IP를 기존 Oracle 공인 IP로 변경 완료했습니다. 포털은 단일 IPv4 형식만 허용하여 기존 개발 PC 주소 대신 운영 서버를 등록했습니다. 전체 IP 허용으로 바꾸지 않습니다. 서버 재생성으로 IP가 바뀌면 다시 등록해야 합니다.
 
 등록 완료 후 서버의 비관리자 사용자로 실행합니다. 이 명령은 원천 오류 대기를 한 번 해제하며 실제 발송 게이트는 바꾸지 않습니다.
 
@@ -22,7 +22,7 @@
   --reset-backoff
 ```
 
-source_observed, complete=true, snapshot_accepted=true와 공개 /api/push/config의 source.transport=signed_collector 및 최근 checkedAt를 확인합니다. 공개 source에는 키·원문·구독 정보가 없습니다. 현재 source_ip_denied를 전달한 증거는 정상 정부 조회 증거가 아닙니다. 실제 발송 활성화에는 원천 의미/이용 조건/지연과 본인 기기 알림 표시·열기 검증이 더 필요합니다.
+source_observed, complete=true, snapshot_accepted=true와 공개 /api/push/config의 source.transport=signed_collector 및 최근 checkedAt를 확인합니다. 공개 source에는 키·원문·구독 정보가 없습니다. 2026-11-03 실제 원천 source_observed/complete=true와 서명 전송을 확인했고 전날 자료14건/전체14건/필드11개도 검증했습니다. 이것이 실제 정부 경보의 APNs 기기 전달 증거는 아닙니다. 실제 발송 활성화에는 원천 의미/이용 조건/지연과 본인 기기 알림 표시·열기 검증이 더 필요합니다.
 
 ## 일정·복구
 
