@@ -765,3 +765,5 @@ Android API 36에서도 공식 서울시청 공개 사진 매칭/표시와 공�
 - 공개 배포 `60a4e201-6ab8-4a45-bf61-5213a4d48e19`. PWA에는 저장 기능이 없으므로 공통 잠실 지도 버튼 제거 및 안내 수정. 현재 다운로드 지도는 도로 중심으로 건물·수역·경로·현재 위치 미제공. 원자료 누락 시 지도 다운로드 실패를 정직하게 표시.
 - 검증: format/analyze 문제 0, Flutter 183개·Python 68개 통과. 저장할 때만 다운로드, 앱 재로딩 시 다운로드 없음, 개인 기록 변경 후 지도 유지, 삭제, 실패·재시도 테스트 추가. Chromium/WebKit PWA 오프라인 회귀 통과.
 - iPhone 17 Pro 실통합 검증 통과: 공개 지도 서버에서 다운로드하고 SQLite에 보관한 뒤 모든 신규 HTTP 연결을 차단한 상태에서 재로딩·지도 열기·확대 성공. 약 30초 세로 MP4 시연을 `artifacts/demo/`와 사용자 Mac 바탕화면에 저장.
+- 사용자 Google Play 앱 등록 요청: safeKor / kr.safekor.app / 한국어 / 무료 앱 등록 초안을 준비. 새 지도 저장 코드를 포함한 Android release AAB 76.9MB 생성, jarsigner 검증 통과, targetSdk 36 / debuggable false / allowBackup false 확인. 이전 단락의 'AAB 미생성'은 당시 상태이며 현재 갱신됨.
+- Play Console 자동 입력은 Chrome의 'AppleScript를 통한 자바스크립트 실행 기능이 꺼져 있습니다' 오류로 차단. 보안 설정을 변경하지 않고 사용자에게 Apple Events JavaScript 접근 권한 요청. 앱 생성/업로드/심사 제출은 아직 수행하지 않음. 등록 초안은 release/store/play-registration.json. 주변 지도 다운로드 흐름을 데이터 보안 검토 작업지에 추가.

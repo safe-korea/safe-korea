@@ -11,6 +11,7 @@ Google은 기기 밖으로 전송하는 SDK 처리도 개발자가 신고하도�
 | GPS 한 번 확인·거리 정렬 | location_service.dart, shelter.dart | 단독 기기 계산은 수집으로 신고하지 않는 범위. 지도/주소변환으로 이어지면 별도 판단 |
 | 현재 위치를 중심으로 지도 표시 | shelter_map.dart, map_sdk.dart | 정확한 위치/대략적 위치: optional, 앱 기능 목적 후보. 지도 요청 범위와 카카오 SDK가 보내는 세부 좌표·정밀도 확인 후 항목 확정 |
 | 현재 위치로 지역 제안 | region_suggestion_service.dart → Android Geocoder | 기기 시스템 서비스 처리 예외가 실제 구현에 적용되는지 확인. 앱이 직접 서버를 호출하는 흐름과 혼동하지 않음 |
+| 저장한 시설 주변 지도 다운로드 | saved_map_downloader.dart → Cloudflare 정적 도로 자료 | 저장 버튼을 누른 시설의 공개 지도 구역 코드와 요청 IP 처리. GPS/가족 자료는 전송하지 않음. 다운로드 자료는 시설과 함께 기기 SQLite에 보관·삭제. 호스팅 처리의 기존 최종 검토에 포함 |
 | 수동 선택 지역 코드·요청 주소 | shelter_api_client.dart → Workers → 정부 사이트 | region은 선택 조회 지역이며 현재 위치라고 단정하지 않음. 지역 조회 기능 목적. 서비스 사용 정보/검색 이력 분류는 실제 보관·SDK 동작과 대조 |
 | 요청 IP·기기 요청 정보 | Cloudflare/CDN, 지도 타일 | IP는 네트워크가 처리. 앱 코드에서 정밀 GPS/개인 DB 저장 안 함. 제공자의 위치 추론·식별·보안 목적/보관과 대조해 대략적 위치·기기 또는 기타 ID·진단 분류 확정. observability off를 “수집 없음” 근거로 사용하지 않음 |
 | 카카오 지도 SDK 자동 전송 | kakao_map_sdk 1.3.1 → com.kakao.maps.open:android:2.15.2 (설치 패키지 Gradle 확인) | 기기/기타 ID, 앱 정보/성능·진단, 위치, 사용정보의 수집/공유 여부 **보류**. 일반 카카오 계정·광고 SDK 설명을 지도 SDK의 확정 자료로 전용하지 않음 |
