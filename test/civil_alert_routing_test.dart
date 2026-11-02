@@ -142,6 +142,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('무조건 지하로 가지 마세요'), findsOneWidget);
       expect(find.text('공격 종류 다시 확인'), findsOneWidget);
+      expect(find.text('저장한 대피소 확인'), findsNothing);
       await tester.tap(find.text('공격 종류 다시 확인'));
       await tester.pumpAndSettle();
       expect(find.text('생물학 공격 안내'), findsOneWidget);

@@ -116,7 +116,7 @@
         status('기존 오프라인 안내를 확인했어요. 새 버전 확인은 인터넷 연결 후 다시 해주세요.', 'ready');
         return;
       }
-      status('저장을 완료하지 못했어요. 인터넷·저장공간을 확인하고 다시 시도하세요. 행동요령은 바로 볼 수 있어요.', 'error');
+      status('저장을 완료하지 못했어요. 인터넷·저장공간을 확인하고 다시 시도하세요.', 'error');
       $('prepare').textContent = '저장 다시 시도';
     } finally { $('prepare').disabled = false; }
   };
@@ -124,21 +124,19 @@
     try { localStorage.setItem('safe-korea-onboarding-v1','seen'); } catch (_) {}
     location.assign(new URL('app/', document.baseURI));
   };
-  $('start').onclick = start;
-  $('quick-start').onclick = start;
-  // Installed apps have separate storage on some platforms. Launch must not
-  // depend on the browser's onboarding flag, even if storage is unavailable.
+  $('start').onclick = () => {
+    $('install-help').setAttribute('aria-expanded','true');
+    $('install-detail').hidden=false;
+    $('install-title').scrollIntoView({behavior:'smooth',block:'start'});
+  };
+  $('quick-start').onclick = showSetup;
+  // Marketing URLs always remain marketing in a normal browser. A previous
+  // visit never installs the app, and must never turn a shared link into /app/.
   const params = new URL(location.href).searchParams;
-  let seen = false;
-  try { seen = localStorage.getItem('safe-korea-onboarding-v1') === 'seen'; } catch (_) {}
-  if (!params.has('setup') && (standalone || params.get('launch') === 'app' || (!params.has('intro') && seen))) {
+  const explicitIntro=params.has('intro')||location.pathname.endsWith('/intro/');
+  if (!explicitIntro && !params.has('setup') && standalone) {
     start();
   } else {
-    // iOS can save the current document URL instead of using manifest.start_url.
-    // Make even a shortcut added on the FIRST introduction slide launch the app.
-    // Keep this introduction visible now; only the next navigation starts the app.
-    const installUrl = new URL('app/', document.baseURI);
-    try { history.replaceState(history.state, '', installUrl); } catch (_) { /* Standalone detection still works. */ }
     $('entry-loading')?.setAttribute('hidden', '');
     $('onboarding').hidden = false;
     if (params.has('setup')) showSetup();

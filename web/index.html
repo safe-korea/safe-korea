@@ -12,6 +12,7 @@
   <link rel="apple-touch-icon" href="icons/icon-192.png">
   <link rel="icon" href="icons/icon-192.png" type="image/png">
   <link rel="stylesheet" href="onboarding.css">
+  <link rel="canonical" href="/intro/">
   <title>safeKor · 비상 대비</title>
 </head>
 <body>
@@ -19,7 +20,7 @@
   <main id="onboarding" aria-labelledby="welcome-title" hidden>
     <header class="brand-bar">
       <div class="brand"><img src="branding/icon-jindo.png" width="38" height="38" alt=""><span>safeKor<small>나와 가까운 비상 대비</small></span></div>
-      <button class="text-button" id="quick-start">먼저 둘러보기</button>
+      <button class="text-button" id="quick-start">설치 방법 보기</button>
     </header>
     <section id="product-tour" aria-label="safeKor 소개">
       <div class="tour-progress" aria-label="소개 페이지">
@@ -56,15 +57,16 @@
     <section class="step" aria-labelledby="install-title">
       <span class="number" aria-hidden="true">1</span><div><h2 id="install-title">홈 화면에 추가</h2><p id="install-summary">Safari에서 공유 → 더보기 → 홈 화면에 추가를 선택하세요.</p>
       <button class="secondary" id="install-help" aria-expanded="false" aria-controls="install-detail">추가하는 방법 보기</button>
-      <div id="install-detail" hidden><ol><li>Safari에서 이 페이지를 여세요.</li><li><strong>공유</strong> 메뉴를 누르세요.</li><li><strong>더보기(⋯)</strong>를 누르세요.</li><li><strong>홈 화면에 추가 → 추가</strong>를 누르세요.</li></ol><p>‘홈 화면에 추가’가 바로 보이면 더보기 단계는 건너뛰세요. iPhone 버전에 따라 메뉴 위치가 다를 수 있어요.</p><p>다른 브라우저는 메뉴의 앱 설치 기능을 확인하세요. 추가한 아이콘으로 열면 됩니다.</p></div></div>
+      <div id="install-detail" hidden><ol><li>Safari에서 이 페이지를 여세요.</li><li><strong>공유</strong> 메뉴를 누르세요.</li><li><strong>더보기(⋯)</strong>를 누르세요.</li><li><strong>홈 화면에 추가 → 추가</strong>를 누르세요.</li></ol><p>‘웹 앱으로 열기’가 보이면 켜 두세요. ‘홈 화면에 추가’가 바로 보이면 더보기 단계는 건너뛰세요. iPhone 버전에 따라 메뉴 위치가 다를 수 있어요.</p><p>다른 브라우저는 메뉴의 앱 설치 기능을 확인하세요. 추가한 아이콘으로 열면 됩니다.</p></div></div>
     </section>
     <section class="step" aria-labelledby="save-title">
       <span class="number" aria-hidden="true">2</span><div><h2 id="save-title">오프라인 안내 저장</h2><p>약 20 MB의 앱과 행동요령을 내려받아요.<br>웹 지도는 인터넷 연결이 필요합니다.</p>
       <button class="primary" id="prepare">이 기기에 저장하기</button>
       <p id="cache-status" role="status" aria-live="polite">아직 오프라인 저장을 확인하지 않았어요.</p></div>
     </section>
+    <section class="step" aria-labelledby="notification-title"><span class="number" aria-hidden="true">3</span><div><h2 id="notification-title">앱에서 알림 연결</h2><p>설치한 아이콘으로 앱을 열고 <strong>알림 연결 → 지역 선택 → 알림 허용하고 연결</strong>을 누르세요. 테스트 알림으로 전달을 확인할 수 있어요.</p><p class="small">설치만으로 알림이 켜지지는 않습니다. 정부 경보 연동 상태는 앱에서 확인하세요.</p></div></section>
     <aside><strong>위급할수록, 첫 행동부터.</strong><p>경보 내용은 재난문자·정부 방송으로 확인하고 현장 지시를 우선하세요.</p></aside>
-    <button class="start" id="start">행동요령 바로 보기</button>
+    <button class="start" id="start">홈 화면에 추가하는 방법 확인</button>
     <p class="small">설치·로그인·위치 허용 없이도 시작할 수 있어요.</p>
     <details><summary>저장 정보와 현재 제공 범위</summary><p>설치 안내 확인 여부만 이 브라우저에 저장합니다. 오프라인 저장을 선택하면 앱 파일과 행동요령을 캐시에 보관합니다. 브라우저 데이터 삭제·저장공간 정리로 지워질 수 있으니 가끔 오프라인 실행을 확인하세요.</p><p>행동 안내는 사용자가 경보 종류와 상황을 선택하면 표시됩니다. 정부 경보 자동 수신·푸시는 아직 제공하지 않습니다. 서버 계정·분석·광고 기능은 없습니다. 호스팅 제공자는 접속 IP 등 기본 요청 정보를 처리할 수 있습니다. 지역별 대피소 조회는 데이터 서버 연결 후 사용할 수 있으며 지역 코드·IP를 Cloudflare가 처리합니다. 마지막 조회 시설 목록도 이 브라우저에 보관합니다. 지도 링크를 열면 시설 좌표를 카카오에 전달합니다. GPS를 허용하면 기기 안에서 조회 지역을 판별하고 그 지역의 대피소를 거리순으로 보여줍니다. 현재 좌표는 서버에 보내지 않습니다. 가족 만남 장소·준비물·저장한 대피소와 주변 지도는 이 브라우저에 보관합니다. 브라우저 저장 용량이 부족하면 저장이 실패할 수 있으며 기존 기록은 유지합니다. 사이트 데이터를 지우면 저장한 자료도 지워집니다. 운영자는 safeKor이며 문의는 taetaeg@gmail.com으로 보내주세요.</p></details>
     <p class="small"><a href="/privacy" target="_blank" rel="noopener">개인정보처리방침</a> · <a href="/support" target="_blank" rel="noopener">문의·삭제 도움말</a></p>

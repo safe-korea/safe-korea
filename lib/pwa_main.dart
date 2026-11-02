@@ -1,4 +1,5 @@
 import 'widgets/situation_selector.dart';
+import 'services/web_push_bridge.dart';
 import 'main.dart' show SafeKoreaApp;
 
 import 'dart:convert';
@@ -27,6 +28,7 @@ Future<void> main() async {
     ..addFont(rootBundle.load('assets/fonts/NanumGothic-Regular.ttf'));
   await fonts.load();
   runApp(const SafeKoreaPwa());
+  WidgetsBinding.instance.addPostFrameCallback((_) => attachWebPushBridge());
   ConnectionMonitor.instance.start();
 }
 

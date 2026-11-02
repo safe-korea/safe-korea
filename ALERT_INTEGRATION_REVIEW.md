@@ -279,3 +279,13 @@ Kotlin 단위 테스트 4개, Dart 네이티브 채널 검증, 합성 수신 자
 출시 전에는 실제 Android 실기기에서 사용자가 동의한 뒤 제조사 재난문자 앱, OS 알림 내용 가림, 잠금/앱 종료/재시작과 알림 탭 동작을 확인해야 합니다. 현재 삼성 등 비허용 패키지는 지원 확인 전 연결하지 않습니다. 실제 전쟁 경보를 기다리지 않고 기관의 허가된 시험 경로로 검증할 수 있으나 그 경로를 아직 확보하지 않았습니다. iPhone PWA 알림은 이 구현으로 해결되지 않습니다.
 
 근거: [NotificationListenerService](https://developer.android.com/reference/android/service/notification/NotificationListenerService), [FCM 긴급 용도 제한](https://firebase.google.com/docs/cloud-messaging/customize-messages/setting-message-priority#life_critical_use_cases).
+
+## 2026-11-02 iPhone 웹 알림 구현 및 Cloudflare 원천 검증
+
+사용자 명시 승인 후 GOV_ALERT_API_KEY를 Cloudflare Secret에 등록했습니다. 서버 내부 생성 VAPID 키와 Apple Web Push 직접 전송, 사용자 동의/소유 구독 관리, 테스트·표시/열기 확인, 수신부 연결을 구현했습니다. FCM을 사용하거나 금지 용도를 이름만 바꾸지 않았습니다. API 소스 코드는 gate가 꺼져 있으며 실제 정부 경보를 보내지 않았습니다.
+
+운영 검사에서 Node와 다른 Workers redirect:error 미지원 오류를 수정했고 실제 workerd로 검사했습니다. 이어서 정부 게이트웨이 **오류 32(UNREGISTERED IP)**를 확인했습니다. 동일 키의 Mac 조회는 오늘 13/전체13건을 반환했습니다. 운영 서버 IP 허용이 해결되지 않았으며 인증 오류 반복은 6시간 동안 중단합니다. API 신청의 허용 IP 조건과 Workers의 변동 가능한 출구를 맞춰야 합니다. 무단 전체 IP 허용/보안 제한 해제는 하지 않았습니다.
+
+관측한 API 수신지역 ID는 시설 행정코드가 아닙니다. 정확한 공식 수신지역명(끝 공백 정리)으로만 대응하고 읍면동 등을 임의로 구/전국으로 넓히지 않습니다. 전체 건수와 100개 결과가 맞지 않는 날은 발송하지 않습니다. 생성 시각을 정부 발령 시각으로 바꾸어 안내하지 않습니다.
+
+실제 iPhone은 홈 화면 설치와 명시적 알림 권한 허용이 필요하며 자동으로 동의를 대신할 수 없습니다. 서버 접수/기기 표시/사용자 열기를 분리해 확인합니다. 현재 브라우저 API 픽스처·Workers 런타임의 합성 검증까지 완료했고 실제 iPhone 전달/운영 API/분류·지연·이용 조건·부하는 남아 있습니다. 구체 구성과 재검사는 workers/shelters/PUSH_OPERATIONS.md를 참고합니다.

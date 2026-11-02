@@ -1,26 +1,15 @@
-# SAFE KOREA 서버 구성
+# safeKor 서버 구성 — 2026-11-02
 
-2026-11-01 사용자 선택: **Cloudflare Workers를 Android·iPhone PWA 공통 데이터 API로 사용**합니다. 이전 Oracle VM/Flask 제안은 채택하지 않습니다. Workers API는 2026-11-01 사용자 승인 후 실제 배포했습니다. 공개 주소: https://safe-korea-shelter-api.trovapp.workers.dev . PWA 사이트 호스팅은 별도 미배포입니다.
+Android/iPhone PWA 공통 Cloudflare Workers를 운영합니다. 소개와 앱·시설 API·개인정보/문의 페이지가 같은 HTTPS origin을 사용합니다. 무료 범위로 구성했으며 새 유료 서비스나 VM은 도입하지 않았습니다.
 
-```text
-Android ─────────┐
-                 ├→ Workers 지역별 API → 공식 시설 목록 / 위치별 공용 캐시
-iPhone PWA ──────┘
-PWA 파일·글꼴·행동요령 → 별도 HTTPS 정적 호스팅 → 기기 오프라인 캐시
-```
+- 공유 소개: https://safe-korea-shelter-api.trovapp.workers.dev/intro/
+- 설치 아이콘 실행: https://safe-korea-shelter-api.trovapp.workers.dev/app/
+- 가족·준비물·시설·지도: Android SQLite 또는 PWA 브라우저 안에 저장. 계정/가족 자료 서버 동기화 없음.
+- 시설 조회: 기존 지역별 API·공개 자료 캐시. 요청에는 지역 코드만 포함하며 GPS/가족 계획은 보내지 않음.
+- PWA 알림: 명시적 동의 후 구독 주소·암호화 키·선택 지역·관리 해시를 D1에 저장. Apple Web Push로 암호화해 전송. 사용자 기기 테스트/표시/열기와 해제·삭제 구현.
+- 서명키: Worker 안에서 생성·보관, 공개 API는 공개키만 반환. 정부 API 키: 사용자 승인 후 Cloudflare Secret에 등록, 앱과 Git에는 없음.
+- 정부 API 수집: 2분 cron, 일일 900회 상한, 동시 실행 lease, 전체 건수·분류·시각·지역·중복 검사. 인증 오류는 6시간 재시도 제한.
 
-| 기능 | 처리 위치와 상태 |
-|---|---|
-| 지역별 시설 조회·출처/건수 검증·이전 자료 표시 | Workers 공개 배포, 실제 정부 자료 72곳·캐시·CORS 검증. 설정 파일 config/api.production.json |
-| 시설 조회 UI | Android는 URL 설정 시 Workers 사용, 기본값은 기존 정부 직접 조회. PWA는 URL 설정 시 지역 선택/목록/외부 카카오 지도 링크 |
-| GPS·거리 계산·개인 계획 | Android 기기에서 처리. PWA GPS·개인 계획·내장 지도는 미전환 |
-| 오프라인 행동요령 | Android 동봉 자료, PWA 사용자 요청으로 앱 파일/행동요령 캐시 |
-| PWA 시설 오프라인 저장 | 미구현; 화면과 개인정보 설명에 명시 |
-| 로그인·개인 DB·기기 간 동기화 | 필요하지 않아 추가하지 않음 |
-| 실제 정부 경보·푸시 | 미구현, 별도 공식 연계 검증 필요 |
+현재 정부 API는 Workers에서 오류 32(미등록 IP)를 반환하고 Mac에서는 조회됩니다. 운영 출구 IP/이용 조건 해결 전 실제 정부 경보 발송 게이트는 false로 유지합니다. Cloudflare의 변동 가능한 출구를 고정 IP로 가정하거나 전체 IP 허용으로 바꾸지 않았습니다.
 
-PWA에서 정부 웹사이트를 직접 호출하면 CORS로 차단되는 것을 확인했습니다(`artifacts/pwa-cors-check.json`). Workers는 임의 URL 프록시가 아닌, 고정 정부 호스트와 허용된 지역 코드만 사용하는 API입니다. GPS나 가족 정보를 받지 않습니다. 호스팅/CDN은 접속 IP 등 요청 정보를 처리하므로 로그인 유무와 개인정보 처리는 별개입니다.
-
-[구현·실행·API 계약·배포 전 조건](workers/shelters/README.md)을 참고하세요. 15분 캐시, 원천 실패 시 24시간 미만 이전 자료, 지역별 요청 제한과 8초/2 MiB 제한을 구현했습니다. 캐시는 영구 DB나 전 세계 공통 캐시가 아니며 무료 한도와 처리 용량은 운영 환경에서 확인해야 합니다.
-
-남은 출시 항목: 정부 자료 이용 조건, 공개 PWA origin과 정적 호스팅, 운영 부하/다중 리전 검증, 개인정보 정책과 운영자 정보. API 배포 승인·계정 연결·공개 주소·원천 연결 검증은 완료했습니다. 비밀키·유료 서비스를 추가하지 않았으며 Free 플랜 기본 제한으로 운영합니다. PWA 정적 호스팅은 별도 미배포입니다.
+푸시 구현/배포는 실제 iPhone의 설치·권한 동의·알림 표시/탭 검증과 다릅니다. 대규모 경보 발송 부하·종단 지연·누락은 검증하지 않았습니다. [운영/복구/검증](workers/shelters/PUSH_OPERATIONS.md)을 참고하세요. 무료 한도에 따른 가용성도 보장하지 않습니다.
