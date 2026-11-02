@@ -8,7 +8,7 @@ void main() {
   ) async {
     await tester.pumpWidget(const SafeKoreaPwa());
     await tester.pumpAndSettle();
-    expect(find.text('비공식 준비용 안내 · 실제 경보 수신 없음'), findsOneWidget);
+    expect(find.text('경보를 들었다면, 상황에 맞는 행동을 확인하세요.'), findsOneWidget);
     final externalButton = tester.element(find.text('정부 대피시설 찾기 · 인터넷 필요'));
     expect(
       DefaultTextStyle.of(externalButton).style.fontFamily,
