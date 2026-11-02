@@ -118,7 +118,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(repo.calls, 1);
       expect(location.calls, 1);
-      expect(find.text('현재 위치 표시 지우기'), findsOneWidget);
+      expect(find.byTooltip('내 위치 옵션'), findsOneWidget);
       expect(find.text('부산광역시 중구'), findsWidgets);
     },
   );

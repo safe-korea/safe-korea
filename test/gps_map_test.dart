@@ -46,8 +46,10 @@ void main() {
       tester.widget<ShelterMap>(find.byType(ShelterMap)).currentLocation,
       const LatLng(37.57, 126.98),
     );
-    await tester.ensureVisible(find.text('현재 위치 표시 지우기'));
-    await tester.tap(find.text('현재 위치 표시 지우기'));
+    await tester.ensureVisible(find.byTooltip('내 위치 옵션'));
+    await tester.tap(find.byTooltip('내 위치 옵션'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('내 위치 사용 해제'));
     await tester.pumpAndSettle();
     expect(find.byType(ShelterMap), findsNothing);
     expect(find.textContaining('위치 미사용, 원본 순서'), findsOneWidget);

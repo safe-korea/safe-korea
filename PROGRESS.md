@@ -708,3 +708,14 @@ Android API 36에서도 공식 서울시청 공개 사진 매칭/표시와 공�
 - Chromium/WebKit 모의 브라우저 위치에서 실제 중구 공식 시설 72건 조회·거리 표시·요청 파라미터·오프라인 재조회 실패 보존 PASS. 위치는 API에 전송하지 않음. iPhone 실기기 Safari 설치 및 GPS는 별도 미검증.
 - 사용자 확정 진돗개 원본 c-jindo-minimal-v2.png를 iOS AppIcon 규격으로 출력. Android/PWA와 동일 디자인. iOS 시뮬레이터 재빌드·일반 앱 설치 완료. iOS App Store 출시 범위는 변경하지 않음.
 - analyze, Flutter 173건/Python 66건 PASS. PWA release 빌드 및 공개 배포 완료(Workers b897e3cf-cb8b-437f-b0c3-8b1a035846b2), 브라우저 권한/위치 처리 개인정보 문구 업데이트. PR #10 머지(a2e4eba), feat/gps-demo-and-jindo-icon 분기.
+
+## 2026-11-02 — 위치 조작 UX·출시 전 보안 점검
+
+- 조회 지역과 거리 계산용 내 위치를 구분하는 공통 카드 추가. 확인 상태·새로고침을 묶고 위치 사용 해제는 ‘내 위치 옵션’ 메뉴로 이동. 조회 지역이 자동 변경되지 않는다는 안내 유지. 네이티브/PWA 양쪽 적용.
+- 메뉴를 통한 해제·지도 위치 제거·원본 순서 복구 검사, 좁은 화면의 지역 선택 스크롤 검사 갱신. analyze/Flutter 173건/Python 66건 PASS. iPhone 시뮬레이터 일반 앱 업데이트.
+- 사용자 GitHub 포함 보안 점검 요청: 전체 Git 이력/로컬 키 패턴 일치 없음(1,490 blobs). npm audit 0건, Pub 135개 OSV 조회 0건. GitHub secret scan 0건, Dependabot alerts 및 자동 보안 수정 PR 활성화.
+- 최소권한·Action SHA 고정 CI와 주간 의존성 갱신 설정, PWA 프레임 삽입 방지/권한 헤더 추가. API 기존 보안 제어 및 Android 권한 확인. 계정 2FA/최종 native 공급망/최신 제출 빌드 검증 등 미확인 항목은 RELEASE_CHECKLIST.md에 기록.
+- GitHub main 보호 적용/read-back 확인: PR 필수·security-checks 성공 필수·최신 main 기준 검사·관리자 포함·강제 push/삭제 금지. 독립 리뷰어 승인 수는 0(개인 저장소)이며 코드 리뷰를 대체하지 않음. 최초 Actions 실제 실행 41397857762 PASS.
+- 최종 analyze/Flutter 173건/Python 68건, Worker 17건/TypeScript PASS. Chromium/WebKit GPS·지역 조회·오프라인 재조회 회귀 PASS. 거리 레이블은 Flutter 접근성 aria-label로 검증하도록 자동 검사 수정, 실제 화면에도 거리 표시 확인.
+- 공개 PWA 보안 헤더·위치 UI 배포 완료: Workers 7883c46c-42c5-4f67-92b0-fe37b55826d7. 최신 제출 AAB 재빌드 검증은 별도 후속 기록.
+- 최신 코드 signed AAB 재빌드 PASS(75,608,970 bytes, SHA-256 dd94003d037b11a90b0a508a6b42bd929d6002608f93e49642b77756969fbd77). jarsigner 검증 PASS(자체서명/타임스탬프 경고는 출력). kr.safekor.app, min24/target36, debuggable=false, allowBackup=false, native ELF 7개 16KB 정렬 확인. 최신 코드 Actions run 41398213315 PASS. 공개 PWA 응답의 DENY/CSP/Permissions-Policy/nosniff 직접 확인.

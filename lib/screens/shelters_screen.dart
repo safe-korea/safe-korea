@@ -15,6 +15,7 @@ import '../services/saved_shelters_controller.dart';
 import 'saved_shelters_screen.dart';
 import 'shelter_record_screen.dart';
 import '../widgets/common.dart';
+import '../widgets/location_controls.dart';
 import '../models/public_shelter_photo.dart';
 import '../widgets/public_shelter_photo.dart';
 import '../widgets/shelter_street_view_button.dart';
@@ -340,6 +341,11 @@ class _SheltersScreenState extends State<SheltersScreen> {
               ),
             ),
             if (!_choosingRegion && catalog != null) ...[
+              const Text(
+                '조회 지역',
+                style: TextStyle(fontSize: 14, color: AppPalette.muted),
+              ),
+              const SizedBox(height: 4),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -369,29 +375,17 @@ class _SheltersScreenState extends State<SheltersScreen> {
               label: const Text('저장한 대피소 · 오프라인 목록'),
             ),
             const SizedBox(height: 12),
-            OutlinedButton.icon(
-              onPressed: _locating || _suggesting ? null : _locate,
-              icon: const Icon(Icons.my_location),
-              label: Text(_locating ? '위치 확인 중…' : 'GPS 현재 위치 확인'),
+            LocationControls(
+              position: _position,
+              busy: _locating || _suggesting,
+              message: _locationMessage,
+              onLocate: _locate,
+              onClear: () => setState(() {
+                _position = null;
+                _locationMessage = null;
+                _map = false;
+              }),
             ),
-            const SizedBox(height: 8),
-            const Text(
-              '조회한 지역 안에서 가까운 순으로 표시합니다.',
-              style: TextStyle(fontSize: 14),
-            ),
-            if (_locationMessage != null)
-              Semantics(liveRegion: true, child: Notice(_locationMessage!)),
-            if (_position != null)
-              TextButton(
-                onPressed: _locating
-                    ? null
-                    : () => setState(() {
-                        _position = null;
-                        _locationMessage = null;
-                        _map = false;
-                      }),
-                child: const Text('현재 위치 표시 지우기'),
-              ),
             const SizedBox(height: 16),
             if (_provinces.isNotEmpty && _choosingRegion) ...[
               const Text(
