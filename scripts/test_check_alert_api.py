@@ -53,6 +53,32 @@ class AlertProbeTests(unittest.TestCase):
                 self.assertEqual(probe('unused', size)['status'], 'invalid_sample_size')
             opener.assert_not_called()
 
+    def test_invalid_filters_never_call_network(self):
+        with patch('urllib.request.build_opener') as opener:
+            for value in ['20250229', '2025-08-20', '20251301', '2025082', 20250820]:
+                self.assertEqual(probe('unused', since=value)['status'], 'invalid_start_date')
+            for value in ['', '  ', 'x' * 81, 'region\n', 123]:
+                self.assertEqual(probe('unused', region=value)['status'], 'invalid_region_filter')
+            opener.assert_not_called()
+
+    def test_filters_are_encoded_and_single_request_only(self):
+        from urllib.parse import urlsplit, parse_qs
+        from unittest.mock import MagicMock
+        with tempfile.TemporaryDirectory() as directory:
+            file = Path(directory) / 'key.json'
+            file.write_text('{"serviceKey":"synthetic-key"}')
+            file.chmod(0o600)
+            opener = MagicMock()
+            opener.open.return_value.__enter__.return_value.read.return_value = b'{}'
+            with patch('urllib.request.build_opener', return_value=opener):
+                probe(file, sample_size=10, since='20240229', region='서울특별시')
+            opener.open.assert_called_once()
+            query = parse_qs(urlsplit(opener.open.call_args.args[0]).query)
+            self.assertEqual(query['crtDt'], ['20240229'])
+            self.assertEqual(query['rgnNm'], ['서울특별시'])
+            self.assertEqual(query['pageNo'], ['1'])
+            self.assertEqual(query['numOfRows'], ['10'])
+
     def test_no_redirect(self):
         self.assertIsNone(NoRedirect().redirect_request(None, None, 302, '', {}, 'https://other.example'))
 
