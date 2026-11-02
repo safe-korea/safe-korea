@@ -142,6 +142,13 @@ class SavedSheltersController extends ChangeNotifier {
   ) async {
     if (!loaded || busy || loading || !_entries.containsKey(key)) return false;
     if (note.length > 300 || photos.length > 3) return false;
+    if (photos.any(
+      (p) =>
+          p.isReferenceMap &&
+          (p.mapSource!.trim().isEmpty || p.mapSource!.length > 120),
+    )) {
+      return false;
+    }
     busy = true;
     error = null;
     notifyListeners();

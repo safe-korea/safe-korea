@@ -82,16 +82,79 @@ class _ShelterRecordScreenState extends State<ShelterRecordScreen> {
     super.dispose();
   }
 
-  Future<void> _pick() async {
+  Future<String?> _mapSource() async {
+    var input = '';
+    final form = GlobalKey<FormState>();
+    final result = await showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('안내도·약도 이미지 추가'),
+        content: SingleChildScrollView(
+          child: Form(
+            key: form,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  '직접 만든 약도나 저장이 허용된 안내도를 선택하세요. 지도 앱의 화면을 자동 저장하지 않습니다.',
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  onChanged: (value) => input = value,
+                  maxLength: 120,
+                  decoration: const InputDecoration(
+                    labelText: '이미지 출처',
+                    hintText: '예: 직접 만든 약도 / 안내도 제공 기관',
+                  ),
+                  validator: (value) => value == null || value.trim().isEmpty
+                      ? '출처를 입력해 주세요.'
+                      : null,
+                ),
+                const Text('이미지 안의 출처·저작자 표시는 남겨 주세요.'),
+              ],
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('취소'),
+          ),
+          FilledButton(
+            onPressed: () {
+              if (form.currentState!.validate()) {
+                Navigator.pop(context, input.trim());
+              }
+            },
+            child: const Text('이미지 선택'),
+          ),
+        ],
+      ),
+    );
+    return result;
+  }
+
+  Future<void> _pick({bool referenceMap = false}) async {
     setState(() {
       _busy = true;
       _message = null;
     });
     try {
+      final source = referenceMap ? await _mapSource() : null;
+      if (!mounted || (referenceMap && source == null)) return;
       final photo = await _importer.pick();
       if (mounted && photo != null) {
         setState(() {
-          _photos.add(photo);
+          _photos.add(
+            source == null
+                ? photo
+                : ShelterPhoto(
+                    data: photo.data,
+                    addedAt: photo.addedAt,
+                    mapSource: source,
+                  ),
+          );
           _dirty = true;
         });
       }
@@ -160,7 +223,7 @@ class _ShelterRecordScreenState extends State<ShelterRecordScreen> {
       if (!didPop && !_busy) _confirmLeave();
     },
     child: Scaffold(
-      appBar: AppBar(title: const Text('출입구 사진·메모')),
+      appBar: AppBar(title: const Text('사진·약도·메모')),
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -229,7 +292,7 @@ class _ShelterRecordScreenState extends State<ShelterRecordScreen> {
           ),
           const SizedBox(height: 8),
           const Text(
-            '기기에만 복사해요. 오프라인에서도 볼 수 있어요.',
+            '사진·약도 합계 3장. 기기에 저장하면 오프라인에서도 볼 수 있어요.',
             style: TextStyle(fontSize: 14),
           ),
           if (_recovered != null && _photos.length < 3) ...[
@@ -263,9 +326,15 @@ class _ShelterRecordScreenState extends State<ShelterRecordScreen> {
           if (_photos.length < 3) ...[
             const SizedBox(height: 16),
             OutlinedButton.icon(
-              onPressed: _busy ? null : _pick,
+              onPressed: _busy ? null : () => _pick(),
               icon: const Icon(Icons.add_photo_alternate_outlined),
               label: const Text('사진 보관함에서 선택'),
+            ),
+            const SizedBox(height: 8),
+            OutlinedButton.icon(
+              onPressed: _busy ? null : () => _pick(referenceMap: true),
+              icon: const Icon(Icons.map_outlined),
+              label: const Text('오프라인 약도 이미지 추가'),
             ),
           ],
           if (_message != null) ...[
@@ -296,7 +365,9 @@ class PersonalShelterPhoto extends StatelessWidget {
       return Image.memory(
         base64Decode(photo.data),
         fit: BoxFit.contain,
-        semanticLabel: '직접 저장한 대피소 사진 $index. 공식 사진 아님',
+        semanticLabel: photo.isReferenceMap
+            ? '직접 저장한 참고 약도 $index. 현재 위치와 경로 안내 없음'
+            : '직접 저장한 대피소 사진 $index. 공식 사진 아님',
         cacheWidth: full ? null : 800,
         errorBuilder: (_, _, _) =>
             const Center(child: Text('사진을 읽지 못했습니다. 다시 추가해 주세요.')),
@@ -310,6 +381,15 @@ class PersonalShelterPhoto extends StatelessWidget {
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
+      if (photo.isReferenceMap) ...[
+        const Text('오프라인 참고 약도', style: TextStyle(fontWeight: FontWeight.w700)),
+        Text('출처: ${photo.mapSource}'),
+        const Text(
+          '현재 위치·길찾기 없음 · 현장과 다를 수 있어요.',
+          style: TextStyle(fontSize: 14),
+        ),
+        const SizedBox(height: 8),
+      ],
       ClipRRect(
         borderRadius: BorderRadius.circular(12),
         child: ColoredBox(
@@ -322,14 +402,16 @@ class PersonalShelterPhoto extends StatelessWidget {
           context,
           MaterialPageRoute<void>(
             builder: (_) => PhotoViewerScreen(
-              title: '개인 사진 $index',
+              title: photo.isReferenceMap ? '저장한 약도 $index' : '개인 사진 $index',
               image: _image(full: true),
-              caption: '직접 저장한 개인 기록 · 공식 사진 아님',
+              caption: photo.isReferenceMap
+                  ? '출처: ${photo.mapSource}\n기기 추가: ${photo.addedAt.toLocal().toIso8601String().substring(0, 10)} · 지도 갱신일 아님\n현재 위치·길찾기 없음. 현장과 다를 수 있으며 안전한 경로를 보장하지 않습니다.'
+                  : '직접 저장한 개인 기록 · 공식 사진 아님',
             ),
           ),
         ),
         icon: const Icon(Icons.zoom_in),
-        label: Text('사진 $index 크게 보기'),
+        label: Text(photo.isReferenceMap ? '저장한 약도 크게 보기' : '사진 $index 크게 보기'),
       ),
       Text(
         '개인 기록 · 추가 ${photo.addedAt.toLocal().toIso8601String().substring(0, 10)}',

@@ -11,16 +11,26 @@ extension ShelterRoleLabel on ShelterRole {
 }
 
 class ShelterPhoto {
-  const ShelterPhoto({required this.data, required this.addedAt});
+  const ShelterPhoto({
+    required this.data,
+    required this.addedAt,
+    this.mapSource,
+  });
+
+  /// User supplied reference image, never an automatically captured SDK map.
+  final String? mapSource;
+  bool get isReferenceMap => mapSource != null;
   final String data;
   final DateTime addedAt;
   Map<String, dynamic> toJson() => {
     'data': data,
     'addedAt': addedAt.toIso8601String(),
+    if (mapSource != null) 'mapSource': mapSource,
   };
   factory ShelterPhoto.fromJson(Map<String, dynamic> json) => ShelterPhoto(
     data: json['data'] as String,
     addedAt: DateTime.parse(json['addedAt'] as String),
+    mapSource: json['mapSource'] as String?,
   );
 }
 

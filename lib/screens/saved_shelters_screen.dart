@@ -85,7 +85,7 @@ class _SavedSheltersScreenState extends State<SavedSheltersScreen> {
         return PageBody(
           children: [
             const Text(
-              '사진·메모·주소는 오프라인으로 볼 수 있어요.\n지도와 재조회에는 인터넷이 필요해요.',
+              '저장한 약도·사진·주소는 오프라인으로 볼 수 있어요.\n온라인 지도와 재조회에는 인터넷이 필요해요.',
               style: TextStyle(fontSize: 14),
             ),
             const SizedBox(height: 12),
@@ -228,6 +228,11 @@ class _SavedSheltersScreenState extends State<SavedSheltersScreen> {
               body: Text(entry.entranceNote),
             ),
           ],
+          for (var i = 0; i < entry.photos.length; i++)
+            if (entry.photos[i].isReferenceMap) ...[
+              const SizedBox(height: 16),
+              PersonalShelterPhoto(photo: entry.photos[i], index: i + 1),
+            ],
           const SizedBox(height: 16),
           FilledButton.icon(
             onPressed: () => _openMap(entry),
@@ -260,7 +265,8 @@ class _SavedSheltersScreenState extends State<SavedSheltersScreen> {
             expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
             title: const Text('내 기록 · 선택'),
             children: [
-              if (entry.photos.isNotEmpty) ...[
+              if (entry.photos.isNotEmpty &&
+                  !entry.photos.first.isReferenceMap) ...[
                 const SizedBox(height: 16),
                 PersonalShelterPhoto(photo: entry.photos.first, index: 1),
               ],
@@ -283,8 +289,8 @@ class _SavedSheltersScreenState extends State<SavedSheltersScreen> {
                 icon: const Icon(Icons.photo_library_outlined),
                 label: Text(
                   entry.photos.isEmpty && entry.entranceNote.isEmpty
-                      ? '우선순위·사진·메모 추가'
-                      : '사진 ${entry.photos.length}장·메모 관리',
+                      ? '사진·약도·메모 추가'
+                      : '사진·약도 ${entry.photos.length}장 관리',
                 ),
               ),
             ],

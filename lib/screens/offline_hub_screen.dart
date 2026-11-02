@@ -47,13 +47,13 @@ class OfflineHubScreen extends StatelessWidget {
             ActionTile(
               icon: Icons.bookmark_outline,
               title: '저장한 대피소',
-              subtitle: '주소 · 출입구 메모 · 저장한 사진',
+              subtitle: '주소 · 저장한 약도·사진 · 출입구 메모',
               onTap: () => _open(context, const SavedSheltersScreen()),
             ),
             ActionTile(
               icon: Icons.people_outline,
               title: '가족 만남 장소',
-              subtitle: '이 기기에 저장한 장소와 약속',
+              subtitle: '저장한 장소와 약속 · 전송은 연결 후',
               onTap: () => _open(context, const FamilyScreen()),
             ),
             ActionTile(
@@ -63,8 +63,15 @@ class OfflineHubScreen extends StatelessWidget {
               onTap: () => _open(context, const ReadinessScreen()),
             ),
             const SizedBox(height: 16),
-            const Notice(
-              '새 대피소 조회·지도·로드뷰·인터넷 라디오·메시지 전송에는 연결이 필요해요. 저장하지 않은 정보는 표시할 수 없어요.',
+            const Notice('온라인 지도·새 시설 조회·메시지 전송은 연결 후 이용하세요.'),
+            const SizedBox(height: 12),
+            const Text(
+              '미리 준비하기',
+              style: TextStyle(fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 4),
+            const Text(
+              '대피소를 저장하고 사진·약도·메모를 추가해 두세요. 저장하지 않은 자료는 오프라인에서 볼 수 없어요.',
             ),
             if (status == LinkStatus.limited)
               const Text('네트워크는 감지됐지만 서버 응답을 확인하지 못했어요. 인터넷 또는 서버 문제일 수 있어요.'),

@@ -40,6 +40,84 @@ Future<SavedSheltersController> controller(SavedMemoryStore store) async {
 }
 
 void main() {
+  test(
+    'reference maps retain source through reload and official refresh',
+    () async {
+      final store = SavedMemoryStore();
+      final c = await controller(store);
+      final entry = c.entries.single;
+      final map = ShelterPhoto(
+        data: png,
+        addedAt: DateTime.utc(2026, 11, 2),
+        mapSource: '직접 만든 약도',
+      );
+      expect(
+        await c.savePersonal(entry.key, ShelterRole.primary, '', [map]),
+        isTrue,
+      );
+      final reloaded = SavedSheltersController(store: store);
+      await reloaded.load();
+      final restored = SavedShelter.fromJson(
+        reloaded.entries.single
+            .withCheck(entry.snapshot, DateTime.now(), ShelterCheck.confirmed)
+            .toJson(),
+      );
+      expect(restored.photos.single.mapSource, '직접 만든 약도');
+      expect(restored.photos.single.data, png);
+      expect(ShelterPhoto.fromJson(photo().toJson()).isReferenceMap, isFalse);
+      expect(
+        await c.savePersonal(entry.key, ShelterRole.none, '', [
+          ShelterPhoto(data: png, addedAt: DateTime.now(), mapSource: ' '),
+        ]),
+        isFalse,
+      );
+      expect(c.entries.single.photos.single.mapSource, '직접 만든 약도');
+    },
+  );
+
+  testWidgets(
+    'reference map requires source and opens offline without expanding records',
+    (tester) async {
+      final c = await controller(SavedMemoryStore());
+      await tester.pumpWidget(
+        MaterialApp(
+          home: ShelterRecordScreen(
+            entry: c.entries.single,
+            controller: c,
+            importer: PhotoFixture(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      final add = find.text('오프라인 약도 이미지 추가');
+      await tester.ensureVisible(add);
+      await tester.tap(add);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('이미지 선택'));
+      await tester.pumpAndSettle();
+      expect(find.text('출처를 입력해 주세요.'), findsOneWidget);
+      await tester.enterText(find.byType(TextFormField), '직접 만든 약도');
+      await tester.tap(find.text('이미지 선택'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('기기에 저장'));
+      await tester.pumpAndSettle();
+      await c.load();
+      expect(c.entries.single.photos.single.mapSource, '직접 만든 약도');
+      await tester.pumpWidget(
+        MaterialApp(home: SavedSheltersScreen(controller: c)),
+      );
+      await tester.pumpAndSettle();
+      final open = find.text('저장한 약도 크게 보기');
+      await tester.ensureVisible(open);
+      await tester.tap(open);
+      await tester.pumpAndSettle();
+      expect(find.text('저장한 약도 1'), findsOneWidget);
+      expect(find.textContaining('지도 갱신일 아님'), findsOneWidget);
+      expect(find.byType(Image), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   test('legacy record loads without personal data; official refresh retains personal data', () {
     final initial = SavedShelter.fromCatalog(
       fixture('11110', '서울', 'a'),
@@ -111,10 +189,18 @@ void main() {
     await c.load();
     await c.toggle(fixture('11110', '서울', 'a'), 'a');
     final a = c.entries.single;
-    await c.savePersonal(a.key, ShelterRole.primary, '문 옆', [photo()]);
+    await c.savePersonal(a.key, ShelterRole.primary, '문 옆', [
+      photo(),
+      ShelterPhoto(
+        data: png,
+        addedAt: DateTime.utc(2026, 11, 2),
+        mapSource: '직접 만든 약도',
+      ),
+    ]);
     final reloaded = SavedSheltersController(store: LocalStore(database: db));
     await reloaded.load();
-    expect(reloaded.entries.single.photos.single.data, png);
+    expect(reloaded.entries.single.photos.first.data, png);
+    expect(reloaded.entries.single.photos.last.mapSource, '직접 만든 약도');
     expect(reloaded.entries.single.entranceNote, '문 옆');
     await reloaded.toggle(a.snapshot, a.shelter.id);
     expect(await store.loadSavedShelters(), isEmpty);
