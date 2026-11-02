@@ -7,6 +7,18 @@
   let offered=false;
   let config,credential, registration, browserSubscription, pending=new URL(location.href).searchParams.get('notice');
   let busy=false,receiptTimer,ready=typeof window.safeKorPushReceiver==='function';
+  const shortRegion=name=>({'서울특별시':'서울시','세종특별자치시':'세종시'}[name]||name.replace(/광역시$/,'시'));
+  const provinceOf=code=>(config?.regions||[]).find(r=>r.code===String(code||'').slice(0,2)&&r.code.length===2)?.code||'';
+  function fillRegions(selector){
+    selector.replaceChildren(new Option('시·도 선택',''));
+    for(const region of config.regions||[])if(region.code.length===2)selector.add(new Option(shortRegion(region.name),region.code));
+    // Keep an existing district registration until the owner explicitly changes it.
+    if(selector.id==='push-region'&&credential?.region&&!provinceOf(credential.region))return;
+    if(selector.id==='push-region'&&credential?.region?.length>2){
+      const saved=config.regions.find(r=>r.code===credential.region);
+      if(saved)selector.add(new Option(`${saved.name} (기존 설정)`,saved.code));
+    }
+  }
   const initial=new URL(location.href);initial.searchParams.delete('notice');history.replaceState(null,'',initial.pathname+initial.search+initial.hash);
   const installed=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
   const appleDevice=()=>/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
@@ -34,7 +46,7 @@
   }
   async function refresh(){
     if(!config){config=await api('config');publicState(config);
-      for(const region of config.regions||[]){const option=document.createElement('option');option.value=region.code;option.textContent=region.name;$('push-region').append(option);}
+      fillRegions($('push-region'));
     }
     if(supported()){
       const started=Date.now();
@@ -95,10 +107,10 @@
     try{
       await refresh();
       const selector=$('push-welcome-region');
-      for(const region of config.regions||[]){const option=document.createElement('option');option.value=region.code;option.textContent=region.name;selector.append(option);}
+      fillRegions(selector);
       let suggested=credential?.region;
       try{suggested ||= JSON.parse(localStorage.getItem('safekor.local.v1.catalog')||'null')?.areaCode;}catch{}
-      if(config.regions.some(r=>r.code===suggested))selector.value=suggested;
+      selector.value=provinceOf(suggested);
       $('push-welcome-source').textContent=config.officialEnabled?'':'정부 경보 연동 준비 중 · 테스트 알림 연결 가능';
       $('push-welcome-status').textContent=selector.value?'확인을 누르면 iPhone 알림 허용으로 이어집니다.':'처음 한 번 알림을 받을 지역을 선택하세요.';
     }catch{ $('push-welcome-status').textContent='인터넷 연결 후 나의 준비 → 알림 설정에서 연결할 수 있어요.'; }

@@ -5,6 +5,7 @@ const assert=require('node:assert/strict');
 const origin=process.env.PWA_TEST_URL||'http://127.0.0.1:8766';
 const ec=createECDH('prime256v1');ec.generateKeys();
 const point=ec.getPublicKey().toString('base64url');
+const provinces=require('../assets/regions.json').provinces.map(({code,name})=>({code,name}));
 (async()=>{
  for(const[name,engine]of Object.entries({chromium,webkit})){
   const browser=await engine.launch({headless:true});
@@ -26,9 +27,9 @@ const point=ec.getPublicKey().toString('base64url');
    const fixture=async(url,body)=>{
     const path=new URL(url).pathname.split('/').pop();
     let value={};let status=200;
-    const config={transportReady:true,publicKey:point,officialEnabled:false,source:{state:'key_required'},regions:[{code:'11710',name:'서울특별시 송파구'}]};
+    const config={transportReady:true,publicKey:point,officialEnabled:false,source:{state:'key_required'},regions:[...provinces,{code:'11710',name:'서울특별시 송파구'}]};
     if(path==='config')value=config;
-    else if(path==='subscribe'){assert.equal(body.consentVersion,'2026-11-02');assert.equal(body.region,'11710');assert(body.capability);registered=true;value={...config,id:'1'.repeat(64)};status=201;}
+    else if(path==='subscribe'){assert.equal(body.consentVersion,'2026-11-02');assert.equal(body.region,'11');assert(body.capability);registered=true;value={...config,id:'1'.repeat(64)};status=201;}
     else if(path==='status')value={...config,lastTest:tests?{state:'accepted',received_at:null}:null};
     else if(path==='test'){assert(registered);tests++;value={state:'accepted',deliveryId:'11111111-1111-4111-8111-111111111111',received:false};status=202;}
     else if(path==='notice'){lookups++;value={type:'civil',id:'a'.repeat(64),revision:'b'.repeat(64),kind:'air',publishedAt:Date.now(),expiresAt:Date.now()+90000,agency:'합성 QA 입력 · 실제 발령 아님',area:'합성 QA 지역'};}
@@ -53,9 +54,14 @@ const point=ec.getPublicKey().toString('base64url');
    assert.equal(await p.evaluate(()=>window.__pushCalls),0);
    await p.locator('#push-welcome').waitFor({state:'visible'});
    assert.equal(await p.locator('#app-shell nav').count(),0);
-   await p.locator('#push-welcome-region option[value="11710"]').waitFor({state:'attached'});
+   await p.locator('#push-welcome-region option[value="11"]').waitFor({state:'attached'});
+   assert.equal(await p.locator('#boot-splash').isVisible(),false);
+   assert.equal(await p.locator('#push-welcome-region option').count(),provinces.length+1);
+   assert.equal(await p.locator('#push-welcome-region option[value="11710"]').count(),0);
+   assert.equal(await p.locator('#push-welcome-region option[value="11"]').textContent(),'서울시');
+   assert.equal(await p.locator('#push-welcome-region option[value="28"]').textContent(),'인천시');
    assert(await p.locator('#push-welcome-confirm').isDisabled());
-   await p.locator('#push-welcome-region').selectOption('11710');
+   await p.locator('#push-welcome-region').selectOption('11');
    await p.waitForFunction(()=>!document.getElementById('push-welcome-confirm').disabled,null,{timeout:90000});
    await p.screenshot({path:`artifacts/visual-qa/pwa-first-notification-prompt-${name}.png`});
    await p.locator('#push-welcome-confirm').click();
