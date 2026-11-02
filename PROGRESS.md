@@ -689,3 +689,4 @@ Android API 36에서도 공식 서울시청 공개 사진 매칭/표시와 공�
 - loopback 합성 서버와 debug 수신기를 추가해 HTTP 데이터→기기 테스트 알림 연결. 지역/시간/중복/불명확 문맥 검사를 포함. 실제 API 자동 수집·운영 푸시·백그라운드 실행·해제 상태 전이는 미구현.
 - Android 에뮬레이터 통합 검사 1건 PASS(여러 제외/중복 시나리오 포함), Python 66건 PASS. FCM/OneSignal 정책 및 ntfy 전달 구조 재확인; 운영 전달 제공자는 아직 미선정. 기관/제공자 문의 미발송.
 - 최종 analyze/Flutter 169건/Python 66건 PASS. iPhone 17 Pro에 홈 문구 수정 일반 앱 빌드·실행 완료. Android 통합 시험 종료 시 테스트 패키지가 제거되어 일반 앱 재설치 후 알림 권한 denied 복원, adb reverse 제거 및 로컬 서버 종료.
+- PWA 홈 문구도 공개 배포 완료(Workers 1a89b913-2bea-4002-bfda-7458e0b728e7). 모의 서버/수신 코드는 배포 대상에 포함하지 않음. PR #9에 구현·검증·운영 제한 업데이트.
