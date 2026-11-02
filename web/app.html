@@ -47,11 +47,10 @@
   <dialog id="push-welcome" aria-labelledby="push-welcome-title">
     <img src="../branding/icon-jindo.png" width="56" height="56" alt="">
     <h2 id="push-welcome-title">알림을 켜시겠어요?</h2>
-    <p>선택한 시·도 안의 민방공 알림을 받아요.</p>
+    <p>알림을 허용하고 내 지역을 설정하세요.</p>
     <label for="push-welcome-region">알림 지역</label><select id="push-welcome-region"><option value="">시·도 선택</option></select>
     <p class="small">알림 주소·암호화 정보·선택 지역을 서버에 저장하고 Apple로 전달합니다. 확인을 누르면 이 처리와 알림 연결에 동의합니다.</p>
-    <p id="push-welcome-source" class="small"></p>
-    <p id="push-welcome-status" role="status" aria-live="polite">연결 준비 중…</p>
+    <p id="push-welcome-error" role="alert" hidden></p>
     <div class="push-actions"><button class="primary" id="push-welcome-confirm" disabled>확인</button><button class="secondary" id="push-welcome-later">나중에</button></div>
     <p class="small">나의 준비 → 알림 설정에서 언제든 바꿀 수 있어요.</p>
   </dialog>
@@ -60,7 +59,6 @@
     <header><h2 id="push-title">알림 연결</h2><button id="push-close" aria-label="알림 설정 닫기">닫기</button></header>
     <p>홈 화면에 추가한 iPhone 앱에서 알림을 허용하세요. 설치만으로 켜지지 않습니다.</p>
     <label for="push-region">알림을 확인할 지역</label><select id="push-region"><option value="">시·도 선택</option></select>
-    <p id="push-source">서버 연결 상태를 확인하고 있어요.</p>
     <details><summary>어떤 정보를 사용하나요?</summary><p>이 기기의 알림 주소·암호화 공개 키·선택 지역을 Cloudflare 서버에 보관하고 Apple 알림 서비스로 전달합니다. GPS·가족 계획·연락처는 보내지 않아요. 등록은 알림 연결을 유지하는 동안 보관합니다. ‘알림 끄기’로 서버 등록을 삭제할 수 있습니다.</p></details>
     <label class="consent"><input type="checkbox" id="push-consent"><span>알림 등록 정보와 선택 지역의 서버 저장·Apple 전달을 확인하고 동의합니다.</span></label>
     <div class="push-actions"><button class="primary" id="push-enable" disabled>알림 허용하고 연결</button><button class="secondary" id="push-test" hidden>이 기기에 테스트 알림 보내기</button><button class="secondary" id="push-refresh" hidden>수신 확인 다시 하기</button><button class="secondary" id="push-disable" hidden>알림 끄기 · 서버 등록 삭제</button></div>

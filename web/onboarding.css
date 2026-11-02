@@ -127,5 +127,5 @@ nav button { background: white; border: 1px solid #8cab9d; color: #086b50; font-
 #push-welcome p { line-height: 1.6; }
 #push-welcome select { display: block; width: 100%; box-sizing: border-box; min-height: 48px; margin: 8px 0 12px; padding: 12px; border: 1px solid #8cab9d; border-radius: 12px; background: white; color: #17352d; font: inherit; }
 #push-welcome .push-actions { display: grid; gap: 8px; }
-#push-welcome-status { font-size: .83rem; }
+#push-welcome-error { font-size: .83rem; color: #a3261c; }
 #push-feedback { position: fixed; bottom: calc(96px + env(safe-area-inset-bottom)); left: 16px; right: 16px; max-width: 440px; margin: auto; border-radius: 12px; padding: 12px; background: #17352d; color: white; z-index: 100; }

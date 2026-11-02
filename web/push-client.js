@@ -2,7 +2,7 @@
 (() => {
   'use strict';
   const $=id=>document.getElementById(id), key='safekor.push.registration.v1';
-  const panel=$('push-panel'), status=$('push-status'), source=$('push-source'), welcome=$('push-welcome');
+  const panel=$('push-panel'), status=$('push-status'), welcome=$('push-welcome');
   const promptKey='safekor.push.welcome.v1';
   let offered=false;
   let config,credential, registration, browserSubscription, pending=new URL(location.href).searchParams.get('notice');
@@ -33,11 +33,6 @@
     const value=await response.json();if(!response.ok)throw Error(explain[value.error]||'연결하지 못했어요. 인터넷을 확인하고 다시 시도하세요.');return value;
   }
   const own=extra=>({...credential,...extra});
-  function publicState(value){
-    source.textContent=value.officialEnabled&&value.source?.complete&&Date.now()-value.source.checkedAt<5*60*1000
-      ?'선택 지역의 민방공 경보를 확인합니다. API·통신 상황에 따라 늦거나 누락될 수 있어요.'
-      :value.source?.state==='source_ip_denied'?'정부 API의 서버 접근 승인 대기 · 테스트 알림은 가능해요.':'알림 전달을 테스트할 수 있어요. 정부 경보 자동 연동은 아직 운영 검증 중입니다.';
-  }
   function controls(){
     $('push-enable').disabled=busy||!config?.transportReady||!$('push-consent').checked||!$('push-region').value||!supported()||!registration?.active||(appleDevice()&&!installed());
     $('push-test').hidden=!credential?.id;$('push-disable').hidden=!credential?.id;$('push-refresh').hidden=!credential?.id;
@@ -45,7 +40,7 @@
     $('push-test').disabled=busy||(typeof Notification!=='undefined'&&Notification.permission!=='granted');$('push-disable').disabled=busy;
   }
   async function refresh(){
-    if(!config){config=await api('config');publicState(config);
+    if(!config){config=await api('config');
       fillRegions($('push-region'));
     }
     if(supported()){
@@ -60,7 +55,7 @@
     if(registration?.pushManager)browserSubscription=await registration.pushManager.getSubscription();
     if(credential?.region)$('push-region').value=credential.region;
     if(credential?.id){
-      const value=await api('status',own());publicState(value);
+      const value=await api('status',own());
       const r=value.lastTest;
       if(r?.received_at)message(r.opened_at?'테스트 알림 수신·열기 확인 완료':'이 기기에서 테스트 알림 표시를 확인했어요.');
       else if(r?.state==='accepted')message('Apple 서버가 접수했어요. 잠금 화면 알림을 확인하세요.');
@@ -78,6 +73,7 @@
   const connect=async(region,fromWelcome=false)=>{
     if(busy)return;
     busy=true;
+    if(fromWelcome)$('push-welcome-error').hidden=true;
     try{
       if(Notification.permission==='denied')throw Error('기기 설정에서 safeKor 알림을 허용한 뒤 다시 연결하세요.');
       const capability=credential?.capability||btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(32)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
@@ -90,15 +86,15 @@
       controls();
       const subscription=await subscribing;browserSubscription=subscription;
       const result=await api('subscribe',{capability,region:credential.region,consentVersion:'2026-11-02',subscription:subscription.toJSON()});
-      store({...credential,id:result.id});publicState(result);message('알림 등록 완료 · 테스트 알림을 보내 확인하세요.');
+      store({...credential,id:result.id});message('알림 등록 완료 · 테스트 알림을 보내 확인하세요.');
       if(fromWelcome){dismissWelcome();const toast=$('push-feedback');toast.textContent='알림 연결 완료';toast.hidden=false;setTimeout(()=>toast.hidden=true,3500);}
-    }catch(e){message(e.message,true);if(fromWelcome)$('push-welcome-status').textContent=e.message;}finally{busy=false;controls();}
+    }catch(e){message(e.message,true);if(fromWelcome){$('push-welcome-error').textContent=e.message;$('push-welcome-error').hidden=false;}}finally{busy=false;controls();}
   };
   $('push-enable').onclick=()=>connect($('push-region').value);
   function dismissWelcome(){offered=true;try{localStorage.setItem(promptKey,'decided');}catch{}welcome.close();}
   $('push-welcome-later').onclick=dismissWelcome;
   welcome.addEventListener('cancel',()=>{try{localStorage.setItem(promptKey,'decided');}catch{}});
-  $('push-welcome-region').onchange=()=>{controls();$('push-welcome-status').textContent=$('push-welcome-region').value?'확인을 누르면 iPhone 알림 허용으로 이어집니다.':'처음 한 번 알림을 받을 지역을 선택하세요.';};
+  $('push-welcome-region').onchange=()=>{controls();$('push-welcome-error').hidden=true;};
   $('push-welcome-confirm').onclick=()=>connect($('push-welcome-region').value,true);
   async function offerWelcome(){
     let decided=false;try{decided=localStorage.getItem(promptKey)==='decided';}catch{return;}
@@ -111,9 +107,7 @@
       let suggested=credential?.region;
       try{suggested ||= JSON.parse(localStorage.getItem('safekor.local.v1.catalog')||'null')?.areaCode;}catch{}
       selector.value=provinceOf(suggested);
-      $('push-welcome-source').textContent=config.officialEnabled?'':'정부 경보 연동 준비 중 · 테스트 알림 연결 가능';
-      $('push-welcome-status').textContent=selector.value?'확인을 누르면 iPhone 알림 허용으로 이어집니다.':'처음 한 번 알림을 받을 지역을 선택하세요.';
-    }catch{ $('push-welcome-status').textContent='인터넷 연결 후 나의 준비 → 알림 설정에서 연결할 수 있어요.'; }
+    }catch{ $('push-welcome-error').textContent='연결하지 못했어요. 인터넷 연결 후 다시 시도해 주세요.';$('push-welcome-error').hidden=false; }
     controls();
   }
   $('push-test').onclick=async()=>{

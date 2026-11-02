@@ -23,9 +23,10 @@ const provinces=require('../assets/regions.json').provinces.map(({code,name})=>(
     }};
     Object.defineProperty(ServiceWorkerRegistration.prototype,'pushManager',{get:()=>manager,configurable:true});
    },{point,auth:randomBytes(16).toString('base64url'),origin});
-   let registered=false,tests=0,lookups=0;
+   let registered=false,tests=0,lookups=0,rejectFirstSubscribe=true;
    const fixture=async(url,body)=>{
     const path=new URL(url).pathname.split('/').pop();
+    if(path==='subscribe'&&rejectFirstSubscribe){rejectFirstSubscribe=false;return {status:503,value:{error:'try_later'}};}
     let value={};let status=200;
     const config={transportReady:true,publicKey:point,officialEnabled:false,source:{state:'key_required'},regions:[...provinces,{code:'11710',name:'서울특별시 송파구'}]};
     if(path==='config')value=config;
@@ -53,6 +54,8 @@ const provinces=require('../assets/regions.json').provinces.map(({code,name})=>(
    await p.locator('flt-semantics-placeholder').evaluate(e=>e.click());
    assert.equal(await p.evaluate(()=>window.__pushCalls),0);
    await p.locator('#push-welcome').waitFor({state:'visible'});
+   assert.equal(await p.locator('#push-welcome-source,#push-welcome-status,#push-source').count(),0);
+   assert.equal(await p.locator('#push-welcome-error').isVisible(),false);
    assert.equal(await p.locator('#app-shell nav').count(),0);
    await p.locator('#push-welcome-region option[value="11"]').waitFor({state:'attached'});
    assert.equal(await p.locator('#boot-splash').isVisible(),false);
@@ -64,6 +67,9 @@ const provinces=require('../assets/regions.json').provinces.map(({code,name})=>(
    await p.locator('#push-welcome-region').selectOption('11');
    await p.waitForFunction(()=>!document.getElementById('push-welcome-confirm').disabled,null,{timeout:90000});
    await p.screenshot({path:`artifacts/visual-qa/pwa-first-notification-prompt-${name}.png`});
+   await p.locator('#push-welcome-confirm').click();
+   await p.locator('#push-welcome-error').getByText('잠시 후 다시 시도하세요.',{exact:true}).waitFor();
+   assert.equal(await p.locator('#push-welcome').isVisible(),true);
    await p.locator('#push-welcome-confirm').click();
    await p.getByText('알림 연결 완료',{exact:true}).waitFor();
    assert.equal(await p.evaluate(()=>window.__pushCalls),1);assert(registered);
