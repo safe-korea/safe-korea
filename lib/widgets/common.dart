@@ -99,12 +99,14 @@ class IconTextBlock extends StatelessWidget {
     this.iconColor = AppPalette.green,
     this.iconBackground = AppPalette.background,
     this.trailing,
+    this.titleSize = 20,
   });
   final IconData icon;
   final String title;
   final Widget body;
   final Color color, iconColor, iconBackground;
   final Widget? trailing;
+  final double titleSize;
   @override
   Widget build(BuildContext context) => Row(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -128,7 +130,7 @@ class IconTextBlock extends StatelessWidget {
             Text(
               title,
               style: TextStyle(
-                fontSize: 20,
+                fontSize: titleSize,
                 height: 1.3,
                 fontWeight: FontWeight.w700,
                 color: color,

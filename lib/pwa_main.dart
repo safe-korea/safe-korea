@@ -218,8 +218,8 @@ class _PwaGuidanceDetailState extends State<PwaGuidanceDetail> {
               ],
             ),
             const SizedBox(height: 20),
-            for (final brief in actionBriefs(kind, _setting))
-              ActionBriefTile(brief: brief, accent: color),
+            for (final (index, brief) in actionBriefs(kind, _setting).indexed)
+              ActionBriefTile(brief: brief, accent: color, primary: index == 0),
             const SizedBox(height: 16),
           ],
           ExpansionTile(

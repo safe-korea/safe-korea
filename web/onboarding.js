@@ -3,8 +3,8 @@
   const $ = id => document.getElementById(id);
   const slides = [
     {
-      eyebrow: '비상시, 무엇부터 해야 할지 막막할 때',
-      title: '당황스러운 순간,<br>할 일은 <em>또렷하게.</em>',
+      eyebrow: '평소에는 준비로, 비상시에는 행동으로',
+      title: '미리 준비해 두세요.<br>필요한 순간, <em>바로 꺼내도록.</em>',
       description: '공습·화생방 등 비상 상황의 행동요령을\n쉽게 꺼내 보는 비상 대비 앱, SAFE KOREA.',
       benefit: '긴 설명보다, 먼저 할 행동부터',
       image: 'previews/air-guidance.png',

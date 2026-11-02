@@ -151,19 +151,28 @@ class ActionBriefTile extends StatelessWidget {
   final bool primary;
   final Color accent;
   @override
-  Widget build(BuildContext context) => Padding(
+  Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.symmetric(vertical: 12),
+    decoration: primary
+        ? BoxDecoration(
+            color: accent.withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(12),
+          )
+        : null,
     child: IconTextBlock(
       icon: brief.icon,
       title: brief.title,
+      titleSize: primary ? 24 : 20,
+      color: primary ? accent : AppPalette.ink,
       iconColor: primary ? Colors.white : AppPalette.ink,
       iconBackground: primary ? accent : AppPalette.surface,
       body: Text(
         brief.detail,
-        style: const TextStyle(
-          fontSize: 16,
+        style: TextStyle(
+          fontSize: primary ? 18 : 16,
+          fontWeight: primary ? FontWeight.w600 : FontWeight.normal,
           height: 1.4,
-          color: AppPalette.muted,
+          color: primary ? AppPalette.ink : AppPalette.muted,
         ),
       ),
     ),
