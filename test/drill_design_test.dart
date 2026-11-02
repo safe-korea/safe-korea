@@ -20,7 +20,7 @@ void main() {
       expect(find.text('물품을 찾느라 지체하지 마세요').hitTestable(), findsOneWidget);
       expect(
         tester.getTopLeft(find.text('주변 대피소 보기')).dy,
-        lessThan(tester.getTopLeft(find.text('지금 어디에 있나요?')).dy),
+        lessThan(tester.getTopLeft(find.text('현재 있는 곳')).dy),
       );
       final chips = find.byType(ChoiceChip);
       final chipBounds = [

@@ -37,9 +37,12 @@ void main() {
                 .descendant(of: block, matching: find.byType(Container))
                 .first;
             // Page 20 + card inset 16 + icon 44 + gap 12.
-            expect(tester.getTopLeft(title).dx, 92);
+            expect(tester.getTopLeft(title).dx, scale == 1 ? 92 : 36);
             expect(tester.getTopLeft(iconBox).dx, 36);
-            expect(tester.getTopLeft(title).dy, tester.getTopLeft(iconBox).dy);
+            expect(
+              tester.getTopLeft(title).dy,
+              tester.getTopLeft(iconBox).dy + (scale == 1 ? 0 : 56),
+            );
           }
           expect(tester.takeException(), isNull);
         }

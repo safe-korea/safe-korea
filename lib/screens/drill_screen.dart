@@ -210,7 +210,10 @@ class _DrillScreenState extends State<DrillScreen> {
             icon: const Icon(Icons.task_alt),
             label: const Text('대피 후 할 일·상태 공유'),
           ),
-        const Text('정부 방송·현장 지시를 우선하세요.', style: TextStyle(fontSize: 14)),
+        const Padding(
+          padding: EdgeInsets.symmetric(vertical: 12),
+          child: Text('정부 방송·현장 지시를 우선하세요.', style: TextStyle(fontSize: 14)),
+        ),
         if (_kind == AlertKind.air)
           ExpansionTile(
             expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
