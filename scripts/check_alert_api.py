@@ -1,5 +1,7 @@
 """Single, read-only official API probe. Never emits credentials or message text."""
 import argparse
+from datetime import datetime, timezone
+from review_alert_delivery import summarize_delivery_review
 from review_alert_scope import summarize_scope
 import json
 from pathlib import Path
@@ -26,7 +28,7 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
         return None
 
 
-def summarize(raw):
+def summarize(raw, started_at=None):
     """Summarize only structure. API free text and unknown fields never escape."""
     if len(raw) > LIMIT:
         return {'status': 'response_too_large'}
@@ -70,10 +72,15 @@ def summarize(raw):
             'documented_fields_seen': sorted(FIELDS.intersection(set().union(*(r.keys() for r in rows)))),
             'missing_documented_fields': sorted(set().union(*(FIELDS - r.keys() for r in rows))),
             'delivery_latency_verified': False, 'alert_delivery_enabled': False,
-            'scope_review': summarize_scope(rows) if complete else None}
+            'scope_review': summarize_scope(rows) if complete else None,
+            'delivery_review': summarize_delivery_review(
+                rows, started_at or datetime.now(timezone.utc)) if complete else None}
 
 
-def probe(config_path):
+def probe(config_path, sample_size=3):
+    if isinstance(sample_size, bool) or not isinstance(sample_size, int) or not 1 <= sample_size <= 100:
+        return {'status': 'invalid_sample_size'}
+    started_at = datetime.now(timezone.utc)
     try:
         path = Path(config_path)
         if path.stat().st_mode & 0o077:
@@ -86,14 +93,14 @@ def probe(config_path):
             return {'status': 'missing_local_key'}
     except (OSError, ValueError, KeyError):
         return {'status': 'missing_or_invalid_local_config'}
-    query = urllib.parse.urlencode({'serviceKey': key, 'numOfRows': 3,
+    query = urllib.parse.urlencode({'serviceKey': key, 'numOfRows': sample_size,
                                    'pageNo': 1, 'returnType': 'json'})
     # Explicitly avoid environment proxies: only the official HTTPS host gets the key.
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), NoRedirect(),
                                         urllib.request.HTTPSHandler(context=ssl.create_default_context()))
     try:
         with opener.open(ENDPOINT + '?' + query, timeout=15) as response:
-            return summarize(response.read(LIMIT + 1))
+            return summarize(response.read(LIMIT + 1), started_at)
     except urllib.error.HTTPError as error:
         # No error string/URL/body logging, no redirects or retries.
         return {'status': 'http_error', 'http_status': error.code}
@@ -104,8 +111,10 @@ def probe(config_path):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--config', default='config/safetydata.local.json')
+    parser.add_argument('--sample-size', type=int, default=3, choices=range(1, 101),
+                        metavar='1..100', help='One bounded request; no automatic pagination')
     args = parser.parse_args()
-    result = probe(args.config)
+    result = probe(args.config, args.sample_size)
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0 if result['status'] == 'records_observed' else 1
 

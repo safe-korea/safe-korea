@@ -47,6 +47,12 @@ class AlertProbeTests(unittest.TestCase):
             self.assertEqual(probe(file)['status'], 'missing_or_invalid_local_config')
             opener.assert_not_called()
 
+    def test_invalid_sample_size_never_calls_network(self):
+        with patch('urllib.request.build_opener') as opener:
+            for size in [0, 101, -1, True, '100']:
+                self.assertEqual(probe('unused', size)['status'], 'invalid_sample_size')
+            opener.assert_not_called()
+
     def test_no_redirect(self):
         self.assertIsNone(NoRedirect().redirect_request(None, None, 302, '', {}, 'https://other.example'))
 
