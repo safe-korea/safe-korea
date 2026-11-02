@@ -1,5 +1,6 @@
 /* Generated with a content-versioned, same-origin asset allowlist. */
-const CACHE = 'safe-korea-pwa-__VERSION__';
+const CACHE_PREFIX = 'safe-korea-pwa-' + encodeURIComponent(new URL(self.registration.scope).pathname) + '-';
+const CACHE = CACHE_PREFIX + '__VERSION__';
 const FILES = __FILES__;
 const urls = Object.keys(FILES).map(file => new URL(file, self.registration.scope).href);
 self.addEventListener('install', event => {
@@ -13,7 +14,7 @@ self.addEventListener('install', event => {
 self.addEventListener('activate', event => {
   event.waitUntil((async () => {
     for (const key of await caches.keys()) {
-      if (key.startsWith('safe-korea-pwa-') && key !== CACHE) await caches.delete(key);
+      if (key.startsWith(CACHE_PREFIX) && key !== CACHE) await caches.delete(key);
     }
     await self.clients.claim();
   })());
@@ -24,10 +25,12 @@ self.addEventListener('fetch', event => {
   if (url.origin !== self.location.origin) return;
   const shell = new URL('index.html', self.registration.scope).href;
   const navigation = event.request.mode === 'navigate';
-  const entry = url.pathname === new URL(self.registration.scope).pathname || url.href === shell;
+  const appShell = new URL('app/index.html', self.registration.scope).href;
+  const isApp = url.pathname === new URL('app/', self.registration.scope).pathname || url.pathname === new URL(appShell).pathname;
+  const entry = isApp || url.pathname === new URL(self.registration.scope).pathname || url.pathname === new URL(shell).pathname;
   // Policy/API/unknown routes must never be replaced by the app shell.
   if (navigation && !entry) return;
-  const key = navigation ? shell : url.href;
+  const key = navigation ? (isApp ? appShell : shell) : url.href;
   if (!urls.includes(key)) return;
   event.respondWith((async () => {
     const cached = await (await caches.open(CACHE)).match(key);

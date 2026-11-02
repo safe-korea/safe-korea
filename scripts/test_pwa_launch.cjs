@@ -22,7 +22,7 @@ const origin = process.env.PWA_TEST_URL || 'http://127.0.0.1:8766';
           // tour is completed. New install storage and standalone detection are
           // deliberately absent, as on a plain iOS home-screen bookmark.
           const savedUrl=page.url();
-          assert.equal(new URL(savedUrl).searchParams.get('launch'),'app');
+          assert(new URL(savedUrl).pathname.endsWith('/app/'));
           assert.equal(new URL(savedUrl).searchParams.has('intro'),false);
           const installed=await browser.newContext({viewport:{width:402,height:874}});
           await installed.addInitScript(()=>{
@@ -34,12 +34,12 @@ const origin = process.env.PWA_TEST_URL || 'http://127.0.0.1:8766';
           await home.waitForFunction(()=>window.safeFlutterReady===true,null,{timeout:60000});
           assert.equal(await home.locator('#onboarding').isVisible(),false);
           await home.locator('flt-semantics-placeholder').evaluate(e=>e.click());
-          await home.getByText('어떤 안내가 필요한가요?',{exact:true}).waitFor();
+          await home.getByText('지금 필요한 안내',{exact:true}).waitFor();
           await home.reload();
           await home.waitForFunction(()=>window.safeFlutterReady===true,null,{timeout:60000});
           assert.equal(await home.locator('#onboarding').isVisible(),false);
           await home.locator('flt-semantics-placeholder').evaluate(e=>e.click());
-          await home.getByText('어떤 안내가 필요한가요?',{exact:true}).waitFor();
+          await home.getByText('지금 필요한 안내',{exact:true}).waitFor();
           await home.screenshot({path:`artifacts/visual-qa/pwa-saved-intro-link-${name}.png`});
           await installed.close();
         } else {

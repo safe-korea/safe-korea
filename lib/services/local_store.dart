@@ -1,4 +1,10 @@
 import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
+
+import 'browser_records_stub.dart'
+    if (dart.library.js_interop) 'browser_records_web.dart';
+
 import 'dart:io';
 
 import 'package:flutter/services.dart';
@@ -117,6 +123,9 @@ class LocalStore {
     'CREATE TABLE IF NOT EXISTS shelter_catalog (id INTEGER PRIMARY KEY, content TEXT NOT NULL)',
   );
   Future<Map<String, dynamic>?> loadShelterCatalog() async {
+    if (kIsWeb) {
+      return (readBrowserRecord('catalog') as Map?)?.cast<String, dynamic>();
+    }
     await _ensureCatalogTable();
     final rows = await (await database).query(
       'shelter_catalog',
@@ -128,6 +137,10 @@ class LocalStore {
   }
 
   Future<void> saveShelterCatalog(Map<String, dynamic> catalog) async {
+    if (kIsWeb) {
+      writeBrowserRecord('catalog', catalog);
+      return;
+    }
     await _ensureCatalogTable();
     await (await database).insert('shelter_catalog', {
       'id': 1,
@@ -139,6 +152,11 @@ class LocalStore {
     'CREATE TABLE IF NOT EXISTS preparation (id INTEGER PRIMARY KEY, content TEXT NOT NULL)',
   );
   Future<Set<String>> loadPreparation() async {
+    if (kIsWeb) {
+      return (readBrowserRecord('preparation') as List? ?? [])
+          .cast<String>()
+          .toSet();
+    }
     await _ensurePreparationTable();
     final rows = await (await database).query(
       'preparation',
@@ -152,6 +170,10 @@ class LocalStore {
   }
 
   Future<void> savePreparation(Set<String> values) async {
+    if (kIsWeb) {
+      writeBrowserRecord('preparation', values.toList()..sort());
+      return;
+    }
     await _ensurePreparationTable();
     await (await database).insert('preparation', {
       'id': 1,
@@ -163,6 +185,11 @@ class LocalStore {
     'CREATE TABLE IF NOT EXISTS saved_shelters (id TEXT PRIMARY KEY, content TEXT NOT NULL, saved_at TEXT NOT NULL)',
   );
   Future<List<Map<String, dynamic>>> loadSavedShelters() async {
+    if (kIsWeb) {
+      return (readBrowserRecord('shelters') as Map? ?? {}).values
+          .map((e) => Map<String, dynamic>.from(e as Map))
+          .toList();
+    }
     await _ensureSavedSheltersTable();
     final rows = await (await database).query(
       'saved_shelters',
@@ -176,6 +203,14 @@ class LocalStore {
   }
 
   Future<void> saveSavedShelter(String id, Map<String, dynamic> entry) async {
+    if (kIsWeb) {
+      final records = Map<String, dynamic>.from(
+        readBrowserRecord('shelters') as Map? ?? {},
+      );
+      records[id] = entry;
+      writeBrowserRecord('shelters', records);
+      return;
+    }
     await _ensureSavedSheltersTable();
     await (await database).insert('saved_shelters', {
       'id': id,
@@ -186,6 +221,16 @@ class LocalStore {
 
   /// Role reassignment and personal records must commit together.
   Future<void> saveSavedShelters(List<Map<String, dynamic>> entries) async {
+    if (kIsWeb) {
+      final records = Map<String, dynamic>.from(
+        readBrowserRecord('shelters') as Map? ?? {},
+      );
+      for (final e in entries) {
+        records[e['storageKey'] as String] = {...e}..remove('storageKey');
+      }
+      writeBrowserRecord('shelters', records);
+      return;
+    }
     await _ensureSavedSheltersTable();
     await (await database).transaction((txn) async {
       for (final entry in entries) {
@@ -199,6 +244,14 @@ class LocalStore {
   }
 
   Future<void> removeSavedShelter(String id) async {
+    if (kIsWeb) {
+      final records = Map<String, dynamic>.from(
+        readBrowserRecord('shelters') as Map? ?? {},
+      );
+      records.remove(id);
+      writeBrowserRecord('shelters', records);
+      return;
+    }
     await _ensureSavedSheltersTable();
     await (await database).delete(
       'saved_shelters',
@@ -208,6 +261,12 @@ class LocalStore {
   }
 
   Future<FamilyPlan> load() async {
+    if (kIsWeb) {
+      final raw = readBrowserRecord('family');
+      return raw == null
+          ? const FamilyPlan()
+          : FamilyPlan.fromJson(Map<String, dynamic>.from(raw as Map));
+    }
     final rows = await (await database).query(
       'plans',
       where: 'id = ?',
@@ -220,6 +279,10 @@ class LocalStore {
   }
 
   Future<void> save(FamilyPlan plan) async {
+    if (kIsWeb) {
+      writeBrowserRecord('family', plan.toJson());
+      return;
+    }
     await (await database).insert('plans', {
       'id': 1,
       'content': jsonEncode(plan.toJson()),
@@ -227,6 +290,10 @@ class LocalStore {
   }
 
   Future<void> clear() async {
+    if (kIsWeb) {
+      removeBrowserRecord('family');
+      return;
+    }
     await (await database).delete('plans', where: 'id = ?', whereArgs: [1]);
   }
 }

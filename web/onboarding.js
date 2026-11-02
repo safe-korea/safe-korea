@@ -100,12 +100,12 @@
     let cachedReady = false;
     try {
       if (!isSecureContext || !('serviceWorker' in navigator)) throw Error('unsupported');
-      const existing = await navigator.serviceWorker.getRegistration();
-      if (existing?.active) cachedReady = (await workerCheck(existing.active)).ready;
+      const existing = await navigator.serviceWorker.getRegistration(new URL('app/', document.baseURI));
+      if (existing?.active && existing.scope === new URL('app/',document.baseURI).href) cachedReady = (await workerCheck(existing.active)).ready;
       if (cachedReady) status('저장된 안내를 확인했어요. 새 버전도 확인하고 있어요.', 'ready');
-      const registration = await navigator.serviceWorker.register('safe-worker.js', {updateViaCache:'none'});
+      const registration = await navigator.serviceWorker.register(new URL('app/safe-worker.js', document.baseURI), {updateViaCache:'none'});
       await registration.update();
-      const ready = await Promise.race([navigator.serviceWorker.ready, new Promise((_, reject) => setTimeout(() => reject(Error('timeout')), 60000))]);
+      const ready = await new Promise((resolve,reject) => { const started=Date.now(); const check=()=>{ if(registration.active) resolve(registration); else if(Date.now()-started>60000) reject(Error('timeout')); else setTimeout(check,100); }; check(); });
       let result = await workerCheck(ready.active);
       if (!result.ready) result = await workerCheck(ready.active, 'REPAIR_OFFLINE');
       if (!result.ready) throw Error('incomplete');
@@ -120,50 +120,32 @@
       $('prepare').textContent = '저장 다시 시도';
     } finally { $('prepare').disabled = false; }
   };
-  let loaded = false;
   const start = () => {
-    $('entry-loading')?.setAttribute('hidden', '');
-    $('onboarding').hidden = true;
-    $('app-shell').hidden = false;
-    try { localStorage.setItem('safe-korea-onboarding-v1','seen'); } catch (_) { /* Continue without persistence. */ }
-    if (!loaded) {
-      loaded = true;
-      const script = document.createElement('script');
-      script.src = 'flutter_bootstrap.js';
-      script.onerror = () => { $('boot-error').hidden = false; };
-      document.body.append(script);
-      setTimeout(() => { if (!window.safeFlutterReady) $('boot-error').hidden = false; }, 45000);
-    }
+    try { localStorage.setItem('safe-korea-onboarding-v1','seen'); } catch (_) {}
+    location.assign(new URL('app/', document.baseURI));
   };
   $('start').onclick = start;
   $('quick-start').onclick = start;
-  $('retry').onclick = () => location.reload();
-  $('reopen').onclick = () => {
-    $('onboarding').hidden = false;
-    $('app-shell').hidden = true;
-    showSetup();
-  };
   // Installed apps have separate storage on some platforms. Launch must not
   // depend on the browser's onboarding flag, even if storage is unavailable.
   const params = new URL(location.href).searchParams;
   let seen = false;
   try { seen = localStorage.getItem('safe-korea-onboarding-v1') === 'seen'; } catch (_) {}
-  if (standalone || params.get('launch') === 'app' || (!params.has('intro') && seen)) {
+  if (!params.has('setup') && (standalone || params.get('launch') === 'app' || (!params.has('intro') && seen))) {
     start();
   } else {
     // iOS can save the current document URL instead of using manifest.start_url.
     // Make even a shortcut added on the FIRST introduction slide launch the app.
     // Keep this introduction visible now; only the next navigation starts the app.
-    const installUrl = new URL(location.href);
-    installUrl.searchParams.delete('intro');
-    installUrl.searchParams.set('launch', 'app');
+    const installUrl = new URL('app/', document.baseURI);
     try { history.replaceState(history.state, '', installUrl); } catch (_) { /* Standalone detection still works. */ }
     $('entry-loading')?.setAttribute('hidden', '');
     $('onboarding').hidden = false;
+    if (params.has('setup')) showSetup();
   }
   // Check for a newer shell even when setup is skipped. Do not skipWaiting:
   // already-open guidance must never reload underneath the user.
   if ('serviceWorker' in navigator && isSecureContext) {
-    navigator.serviceWorker.getRegistration().then(registration => registration?.update()).catch(() => {});
+    navigator.serviceWorker.getRegistration(new URL('app/', document.baseURI)).then(registration => registration?.update()).catch(() => {});
   }
 })();

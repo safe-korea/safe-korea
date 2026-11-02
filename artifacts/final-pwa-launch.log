@@ -1,0 +1,2 @@
+chromium: first-slide saved URL opens real app with fresh/blocked storage and no standalone detection; installed/manifest launch, relaunch, manual setup PASS
+webkit: first-slide saved URL opens real app with fresh/blocked storage and no standalone detection; installed/manifest launch, relaunch, manual setup PASS
