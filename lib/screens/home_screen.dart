@@ -56,7 +56,7 @@ class HomeScreen extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         const Text(
-          '비공식 대비 앱 · 실제 정부 경보 수신 기능 없음',
+          '경보를 들었다면, 지금 할 행동부터',
           style: TextStyle(fontSize: 13, color: AppPalette.muted),
         ),
         const SizedBox(height: 16),

@@ -23,9 +23,19 @@ self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
   if (url.origin !== self.location.origin) return;
   const shell = new URL('index.html', self.registration.scope).href;
-  const key = event.request.mode === 'navigate' && url.href.startsWith(self.registration.scope) ? shell : url.href;
+  const navigation = event.request.mode === 'navigate';
+  const entry = url.pathname === new URL(self.registration.scope).pathname || url.href === shell;
+  // Policy/API/unknown routes must never be replaced by the app shell.
+  if (navigation && !entry) return;
+  const key = navigation ? shell : url.href;
   if (!urls.includes(key)) return;
-  event.respondWith((async () => (await (await caches.open(CACHE)).match(key)) || fetch(event.request))());
+  event.respondWith((async () => {
+    const cached = await (await caches.open(CACHE)).match(key);
+    // Hosts may redirect index.html to /. A redirected cached response cannot
+    // satisfy a navigation with redirect mode manual; return its verified body.
+    if (cached && navigation) return new Response(cached.body, {status:cached.status, headers:cached.headers});
+    return cached || fetch(event.request);
+  })());
 });
 self.addEventListener('message', event => {
   if (!['VERIFY_OFFLINE','REPAIR_OFFLINE'].includes(event.data?.type) || !event.ports[0]) return;

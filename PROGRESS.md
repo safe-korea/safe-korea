@@ -663,3 +663,30 @@ Android API 36에서도 공식 서울시청 공개 사진 매칭/표시와 공�
 - 영문 훈련 표현(Civil Defense/Defence Exercise/Drill) 힌트와 대소문자 처리 보완. 실제 표본에서 영문 병기 사례 확인, 영문 단독·철자 변형은 합성 테스트.
 - 새 합성 회귀 6건: 네 문맥/영문/일반 exercise 구분/부정문/역순 재시작·수정/훈련 해제 영향 검사. Python 61건 PASS, ResourceWarning 오류 모드 통과. Flutter 변경 없음, 직전 analyze/169건 결과 유지.
 - 원문·지역·SN·키 Git 미포함. 실제 경보 발송·기관 문의·배포 없음.
+
+## 2026-11-02 — 출시 준비 및 에뮬레이터 로컬 알림 검증
+
+- 사용자 ‘앱 마무리 후 배포’ 승인, Play 개발자 계정 개설/로그인 가능 확인. PR #8 머지(f2be2aa), feat/release-preparation 분기. 실제 자동 경보 검증은 별도로 유지.
+- 사용자 에뮬레이터 시험 요청에 따라 Android API36 emulator-5556에서 실제 플러그인 무음/무진동 알림 전송. 전면: 공습→핵→해제 유형별 테스트 제목/본문/동일 ID 교체 1건/취소 통합 테스트 PASS.
+- debug 전용 수동 실행 harness에서 15초 후 로컬 테스트 알림: 백그라운드 OS 표시, 프로세스 종료(pid 없음) 후 알림 탭→핵 훈련 화면, 화면 꺼짐(Asleep) 중 OS 알림 등록 확인. sound/vibration=null. 시험 종료 시 화면 깨움 및 POST_NOTIFICATIONS 원래 denied 상태 복구. 서버 push/정부 경보/실기기/Doze/강제종료 후 새 알림/사이렌 청취 검증은 아님.
+- 새 harness는 test_driver/에만 존재하며 release 진입점에 미포함. 실제 알림 통합 검사 추가. 제품 알림 기능 변경 없음.
+- 선택된 진돗개 디자인을 Android/PWA 아이콘 크기로 출력, 웹 favicon과 공개 정책/문의 링크 연결. Worker에 같은 출처의 PWA 정적 파일 연결, /api 및 /health는 API 경로 유지. 공개 정보 페이지 기존 처리 유지.
+- format/analyze, Flutter 169건/Python 61건 PASS. Workers 17건/TypeScript PASS. PWA release 빌드, Chromium/WebKit 온보딩/반응형/캐시 복구/오프라인 PASS. Workers 정적 파일 포함 dry-run PASS. 실제 배포 결과는 아래 별도 기록.
+
+## 2026-11-02 — Android 식별자 확정·서명·PWA 공개 검증
+
+- 사용자 승인 applicationId/namespace `kr.safekor.app` 적용, Kotlin 경로·OSM user agent 정리. 이전 개발 앱/데이터 보존, 자동 데이터 이전 없음.
+- 로컬 업로드 키 및 key.properties 생성(600/Git 제외). release AAB 75.6MB 생성, jarsigner 서명 검증 PASS(자체 서명 인증서 경고는 출력). target36/min24, debuggable=false, allowBackup=false, native ELF 7개 16KB 정렬 확인. Play App Signing·카카오 새 패키지/배포 해시 등록 및 실기기 검증은 남음.
+- 일반 main.dart 앱을 emulator-5556에 새 ID로 설치/실행. 앞선 로컬 테스트 알림 QA는 기존 개발 ID에서 수행했으며 실제 정부 push 검증은 아님.
+- 공개 PWA: https://safe-korea-shelter-api.trovapp.workers.dev/ . Workers 버전 25bc1704-8997-47a9-bbb8-854b481bad33. 초기 공개 검증에서 index.html 리다이렉트 캐시로 오프라인 reload 실패를 발견·수정. 서비스워커 변경도 캐시 버전에 반영하고 정책/API 탐색은 앱 셸에서 제외.
+- 수정 배포 후 공개 URL Chromium/WebKit 온보딩·반응형·캐시 복구·오프라인 reload/detail PASS. PWA는 행동요령/지역 시설 목록 미리보기이며 네이티브 GPS·가족 저장·푸시와 동등하지 않음.
+- Play Console은 현재 소개 페이지로 열려 로그인 확인 요청. 앱 생성/업로드/심사 제출은 미실행. SDK 데이터 보안 신고·카카오 배포 인증·계정별 테스트 요건 확인 후 진행 필요.
+- 최종 변경 후 scripts/verify.sh 재검증 PASS: analyze, Flutter 169건, Python 61건. 업로드 서명 파일 Git 제외 재확인.
+
+## 2026-11-02 — 홈 문구 정리·HTTP 모의 전달 시험
+
+- 사용자 요청에 따라 네이티브/PWA 홈의 수신 불가 배너를 행동 중심 문구로 교체. 데이터와 권한 화면의 실제 알림 범위 및 훈련 표시는 유지. 지원하지 않는 실제 자동 수신을 홍보하지 않음.
+- loopback 합성 서버와 debug 수신기를 추가해 HTTP 데이터→기기 테스트 알림 연결. 지역/시간/중복/불명확 문맥 검사를 포함. 실제 API 자동 수집·운영 푸시·백그라운드 실행·해제 상태 전이는 미구현.
+- Android 에뮬레이터 통합 검사 1건 PASS(여러 제외/중복 시나리오 포함), Python 66건 PASS. FCM/OneSignal 정책 및 ntfy 전달 구조 재확인; 운영 전달 제공자는 아직 미선정. 기관/제공자 문의 미발송.
+- 최종 analyze/Flutter 169건/Python 66건 PASS. iPhone 17 Pro에 홈 문구 수정 일반 앱 빌드·실행 완료. Android 통합 시험 종료 시 테스트 패키지가 제거되어 일반 앱 재설치 후 알림 권한 denied 복원, adb reverse 제거 및 로컬 서버 종료.
+- PWA 홈 문구도 공개 배포 완료(Workers 1a89b913-2bea-4002-bfda-7458e0b728e7). 모의 서버/수신 코드는 배포 대상에 포함하지 않음. PR #9에 구현·검증·운영 제한 업데이트.

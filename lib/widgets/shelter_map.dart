@@ -334,7 +334,7 @@ class _ShelterMapState extends State<ShelterMap> {
               child: child,
             ),
             urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-            userAgentPackageName: 'kr.example.safe_korea',
+            userAgentPackageName: 'kr.safekor.app',
           ),
           MarkerLayer(
             markers: [

@@ -154,7 +154,7 @@ class _PwaGuidanceHomeState extends State<PwaGuidanceHome> {
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
-            const Notice('비공식 준비용 안내 · 실제 경보 수신 없음'),
+            const Notice('경보를 들었다면, 상황에 맞는 행동을 확인하세요.'),
             if (ConnectionMonitor.instance.value.needsOfflineTools) ...[
               const Notice(
                 '연결을 확인할 수 없어요. 저장된 행동요령을 먼저 확인하세요. 지도·새 시설 조회에는 인터넷이 필요해요.',

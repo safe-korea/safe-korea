@@ -6,7 +6,7 @@
 
 ## Cloudflare Workers 데이터 서버
 
-지역별 시설 조회·캐시 API와 Android/PWA 연결을 구현했습니다. **2026-11-01 API 공개 배포 완료:** https://safe-korea-shelter-api.trovapp.workers.dev . PWA 사이트 호스팅은 아직 미배포입니다. PWA는 API 주소를 설정하면 지역별 목록과 외부 카카오 지도 연결을 사용할 수 있습니다. `--dart-define-from-file=config/api.production.json`으로 공개 API를 연결합니다. 설정 없는 기본 PWA 빌드는 정부 사이트 링크를 제공합니다. 로그인·개인 DB·실제 경보 서버는 추가하지 않았습니다. [실행 및 배포 전 확인](workers/shelters/README.md) · [서버 구성](SERVER_PLAN.md).
+지역별 시설 조회·캐시 API와 Android/PWA 연결을 구현했습니다. **2026-11-01 API 공개 배포 완료:** https://safe-korea-shelter-api.trovapp.workers.dev . 2026-11-02 같은 주소에 PWA 미리보기 호스팅도 배포했습니다. PWA는 API 주소를 설정하면 지역별 목록과 외부 카카오 지도 연결을 사용할 수 있습니다. `--dart-define-from-file=config/api.production.json`으로 공개 API를 연결합니다. 설정 없는 기본 PWA 빌드는 정부 사이트 링크를 제공합니다. 로그인·개인 DB·실제 경보 서버는 추가하지 않았습니다. [실행 및 배포 전 확인](workers/shelters/README.md) · [서버 구성](SERVER_PLAN.md).
 
 ## 구현 상태
 
@@ -40,7 +40,7 @@
 
 ## 실행
 
-현재 개발 위치는 Orca 워크스페이스 `/Users/gimtaehyeong/orca/safe-korea`입니다. `feat/safe-korea-mvp` 브랜치를 체크아웃했습니다. 이전 Downloads 프로젝트는 보존되어 있으며, 이 Mac의 `.tools`는 이전 프로젝트의 로컬 SDK 폴더를 참조하므로 SDK를 분리하기 전에는 원본 `.tools`를 삭제하지 마세요. 카카오 키는 워크스페이스의 Git 제외 로컬 설정에만 보관합니다.
+현재 개발 위치는 Orca 워크스페이스 `/Users/gimtaehyeong/orca/safe-korea`입니다. 출시 준비는 `feat/release-preparation` 브랜치에서 진행합니다. 이전 Downloads 프로젝트는 보존되어 있으며, 이 Mac의 `.tools`는 이전 프로젝트의 로컬 SDK 폴더를 참조하므로 SDK를 분리하기 전에는 원본 `.tools`를 삭제하지 마세요. 카카오 키는 워크스페이스의 Git 제외 로컬 설정에만 보관합니다.
 
 ```sh
 cd /Users/gimtaehyeong/orca/safe-korea
