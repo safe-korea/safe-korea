@@ -2,7 +2,7 @@
 
 대한민국 시민을 위한 한국어 오프라인 비상 대비 Flutter MVP입니다. **비공식 프로토타입이며 실제 정부 경보를 수신하지 않습니다.** 모의 화면에는 항상 `훈련 / 테스트`가 표시됩니다.
 
-**출시 방향: Android는 Google Play 네이티브 앱, iPhone은 PWA.** iOS App Store 출시는 진행하지 않으며 기존 iOS 코드는 보존합니다. PWA는 설치 온보딩·오프라인 행동요령 미리보기를 구현했으며 웹 지도·GPS·가족 저장은 아직 미구현입니다. [출시 점검](RELEASE_CHECKLIST.md) · [PWA 전환 계획](PWA_PLAN.md).
+**출시 방향: Android는 Google Play 네이티브 앱, iPhone은 PWA.** iOS App Store 출시는 진행하지 않으며 기존 iOS 코드는 보존합니다. PWA는 설치 온보딩·오프라인 행동요령 미리보기를 구현했으며 사용자 요청형 GPS·선택 지역 내 직선거리 정렬을 구현했습니다. 내장 웹 지도·가족 저장은 아직 미구현입니다. [출시 점검](RELEASE_CHECKLIST.md) · [PWA 전환 계획](PWA_PLAN.md).
 
 ## Cloudflare Workers 데이터 서버
 
