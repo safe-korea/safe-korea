@@ -82,3 +82,4 @@
 - CI 추가: public GitHub-hosted runner, read-only token, checkout 자격증명 미보존, 공식 Action SHA 고정, 운영 키/배포 비밀 없음. Python/Worker 검사와 npm audit, 경량 Git 비밀 탐지. Flutter 전수 검사와 실기기 검증은 이 CI에 포함하지 않음.
 - 출시 보류 조건은 유지: 실제 경보 전달 미완성, 카카오 배포 인증·데이터 보안 최종 신고·Play 계정별 테스트·실기기 점검. 보안 검사 통과를 앱 출시 완료로 취급하지 않음.
 - GitHub main 보호 실제 적용: PR + security-checks 성공/최신 main 기준 검사, 관리자 포함, force push/삭제 금지. 개인 저장소로 승인 리뷰어 수 0이며 독립 코드 리뷰 완료를 뜻하지 않음. 최초 실제 Actions run 41397857762 통과. 주간 Dependabot 설정 파일은 PR #12 머지 후 기본 브랜치에 반영됨.
+- 최신 제출 후보 AAB 재빌드·서명 검증 완료: `build/app/outputs/bundle/release/app-release.aab` (75,608,970 bytes), SHA-256 `dd94003d037b11a90b0a508a6b42bd929d6002608f93e49642b77756969fbd77`. debuggable=false/allowBackup=false 재확인. Play 업로드·카카오 배포 인증·실기기 검증과 별개.

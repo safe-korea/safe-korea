@@ -718,3 +718,4 @@ Android API 36에서도 공식 서울시청 공개 사진 매칭/표시와 공�
 - GitHub main 보호 적용/read-back 확인: PR 필수·security-checks 성공 필수·최신 main 기준 검사·관리자 포함·강제 push/삭제 금지. 독립 리뷰어 승인 수는 0(개인 저장소)이며 코드 리뷰를 대체하지 않음. 최초 Actions 실제 실행 41397857762 PASS.
 - 최종 analyze/Flutter 173건/Python 68건, Worker 17건/TypeScript PASS. Chromium/WebKit GPS·지역 조회·오프라인 재조회 회귀 PASS. 거리 레이블은 Flutter 접근성 aria-label로 검증하도록 자동 검사 수정, 실제 화면에도 거리 표시 확인.
 - 공개 PWA 보안 헤더·위치 UI 배포 완료: Workers 7883c46c-42c5-4f67-92b0-fe37b55826d7. 최신 제출 AAB 재빌드 검증은 별도 후속 기록.
+- 최신 코드 signed AAB 재빌드 PASS(75,608,970 bytes, SHA-256 dd94003d037b11a90b0a508a6b42bd929d6002608f93e49642b77756969fbd77). jarsigner 검증 PASS(자체서명/타임스탬프 경고는 출력). kr.safekor.app, min24/target36, debuggable=false, allowBackup=false, native ELF 7개 16KB 정렬 확인. 최신 코드 Actions run 41398213315 PASS. 공개 PWA 응답의 DENY/CSP/Permissions-Policy/nosniff 직접 확인.
