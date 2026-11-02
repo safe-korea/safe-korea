@@ -45,9 +45,28 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
-      title: const Text(
-        'SAFE KOREA',
-        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
+      title: Row(
+        children: [
+          ExcludeSemantics(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(9),
+              child: Image.asset(
+                'assets/branding/app-icon.png',
+                width: 36,
+                height: 36,
+              ),
+            ),
+          ),
+          const SizedBox(width: 10),
+          const Flexible(
+            child: Text(
+              'SAFE KOREA',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
+            ),
+          ),
+        ],
       ),
     ),
     body: PageBody(

@@ -14,8 +14,20 @@
   <title>safeKor</title>
 </head>
 <body>
-  <div id="app-shell"><nav aria-label="앱 도움말"><span>safeKor</span><button id="push-open">알림 연결</button><button id="reopen">설치·오프라인</button></nav><div id="flutter-host"></div></div>
+  <div id="app-shell"><div id="flutter-host"></div></div>
   <p id="boot-error" role="alert" hidden>앱을 불러오지 못했어요. 연결을 확인하고 다시 시도해 주세요. <button id="retry">다시 시도</button></p>
+  <dialog id="push-welcome" aria-labelledby="push-welcome-title">
+    <img src="../branding/icon-jindo.png" width="56" height="56" alt="">
+    <h2 id="push-welcome-title">알림을 켜시겠어요?</h2>
+    <p>선택한 지역의 알림을 이 기기로 받아요.</p>
+    <label for="push-welcome-region">알림 지역</label><select id="push-welcome-region"><option value="">지역 선택</option></select>
+    <p class="small">알림 주소·암호화 정보·선택 지역을 서버에 저장하고 Apple로 전달합니다. 확인을 누르면 이 처리와 알림 연결에 동의합니다.</p>
+    <p id="push-welcome-source" class="small"></p>
+    <p id="push-welcome-status" role="status" aria-live="polite">연결 준비 중…</p>
+    <div class="push-actions"><button class="primary" id="push-welcome-confirm" disabled>확인</button><button class="secondary" id="push-welcome-later">나중에</button></div>
+    <p class="small">나의 준비 → 알림 설정에서 언제든 바꿀 수 있어요.</p>
+  </dialog>
+  <p id="push-feedback" role="status" hidden></p>
   <dialog id="push-panel" aria-labelledby="push-title">
     <header><h2 id="push-title">알림 연결</h2><button id="push-close" aria-label="알림 설정 닫기">닫기</button></header>
     <p>홈 화면에 추가한 iPhone 앱에서 알림을 허용하세요. 설치만으로 켜지지 않습니다.</p>

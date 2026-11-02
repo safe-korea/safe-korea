@@ -48,3 +48,10 @@ void attachWebPushBridge() {
   }).toJS;
   _ready?.callAsFunction();
 }
+
+@JS('window.safeKorOpenPushSettings')
+external JSFunction? get _openPushSettings;
+@JS('window.safeKorOpenInstallSettings')
+external JSFunction? get _openInstallSettings;
+void openWebNotificationSettings() => _openPushSettings?.callAsFunction();
+void openWebInstallSettings() => _openInstallSettings?.callAsFunction();

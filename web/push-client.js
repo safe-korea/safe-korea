@@ -2,7 +2,9 @@
 (() => {
   'use strict';
   const $=id=>document.getElementById(id), key='safekor.push.registration.v1';
-  const panel=$('push-panel'), status=$('push-status'), source=$('push-source');
+  const panel=$('push-panel'), status=$('push-status'), source=$('push-source'), welcome=$('push-welcome');
+  const promptKey='safekor.push.welcome.v1';
+  let offered=false;
   let config,credential, registration, browserSubscription, pending=new URL(location.href).searchParams.get('notice');
   let busy=false,receiptTimer,ready=typeof window.safeKorPushReceiver==='function';
   const initial=new URL(location.href);initial.searchParams.delete('notice');history.replaceState(null,'',initial.pathname+initial.search+initial.hash);
@@ -27,6 +29,7 @@
   function controls(){
     $('push-enable').disabled=busy||!config?.transportReady||!$('push-consent').checked||!$('push-region').value||!supported()||!registration?.active||(appleDevice()&&!installed());
     $('push-test').hidden=!credential?.id;$('push-disable').hidden=!credential?.id;$('push-refresh').hidden=!credential?.id;
+    $('push-welcome-confirm').disabled=busy||!config?.transportReady||!$('push-welcome-region').value||!supported()||!registration?.active;
     $('push-test').disabled=busy||(typeof Notification!=='undefined'&&Notification.permission!=='granted');$('push-disable').disabled=busy;
   }
   async function refresh(){
@@ -57,16 +60,16 @@
     if(typeof Notification!=='undefined'&&Notification.permission==='denied')message('기기 설정에서 safeKor 알림을 허용해야 수신할 수 있어요.',true);
     controls();
   }
-  $('push-open').onclick=()=>{panel.showModal();refresh().catch(e=>{message(e.message,true);controls();});};
+  window.safeKorOpenPushSettings=()=>{welcome.close();panel.showModal();refresh().catch(e=>{message(e.message,true);controls();});};
   $('push-close').onclick=()=>panel.close();
   $('push-consent').onchange=controls;$('push-region').onchange=controls;
-  $('push-enable').onclick=async()=>{
+  const connect=async(region,fromWelcome=false)=>{
     if(busy)return;
     busy=true;
     try{
       if(Notification.permission==='denied')throw Error('기기 설정에서 safeKor 알림을 허용한 뒤 다시 연결하세요.');
       const capability=credential?.capability||btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(32)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
-      store({...credential,capability,region:$('push-region').value});
+      store({...credential,capability,region});
       if(!registration?.active)throw Error('앱 준비 중입니다. 잠시 뒤 다시 눌러주세요.');
       const publicKey=Uint8Array.from(atob(config.publicKey.replace(/-/g,'+').replace(/_/g,'/')),c=>c.charCodeAt(0));
       // subscribe is called directly during the user gesture, before any await.
@@ -76,8 +79,31 @@
       const subscription=await subscribing;browserSubscription=subscription;
       const result=await api('subscribe',{capability,region:credential.region,consentVersion:'2026-11-02',subscription:subscription.toJSON()});
       store({...credential,id:result.id});publicState(result);message('알림 등록 완료 · 테스트 알림을 보내 확인하세요.');
-    }catch(e){message(e.message,true);}finally{busy=false;controls();}
+      if(fromWelcome){dismissWelcome();const toast=$('push-feedback');toast.textContent='알림 연결 완료';toast.hidden=false;setTimeout(()=>toast.hidden=true,3500);}
+    }catch(e){message(e.message,true);if(fromWelcome)$('push-welcome-status').textContent=e.message;}finally{busy=false;controls();}
   };
+  $('push-enable').onclick=()=>connect($('push-region').value);
+  function dismissWelcome(){offered=true;try{localStorage.setItem(promptKey,'decided');}catch{}welcome.close();}
+  $('push-welcome-later').onclick=dismissWelcome;
+  welcome.addEventListener('cancel',()=>{try{localStorage.setItem(promptKey,'decided');}catch{}});
+  $('push-welcome-region').onchange=()=>{controls();$('push-welcome-status').textContent=$('push-welcome-region').value?'확인을 누르면 iPhone 알림 허용으로 이어집니다.':'처음 한 번 알림을 받을 지역을 선택하세요.';};
+  $('push-welcome-confirm').onclick=()=>connect($('push-welcome-region').value,true);
+  async function offerWelcome(){
+    let decided=false;try{decided=localStorage.getItem(promptKey)==='decided';}catch{return;}
+    if(offered||decided||!navigator.onLine||!installed()||!supported()||credential?.id||pending||Notification.permission==='denied')return;
+    offered=true;welcome.showModal();
+    try{
+      await refresh();
+      const selector=$('push-welcome-region');
+      for(const region of config.regions||[]){const option=document.createElement('option');option.value=region.code;option.textContent=region.name;selector.append(option);}
+      let suggested=credential?.region;
+      try{suggested ||= JSON.parse(localStorage.getItem('safekor.local.v1.catalog')||'null')?.areaCode;}catch{}
+      if(config.regions.some(r=>r.code===suggested))selector.value=suggested;
+      $('push-welcome-source').textContent=config.officialEnabled?'':'정부 경보 연동 준비 중 · 테스트 알림 연결 가능';
+      $('push-welcome-status').textContent=selector.value?'확인을 누르면 iPhone 알림 허용으로 이어집니다.':'처음 한 번 알림을 받을 지역을 선택하세요.';
+    }catch{ $('push-welcome-status').textContent='인터넷 연결 후 나의 준비 → 알림 설정에서 연결할 수 있어요.'; }
+    controls();
+  }
   $('push-test').onclick=async()=>{
     if(busy)return;busy=true;controls();
     try{const result=await api('test',own());message(result.state==='accepted'?'Apple 서버가 접수했어요. 앱을 닫고 알림을 확인하세요.':'알림 전달을 확인하지 못했어요.',result.state!=='accepted');
@@ -99,14 +125,15 @@
       const value=await api('notice',own({deliveryId:id}));
       if(value.type==='test'){panel.showModal();message('테스트 알림을 열었어요. 실제 경보는 아닙니다.');return;}
       if(value.type!=='civil'||!ready){pending=id;return;}
-      panel.close();window.safeKorShowApp?.();window.safeKorPushReceiver?.(JSON.stringify(value));
+      welcome.close();panel.close();window.safeKorShowApp?.();window.safeKorPushReceiver?.(JSON.stringify(value));
     }catch(e){panel.showModal();message(e.message,true);}
   }
-  window.safeKorPushReady=()=>{ready=true;if(pending){const id=pending;pending=null;openNotice(id);}};
+  window.safeKorPushReady=()=>{ready=true;if(pending){const id=pending;pending=null;openNotice(id);}else offerWelcome();};
   navigator.serviceWorker?.addEventListener('message',e=>{
     if(!e.source?.scriptURL||new URL(e.source.scriptURL).origin!==location.origin||!new URL(e.source.scriptURL).pathname.endsWith('/app/safe-worker.js'))return;
     if(e.data?.type==='SAFEKOR_OPEN_NOTICE')openNotice(e.data.deliveryId);
   });
   document.addEventListener('visibilitychange',()=>{if(!document.hidden&&panel.open)refresh().catch(()=>{});});
   controls();
+  if(ready&&!pending)queueMicrotask(offerWelcome);
 })();

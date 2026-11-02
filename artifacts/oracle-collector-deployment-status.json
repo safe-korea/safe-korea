@@ -1,0 +1,14 @@
+{
+  "managed_schedules": 1,
+  "folder_permissions": "0o700",
+  "config_permissions": "0o600",
+  "scheduled_run_observed": true,
+  "last_run": {
+    "status": "source_observed",
+    "complete": true,
+    "records": 0,
+    "snapshot_accepted": true
+  },
+  "last_run_at": 1793633762111,
+  "checked_at": 1793633763917
+}
