@@ -24,14 +24,17 @@ class OfflineMapLink extends StatelessWidget {
 }
 
 class OfflineMapScreen extends StatefulWidget {
-  const OfflineMapScreen({super.key, this.initialId});
+  const OfflineMapScreen({super.key, this.initialId, this.savedArea});
+  final OfflineArea? savedArea;
   final String? initialId;
   @override
   State<OfflineMapScreen> createState() => _OfflineMapScreenState();
 }
 
 class _OfflineMapScreenState extends State<OfflineMapScreen> {
-  late final _area = OfflineArea.load();
+  late final _area = widget.savedArea == null
+      ? OfflineArea.load()
+      : Future.value(widget.savedArea!);
   final _transform = TransformationController();
   String? _selectedId;
   @override
@@ -52,7 +55,7 @@ class _OfflineMapScreenState extends State<OfflineMapScreen> {
       title: const Text('지도 범위와 출처'),
       content: SingleChildScrollView(
         child: Text(
-          '잠실역 주변 약 2.1 × 1.9km만 동봉되어 있어요. 전국 지도는 아닙니다.\n\n'
+          '선택한 대피소 주변을 저장한 지도입니다. 전국 지도는 아닙니다.\n\n'
           '지도: © OpenStreetMap contributors / Geofabrik, ODbL 1.0\n'
           '원본: 2026-11-01 배포 파일\n준비: ${area.map['preparedAt']}\n'
           'https://www.openstreetmap.org/copyright\n\n'
@@ -70,7 +73,9 @@ class _OfflineMapScreenState extends State<OfflineMapScreen> {
   );
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('잠실 주변 오프라인 지도')),
+    appBar: AppBar(
+      title: Text(widget.savedArea == null ? '잠실 주변 오프라인 지도' : '저장한 주변 지도'),
+    ),
     body: FutureBuilder<OfflineArea>(
       future: _area,
       builder: (context, snapshot) {
@@ -83,6 +88,7 @@ class _OfflineMapScreenState extends State<OfflineMapScreen> {
           return const Center(child: CircularProgressIndicator());
         }
         final area = snapshot.data!;
+        final bounds = (area.map['bounds'] as List).cast<num>();
         final shelters = area.catalog.shelters;
         final selected = shelters.where((s) => s.id == _selectedId).firstOrNull;
         return SafeArea(
@@ -110,9 +116,11 @@ class _OfflineMapScreenState extends State<OfflineMapScreen> {
                   builder: (context, constraints) {
                     // Geographic aspect ratio is preserved; never stretch the map to fit.
                     final ratio =
-                        (OfflineArea.north - OfflineArea.south) /
-                        ((OfflineArea.east - OfflineArea.west) *
-                            math.cos(37.5135 * math.pi / 180));
+                        (bounds[3] - bounds[1]) /
+                        ((bounds[2] - bounds[0]) *
+                            math.cos(
+                              (bounds[1] + bounds[3]) / 2 * math.pi / 180,
+                            ));
                     final width = math.min(
                       constraints.maxWidth,
                       constraints.maxHeight / ratio,
@@ -134,6 +142,7 @@ class _OfflineMapScreenState extends State<OfflineMapScreen> {
                                   child: CustomPaint(
                                     painter: _MapPainter(
                                       area.map['features'] as List,
+                                      bounds,
                                     ),
                                   ),
                                 ),
@@ -144,6 +153,7 @@ class _OfflineMapScreenState extends State<OfflineMapScreen> {
                                           shelters[i].longitude,
                                           shelters[i].latitude,
                                           size,
+                                          bounds,
                                         ).dx -
                                         20,
                                     top:
@@ -151,6 +161,7 @@ class _OfflineMapScreenState extends State<OfflineMapScreen> {
                                           shelters[i].longitude,
                                           shelters[i].latitude,
                                           size,
+                                          bounds,
                                         ).dy -
                                         20,
                                     child: Semantics(
@@ -262,7 +273,7 @@ class _OfflineMapScreenState extends State<OfflineMapScreen> {
                         initialValue: selected?.id,
                         isExpanded: true,
                         decoration: InputDecoration(
-                          labelText: '동봉 범위 대피소 ${shelters.length}곳',
+                          labelText: '저장한 대피소 ${shelters.length}곳',
                         ),
                         items: [
                           for (var i = 0; i < shelters.length; i++)
@@ -310,15 +321,14 @@ class _OfflineMapScreenState extends State<OfflineMapScreen> {
   }
 }
 
-Offset _point(double lon, double lat, Size size) => Offset(
-  (lon - OfflineArea.west) / (OfflineArea.east - OfflineArea.west) * size.width,
-  (OfflineArea.north - lat) /
-      (OfflineArea.north - OfflineArea.south) *
-      size.height,
+Offset _point(double lon, double lat, Size size, List<num> bounds) => Offset(
+  (lon - bounds[0]) / (bounds[2] - bounds[0]) * size.width,
+  (bounds[3] - lat) / (bounds[3] - bounds[1]) * size.height,
 );
 
 class _MapPainter extends CustomPainter {
-  _MapPainter(this.features);
+  _MapPainter(this.features, this.bounds);
+  final List<num> bounds;
   final List features;
   @override
   void paint(Canvas canvas, Size size) {
@@ -336,6 +346,7 @@ class _MapPainter extends CustomPainter {
                 (p[0] as num).toDouble(),
                 (p[1] as num).toDouble(),
                 size,
+                bounds,
               ),
             )
             .toList();
@@ -366,6 +377,7 @@ class _MapPainter extends CustomPainter {
                     (p[0] as num).toDouble(),
                     (p[1] as num).toDouble(),
                     size,
+                    bounds,
                   ),
                 )
                 .toList();
@@ -422,9 +434,9 @@ class _MapPainter extends CustomPainter {
     final scaleWidth =
         size.width *
         200 /
-        ((OfflineArea.east - OfflineArea.west) *
+        ((bounds[2] - bounds[0]) *
             111320 *
-            math.cos(37.5135 * math.pi / 180));
+            math.cos((bounds[1] + bounds[3]) / 2 * math.pi / 180));
     final scale = Paint()
       ..color = const Color(0xFF17352D)
       ..strokeWidth = 2;

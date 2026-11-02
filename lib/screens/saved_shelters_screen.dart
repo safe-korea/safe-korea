@@ -1,4 +1,5 @@
 import 'offline_map_screen.dart';
+import '../models/offline_area.dart';
 
 import 'package:flutter/material.dart';
 
@@ -222,7 +223,41 @@ class _SavedSheltersScreenState extends State<SavedSheltersScreen> {
             const SizedBox(height: 8),
           ],
           _identity(entry),
-          OfflineMapLink(shelter: entry.shelter),
+          if (entry.offlineMap != null)
+            FilledButton.icon(
+              icon: const Icon(Icons.offline_pin_outlined),
+              label: const Text('저장한 주변 지도 보기'),
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute<void>(
+                  builder: (_) => OfflineMapScreen(
+                    initialId: entry.shelter.id,
+                    savedArea: OfflineArea(entry.offlineMap!, entry.snapshot),
+                  ),
+                ),
+              ),
+            )
+          else ...[
+            const Text('주변 지도 미저장 · 인터넷 연결 후 저장하세요'),
+            OutlinedButton.icon(
+              icon: const Icon(Icons.download_outlined),
+              label: Text(_controller.busy ? '지도 저장 중…' : '주변 지도 저장'),
+              onPressed: _controller.busy
+                  ? null
+                  : () async {
+                      await _controller.retryMap(entry);
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              _controller.mapMessage ?? '다시 시도해 주세요.',
+                            ),
+                          ),
+                        );
+                      }
+                    },
+            ),
+          ],
           if (entry.entranceNote.isNotEmpty) ...[
             const SizedBox(height: 16),
             IconTextBlock(
@@ -387,7 +422,47 @@ class _SavedSheltersScreenState extends State<SavedSheltersScreen> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       _identity(entry),
-                      OfflineMapLink(shelter: entry.shelter),
+                      if (entry.offlineMap != null)
+                        FilledButton.icon(
+                          icon: const Icon(Icons.offline_pin_outlined),
+                          label: const Text('저장한 주변 지도 보기'),
+                          onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute<void>(
+                              builder: (_) => OfflineMapScreen(
+                                initialId: entry.shelter.id,
+                                savedArea: OfflineArea(
+                                  entry.offlineMap!,
+                                  entry.snapshot,
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                      else ...[
+                        const Text('주변 지도 미저장 · 인터넷 연결 후 저장하세요'),
+                        OutlinedButton.icon(
+                          icon: const Icon(Icons.download_outlined),
+                          label: Text(
+                            _controller.busy ? '지도 저장 중…' : '주변 지도 저장',
+                          ),
+                          onPressed: _controller.busy
+                              ? null
+                              : () async {
+                                  await _controller.retryMap(entry);
+                                  if (mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          _controller.mapMessage ??
+                                              '다시 시도해 주세요.',
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
+                        ),
+                      ],
                       const SizedBox(height: 12),
                       ShelterStreetViewButton(
                         shelter: entry.shelter,
