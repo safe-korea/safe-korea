@@ -367,3 +367,10 @@ UI UX Pro Max의 접근성·터치·반응형 체크리스트를 적용했습니
 - PWA 첫 화면 ‘사이렌에 당황하지 마세요’, 짧은 기능 중심 소개, 확정 진돗개·PWA 실제 화면 확인. 반복된 수신 불가 문구 제거, 상세 범위는 펼침에 유지.
 - 공유 → 더보기(⋯) → 홈 화면에 추가 → 추가 안내, 설치 도움말 펼침/접힘, 작은 화면/가로/큰 글씨에서 overflow 없음. 사전 저장·오프라인 재실행, installed/manifest 직접 실행도 Chromium/WebKit 통과.
 - 공개 주소 WebKit 검증 및 증거: onboarding-current-public-ios.png, install-more-public-ios.png. 전체 verify: analyze 0 / Flutter 183 / Python 68. 저장소 보안 검사 matching_paths 없음.
+
+## 2026-11-02 — 홈 화면 아이콘의 소개 반복 경로
+
+- 기존 ‘설치 모드라고 가정한 테스트’ 외에 소개 첫 슬라이드에서 현재 URL을 바로 저장하는 경로를 검증. 변경된 주소에 `launch=app`이 있고 `intro`가 없는지 확인.
+- 저장한 링크를 새 브라우저 컨텍스트에서 localStorage 읽기/쓰기 실패·standalone 감지 없음 상태로 열고 실제 행동요령 제목까지 확인. 새로고침 후에도 온보딩 숨김 확인. Chromium/WebKit 로컬 및 공개 배포 주소 통과.
+- 앱 실행 시 HTML에서 소개가 먼저 보이지 않도록 초기 hidden 처리. 소개를 처음 보는 브라우저에서는 분기 이후 소개 표시.
+- 기존 설치/manifest 직접 실행, 수동 도움말 열기, 소개 전환, 저장/오프라인 재시작 회귀 통과. 실제 iPhone 홈 화면 추가 UI는 미검증이며 그 검증을 완료했다고 보고하지 않음.

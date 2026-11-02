@@ -122,6 +122,7 @@
   };
   let loaded = false;
   const start = () => {
+    $('entry-loading')?.setAttribute('hidden', '');
     $('onboarding').hidden = true;
     $('app-shell').hidden = false;
     try { localStorage.setItem('safe-korea-onboarding-v1','seen'); } catch (_) { /* Continue without persistence. */ }
@@ -147,7 +148,19 @@
   const params = new URL(location.href).searchParams;
   let seen = false;
   try { seen = localStorage.getItem('safe-korea-onboarding-v1') === 'seen'; } catch (_) {}
-  if (standalone || params.get('launch') === 'app' || (!params.has('intro') && seen)) start();
+  if (standalone || params.get('launch') === 'app' || (!params.has('intro') && seen)) {
+    start();
+  } else {
+    // iOS can save the current document URL instead of using manifest.start_url.
+    // Make even a shortcut added on the FIRST introduction slide launch the app.
+    // Keep this introduction visible now; only the next navigation starts the app.
+    const installUrl = new URL(location.href);
+    installUrl.searchParams.delete('intro');
+    installUrl.searchParams.set('launch', 'app');
+    try { history.replaceState(history.state, '', installUrl); } catch (_) { /* Standalone detection still works. */ }
+    $('entry-loading')?.setAttribute('hidden', '');
+    $('onboarding').hidden = false;
+  }
   // Check for a newer shell even when setup is skipped. Do not skipWaiting:
   // already-open guidance must never reload underneath the user.
   if ('serviceWorker' in navigator && isSecureContext) {
