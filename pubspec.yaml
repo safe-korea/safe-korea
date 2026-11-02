@@ -80,6 +80,7 @@ flutter:
       fonts:
         - asset: assets/fonts/NanumGothic-Regular.ttf
   assets:
+    - assets/branding/app-icon.png
     - assets/fonts/OFL.txt
     - assets/guidelines.json
     - assets/shelters.json

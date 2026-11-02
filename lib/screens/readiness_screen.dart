@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 
 import '../services/local_store.dart';
+import '../services/web_push_bridge.dart';
 import '../widgets/common.dart';
 import 'family_screen.dart';
 import 'radio_screen.dart';
@@ -85,6 +86,20 @@ class _ReadinessScreenState extends State<ReadinessScreen> {
     appBar: AppBar(title: const Text('나의 준비')),
     body: PageBody(
       children: [
+        if (kIsWeb) ...[
+          OutlinedButton.icon(
+            onPressed: openWebNotificationSettings,
+            icon: const Icon(Icons.notifications_outlined),
+            label: const Text('알림 설정'),
+          ),
+          const SizedBox(height: 8),
+          OutlinedButton.icon(
+            onPressed: openWebInstallSettings,
+            icon: const Icon(Icons.offline_pin_outlined),
+            label: const Text('설치·오프라인 관리'),
+          ),
+          const SizedBox(height: 16),
+        ],
         const Text(
           '비상배낭 체크리스트',
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),

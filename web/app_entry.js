@@ -5,7 +5,7 @@
   try { localStorage.setItem('safe-korea-onboarding-v1','seen'); } catch (_) {}
   const showApp=()=>{ $('setup').hidden=true; $('app-shell').hidden=false; };
   window.safeKorShowApp=showApp;
-  $('reopen').onclick=()=>{ $('app-shell').hidden=true; $('setup').hidden=false; };
+  window.safeKorOpenInstallSettings=()=>{ $('app-shell').hidden=true; $('setup').hidden=false; };
   $('start').onclick=showApp;
   $('start').textContent='앱으로 돌아가기';
   $('tour-return').textContent='← 앱으로 돌아가기';

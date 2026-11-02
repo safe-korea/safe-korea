@@ -36,7 +36,9 @@ const origin=process.env.PWA_TEST_URL||'http://127.0.0.1:8766';
    assert.equal(await page.locator('#onboarding').count(),0);
    await page.reload();await page.waitForFunction(()=>window.safeFlutterReady===true,null,{timeout:60000});
    assert.equal(await page.locator('#onboarding').count(),0);
-   await page.locator('#reopen').click();assert(await page.locator('#setup').isVisible());
+   await page.locator('flt-semantics-placeholder').evaluate(e=>e.click());
+   await page.getByRole('tab',{name:'나의 준비',exact:true}).click();
+   await page.getByRole('button',{name:'설치·오프라인 관리',exact:true}).click();assert(await page.locator('#setup').isVisible());
    await context.close();
    console.log(`${name}: marketing stays on intro after previous visit/reload/install-help clicks; manifest-installed launch/relaunch opens actual app with blocked storage PASS`);
   }finally{await browser.close();}

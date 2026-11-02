@@ -57,7 +57,7 @@ const origin = process.env.PWA_TEST_URL || 'http://127.0.0.1:8765';
       await page.getByText('지금 필요한 안내',{exact:true}).waitFor();
       await page.waitForTimeout(350);
       await page.screenshot({path:`artifacts/pwa-${name}-guidance.png`});
-      await page.locator('#reopen').click();
+      await page.evaluate(()=>window.safeKorOpenInstallSettings());
       assert(await page.locator('#setup').isVisible());
       // Simulate browser eviction of one resource and verify a retry repairs it.
       await page.evaluate(async () => {
@@ -91,7 +91,7 @@ const origin = process.env.PWA_TEST_URL || 'http://127.0.0.1:8765';
       await page.waitForTimeout(350);
       await page.screenshot({path:`artifacts/pwa-${name}-offline.png`});
       assert.equal(await page.locator('#boot-error').isVisible(),false);
-      await page.locator('#reopen').click();
+      await page.evaluate(()=>window.safeKorOpenInstallSettings());
       await page.locator('#prepare').click();
       await page.waitForFunction(() => !document.getElementById('prepare').disabled);
       assert.equal(await page.locator('#cache-status').getAttribute('data-state'),'ready');
@@ -144,7 +144,7 @@ const origin = process.env.PWA_TEST_URL || 'http://127.0.0.1:8765';
       await installedPage.goto(origin);
       await installedPage.waitForFunction(() => window.safeFlutterReady === true);
       assert.equal(await installedPage.locator('#onboarding').isVisible(),false);
-      await installedPage.locator('#reopen').click();
+      await installedPage.evaluate(()=>window.safeKorOpenInstallSettings());
       assert.equal(await installedPage.locator('#install-help').isVisible(),false);
       assert.equal(await installedPage.locator('#install-summary').innerText(),'홈 화면 앱으로 열었어요.');
       await installed.close();
