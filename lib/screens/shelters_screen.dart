@@ -10,6 +10,8 @@ import '../models/shelter.dart';
 import '../theme/app_theme.dart';
 import '../services/location_service.dart';
 import '../services/region_suggestion_service.dart';
+import '../services/local_region_service.dart';
+import '../widgets/nearby_shelters.dart';
 import '../services/shelter_repository.dart';
 import '../services/saved_shelters_controller.dart';
 import 'saved_shelters_screen.dart';
@@ -55,6 +57,8 @@ class _SheltersScreenState extends State<SheltersScreen> {
   String _query = '';
   bool _suggesting = false;
   String? _regionMessage;
+  String? _nearbyArea;
+  final _nearbyKey = GlobalKey();
   RegionSuggestion? _suggestion;
   @override
   void initState() {
@@ -121,7 +125,8 @@ class _SheltersScreenState extends State<SheltersScreen> {
 
   Future<void> _fetch() async {
     final districtCode = _district;
-    if (districtCode == null) return;
+    if (districtCode == null || _fetching) return;
+    _nearbyArea = null;
     final province = _provinces.firstWhere((p) => p['code'] == _province);
     final district = _districts.firstWhere((d) => d['code'] == districtCode);
     setState(() {
@@ -192,21 +197,57 @@ class _SheltersScreenState extends State<SheltersScreen> {
   }
 
   Future<void> _locate() async {
+    if (_locating || _fetching || _suggesting || _provinces.isEmpty) return;
     setState(() {
       _locating = true;
       _position = null;
+      _nearbyArea = null;
       _map = false;
       _locationMessage = null;
     });
     try {
       final position = await (widget.locationService ?? LocationService())
           .current();
-      if (mounted) {
+      if (!mounted) return;
+      setState(() {
+        _position = position;
+        _locationMessage = '현재 지역의 대피소를 찾고 있어요…';
+      });
+      final suggestion = await (widget.regionService ?? LocalRegionService())
+          .suggest(position, _provinces);
+      if (!mounted) return;
+      if (suggestion?.districtCode == null) {
         setState(() {
-          _position = position;
-          _locationMessage =
-              '현재 위치 확인 · 오차 약 ${position.accuracy.round()}m\n확인 ${_formatTime(position.timestamp.toIso8601String())} · 실시간 추적 아님';
-          _map = false;
+          _choosingRegion = true;
+          _locationMessage = '위치는 확인했지만 조회 지역을 확정하지 못했어요. 아래에서 지역을 선택하세요.';
+        });
+        return;
+      }
+      setState(() {
+        _province = suggestion!.provinceCode;
+        _district = suggestion.districtCode;
+        _query = '';
+      });
+      await _fetch();
+      if (!mounted) return;
+      setState(() {
+        final found =
+            !_queryFailed && _catalog?.areaCode == suggestion!.districtCode;
+        _nearbyArea = found ? suggestion.districtCode : null;
+        _locationMessage = found
+            ? '${suggestion.label} 조회 완료 · 아래 가까운 순으로 표시했어요.'
+            : '현재 지역의 새 자료를 불러오지 못했어요. 이전 목록과 구분해 확인하세요.';
+      });
+      if (_nearbyArea != null) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          final target = _nearbyKey.currentContext;
+          if (mounted && target != null) {
+            Scrollable.ensureVisible(
+              target,
+              duration: const Duration(milliseconds: 300),
+              alignment: 0.05,
+            );
+          }
         });
       }
     } on LocationFailure catch (error) {
@@ -377,15 +418,25 @@ class _SheltersScreenState extends State<SheltersScreen> {
             const SizedBox(height: 12),
             LocationControls(
               position: _position,
-              busy: _locating || _suggesting,
+              busy: _locating || _suggesting || _fetching,
               message: _locationMessage,
               onLocate: _locate,
               onClear: () => setState(() {
                 _position = null;
+                _nearbyArea = null;
                 _locationMessage = null;
                 _map = false;
               }),
             ),
+            if (_position != null &&
+                _nearbyArea != null &&
+                catalog?.areaCode == _nearbyArea)
+              NearbyShelters(
+                key: _nearbyKey,
+                catalog: catalog!,
+                position: _position!,
+                onSelect: _showShelter,
+              ),
             const SizedBox(height: 16),
             if (_provinces.isNotEmpty && _choosingRegion) ...[
               const Text(
@@ -450,7 +501,7 @@ class _SheltersScreenState extends State<SheltersScreen> {
                       child: Text(p['name'] as String),
                     ),
                 ],
-                onChanged: _fetching
+                onChanged: _fetching || _locating
                     ? null
                     : (value) => setState(() {
                         _province = value!;
@@ -472,7 +523,7 @@ class _SheltersScreenState extends State<SheltersScreen> {
                       child: Text(d['name'] as String),
                     ),
                 ],
-                onChanged: _fetching
+                onChanged: _fetching || _locating
                     ? null
                     : (value) => setState(() => _district = value!),
               ),
@@ -480,7 +531,8 @@ class _SheltersScreenState extends State<SheltersScreen> {
               const Text('조회 시 지역 코드·IP를 국민안전24에 전송합니다. 위치 전송 없음.'),
               const SizedBox(height: 12),
               FilledButton.icon(
-                onPressed: _fetching || _suggesting || _district == null
+                onPressed:
+                    _fetching || _suggesting || _locating || _district == null
                     ? null
                     : _fetch,
                 icon: const Icon(Icons.download_outlined),
