@@ -26,11 +26,6 @@ class _AlertGuideScreenState extends State<AlertGuideScreen> {
     appBar: AppBar(title: const Text('내 상황별 행동요령')),
     body: PageBody(
       children: [
-        const Text(
-          '경보·현재 상황 직접 선택 · 자동 수신·판정 없음',
-          style: TextStyle(fontSize: 14),
-        ),
-        const SizedBox(height: 12),
         DropdownButtonFormField<AlertKind>(
           key: ValueKey(_kind),
           initialValue: _confirmed ? _kind : null,
