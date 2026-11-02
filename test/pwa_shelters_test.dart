@@ -6,7 +6,7 @@ import 'package:safe_korea/screens/pwa_shelters_screen.dart';
 import 'package:safe_korea/services/shelter_api_client.dart';
 
 import 'shelter_api_client_test.dart' show payload;
-import 'region_and_refresh_test.dart' show FixtureLocation;
+import 'region_and_refresh_test.dart' show FixtureLocation, FixtureRegion;
 
 import 'package:safe_korea/services/location_service.dart';
 
@@ -34,7 +34,7 @@ class FakeApi extends ShelterApiClient {
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   setUp(() => rootBundle.evict('assets/regions.json'));
-  testWidgets('PWA GPS is opt-in, clears and makes no facility request', (
+  testWidgets('PWA GPS is opt-in, fetches its region and clears distance', (
     tester,
   ) async {
     final location = FixtureLocation();
@@ -42,7 +42,11 @@ void main() {
     addTearDown(api.close);
     await tester.pumpWidget(
       MaterialApp(
-        home: PwaSheltersScreen(api: api, locationService: location),
+        home: PwaSheltersScreen(
+          api: api,
+          locationService: location,
+          regionService: FixtureRegion(),
+        ),
       ),
     );
     await tester.pumpAndSettle();
@@ -50,15 +54,63 @@ void main() {
     await tester.tap(find.text('GPS 현재 위치 확인'));
     await tester.pumpAndSettle();
     expect(location.calls, 1);
-    expect(api.calls, 0);
+    expect(api.calls, 1);
+    expect(find.textContaining('내 가까운 대피소'), findsOneWidget);
     expect(find.textContaining('현재 위치 확인 · 오차'), findsOneWidget);
     await tester.ensureVisible(find.byTooltip('내 위치 옵션'));
+    await tester.pumpAndSettle();
     await tester.tap(find.byTooltip('내 위치 옵션'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('내 위치 사용 해제'));
     await tester.pumpAndSettle();
     expect(find.textContaining('현재 위치 확인 · 오차'), findsNothing);
   });
+  testWidgets(
+    'uncertain region retains manual selection without a facility request',
+    (tester) async {
+      final api = FakeApi();
+      addTearDown(api.close);
+      await tester.pumpWidget(
+        MaterialApp(
+          home: PwaSheltersScreen(
+            api: api,
+            locationService: FixtureLocation(),
+            regionService: FixtureRegion(provinceOnly: true),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('GPS 현재 위치 확인'));
+      await tester.pumpAndSettle();
+      expect(api.calls, 0);
+      expect(find.textContaining('조회 지역을 확정하지 못했어요'), findsOneWidget);
+      expect(find.byType(DropdownButtonFormField<String>), findsNWidgets(2));
+      expect(find.textContaining('내 가까운 대피소'), findsNothing);
+    },
+  );
+  testWidgets(
+    'nearby request failure does not claim successful nearby results',
+    (tester) async {
+      final api = FakeApi()..fail = true;
+      addTearDown(api.close);
+      await tester.pumpWidget(
+        MaterialApp(
+          home: PwaSheltersScreen(
+            api: api,
+            locationService: FixtureLocation(),
+            regionService: FixtureRegion(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('GPS 현재 위치 확인'));
+      await tester.pumpAndSettle();
+      expect(api.calls, 1);
+      expect(find.textContaining('현재 지역의 새 자료를 불러오지 못했어요'), findsOneWidget);
+      expect(find.textContaining('내 가까운 대피소'), findsNothing);
+      expect(find.byType(DropdownButtonFormField<String>), findsNWidgets(2));
+    },
+  );
   testWidgets('PWA denied GPS retains region selection', (tester) async {
     final api = FakeApi();
     addTearDown(api.close);

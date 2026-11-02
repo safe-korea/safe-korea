@@ -142,5 +142,15 @@
     $('app-shell').hidden = true;
     showSetup();
   };
-  try { if (!new URL(location.href).searchParams.has('intro') && localStorage.getItem('safe-korea-onboarding-v1') === 'seen') start(); } catch (_) {}
+  // Installed apps have separate storage on some platforms. Launch must not
+  // depend on the browser's onboarding flag, even if storage is unavailable.
+  const params = new URL(location.href).searchParams;
+  let seen = false;
+  try { seen = localStorage.getItem('safe-korea-onboarding-v1') === 'seen'; } catch (_) {}
+  if (standalone || params.get('launch') === 'app' || (!params.has('intro') && seen)) start();
+  // Check for a newer shell even when setup is skipped. Do not skipWaiting:
+  // already-open guidance must never reload underneath the user.
+  if ('serviceWorker' in navigator && isSecureContext) {
+    navigator.serviceWorker.getRegistration().then(registration => registration?.update()).catch(() => {});
+  }
 })();

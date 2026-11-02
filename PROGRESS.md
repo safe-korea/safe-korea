@@ -731,3 +731,17 @@ Android API 36에서도 공식 서울시청 공개 사진 매칭/표시와 공�
 - 검증: format/analyze 이슈 0, Flutter 175건, Python 68건 통과(`/private/tmp/safe-offline-final-verify.log`). SQLite 이미지·출처 재로드, 구형 사진 호환, 입력 출처 필수, 저장 실패 보존, 상태 변경 중 안내 화면 유지 검증.
 - iPhone 17 Pro/iOS 26.5와 Android API 36에서 통합 테스트 통과. `integration_test/offline_reference_map_test.dart`와 `artifacts/visual-qa/offline-reference-*`에 근거. 연결 상태는 주입하고 그림은 QA 생성물, 실제 회선 차단·실제 약도 정확도·사진 보관함 OS 선택 UI 검증으로 간주하지 않음. iOS 일반 앱 재설치/실행 완료, 홈 화면 확인.
 - 저장소 보안 검사: Git blob 1515개에서 검사 대상 일치 없음. 실물 휴대폰 비행기 모드/재실행 및 실제 시설 이미지 가독성 검증은 남음. 기존 release AAB와 공개 PWA는 이번 변경으로 재배포하지 않음.
+
+## 2026-11-02 — 현재 위치 즉시 조회와 설치 앱 시작 화면
+
+- PR #13 검사 성공 후 후속 지시에 따라 merge(`5d72463`), `fix/nearby-location-and-installed-start`에서 구현.
+- 원인: GPS는 선택 지역 목록 거리 정렬만 수행했고, PWA 설치 실행도 브라우저 localStorage의 소개 완료 표시에 의존했음.
+- 공통 GPS 흐름을 위치 → 로컬 경계 판별 → 공식 지역 시설 요청 → 가까운 3곳으로 스크롤로 연결. 네이티브 카드는 시설 상세, PWA 카드는 해당 시설 카카오 지도 연결. 좌표 외부 전송 없음. 시군구 내 직선거리순이며 인접 지역은 포함하지 않음.
+- 2023 V-World 경계를 가공한 출처표시 허용 자료를 동봉, 원본 커밋·해시·가공 범위 `assets/REGION_BOUNDARIES.md`에 기록. 현재 코드와 시군구 전체 이름이 맞는 경우만 적용. 위치 오차+100m의 8방향 판별이 다르거나 미지원/변경 코드인 경우 수동 선택. 2026 전국 최신 경계라고 주장하지 않음.
+- PWA standalone/manifest `?launch=app` 시작은 소개 기록 없이 바로 앱 실행. 일반 브라우저 첫 방문은 소개 유지. ‘설치·오프라인’에서 다시 안내 접근. 기존 service worker 업데이트 확인 추가, 실행 중 화면 강제 교체 없음. 캐시 37개 파일/19.9MiB.
+- format/analyze 이슈 0, Flutter 178건, Python 68건 통과(`/private/tmp/safe-nearby-verified.log`). 이후 시군구 복합 이름 비교 보완은 `test/local_region_service_test.dart`로 재검증(잠실/종로/분당, 경계/국외/오차 거부).
+- iPhone 17 Pro OS 모의 위치 잠실로 실제 공식 송파구 124곳 조회, 버튼 1회 후 가까운 167m/226m/249m 3곳 표시 통합 테스트 통과. `artifacts/visual-qa/gps-simulator-confirmed.png`. 일반 앱 복원 완료. 실물 GPS는 별도 검증 필요.
+- Chromium/WebKit: 설치 상태+localStorage 실패에서도 바로 실행/재실행, 일반 첫 방문 소개, 수동 설치 안내, 오프라인 행동요령 재실행·캐시 복구 통과. 실제 공식 API 124건, GPS 후 region=11710만 1회 요청, 가까운 목록, 조회 실패 시 기존 목록 유지 통과.
+- WebKit 테스트 엔진 모의 위치 timestamp가 Date.now()의 1000배로 반환되는 것을 관측하여 테스트 래퍼에서만 ms로 보정. 제품의 2분/오차 검증은 유지. 조회 실패 테스트는 라우트 abort와 offline 상태를 주입하고 접근성 버튼 동작으로 요청 발생을 검증. 실제 iPhone Safari 권한·홈 화면 설치는 실물 확인 필요.
+- 공개 Workers/PWA 배포 완료: `339888df-a042-4fdb-92f9-9f42ef6d8fc5`, https://safe-korea-shelter-api.trovapp.workers.dev . manifest 시작 URL과 설치 진입 응답/위치 권한 헤더 확인. 기존 Android release AAB는 재생성하지 않음.
+- 배포 후 공개 주소에서도 Chromium/WebKit 시작 화면 및 실제 공식 조회/실패 복구 검사 재통과(`/private/tmp/safe-nearby-production-launch.log`, `/private/tmp/safe-nearby-production-gps.log`). 일반 iOS 앱 최종 복원 완료.
