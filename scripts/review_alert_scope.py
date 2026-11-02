@@ -17,7 +17,10 @@ HINTS = {
     'release_or_cancel': ('해제', '취소', '종료'),
     'air_raid': ('공습',),
     'watch': ('경계경보', '경계 경보'),
-    'cbrn': ('화생방', '화학공격', '핵공격', '핵 공격'),
+    'cbrn': ('화생방', '화학공격', '화학 공격', '생물학공격', '생물학 공격'),
+    'chemical': ('화학공격', '화학 공격'),
+    'biological': ('생물학공격', '생물학 공격'),
+    'nuclear': ('핵경보', '핵 경보', '핵공격', '핵 공격', '핵폭발', '핵 폭발', '핵 상황'),
     'war': ('전쟁', '전시상황', '전시 상황'),
 }
 
@@ -29,7 +32,7 @@ def normalized(value):
 def review_record(record):
     """Return fixed labels only: no message, location, identifiers or secrets."""
     result = {'route': 'hold_for_review', 'reason': 'invalid_record',
-              'hints': [], 'notify': False}
+              'hints': [], 'review_flags': [], 'notify': False}
     if not isinstance(record, dict):
         return result
     kind = normalized(record.get('DST_SE_NM'))
@@ -39,6 +42,18 @@ def review_record(record):
         return result
     hints = sorted(name for name, words in HINTS.items() if any(word in message for word in words))
     result['hints'] = hints
+    flags = []
+    if 'drill' in hints:
+        flags.append('drill_context_requires_review')
+    if 'correction' in hints:
+        flags.append('correction_requires_original_link')
+    if 'release_or_cancel' in hints:
+        flags.append('release_requires_original_link')
+        if kind == '민방공' and level != '안전안내':
+            flags.append('release_channel_requires_review')
+    if any(word in message for word in ('아님', '아닙니다', '예정', '내일', '예시', '표준 문안')):
+        flags.append('negated_or_reference_context')
+    result['review_flags'] = sorted(flags)
     if level not in LEVELS:
         result['reason'] = 'unknown_emergency_level'
     elif kind == '민방공':
@@ -59,5 +74,7 @@ def summarize_scope(records):
     return {'mode': 'review_only',
             'route_counts': dict(sorted(Counter(d['route'] for d in decisions).items())),
             'hint_counts': dict(sorted(Counter(h for d in decisions for h in d['hints']).items())),
+            'review_flag_counts': dict(sorted(Counter(
+                flag for d in decisions for flag in d['review_flags']).items())),
             'notification_eligible_count': 0,
             'official_code_mapping_verified': False}
