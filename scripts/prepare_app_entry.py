@@ -13,6 +13,8 @@ for name in ['assets','canvaskit','flutter_bootstrap.js','flutter.js','main.dart
     source=root/name
     if source.exists(): shutil.move(str(source),str(app/name))
 shutil.copy2(root/'onboarding.css',app/'onboarding.css')
+(app/'icons').mkdir()
+shutil.copy2(root/'icons/icon-192.png',app/'icons/icon-192.png')
 start=landing.index('    <section id="setup"')
 end=landing.index('  </main>',start)
 settings=landing[start:end]

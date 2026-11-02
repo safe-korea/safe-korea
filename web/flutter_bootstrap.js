@@ -1,7 +1,10 @@
 {{flutter_js}}
 {{flutter_build_config}}
+const bootWatchdog=setTimeout(()=>{if(!window.safeFlutterReady)document.getElementById('boot-error').hidden=false;},45000);
 window.addEventListener('flutter-first-frame', () => {
+  clearTimeout(bootWatchdog);
   window.safeFlutterReady = true;
+  document.getElementById('boot-splash').hidden = true;
   document.getElementById('boot-error').hidden = true;
 }, {once:true});
 _flutter.loader.load({
@@ -11,4 +14,4 @@ _flutter.loader.load({
     await runner.runApp();
 
   }
-}).catch(() => {document.getElementById('boot-error').hidden = false;});
+}).catch(() => {clearTimeout(bootWatchdog);document.getElementById('boot-error').hidden = false;});
