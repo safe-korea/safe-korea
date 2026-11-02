@@ -791,7 +791,7 @@ class _SheltersScreenState extends State<SheltersScreen> {
                   ),
                 ),
                 icon: const Icon(Icons.photo_library_outlined),
-                label: const Text('우선순위·사진·메모 추가'),
+                label: const Text('사진·약도·메모 추가'),
               ),
             ],
             if (!_saved.loaded && !_saved.loading)

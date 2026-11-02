@@ -719,3 +719,15 @@ Android API 36에서도 공식 서울시청 공개 사진 매칭/표시와 공�
 - 최종 analyze/Flutter 173건/Python 68건, Worker 17건/TypeScript PASS. Chromium/WebKit GPS·지역 조회·오프라인 재조회 회귀 PASS. 거리 레이블은 Flutter 접근성 aria-label로 검증하도록 자동 검사 수정, 실제 화면에도 거리 표시 확인.
 - 공개 PWA 보안 헤더·위치 UI 배포 완료: Workers 7883c46c-42c5-4f67-92b0-fe37b55826d7. 최신 제출 AAB 재빌드 검증은 별도 후속 기록.
 - 최신 코드 signed AAB 재빌드 PASS(75,608,970 bytes, SHA-256 dd94003d037b11a90b0a508a6b42bd929d6002608f93e49642b77756969fbd77). jarsigner 검증 PASS(자체서명/타임스탬프 경고는 출력). kr.safekor.app, min24/target36, debuggable=false, allowBackup=false, native ELF 7개 16KB 정렬 확인. 최신 코드 Actions run 41398213315 PASS. 공개 PWA 응답의 DENY/CSP/Permissions-Policy/nosniff 직접 확인.
+
+## 2026-11-02 — 오프라인 참고 약도·촬영 준비
+
+- 이전 보안 PR #12는 검사 성공 확인 후 사용자 후속 진행 지시에 따라 squash merge(`37ecfea`). 새 작업은 `feat/offline-reference-maps`.
+- 기존 오프라인 범위 점검: JSON 행동요령, SQLite 주소·가족 계획·준비물·사진. 지도 배경과 메시지 전송은 연결 필요. PWA는 행동요령 중심이며 네이티브 저장 기능과 구분.
+- 네이티브 저장 시설에 사용자 선택 참고 약도 이미지 추가. 출처 필수(120자), 사진과 합계 3장, 기존 1280px/6MiB PNG 재인코딩·메타데이터 제거 유지. 기존 레코드는 mapSource 없이 그대로 로드. 공식 시설 재조회/우선순위 변경 후에도 이미지·출처 보존. 서버 업로드 없음.
+- 저장 약도는 접힌 ‘내 기록’ 밖에 표시하고 오프라인 확대. 원본 출처와 추가 날짜, 지도 갱신일·현재 위치·길찾기와의 차이를 표시. 실제 시설 약도를 임의 제작/삽입하지 않음.
+- 카카오 정적 이미지 별도 저장에 대한 공식 데브톡 답변과 최신 운영정책, OSM 표준 타일 오프라인 금지 정책 확인. 자동 지도 캡처/사전 다운로드는 미구현. 저장 허용 안내도 또는 직접 만든 약도만 사용하도록 안내.
+- 오프라인 허브에 약도와 공유 연결 필요 조건을 반영. `release/demo/SHOT_LIST.md`에 90초 조작·자막, 모의 경보 표시, 통신 상태 재현과 실제 차단 구분, 가족 공유 미리보기/실제 발송 구분 정리. 영상 촬영 자체는 아직 수행하지 않음.
+- 검증: format/analyze 이슈 0, Flutter 175건, Python 68건 통과(`/private/tmp/safe-offline-final-verify.log`). SQLite 이미지·출처 재로드, 구형 사진 호환, 입력 출처 필수, 저장 실패 보존, 상태 변경 중 안내 화면 유지 검증.
+- iPhone 17 Pro/iOS 26.5와 Android API 36에서 통합 테스트 통과. `integration_test/offline_reference_map_test.dart`와 `artifacts/visual-qa/offline-reference-*`에 근거. 연결 상태는 주입하고 그림은 QA 생성물, 실제 회선 차단·실제 약도 정확도·사진 보관함 OS 선택 UI 검증으로 간주하지 않음. iOS 일반 앱 재설치/실행 완료, 홈 화면 확인.
+- 저장소 보안 검사: Git blob 1515개에서 검사 대상 일치 없음. 실물 휴대폰 비행기 모드/재실행 및 실제 시설 이미지 가독성 검증은 남음. 기존 release AAB와 공개 PWA는 이번 변경으로 재배포하지 않음.

@@ -146,8 +146,8 @@ void main() {
         await tester.ensureVisible(find.text('내 기록 · 선택'));
         await tester.tap(find.text('내 기록 · 선택'));
         await tester.pumpAndSettle();
-        await tester.ensureVisible(find.text('우선순위·사진·메모 추가'));
-        expect(find.text('우선순위·사진·메모 추가').hitTestable(), findsOneWidget);
+        await tester.ensureVisible(find.text('사진·약도·메모 추가'));
+        expect(find.text('사진·약도·메모 추가').hitTestable(), findsOneWidget);
         expect(tester.takeException(), isNull);
       },
     );
