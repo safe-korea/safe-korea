@@ -9,5 +9,49 @@
   "contactEmail": "taetaeg@gmail.com",
   "privacyPolicy": "https://safe-korea-shelter-api.trovapp.workers.dev/privacy",
   "supportUrl": "https://safe-korea-shelter-api.trovapp.workers.dev/support",
-  "consoleSubmissionStatus": "app_created_user_reported; listing_and_policy_submission_not_verified"
+  "consoleSubmissionStatus": "setup_10_of_11_saved; data_safety_draft; review_submission_blocked",
+  "verifiedDate": "2026-11-03",
+  "category": "TOOLS",
+  "targetAgeGroups": [
+    "13-15",
+    "16-17",
+    "18+"
+  ],
+  "healthDeclaration": [
+    "Emergency and First Aid"
+  ],
+  "internalTest": {
+    "versionName": "1.0.0",
+    "versionCode": 2,
+    "status": "active",
+    "url": "https://play.google.com/apps/internaltest/4701311713198758231"
+  },
+  "storeListing": {
+    "locale": "ko-KR",
+    "status": "saved_pending_review",
+    "phoneScreenshots": [
+      "01-home-current.png",
+      "04-actions-current.png",
+      "03-shelter-map-current.png",
+      "02-offline-map-current.png"
+    ]
+  },
+  "dataSafety": {
+    "status": "draft_saved_not_submitted",
+    "collectsOrShares": true,
+    "accountCreation": false,
+    "externalAccountLogin": false,
+    "pending": [
+      "all-data transit encryption attestation",
+      "SDK data types, purposes, sharing and ephemeral handling"
+    ]
+  },
+  "closedTest": {
+    "status": "not_started",
+    "optedInTesters": 0,
+    "requiredTesters": 12,
+    "requiredContinuousDays": 14,
+    "recruitment": "user_managed"
+  },
+  "productionStatus": "inactive"
 }
