@@ -9,7 +9,7 @@
   "contactEmail": "taetaeg@gmail.com",
   "privacyPolicy": "https://safe-korea-shelter-api.trovapp.workers.dev/privacy",
   "supportUrl": "https://safe-korea-shelter-api.trovapp.workers.dev/support",
-  "consoleSubmissionStatus": "basic_app_setup_complete; data_safety_saved_pending_review; closed_release_setup_required",
+  "consoleSubmissionStatus": "closed_alpha_review_requested; console_in_review; automated_checks_pending",
   "verifiedDate": "2026-11-03",
   "category": "TOOLS",
   "targetAgeGroups": [
@@ -28,7 +28,7 @@
   },
   "storeListing": {
     "locale": "ko-KR",
-    "status": "saved_pending_review",
+    "status": "review_requested",
     "phoneScreenshots": [
       "01-home-current.png",
       "04-actions-current.png",
@@ -37,7 +37,7 @@
     ]
   },
   "dataSafety": {
-    "status": "final_saved_pending_review",
+    "status": "review_requested",
     "collectsOrShares": true,
     "encryptedInTransit": true,
     "accountCreation": false,
@@ -105,13 +105,31 @@
     "privacyDeploymentVersion": "cf9ec79e-51f2-4317-9c60-ef4b88c4b04b"
   },
   "closedTest": {
-    "status": "not_started",
+    "status": "review_requested_automated_checks_pending",
     "optedInTesters": 0,
     "requiredTesters": 12,
     "requiredContinuousDays": 14,
     "recruitment": "user_managed",
-    "setupTasksComplete": 0,
-    "setupTasksTotal": 5
+    "setupTasksComplete": 5,
+    "setupTasksTotal": 5,
+    "trackName": "Alpha",
+    "trackId": "4699249421656772828",
+    "releaseId": "1",
+    "releaseName": "1.0.0 (2) · 비공개 테스트",
+    "versionName": "1.0.0",
+    "versionCode": 2,
+    "countries": [
+      "KR"
+    ],
+    "testerList": "safeKor 비공개 테스트",
+    "allowlistedAccounts": 1,
+    "feedbackEmail": "taetaeg@gmail.com",
+    "participationUrl": "https://play.google.com/apps/testing/kr.safekor.app",
+    "participationUrlStatus": "available_after_review_and_publication; not_yet_verified_active",
+    "testerConsoleUrl": "https://play.google.com/console/u/3/developers/7181631274097055190/app/4974887941231472773/tracks/4699249421656772828?tab=testers",
+    "reviewRequestedAtUtc": "2026-11-03T05:25:37.676029+00:00",
+    "reviewStatusDetails": "Dashboard: 검토 중. Publishing: quick checks running; sent to review after checks succeed."
   },
-  "productionStatus": "inactive"
+  "productionStatus": "inactive",
+  "usesAdvertisingId": false
 }
