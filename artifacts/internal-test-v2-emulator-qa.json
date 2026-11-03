@@ -1,0 +1,40 @@
+{
+  "scope": "Android emulator API35 arm64; installed from Google Play internal testing; not physical device or government notification delivery verification",
+  "package": "kr.safekor.app",
+  "versionName": "1.0.0",
+  "versionCode": 2,
+  "installer": "com.android.vending",
+  "debuggable": false,
+  "base_apk_sha256": "30cf6914e4dc0a71e54e99e27ad392fd6512078ad766ff916d1195f1e43f6108",
+  "certificate_sha256": "e3045e4353bf75f678e404a263bb711724db7855bfe368bf42d7b40cd7cab481",
+  "certificate_sha1": "d60d9493a09e6ebcd841fda98d7c95c1b8cf5e05",
+  "passed": [
+    "test participation opt-in",
+    "Play Store install (second attempt after initial download failure)",
+    "launch home",
+    "GPS permission and Jamsil fixture resolves Songpa-gu",
+    "124 official facilities retrieved; nearest results 167m,226m,249m",
+    "save Jamsil station shelter",
+    "offline cold restart to offline home",
+    "saved roads and shelter pin/address offline",
+    "offline air-raid vehicle guidance",
+    "checklist checkbox survives offline cold restart",
+    "connectivity restoration",
+    "native status share chooser opens; cancelled without sending"
+  ],
+  "unresolved": [
+    "Kakao SDK MapAuthException(401): Unauthorized; fallback map shown; verify app key, package and Play signing key hash registration"
+  ],
+  "not_tested": [
+    "physical Android device",
+    "government alert delivery",
+    "KakaoTalk recipient send",
+    "full family plan persistence flow"
+  ],
+  "fixture_location": {
+    "latitude": 37.5133,
+    "longitude": 127.1001,
+    "kind": "emulator injected; not user location"
+  },
+  "kakao_android_key_hash": "1g2Uk6CebrzYQf2pjXyVwbjPXgU="
+}
