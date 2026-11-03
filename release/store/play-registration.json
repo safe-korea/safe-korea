@@ -9,7 +9,7 @@
   "contactEmail": "taetaeg@gmail.com",
   "privacyPolicy": "https://safe-korea-shelter-api.trovapp.workers.dev/privacy",
   "supportUrl": "https://safe-korea-shelter-api.trovapp.workers.dev/support",
-  "consoleSubmissionStatus": "closed_alpha_rejected; non_medical_classification_support_ticket_submitted",
+  "consoleSubmissionStatus": "closed_alpha_resubmitted_in_review",
   "verifiedDate": "2026-11-03",
   "category": "MAPS_AND_NAVIGATION",
   "targetAgeGroups": [
@@ -105,7 +105,7 @@
     "privacyDeploymentVersion": "cf9ec79e-51f2-4317-9c60-ef4b88c4b04b"
   },
   "closedTest": {
-    "status": "rejected_organization_account_requirement",
+    "status": "resubmitted_in_review",
     "optedInTesters": 0,
     "requiredTesters": 12,
     "requiredContinuousDays": 14,
@@ -125,10 +125,23 @@
     "allowlistedAccounts": 1,
     "feedbackEmail": "taetaeg@gmail.com",
     "participationUrl": "https://play.google.com/apps/testing/kr.safekor.app",
-    "participationUrlStatus": "unavailable_until_rejection_resolved_and_release_published",
+    "participationUrlStatus": "pending_review_and_release_publication",
     "testerConsoleUrl": "https://play.google.com/console/u/3/developers/7181631274097055190/app/4974887941231472773/tracks/4699249421656772828?tab=testers",
     "reviewRequestedAtUtc": "2026-11-03T05:25:37.676029+00:00",
-    "reviewStatusDetails": "Policy issue4989575261088573961: category/features require organization account. Triggering declaration not specified."
+    "reviewStatusDetails": "Submission activity2 in review; previous submission1 rejected for organization account requirement. Category changed to Maps & Navigation; health declaration unchanged.",
+    "resubmission": {
+      "activityId": "2",
+      "status": "in_review",
+      "submittedAtConsole": "2026-11-03 21:43",
+      "consoleTimezone": "Asia/Seoul",
+      "observedAtUtc": "2026-11-03T12:45:05.916155+00:00",
+      "changeCount": 14,
+      "versionName": "1.0.0",
+      "versionCode": 2,
+      "category": "MAPS_AND_NAVIGATION",
+      "healthDeclarationChanged": false,
+      "activityUrl": "https://play.google.com/console/u/3/developers/7181631274097055190/app/4974887941231472773/publishing/submission-activity/2/details"
+    }
   },
   "productionStatus": "inactive",
   "usesAdvertisingId": false,
@@ -150,7 +163,7 @@
   },
   "testerMatch": {
     "registrationStatus": "form_filled_not_submitted",
-    "reason": "Registration immediately starts matching, but rejected Play release cannot be installed",
+    "reason": "New submission2 is in review; final registration waits for closed release approval and accessible participation links",
     "registrationUrl": "https://tester-match.knockknock.company/apps/new",
     "androidUrl": "https://play.google.com/store/apps/details?id=kr.safekor.app",
     "webParticipationUrl": "https://play.google.com/apps/testing/kr.safekor.app",
@@ -161,7 +174,7 @@
     "previous": "TOOLS",
     "current": "MAPS_AND_NAVIGATION",
     "consoleLabel": "지도/내비게이션",
-    "status": "saved_in_console_not_submitted_for_review",
+    "status": "submitted_for_review",
     "verifiedDate": "2026-11-03",
     "reason": "Core GPS-based shelter finding and map display",
     "healthDeclarationChanged": false,
