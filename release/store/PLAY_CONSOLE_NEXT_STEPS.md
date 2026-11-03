@@ -1,31 +1,42 @@
-# safeKor — 앱 생성 이후 입력 자료
+# safeKor — Play Console 저장 현황 / 다음 단계
 
-앱 생성은 사용자 완료 보고 기준입니다. 아래 항목을 콘솔에 입력하거나 제출했다고 간주하지 않습니다.
+2026-11-03 인증된 실제 콘솔 확인. **기본 설정 11개 중 10개 완료(91%)**, 앱은 초안이고 프로덕션은 비활성입니다. 저장 완료와 Google 검토 완료는 다릅니다.
 
-## 앱 콘텐츠
-
-| 화면 | 현재 구현에 따른 입력 자료 |
+| 항목 | 콘솔에서 확인한 상태 |
 |---|---|
-| 개인정보처리방침 | https://safe-korea-shelter-api.trovapp.workers.dev/privacy |
-| 광고 | 현재 빌드에 광고 SDK/광고 배너 없음 |
-| 앱 액세스 권한 | 로그인/구독 없이 모든 기능 이용, 심사용 계정 불필요 |
-| 정부 앱 여부 | 정부 또는 지자체가 제작·운영하는 앱 아님 |
-| 데이터 보안 | `release/legal/DATA_SAFETY_REVIEW.md` 검토. 지도 SDK·호스팅 처리 확인 전 ‘수집 없음’ 일괄 선택 금지 |
-| 콘텐츠 등급·타깃 연령 | 실제 콘솔 질문과 출시 대상 연령 확인 후 답변. 임의로 전 항목 ‘아니요’ 선택하지 않음 |
+| 개인정보처리방침 | 공개 `/privacy` URL 저장, 검토 대기 |
+| 앱 액세스 | 로그인 없이 모든 기능 이용, 심사용 계정 불필요 |
+| 광고 / 정부 앱 / 금융 | 각각 없음 / 정부 앱 아님 / 금융 기능 없음 저장 |
+| 건강 선언 | 재난 대비 안내에 해당하는 Emergency and First Aid 선택·저장 |
+| 콘텐츠 등급 | IARC 설문 저장; 한국 3세 이상. 출시 타깃 연령과 구분 |
+| 타깃 연령 | 사용자 지정대로 13–15 / 16–17 / 18+ 저장 |
+| 카테고리 / 문의처 | 도구 / taetaeg@gmail.com / 공개 `/support`; 연락처 게시 확인 |
+| 한국어 스토어 소개 | safeKor 이름·간단/상세 설명·진돗개 아이콘·그래픽·현재 Android 화면 4장 저장 |
+| 데이터 보안 | **초안 임시저장, 미완료·미제출**. SDK 수집·공유/목적/임시처리 및 전체 전송 암호화 판정 남음 |
 
-## 기본 스토어 등록정보
+게시 개요에서 한국어 등록정보·콘텐츠 등급·13세 이상 대상·정책 URL·광고·건강·도구 카테고리의 저장 내역을 재확인했습니다. 필수 단계가 남아 **‘검토를 위해 앱 전송’은 비활성**입니다. 심사 접수나 공개 출시를 완료했다고 보고하지 않습니다.
 
-- 앱 이름: `ko-KR/title.txt`
-- 간단한 설명: `ko-KR/short-description.txt`
-- 자세한 설명: `ko-KR/full-description.txt`
-- 아이콘 512×512: `release/branding/icon-play-512.png`
-- 그래픽 이미지 1024×500: `release/branding/feature-graphic-1024x500.png`
-- 실제 Android 화면 4장: `release/store/ko-KR/upload-screenshots/`
-- 지원 이메일: taetaeg@gmail.com
-- 지원 웹사이트: https://safe-korea-shelter-api.trovapp.workers.dev/support
+## 등록한 자료
 
-## 번들
+- 설명: `ko-KR/title.txt`, `short-description.txt`, `full-description.txt`
+- 아이콘: `release/branding/icon-play-512.png` (512×512)
+- 그래픽: `release/branding/feature-graphic-1024x500.png`
+- 실제 Android 1080×1920 화면: `ko-KR/upload-screenshots/*-current.png`
+- 콘솔 순서: 홈 → 행동요령 → 카카오 대피소 지도 → 저장한 오프라인 지도
+- 홍보 동영상 미등록. 이 입력란은 YouTube 링크용이며 MP4를 직접 업로드하지 않음.
 
-최신 서명 AAB: `build/app/outputs/bundle/release/app-release.aab` (76.9MB), package `kr.safekor.app`, version 1.0.0+1, targetSdk 36. 이 파일은 아직 Play Console에 업로드하지 않았습니다. 기존에 같은 버전 코드를 업로드했다면 새 버전 코드로 재생성해야 합니다.
+## 내부 테스트와 비공개 테스트
 
-심사·프로덕션 공개에 앞서 데이터 보안 최종 검토, Google Play 앱 서명용 카카오 인증, 실기기 지도·알림·오프라인 검증이 남아 있습니다. iPhone 네이티브 시뮬레이터 영상은 Android 스크린샷이나 iPhone PWA 기능 검증 자료로 대체하지 않습니다. Play의 홍보 동영상 입력란은 YouTube 링크용이며 MP4를 직접 넣는 칸으로 안내하지 않습니다.
+서명 AAB **1.0.0 (2)**는 내부 테스트에 게시됐고 Play 설치본의 지도 인증·GPS·시설/지도 저장·오프라인 재실행·공유창을 에뮬레이터에서 검증했습니다. 기존 카카오 Android 패키지/Play 서명 해시 등록 오류는 수정했습니다. 내부 테스트 참여 링크:
+https://play.google.com/apps/internaltest/4701311713198758231
+
+이 내부 테스트는 프로덕션 자격용 비공개 테스트와 다릅니다. 현재 콘솔에는 **비공개 참여 0명, 12명 이상 연속 14일** 요건이 표시됩니다. 사용자가 테스터를 모집합니다. 기본 설정 완료 후 비공개 트랙을 게시하고 그 트랙의 참여 링크를 제공해야 합니다. 기존 내부 테스트 링크로 14일을 세지 않습니다.
+
+## 남은 순서
+
+1. `release/legal/DATA_SAFETY_REVIEW.md`의 Android 버전2 SDK 흐름을 근거로 데이터 보안 신고를 확정·저장. 카카오 일반 보안 정책을 SDK별 상세 처리표로 간주하지 않음.
+2. 콘솔 필수 단계 해소 후 검토 제출 및 비공개 트랙 준비. 앱 검토/게시 결과를 실제 확인.
+3. 사용자 모집 테스터가 비공개 참여를 선택하고 연속14일 유지. 기간·인원은 콘솔 기준.
+4. 물리 Android 기기의 권한·지도·오프라인·알림 연결 점검과 실제 피드백 기록 후 프로덕션 액세스 신청.
+
+공식 근거: [Google 비공개 테스트 요건](https://support.google.com/googleplay/android-developer/answer/14151465), [건강 선언](https://support.google.com/googleplay/android-developer/answer/14738291). 자동 정부 경보 발송·실기기 수신은 이번 스토어 설정에서 검증하지 않았습니다.

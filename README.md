@@ -4,6 +4,10 @@
 
 **출시 방향: Android는 Google Play 네이티브 앱, iPhone은 PWA.** iOS App Store 출시는 진행하지 않으며 기존 iOS 코드는 보존합니다. PWA도 네이티브와 같은 앱 홈·4개 하단 메뉴·가족 계획·체크리스트·대피소 및 주변 지도 저장 화면을 사용합니다. 브라우저 저장소를 사용하며 용량 부족·사이트 데이터 정리로 자료가 사라질 수 있습니다. [설치 소개](https://safe-korea-shelter-api.trovapp.workers.dev/intro/)와 [실제 앱](https://safe-korea-shelter-api.trovapp.workers.dev/app/)을 분리했습니다. [출시 점검](RELEASE_CHECKLIST.md) · [PWA 전환 계획](PWA_PLAN.md).
 
+## Google Play 스토어 설정 (2026-11-03)
+
+내부 테스트 1.0.0(2)은 게시됐으며 Play 설치본 지도 인증 수정도 확인했습니다. 콘솔 기본 설정은 **11개 중10개 완료**: 13세 이상 대상·도구 카테고리·공개 문의처·정책 선언·현재 Android 스크린샷4장과 소개를 저장했습니다. **데이터 보안 신고는 SDK 처리 범위 판정이 남은 임시저장 초안**으로, 검토 제출 버튼은 비활성입니다. 공개 심사/출시 완료가 아닙니다. [실제 저장 현황과 다음 순서](release/store/PLAY_CONSOLE_NEXT_STEPS.md). 테스터 모집은 사용자가 진행하며, 프로덕션 요건용 비공개 테스트는 아직 시작되지 않았습니다.
+
 ## Cloudflare Workers 데이터 서버
 
 지역별 시설 조회·캐시 API와 Android/PWA 연결을 구현했습니다. **2026-11-01 API 공개 배포 완료:** https://safe-korea-shelter-api.trovapp.workers.dev . 2026-11-02 같은 주소에 PWA 미리보기 호스팅도 배포했습니다. PWA는 API 주소를 설정하면 지역별 목록과 외부 카카오 지도 연결을 사용할 수 있습니다. `--dart-define-from-file=config/api.production.json`으로 공개 API를 연결합니다. 설정 없는 기본 PWA 빌드는 정부 사이트 링크를 제공합니다. 로그인은 없으며, PWA 웹 알림을 명시적으로 연결한 경우에만 구독 주소·암호화 키·선택 지역을 D1에 보관합니다. 정부 API는 승인된 기존 Oracle 서버의 수집기를 통해 조회하도록 배치했습니다. 2026-11-03 포털 허용 IP를 운영 서버로 변경한 뒤 정상 조회·문서 필드11개·서명 전송을 검증했습니다. 분류·지연·기기 전달 검증 전 실제 경보 자동 발송은 비활성입니다. [Oracle 운영/재검사](deployment/alert_collector/README.md). [실행 및 배포 전 확인](workers/shelters/README.md) · [서버 구성](SERVER_PLAN.md).
