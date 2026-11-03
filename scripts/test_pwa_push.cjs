@@ -33,7 +33,7 @@ const provinces=require('../assets/regions.json').provinces.map(({code,name})=>(
     else if(path==='subscribe'){assert.equal(body.consentVersion,'2026-11-02');assert.equal(body.region,'11');assert(body.capability);registered=true;value={...config,id:'1'.repeat(64)};status=201;}
     else if(path==='status')value={...config,lastTest:tests?{state:'accepted',received_at:opened?1:null,opened_at:opened?2:null}:null};
     else if(path==='test'){assert(registered);tests++;value={state:'accepted',deliveryId:'11111111-1111-4111-8111-111111111111',received:false};status=202;}
-    else if(path==='notice'){lookups++;opened ||= body.openedFromNotification===true;value={type:noticeType,id:'a'.repeat(64),revision:'b'.repeat(64),kind:'air',publishedAt:Date.now(),expiresAt:Date.now()+90000,agency:'합성 QA 입력 · 실제 발령 아님',area:'합성 QA 지역'};}
+    else if(path==='notice'){lookups++;opened ||= body.openedFromNotification===true;value={deliveryId:body.deliveryId,type:noticeType,id:'a'.repeat(64),revision:'b'.repeat(64),kind:'air',publishedAt:Date.now(),expiresAt:Date.now()+90000,agency:'합성 QA 입력 · 실제 발령 아님',area:'합성 QA 지역'};}
     else if(path==='unsubscribe'){registered=false;value={deleted:true};}
     else throw Error(path);
     return {status,value};
@@ -90,20 +90,33 @@ const provinces=require('../assets/regions.json').provinces.map(({code,name})=>(
    await p.locator('#push-panel').waitFor({state:'visible'});
    await p.locator('#push-test').click();await p.getByText('Apple 서버가 접수했어요. 앱을 닫고 알림을 확인하세요.',{exact:true}).waitFor();assert.equal(tests,1);
    await p.locator('#push-close').click();
-   async function notify(script,activation='foreground'){await p.evaluate(({scriptURL,activation})=>{const e=new Event('message');Object.defineProperties(e,{source:{value:{scriptURL}},data:{value:{type:'SAFEKOR_OPEN_NOTICE',deliveryId:'11111111-1111-4111-8111-111111111111',activation}}});navigator.serviceWorker.dispatchEvent(e);},{scriptURL:script,activation});}
+   async function notify(script,activation='foreground',deliveryId='11111111-1111-4111-8111-111111111111'){await p.evaluate(({scriptURL,activation,deliveryId})=>{const e=new Event('message');Object.defineProperties(e,{source:{value:{scriptURL}},data:{value:{type:'SAFEKOR_OPEN_NOTICE',deliveryId,activation}}});navigator.serviceWorker.dispatchEvent(e);},{scriptURL:script,activation,deliveryId});}
    await notify('https://evil.test/app/safe-worker.js');assert.equal(lookups,0);
    await notify(origin+'/app/safe-worker.js');
-   await p.getByText('이 기기에서 테스트 알림 표시를 확인했어요. 알림센터에서 알림을 눌러주세요.',{exact:true}).waitFor();
-   assert.equal(opened,false);
-   await notify(origin+'/app/safe-worker.js','notificationclick');
-   await p.getByText('테스트 알림 수신·열기 확인 완료 · 실제 경보는 아닙니다.',{exact:true}).waitFor();
-   assert.equal(opened,true);assert.equal(await p.locator('#push-region').inputValue(),'11');
-   await p.locator('#push-close').click();noticeType='civil';
+   await p.getByText('테스트 중 · 실제 경보 아님',{exact:true}).waitFor();
+   await p.getByText('지금 즉시 대피하세요',{exact:true}).waitFor();
+   assert.equal(opened,false);assert.equal(await p.locator('#push-panel').isVisible(),false);
+   await p.locator('#push-feedback').waitFor({state:'hidden'});
+   await p.waitForTimeout(500);
+   await p.screenshot({path:`artifacts/visual-qa/pwa-test-response-${name}.png`});
+   await p.getByRole('button',{name:'뒤로',exact:true}).click();
+   await notify(origin+'/app/safe-worker.js','notificationclick','22222222-2222-4222-8222-222222222222');
+   await p.getByText('테스트 중 · 실제 경보 아님',{exact:true}).waitFor();
+   assert.equal(opened,true);
+   // A new app document receives only the opaque notice ID; authenticated lookup
+   // must wait for the Flutter bridge before opening the same test response.
+   await p.goto(origin+'/app/?notice=33333333-3333-4333-8333-333333333333');
+   await p.waitForFunction(()=>window.safeFlutterReady===true,null,{timeout:60000});
+   await p.locator('flt-semantics-placeholder').evaluate(e=>e.click());
+   await p.getByText('테스트 중 · 실제 경보 아님',{exact:true}).waitFor();
+   assert.equal(new URL(p.url()).searchParams.has('notice'),false);
+   await p.getByRole('button',{name:'뒤로',exact:true}).click();noticeType='civil';
    await notify(origin+'/app/safe-worker.js');
-   await p.getByText('지금 즉시 대피하세요',{exact:true}).waitFor();assert.equal(lookups,3);
+   await p.getByText('지금 즉시 대피하세요',{exact:true}).waitFor();assert.equal(lookups,4);
    await p.getByRole('checkbox',{name:'실내',exact:true}).click();await p.getByText('계단으로 이동',{exact:true}).waitFor();
    await p.screenshot({path:`artifacts/visual-qa/pwa-push-response-${name}.png`});
    await p.getByRole('button',{name:'뒤로',exact:true}).click();
+   await p.getByRole('tab',{name:'나의 준비',exact:true}).click();
    await p.getByRole('button',{name:'알림 설정',exact:true}).click();await p.locator('#push-disable').click();await p.getByText('이 기기의 알림을 끄고 서버 등록을 삭제했어요.',{exact:true}).waitFor();
    assert.equal(registered,false);assert.equal(await p.evaluate(()=>localStorage.getItem('safekor.push.registration.v1')),null);
    await p.reload();await p.waitForFunction(()=>window.safeFlutterReady===true,null,{timeout:60000});
@@ -114,7 +127,7 @@ const provinces=require('../assets/regions.json').provinces.map(({code,name})=>(
    await p.reload();await p.waitForFunction(()=>window.safeFlutterReady===true,null,{timeout:60000});
    assert.equal(await p.locator('#push-welcome').isVisible(),false);
    assert.deepEqual(errors,[]);
-   console.log(`${name}: no automatic permission request; explicit region/consent + gesture subscribe; own-device test; forged source rejected; authenticated synthetic notice opens response/indoor actions; unsubscribe/deletion PASS (browser API fixtures)`);
+   console.log(`${name}: no automatic permission request; explicit region/consent + gesture subscribe; own-device red test response (foreground, tap and cold launch); forged source rejected; authenticated synthetic notice opens response/indoor actions; unsubscribe/deletion PASS (browser API fixtures)`);
   }finally{await browser.close();}
  }
 })().catch(e=>{console.error(e);process.exit(1)});

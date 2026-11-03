@@ -130,12 +130,9 @@
     if(!/^[a-f0-9-]{36}$/.test(id)||!credential?.id)return;
     try{
       const value=await api('notice',own({deliveryId:id,openedFromNotification:activation==='notificationclick'}));
-      if(value.type==='test'){
-        clearInterval(receiptTimer);welcome.close();panel.showModal();
-        await refresh();
-        message(activation==='notificationclick'?'테스트 알림 수신·열기 확인 완료 · 실제 경보는 아닙니다.':'이 기기에서 테스트 알림 표시를 확인했어요. 알림센터에서 알림을 눌러주세요.');return;
-      }
-      if(value.type!=='civil'||!ready){pending=id;pendingActivation=activation;return;}
+      if(!['test','civil'].includes(value.type))return;
+      if(!ready){pending=id;pendingActivation=activation;return;}
+      if(value.type==='test')clearInterval(receiptTimer);
       welcome.close();panel.close();window.safeKorShowApp?.();window.safeKorPushReceiver?.(JSON.stringify(value));
     }catch(e){welcome.close();panel.showModal();await refresh().catch(()=>{});message(e.message,true);}
   }

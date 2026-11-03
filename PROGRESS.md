@@ -944,3 +944,15 @@ Android API 36에서도 공식 서울시청 공개 사진 매칭/표시와 공�
 - 검증: Worker 58개 통과, TypeScript check 통과, Flutter analyze 이슈0, Flutter test190개 통과, Dart format 확인 통과, PWA release 빌드 성공. Chromium(샌드박스 사용)·WebKit의 브라우저 API fixture에서 표시/누르기 구분, 저장 지역, 합성 civil 대응 화면, 구독 삭제 통과. VM 회귀 검사에 콜드 실행·만료 상황 포함. 브라우저 fixture는 실제 Apple 전송 검증이 아닙니다.
 - 기존 운영 계정의 Workers 하위 도메인이 `trovapp`인지 확인 후 운영 배포: `3e35e54a-e29c-4160-94f1-4358b83293c4`. 정부 실제 자동 발송은 비활성으로 유지, 실경보 발송 없음. 새 서비스 워커는 기존 앱을 닫아야 활성화되므로 업데이트 후 사용자 기기 재검증이 필요합니다.
 - 남은 검증: 사용자 iPhone 업데이트 후 알림 누르기 재확인, 물리 Android 수신, 공식 API 지연·분류 검증. 기존 공식 표본4건은 훈련 관련이며 실제 공격 경보 수신 근거가 아닙니다. D1 운영 집계 읽기는 권한 오류로 미확인하여 기기별 증거를 대체하지 않았습니다.
+
+
+## 2026-11-03 — 양 플랫폼 알림에서 빨간 대응 화면 직접 열기
+- 사용자 요청에 따라 iPhone PWA 본인 테스트 알림을 단순 연결 확인 창 대신 빨간 공습경보 대응 화면으로 연결했습니다. 앱 사용 중 수신, 알림 누르기, 새 앱 문서로 시작 모두 Flutter 준비 후 동일 화면으로 이어집니다.
+- 실제/테스트 경보는 같은 CivilAlertScreen·상황별 행동 안내를 공유하며, 테스트는 고정 상단 제목과 짧은 안내 `테스트 중 · 실제 경보 아님`으로 구분합니다. Android 상단 상태 아이콘 대비도 보완했습니다.
+- 테스트 전용 ingress·2분 만료·실경보 우선 처리를 추가했습니다. 테스트는 공식 수신 경로에 들어갈 수 없고 유효한 실경보 화면을 덮어쓰지 않습니다. 실제 경보 중복 차단은 유지하면서 사용자가 같은 테스트 알림을 다시 눌러 열 수 있게 했습니다.
+- Android 나의 준비의 테스트 알림 화면에 `빨간 대응 화면 연결 테스트` 추가. 권한 허용 후5초 뒤 로컬 알림, 포그라운드면 직접 화면 전환, 백그라운드면 알림을 눌러 화면 전환. 휴대전화 경보 연결 설정에도 테스트 진입 추가. 일반 훈련 알림의 기존 동작은 유지합니다.
+- 검증: Dart format 통과, Flutter analyze 이슈0, Flutter 전체194개 및 마지막 화면 수정 후 대상4개 통과, Worker58개·TypeScript check 통과, PWA release 빌드 성공. Chromium 샌드박스·WebKit API fixture에서 포그라운드/누르기/콜드 시작의 빨간 테스트 화면과 합성 civil 대응·구독 삭제 통과.
+- Android API36 전용 AVD(safekor-release-qa)를 읽기 전용·headless로 별도 실행. 실제 OS 로컬 알림을 표시하고 홈으로 나간 뒤 해당 테스트 알림만 직접 눌러 빨간 화면·실외 선택 통합 검사를 완료했습니다. 최종 문구·상태 아이콘 수정본으로 재검사1개 통과, 화면 캡처 확보. 테스트 종료 후 전용 AVD만 종료, 기존 다른 에뮬레이터 보존. 실제 정부 알림 전송 없음.
+- Android 서명된 versionCode3 후보: build/release-candidates/safeKor-1.0.0-3.aab, JAR 서명 검증 통과. Play 업로드·기존 versionCode2 설치본 업데이트는 미진행. 후보 SHA256과 배포 증거는 artifacts/qa/response-notification-release.json.
+- PWA 운영 배포: 5c51bdbf-2995-4216-b64a-48a250cfcfef. 공개 JS/서비스 워커/Flutter 번들 SHA256 일치 확인. 정부 자동 발송은 비활성 유지. 사용자 iPhone 수정본 재검증, 물리 Android 및 정부 수신 검증은 남아 있습니다.
+- 세부 흐름·제한: release/store/RESPONSE_NOTIFICATION_QA.md. 닫힌 앱 강제 실행이나 잠금 해제, Android 전체 화면 권한은 추가하지 않았습니다. Android5초 테스트는 발송 전 프로세스 강제 종료까지 보장하는 예약 알람이 아닙니다. FCM 추가 없음.
