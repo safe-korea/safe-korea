@@ -1,0 +1,17 @@
+Subject: Appeal of Play Console Requirements rejection — safeKor (kr.safekor.app)
+
+Please review the current rejection, issue 4986533038781243937, for safeKor (kr.safekor.app), closed Alpha version 1.0.0, versionCode 2. Submission 2 was sent on 3 November 2026 and was rejected again. The earlier issue 4989575261088573961 is marked resolved; this appeal concerns the new active rejection.
+
+safeKor is an independently developed, non-medical civilian evacuation and preparedness utility, currently categorized as Maps & Navigation. It is not developed by, for, or on behalf of a government agency. Public government facility data and source-attributed civil-defense guidance do not represent government affiliation.
+
+The app finds publicly listed shelters using a selected region and optional foreground location, displays shelter maps, saves selected facilities and nearby road data for offline reference, and stores a family meeting plan and preparedness checklist locally. Its guidance summarizes movement/sheltering instructions for civil-defense warnings. Drills are labelled as tests.
+
+It provides no medical diagnosis or treatment, clinical decisions, CPR or bleeding-control procedures, medication dosage guidance, healthcare services, or human-subject research. It does not access Health Connect or collect symptoms, medical records, or vital signs. Biological-incident guidance refers users to public health authorities' instructions, rather than providing individual medical advice. It has no financial or VPN services.
+
+We selected Emergency and First Aid in the health declaration because the help article https://support.google.com/googleplay/android-developer/answer/14738291 includes emergency preparedness/disaster-response information. This was a conservative interpretation of that definition, not a claim that the app provides medical first aid. We have not removed the declaration simply to bypass the account requirement. Changing the store category did not resolve the new rejection.
+
+Please reassess whether this limited non-medical scope requires an organization account and identify the specific feature/declaration that triggered the requirement. If this health declaration does not apply, please confirm that we may correct it to no health features and distribute from an individual account. If an organization account is still required, please identify the applicable scope so we can comply.
+
+No reviewer login is required. Privacy: https://safe-korea-shelter-api.trovapp.workers.dev/privacy
+Support: https://safe-korea-shelter-api.trovapp.workers.dev/support
+Contact: taetaeg@gmail.com
