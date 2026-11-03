@@ -223,6 +223,7 @@ class _SavedSheltersScreenState extends State<SavedSheltersScreen> {
             const SizedBox(height: 8),
           ],
           _identity(entry),
+          const SizedBox(height: 16),
           if (entry.offlineMap != null)
             FilledButton.icon(
               icon: const Icon(Icons.offline_pin_outlined),
@@ -300,6 +301,7 @@ class _SavedSheltersScreenState extends State<SavedSheltersScreen> {
           ),
           ExpansionTile(
             tilePadding: EdgeInsets.zero,
+            childrenPadding: const EdgeInsets.only(bottom: 12),
             expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
             title: const Text('내 기록 · 선택'),
             children: [

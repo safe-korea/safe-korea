@@ -468,6 +468,7 @@ class _SheltersScreenState extends State<SheltersScreen> {
                       '확인한 지역의 코드·IP를 국민안전24에 보내 시설을 조회합니다.',
                       style: TextStyle(fontSize: 14),
                     ),
+                    const SizedBox(height: 12),
                     FilledButton.icon(
                       onPressed: _fetching
                           ? null
@@ -479,11 +480,13 @@ class _SheltersScreenState extends State<SheltersScreen> {
                       label: const Text('이 지역 대피소 바로 조회'),
                     ),
                   ],
-                  if (_suggestion != null)
+                  if (_suggestion != null) ...[
+                    const SizedBox(height: 12),
                     OutlinedButton(
                       onPressed: _fetching ? null : _applySuggestion,
                       child: const Text('제안한 지역 선택'),
                     ),
+                  ],
                 ],
               ),
               const SizedBox(height: 12),
@@ -695,12 +698,14 @@ class _SheltersScreenState extends State<SheltersScreen> {
                 child: const Text('공식 자료 출처 보기'),
               ),
             ],
-            if (!_queryFailed)
+            if (!_queryFailed) ...[
+              const SizedBox(height: 12),
               OutlinedButton(
                 onPressed: () =>
                     openExternal(context, Uri.parse(officialMapSource)),
                 child: const Text('정부 공식 시설 검색 열기'),
               ),
+            ],
           ],
         ),
       ),

@@ -51,7 +51,7 @@
         <figure class="product-preview">
           <div class="preview-backdrop" aria-hidden="true"></div>
           <img class="tour-mascot" src="branding/mascot-jindo.png" width="1024" height="1536" alt="" aria-hidden="true">
-          <button class="phone-frame" id="preview-open" aria-label="실제 앱 화면 크게 보기"><img id="tour-image" src="previews/air-guidance.png" width="1206" height="2622" alt="실제 공습 안내 화면: 실내를 선택하면 계단으로 이동하는 행동을 먼저 안내합니다."></button>
+          <button class="phone-frame" id="preview-open" aria-label="실제 앱 화면 크게 보기"><img id="tour-image" src="previews/air-guidance.png?v=ui-spacing-20261103" width="1206" height="2622" alt="실제 공습 안내 화면: 실내를 선택하면 계단으로 이동하는 행동을 먼저 안내합니다."></button>
           <figcaption id="preview-caption">iPhone 17 Pro · 공습 행동요령</figcaption>
         </figure>
       </div>
@@ -66,16 +66,20 @@
       <h1 id="setup-title" tabindex="-1">이제 내 폰에<br>준비해 두세요.</h1>
       <p class="intro">앱스토어 대신 홈 화면에 추가하세요.<br>회원가입 없이 시작할 수 있어요.</p>
     <section class="step" aria-labelledby="install-title">
-      <span class="number" aria-hidden="true">1</span><div><h2 id="install-title">홈 화면에 추가</h2><p id="install-summary">Safari에서 공유 → 더보기 → 홈 화면에 추가를 선택하세요.</p>
+      <div class="step-heading"><span class="number" aria-hidden="true">1</span><h2 id="install-title">홈 화면에 추가</h2></div><p id="install-summary">Safari에서 공유 → 더보기 → 홈 화면에 추가를 선택하세요.</p>
       <button class="secondary" id="install-help" aria-expanded="false" aria-controls="install-detail">추가하는 방법 보기</button>
-      <div id="install-detail" hidden><ol><li>Safari에서 이 페이지를 여세요.</li><li><strong>공유</strong> 메뉴를 누르세요.</li><li><strong>더보기(⋯)</strong>를 누르세요.</li><li><strong>홈 화면에 추가 → 추가</strong>를 누르세요.</li></ol><p>‘웹 앱으로 열기’가 보이면 켜 두세요. ‘홈 화면에 추가’가 바로 보이면 더보기 단계는 건너뛰세요. iPhone 버전에 따라 메뉴 위치가 다를 수 있어요.</p><p>다른 브라우저는 메뉴의 앱 설치 기능을 확인하세요. 추가한 아이콘으로 열면 됩니다.</p></div></div>
+      <div id="install-detail" hidden><ol><li>Safari에서 이 페이지를 여세요.</li><li><strong>공유</strong> 메뉴를 누르세요.</li><li><strong>더보기(⋯)</strong>를 누르세요.</li><li><strong>홈 화면에 추가 → 추가</strong>를 누르세요.</li></ol><p>‘웹 앱으로 열기’가 보이면 켜 두세요. ‘홈 화면에 추가’가 바로 보이면 더보기 단계는 건너뛰세요. iPhone 버전에 따라 메뉴 위치가 다를 수 있어요.</p><p>다른 브라우저는 메뉴의 앱 설치 기능을 확인하세요. 추가한 아이콘으로 열면 됩니다.</p></div>
     </section>
     <section class="step" aria-labelledby="save-title">
-      <span class="number" aria-hidden="true">2</span><div><h2 id="save-title">오프라인 안내 저장</h2><p>약 20 MB의 앱과 행동요령을 내려받아요.<br>웹 지도는 인터넷 연결이 필요합니다.</p>
+      <div class="step-heading"><span class="number" aria-hidden="true">2</span><h2 id="save-title">오프라인 안내 저장</h2></div><p>약 20 MB의 앱과 행동요령을 내려받아요.<br>웹 지도는 인터넷 연결이 필요합니다.</p>
       <button class="primary" id="prepare">이 기기에 저장하기</button>
-      <p id="cache-status" role="status" aria-live="polite">아직 오프라인 저장을 확인하지 않았어요.</p></div>
+      <p id="cache-status" role="status" aria-live="polite">아직 오프라인 저장을 확인하지 않았어요.</p>
     </section>
-    <section class="step" aria-labelledby="notification-title"><span class="number" aria-hidden="true">3</span><div><h2 id="notification-title">앱에서 알림 연결</h2><p>설치한 아이콘으로 앱을 열면 <strong>알림을 켜시겠어요?</strong>가 나타납니다. 지역을 선택하고 <strong>확인 → iPhone 알림 허용</strong>을 누르세요. 나중에는 나의 준비 → 알림 설정에서 바꿀 수 있어요.</p><p class="small">설치만으로 알림이 켜지지는 않습니다. 정부 경보 연동 상태는 앱에서 확인하세요.</p></div></section>
+    <section class="step" aria-labelledby="notification-title">
+      <div class="step-heading"><span class="number" aria-hidden="true">3</span><h2 id="notification-title">앱에서 알림 연결</h2></div>
+      <p>설치한 아이콘으로 앱을 여세요.<br>첫 알림 팝업에서 <strong>지역 선택 → 확인 → 허용</strong>.</p>
+      <p class="small">나중에는 나의 준비 → 알림 설정에서 바꿀 수 있어요.</p>
+    </section>
     <aside><strong>위급할수록, 첫 행동부터.</strong><p>경보 내용은 재난문자·정부 방송으로 확인하고 현장 지시를 우선하세요.</p></aside>
     <button class="start" id="start">홈 화면에 추가하는 방법 확인</button>
     <p class="small">설치·로그인·위치 허용 없이도 시작할 수 있어요.</p>

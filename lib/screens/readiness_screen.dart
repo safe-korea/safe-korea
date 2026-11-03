@@ -92,7 +92,7 @@ class _ReadinessScreenState extends State<ReadinessScreen> {
             icon: const Icon(Icons.notifications_outlined),
             label: const Text('알림 설정'),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 12),
           OutlinedButton.icon(
             onPressed: openWebInstallSettings,
             icon: const Icon(Icons.offline_pin_outlined),
@@ -122,8 +122,10 @@ class _ReadinessScreenState extends State<ReadinessScreen> {
           const SizedBox(height: 12),
           if (_error != null)
             Semantics(liveRegion: true, child: Notice(_error!, warning: true)),
-          if (_readFailed)
+          if (_readFailed) ...[
             OutlinedButton(onPressed: _load, child: const Text('체크리스트 다시 읽기')),
+            const SizedBox(height: 12),
+          ],
           Card(
             clipBehavior: Clip.antiAlias,
             child: Column(

@@ -67,6 +67,16 @@ const provinces=require('../assets/regions.json').provinces.map(({code,name})=>(
    await p.locator('#push-welcome-region').selectOption('11');
    await p.waitForFunction(()=>!document.getElementById('push-welcome-confirm').disabled,null,{timeout:90000});
    await p.screenshot({path:`artifacts/visual-qa/pwa-first-notification-prompt-${name}.png`});
+   const spacing=await p.locator('#push-welcome').evaluate(dialog=>{
+    const consent=dialog.querySelector('.small').getBoundingClientRect(),confirm=dialog.querySelector('#push-welcome-confirm').getBoundingClientRect(),later=dialog.querySelector('#push-welcome-later').getBoundingClientRect();
+    return {consentGap:confirm.top-consent.bottom,buttonGap:later.top-confirm.bottom};
+   });
+   assert(spacing.consentGap>=19.5);assert(spacing.buttonGap>=11.5);
+   await p.setViewportSize({width:320,height:568});
+   assert(await p.locator('#push-welcome').evaluate(e=>e.scrollWidth<=e.clientWidth));
+   await p.locator('#push-welcome-confirm').scrollIntoViewIfNeeded();
+   await p.screenshot({path:`artifacts/visual-qa/pwa-notification-spacing-small-${name}.png`});
+   await p.setViewportSize({width:402,height:874});
    await p.locator('#push-welcome-confirm').click();
    await p.locator('#push-welcome-error').getByText('잠시 후 다시 시도하세요.',{exact:true}).waitFor();
    assert.equal(await p.locator('#push-welcome').isVisible(),true);
