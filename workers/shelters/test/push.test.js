@@ -342,8 +342,20 @@ test("test push is encrypted, short-lived, bound to one device and receipt disti
     { now: () => now + 1000 },
   );
   assert.equal((await receipt.json()).received, true);
+  for (const openedFromNotification of [undefined, false, "true"]) {
+    const foreground = await pushRoute(
+      req("notice", { ...own, deliveryId: result.deliveryId, openedFromNotification }),
+      f.env,
+      { now: () => now + 1500 },
+    );
+    assert.equal((await foreground.json()).type, "test");
+    const beforeClick = await (
+      await pushRoute(req("status", own), f.env, { now: () => now + 1600 })
+    ).json();
+    assert.equal(beforeClick.lastTest.opened_at, null);
+  }
   const opened = await pushRoute(
-    req("notice", { ...own, deliveryId: result.deliveryId }),
+    req("notice", { ...own, deliveryId: result.deliveryId, openedFromNotification: true }),
     f.env,
     { now: () => now + 2000 },
   );

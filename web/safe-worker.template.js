@@ -72,7 +72,7 @@ self.addEventListener('push',event=>{
     await self.registration.showNotification(title,{body,icon:new URL('../icons/icon-192.png',self.registration.scope).href,tag:valid?data.deliveryId:'safeKor-check',data:valid?{deliveryId:data.deliveryId}:{},requireInteraction:false});
     if(valid){
       const windows=await self.clients.matchAll({type:'window',includeUncontrolled:false});
-      for(const c of windows)if(c.visibilityState==='visible'&&new URL(c.url).origin===self.location.origin&&new URL(c.url).pathname.startsWith('/app/'))c.postMessage({type:'SAFEKOR_OPEN_NOTICE',deliveryId:data.deliveryId});
+      for(const c of windows)if(c.visibilityState==='visible'&&new URL(c.url).origin===self.location.origin&&new URL(c.url).pathname.startsWith('/app/'))c.postMessage({type:'SAFEKOR_OPEN_NOTICE',deliveryId:data.deliveryId,activation:'foreground'});
     }
     if(valid&&typeof data.receiptToken==='string'){
       try{await fetch(new URL('../api/push/receipt',self.registration.scope),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({deliveryId:data.deliveryId,receiptToken:data.receiptToken}),credentials:'omit'});}catch{}
@@ -88,7 +88,7 @@ self.addEventListener('notificationclick',event=>{
     if(!app.pathname.endsWith('/app/'))app.pathname=app.pathname.replace(/\/?$/,'/')+'app/';
     const windows=await self.clients.matchAll({type:'window',includeUncontrolled:true});
     const current=windows.find(c=>new URL(c.url).origin===app.origin&&new URL(c.url).pathname.startsWith(app.pathname));
-    if(current){await current.focus();if(id)current.postMessage({type:'SAFEKOR_OPEN_NOTICE',deliveryId:id});return;}
+    if(current){await current.focus();if(id)current.postMessage({type:'SAFEKOR_OPEN_NOTICE',deliveryId:id,activation:'notificationclick'});return;}
     if(id)app.searchParams.set('notice',id);
     await self.clients.openWindow(app.href);
   })());

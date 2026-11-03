@@ -86,6 +86,7 @@ test("push always displays, reports only valid receipts, and relays to visible a
   assert.equal(w.receipts.length, 1);
   assert.equal(w.receipts[0].url, "https://app.test/api/push/receipt");
   assert.equal(w.messages[0].deliveryId, id);
+  assert.equal(w.messages[0].activation, "foreground");
   await w.send("push", {
     data: {
       json: () => ({
@@ -138,6 +139,7 @@ test("notification click focuses only own app or opens fixed app URL; payload UR
   });
   assert.equal(focused, 1);
   assert.equal(w.messages[0].deliveryId, id);
+  assert.equal(w.messages[0].activation, "notificationclick");
   assert.equal(w.opened.length, 1);
   assert.equal(closed, 2);
 });

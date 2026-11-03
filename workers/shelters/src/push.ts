@@ -461,12 +461,14 @@ export async function pushRoute(
         .bind(body.deliveryId, sub.id, now)
         .first<Delivery>();
       if (!d) throw new PushError(410, "notice_expired");
-      await db(env)
-        .prepare(
-          "UPDATE push_deliveries SET opened_at=COALESCE(opened_at,?) WHERE id=?",
-        )
-        .bind(now, d.id)
-        .run();
+      if (body.openedFromNotification === true) {
+        await db(env)
+          .prepare(
+            "UPDATE push_deliveries SET opened_at=COALESCE(opened_at,?) WHERE id=?",
+          )
+          .bind(now, d.id)
+          .run();
+      }
       return json({ type: d.type, deliveryId: d.id, ...JSON.parse(d.payload) });
     }
     if (path === "/api/push/test") {
