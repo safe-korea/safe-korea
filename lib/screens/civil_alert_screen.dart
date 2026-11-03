@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+
+import '../services/web_push_bridge.dart';
+
 import 'package:flutter/services.dart';
 
 import '../services/civil_alert_ingress.dart';
@@ -21,8 +25,17 @@ class _CivilAlertScreenState extends State<CivilAlertScreen> {
   AlertKind? _selected;
   CivilAlertNotice get notice => widget.notice;
   @override
+  void dispose() {
+    if (kIsWeb && notice.testOnly) stopWebTestSiren();
+    super.dispose();
+  }
+
+  @override
   void didUpdateWidget(CivilAlertScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (kIsWeb && oldWidget.notice.testOnly && !notice.testOnly) {
+      stopWebTestSiren();
+    }
     if (oldWidget.notice.id != notice.id ||
         oldWidget.notice.revision != notice.revision) {
       _selected = null;
@@ -76,6 +89,37 @@ class _CivilAlertScreenState extends State<CivilAlertScreen> {
             ],
           ),
         ),
+        if (notice.testOnly && kIsWeb) ...[
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: () async {
+                    final played = await playWebTestSiren();
+                    if (!played && context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('소리를 재생하지 못했어요. 볼륨·브라우저 설정을 확인하세요.'),
+                        ),
+                      );
+                    }
+                  },
+                  icon: const Icon(Icons.volume_up_outlined),
+                  label: const Text('사이렌 듣기'),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: stopWebTestSiren,
+                  icon: const Icon(Icons.volume_off_outlined),
+                  label: const Text('소리 끄기'),
+                ),
+              ),
+            ],
+          ),
+        ],
         const SizedBox(height: 16),
         AlertActions(
           key: ValueKey('${notice.id}/${notice.revision}'),

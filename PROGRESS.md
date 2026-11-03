@@ -956,3 +956,13 @@ Android API 36에서도 공식 서울시청 공개 사진 매칭/표시와 공�
 - Android 서명된 versionCode3 후보: build/release-candidates/safeKor-1.0.0-3.aab, JAR 서명 검증 통과. Play 업로드·기존 versionCode2 설치본 업데이트는 미진행. 후보 SHA256과 배포 증거는 artifacts/qa/response-notification-release.json.
 - PWA 운영 배포: 5c51bdbf-2995-4216-b64a-48a250cfcfef. 공개 JS/서비스 워커/Flutter 번들 SHA256 일치 확인. 정부 자동 발송은 비활성 유지. 사용자 iPhone 수정본 재검증, 물리 Android 및 정부 수신 검증은 남아 있습니다.
 - 세부 흐름·제한: release/store/RESPONSE_NOTIFICATION_QA.md. 닫힌 앱 강제 실행이나 잠금 해제, Android 전체 화면 권한은 추가하지 않았습니다. Android5초 테스트는 발송 전 프로세스 강제 종료까지 보장하는 예약 알람이 아닙니다. FCM 추가 없음.
+
+
+## 2026-11-03 — 같은8초 사이렌 연결·PWA 제한 구분
+- 사용자 요청의 기존8초 `drill_siren.wav`를 PWA에도 그대로 패키징해 오프라인 캐시에 포함했습니다. 알림 설정의 명시적 테스트 사이렌 선택 후 사용 중인 앱에 테스트가 오면 재생하며, 빨간 대응 화면의 듣기·끄기 버튼으로 직접 제어할 수 있습니다.
+- 사용자 동작 안에서 AudioContext를 준비하고, 푸시 수신만으로 재생 권한을 얻으려 하지 않습니다. 숨김/페이지 종료/대응 화면 이탈 시 정지, 준비 중 취소·누락 파일·자동 재생 차단은 복구 가능한 실패로 처리합니다. 테스트만 재생하며 민방공 실경보라고 위장하지 않습니다.
+- Android의 명시적 `사이렌으로 대응 화면 테스트`는5초 뒤 기존 사이렌 리소스가 켜진 채널로 로컬 알림을 표시합니다. 일반 훈련 버튼의 기본 무음 선택은 보존했습니다. PWA 잠금 상태의 사용자 지정 알림음·강제 화면 실행 또는 Android 전체 화면 권한은 구현하지 않았습니다.
+- 검증: Flutter195개, Worker/오디오62개 통과. analyze 이슈0, TypeScript check·Dart format 통과. Chromium 샌드박스·WebKit에서 WAV 원본 바이트 동일, 명시적 오디오 준비 후 테스트 수신 재생, 직접 재생·정지 및 기존 화면 연결·콜드 시작 검증 통과. Android UI/채널 mock 검사에서 지연 뒤 playSound=true·drill_siren 리소스 확인. 물리 기기 청취 검증을 대신하지 않습니다.
+- PWA release 빌드·운영 배포 완료:9994bd94-e79b-4376-81f9-933990294a10. 공개 사이렌·JS·Flutter 번들 해시 일치 확인, 정부 실제 자동 발송은 비활성 유지. 실제 정부 알림 발송 없음.
+- Android versionCode4 서명 AAB 후보 준비·JAR 서명 검사 통과: build/release-candidates/safeKor-1.0.0-4.aab. 기존 versionCode3 후보 보존. Play 업로드 없음. artifacts/qa/response-siren-release.json에 해시·배포 증거 기록.
+- 원하신 ‘닫힌 iPhone PWA가 알람처럼 빨간 화면과 사이렌을 강제로 표시’하는 동작은 웹 플랫폼에서 지원하지 않습니다. 앱 내부 테스트 재생과 시스템 알림음을 구분해 UI·QA 문서에 기록했습니다. 실제 기기 소리/무음·집중 모드 확인은 남아 있습니다.

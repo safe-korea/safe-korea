@@ -37,7 +37,7 @@ class _NotificationTestScreenState extends State<NotificationTestScreen> {
         message = '테스트 알림을 지웠습니다.';
       } else {
         final allowed = await _notifications.send(
-          sound: _sound,
+          sound: responseTest || _sound,
           kind: responseTest ? AlertKind.air : _kind,
           responseTest: responseTest,
           vibration: _vibration,
@@ -72,10 +72,12 @@ class _NotificationTestScreenState extends State<NotificationTestScreen> {
         FilledButton.icon(
           onPressed: _busy ? null : () => _perform(responseTest: true),
           icon: const Icon(Icons.open_in_new),
-          label: const Text('빨간 대응 화면 연결 테스트'),
+          label: const Text('사이렌으로 대응 화면 테스트'),
         ),
         const SizedBox(height: 8),
-        const Text('5초 뒤 공습경보 테스트 알림 · 앱 사용 중에는 바로 화면 전환, 앱 밖에서는 알림을 눌러 확인'),
+        const Text(
+          '5초 뒤 사이렌·공습경보 테스트 알림 · 앱 사용 중에는 바로 화면 전환, 앱 밖에서는 알림을 눌러 확인',
+        ),
         const SizedBox(height: 24),
         DropdownButtonFormField<AlertKind>(
           initialValue: _kind,

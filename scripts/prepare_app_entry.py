@@ -9,10 +9,12 @@ if not match: raise ValueError('Flutter base URL missing')
 app=root/'app'
 if app.exists(): shutil.rmtree(app)  # Generated build output only.
 app.mkdir()
-for name in ['assets','canvaskit','flutter_bootstrap.js','flutter.js','main.dart.js','version.json','app_entry.js','push-client.js']:
+for name in ['assets','canvaskit','flutter_bootstrap.js','flutter.js','main.dart.js','version.json','app_entry.js','push-client.js','test-siren.js']:
     source=root/name
     if source.exists(): shutil.move(str(source),str(app/name))
 shutil.copy2(root/'onboarding.css',app/'onboarding.css')
+(app/'audio').mkdir()
+shutil.copy2(Path('android/app/src/main/res/raw/drill_siren.wav'),app/'audio/drill_siren.wav')
 (app/'icons').mkdir()
 shutil.copy2(root/'icons/icon-192.png',app/'icons/icon-192.png')
 start=landing.index('    <section id="setup"')
