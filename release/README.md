@@ -1,6 +1,6 @@
 # SAFE KOREA Play 제출 준비 패키지
 
-운영자 표시명: **safeKor**. 공개 문의: **taetaeg@gmail.com**. 앱 이름: **SAFE KOREA**.
+운영자 표시명: **safeKor**. 공개 문의: **taetaeg@gmail.com**. 스토어 앱 이름: **safeKor**.
 
 ## 스토어 입력 자료
 
@@ -21,9 +21,9 @@
 
 ## 제출 상태
 
-이 패키지를 만들었다고 Play 심사 제출이나 출시를 완료한 것은 아닙니다. `legal/DATA_SAFETY_REVIEW.md`는 근거별 신고 초안이며 SDK 상세 자료와 최종 빌드 확인 후 Console에 입력합니다. 모든 항목을 No로 채운 CSV는 만들지 않습니다. 콘텐츠 등급/연령 대상/정부 앱 여부 문항도 실제 앱 기준으로 운영자가 확인해야 합니다.
+2026-11-03 오후11:17 코드4 AAB·건강 기능 없음 정정을 포함한 제출3이 검토 중입니다. 내부 코드2는 기존 Play 설치 검증 기록이며 비공개 코드4는 승인/게시 전입니다. 최신 상태와 근거는 `store/PLAY_CONSOLE_NEXT_STEPS.md`, `store/play-registration.json`에 기록합니다. 데이터 보안·연령·정부 앱 여부는 실제 기능 기준으로 콘솔에 입력했습니다.
 
-- 사용자 확정 applicationId `kr.safekor.app`, 로컬 업로드 키로 서명된 AAB 생성 완료. Play App Signing·카카오 배포 해시 등록·Console 업로드는 남음.
+- 사용자 확정 applicationId `kr.safekor.app`, Play App Signing·카카오 배포 해시 등록 완료. 코드4 AAB 서명/해시/16KB ELF 검사 및 Console 업로드·제출 완료, 심사 결과 대기.
 - 카카오 SDK/Cloudflare 등 개인정보·위탁/국외 처리 최종 검토 남음.
 - 정책에 정한 문의 종료 후 최대 90일 보관/삭제는 운영자가 Gmail에서 직접 수행해야 하며 자동 삭제 기능은 구현하지 않음. 필요한 법정 보관 예외는 별도로 검토.
 - 진돗개 아이콘 디자인 확정. 설치 앱 launcher 적용 완료, 캐릭터 권리/이름 검토는 남음.

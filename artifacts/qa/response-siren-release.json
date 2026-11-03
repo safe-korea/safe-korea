@@ -3,7 +3,7 @@
   "versionCode": 4,
   "sha256": "3a47704aa9409fd4380901817f79dee43999f0e5f4fd1a764e75cdef6a13ad38",
   "jarSignatureVerified": true,
-  "playUploaded": false,
+  "playUploaded": true,
   "testSirenSeconds": 8,
   "pwaBackgroundCustomSiren": false,
   "flutterTestsPassed": 195,
@@ -15,5 +15,12 @@
     "/app/push-client.js": true,
     "/app/main.dart.js": true
   },
-  "officialEnabled": false
+  "officialEnabled": false,
+  "playReleaseId": "2",
+  "playTrack": "Alpha",
+  "playSubmissionActivityId": "3",
+  "playSubmittedAtConsole": "2026-11-03 23:17",
+  "playReviewStatus": "in_review",
+  "nativeLibrariesInspected": 7,
+  "nativeElf16kbCompatible": true
 }
