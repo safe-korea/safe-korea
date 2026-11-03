@@ -8,7 +8,7 @@ const point=ec.getPublicKey().toString('base64url');
 const provinces=require('../assets/regions.json').provinces.map(({code,name})=>({code,name}));
 (async()=>{
  for(const[name,engine]of Object.entries({chromium,webkit})){
-  const browser=await engine.launch({headless:true});
+  const browser=await engine.launch({headless:true,...(name==='chromium'?{chromiumSandbox:true}:{})});
   try{
    const c=await browser.newContext({viewport:{width:402,height:874},userAgent:'Mozilla/5.0 (iPhone; CPU iPhone OS 26_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.0 Mobile/15E148 Safari/604.1'});
    await c.addInitScript(({point,auth,origin})=>{
@@ -23,7 +23,7 @@ const provinces=require('../assets/regions.json').provinces.map(({code,name})=>(
     }};
     Object.defineProperty(ServiceWorkerRegistration.prototype,'pushManager',{get:()=>manager,configurable:true});
    },{point,auth:randomBytes(16).toString('base64url'),origin});
-   let registered=false,tests=0,lookups=0,rejectFirstSubscribe=true;
+   let registered=false,tests=0,lookups=0,rejectFirstSubscribe=true,noticeType='test',opened=false;
    const fixture=async(url,body)=>{
     const path=new URL(url).pathname.split('/').pop();
     if(path==='subscribe'&&rejectFirstSubscribe){rejectFirstSubscribe=false;return {status:503,value:{error:'try_later'}};}
@@ -31,9 +31,9 @@ const provinces=require('../assets/regions.json').provinces.map(({code,name})=>(
     const config={transportReady:true,publicKey:point,officialEnabled:false,source:{state:'key_required'},regions:[...provinces,{code:'11710',name:'서울특별시 송파구'}]};
     if(path==='config')value=config;
     else if(path==='subscribe'){assert.equal(body.consentVersion,'2026-11-02');assert.equal(body.region,'11');assert(body.capability);registered=true;value={...config,id:'1'.repeat(64)};status=201;}
-    else if(path==='status')value={...config,lastTest:tests?{state:'accepted',received_at:null}:null};
+    else if(path==='status')value={...config,lastTest:tests?{state:'accepted',received_at:opened?1:null,opened_at:opened?2:null}:null};
     else if(path==='test'){assert(registered);tests++;value={state:'accepted',deliveryId:'11111111-1111-4111-8111-111111111111',received:false};status=202;}
-    else if(path==='notice'){lookups++;value={type:'civil',id:'a'.repeat(64),revision:'b'.repeat(64),kind:'air',publishedAt:Date.now(),expiresAt:Date.now()+90000,agency:'합성 QA 입력 · 실제 발령 아님',area:'합성 QA 지역'};}
+    else if(path==='notice'){lookups++;opened ||= body.openedFromNotification===true;value={type:noticeType,id:'a'.repeat(64),revision:'b'.repeat(64),kind:'air',publishedAt:Date.now(),expiresAt:Date.now()+90000,agency:'합성 QA 입력 · 실제 발령 아님',area:'합성 QA 지역'};}
     else if(path==='unsubscribe'){registered=false;value={deleted:true};}
     else throw Error(path);
     return {status,value};
@@ -90,10 +90,17 @@ const provinces=require('../assets/regions.json').provinces.map(({code,name})=>(
    await p.locator('#push-panel').waitFor({state:'visible'});
    await p.locator('#push-test').click();await p.getByText('Apple 서버가 접수했어요. 앱을 닫고 알림을 확인하세요.',{exact:true}).waitFor();assert.equal(tests,1);
    await p.locator('#push-close').click();
-   async function notify(script){await p.evaluate(scriptURL=>{const e=new Event('message');Object.defineProperties(e,{source:{value:{scriptURL}},data:{value:{type:'SAFEKOR_OPEN_NOTICE',deliveryId:'11111111-1111-4111-8111-111111111111'}}});navigator.serviceWorker.dispatchEvent(e);},script);}
+   async function notify(script,activation='foreground'){await p.evaluate(({scriptURL,activation})=>{const e=new Event('message');Object.defineProperties(e,{source:{value:{scriptURL}},data:{value:{type:'SAFEKOR_OPEN_NOTICE',deliveryId:'11111111-1111-4111-8111-111111111111',activation}}});navigator.serviceWorker.dispatchEvent(e);},{scriptURL:script,activation});}
    await notify('https://evil.test/app/safe-worker.js');assert.equal(lookups,0);
    await notify(origin+'/app/safe-worker.js');
-   await p.getByText('지금 즉시 대피하세요',{exact:true}).waitFor();assert.equal(lookups,1);
+   await p.getByText('이 기기에서 테스트 알림 표시를 확인했어요. 알림센터에서 알림을 눌러주세요.',{exact:true}).waitFor();
+   assert.equal(opened,false);
+   await notify(origin+'/app/safe-worker.js','notificationclick');
+   await p.getByText('테스트 알림 수신·열기 확인 완료 · 실제 경보는 아닙니다.',{exact:true}).waitFor();
+   assert.equal(opened,true);assert.equal(await p.locator('#push-region').inputValue(),'11');
+   await p.locator('#push-close').click();noticeType='civil';
+   await notify(origin+'/app/safe-worker.js');
+   await p.getByText('지금 즉시 대피하세요',{exact:true}).waitFor();assert.equal(lookups,3);
    await p.getByRole('checkbox',{name:'실내',exact:true}).click();await p.getByText('계단으로 이동',{exact:true}).waitFor();
    await p.screenshot({path:`artifacts/visual-qa/pwa-push-response-${name}.png`});
    await p.getByRole('button',{name:'뒤로',exact:true}).click();

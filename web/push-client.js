@@ -6,6 +6,7 @@
   const promptKey='safekor.push.welcome.v1';
   let offered=false;
   let config,credential, registration, browserSubscription, pending=new URL(location.href).searchParams.get('notice');
+  let pendingActivation='notificationclick';
   let busy=false,receiptTimer,ready=typeof window.safeKorPushReceiver==='function';
   const shortRegion=name=>({'서울특별시':'서울시','세종특별자치시':'세종시'}[name]||name.replace(/광역시$/,'시'));
   const provinceOf=code=>(config?.regions||[]).find(r=>r.code===String(code||'').slice(0,2)&&r.code.length===2)?.code||'';
@@ -125,19 +126,23 @@
       message('이 기기의 알림을 끄고 서버 등록을 삭제했어요.');
     }catch(e){message('알림 해제·서버 삭제를 모두 확인하지 못했어요. 연결 후 다시 눌러주세요.',true);}finally{busy=false;controls();}
   };
-  async function openNotice(id){
+  async function openNotice(id,activation='foreground'){
     if(!/^[a-f0-9-]{36}$/.test(id)||!credential?.id)return;
     try{
-      const value=await api('notice',own({deliveryId:id}));
-      if(value.type==='test'){panel.showModal();message('테스트 알림을 열었어요. 실제 경보는 아닙니다.');return;}
-      if(value.type!=='civil'||!ready){pending=id;return;}
+      const value=await api('notice',own({deliveryId:id,openedFromNotification:activation==='notificationclick'}));
+      if(value.type==='test'){
+        clearInterval(receiptTimer);welcome.close();panel.showModal();
+        await refresh();
+        message(activation==='notificationclick'?'테스트 알림 수신·열기 확인 완료 · 실제 경보는 아닙니다.':'이 기기에서 테스트 알림 표시를 확인했어요. 알림센터에서 알림을 눌러주세요.');return;
+      }
+      if(value.type!=='civil'||!ready){pending=id;pendingActivation=activation;return;}
       welcome.close();panel.close();window.safeKorShowApp?.();window.safeKorPushReceiver?.(JSON.stringify(value));
-    }catch(e){panel.showModal();message(e.message,true);}
+    }catch(e){welcome.close();panel.showModal();await refresh().catch(()=>{});message(e.message,true);}
   }
-  window.safeKorPushReady=()=>{ready=true;if(pending){const id=pending;pending=null;openNotice(id);}else offerWelcome();};
+  window.safeKorPushReady=()=>{ready=true;if(pending){const id=pending;pending=null;openNotice(id,pendingActivation);}else offerWelcome();};
   navigator.serviceWorker?.addEventListener('message',e=>{
     if(!e.source?.scriptURL||new URL(e.source.scriptURL).origin!==location.origin||!new URL(e.source.scriptURL).pathname.endsWith('/app/safe-worker.js'))return;
-    if(e.data?.type==='SAFEKOR_OPEN_NOTICE')openNotice(e.data.deliveryId);
+    if(e.data?.type==='SAFEKOR_OPEN_NOTICE')openNotice(e.data.deliveryId,e.data.activation==='notificationclick'?'notificationclick':'foreground');
   });
   document.addEventListener('visibilitychange',()=>{if(!document.hidden&&panel.open)refresh().catch(()=>{});});
   controls();
