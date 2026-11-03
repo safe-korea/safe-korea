@@ -1,0 +1,167 @@
+{
+  "scope": "Local artifact inspection; not store approval",
+  "aab_present": true,
+  "ios_app_present": false,
+  "android": {
+    "package": "kr.safekor.app",
+    "min_sdk": "24",
+    "target_sdk": "36",
+    "debuggable": "false",
+    "allow_backup": "false",
+    "permissions": [
+      "android.permission.ACCESS_COARSE_LOCATION",
+      "android.permission.ACCESS_FINE_LOCATION",
+      "android.permission.ACCESS_NETWORK_STATE",
+      "android.permission.INTERNET",
+      "android.permission.POST_NOTIFICATIONS",
+      "android.permission.VIBRATE",
+      "kr.safekor.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+    ]
+  },
+  "aab_signature_entries": [
+    "META-INF/UPLOAD.RSA"
+  ],
+  "native_libraries": [
+    {
+      "name": "base/lib/arm64-v8a/libK3fAndroid.so",
+      "segments": [
+        {
+          "alignment": 16384,
+          "compatible_16kb": true
+        },
+        {
+          "alignment": 16384,
+          "compatible_16kb": true
+        },
+        {
+          "alignment": 16384,
+          "compatible_16kb": true
+        }
+      ],
+      "compatible_16kb": true
+    },
+    {
+      "name": "base/lib/arm64-v8a/libapp.so",
+      "segments": [
+        {
+          "alignment": 65536,
+          "compatible_16kb": true
+        },
+        {
+          "alignment": 65536,
+          "compatible_16kb": true
+        },
+        {
+          "alignment": 65536,
+          "compatible_16kb": true
+        }
+      ],
+      "compatible_16kb": true
+    },
+    {
+      "name": "base/lib/arm64-v8a/libdartjni.so",
+      "segments": [
+        {
+          "alignment": 16384,
+          "compatible_16kb": true
+        },
+        {
+          "alignment": 16384,
+          "compatible_16kb": true
+        },
+        {
+          "alignment": 16384,
+          "compatible_16kb": true
+        }
+      ],
+      "compatible_16kb": true
+    },
+    {
+      "name": "base/lib/arm64-v8a/libflutter.so",
+      "segments": [
+        {
+          "alignment": 65536,
+          "compatible_16kb": true
+        },
+        {
+          "alignment": 65536,
+          "compatible_16kb": true
+        },
+        {
+          "alignment": 65536,
+          "compatible_16kb": true
+        }
+      ],
+      "compatible_16kb": true
+    },
+    {
+      "name": "base/lib/x86_64/libapp.so",
+      "segments": [
+        {
+          "alignment": 65536,
+          "compatible_16kb": true
+        },
+        {
+          "alignment": 65536,
+          "compatible_16kb": true
+        },
+        {
+          "alignment": 65536,
+          "compatible_16kb": true
+        }
+      ],
+      "compatible_16kb": true
+    },
+    {
+      "name": "base/lib/x86_64/libdartjni.so",
+      "segments": [
+        {
+          "alignment": 16384,
+          "compatible_16kb": true
+        },
+        {
+          "alignment": 16384,
+          "compatible_16kb": true
+        },
+        {
+          "alignment": 16384,
+          "compatible_16kb": true
+        }
+      ],
+      "compatible_16kb": true
+    },
+    {
+      "name": "base/lib/x86_64/libflutter.so",
+      "segments": [
+        {
+          "alignment": 65536,
+          "compatible_16kb": true
+        },
+        {
+          "alignment": 65536,
+          "compatible_16kb": true
+        },
+        {
+          "alignment": 65536,
+          "compatible_16kb": true
+        }
+      ],
+      "compatible_16kb": true
+    }
+  ],
+  "aab_bytes": 77308930,
+  "limitations": [
+    "ELF alignment does not prove runtime behavior on a 16KB device.",
+    "AAB inspection does not verify generated APK ZIP alignment.",
+    "Privacy manifests require a human review of actual SDK behavior and store declarations.",
+    "Unsigned builds are not submission-ready."
+  ],
+  "version_code": "2",
+  "version_name": "1.0.0",
+  "sha256": "26c20b763b80c1fe2b8a63112896c68efe4b2c137164f74f81382c4efb6b3028",
+  "jarsigner_verified": true,
+  "government_service_key_detected": false,
+  "collector_hmac_key_detected": false,
+  "versioned_candidate": "build/release-candidates/safeKor-1.0.0-2.aab",
+  "candidate_sha256_match": true
+}
