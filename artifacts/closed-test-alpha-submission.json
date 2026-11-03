@@ -33,5 +33,15 @@
   "participationUrlVerifiedActive": false,
   "production": "inactive",
   "emulatorRestarted": false,
-  "messagesSentToTesters": false
+  "messagesSentToTesters": false,
+  "latestPolicyDecision": {
+    "verifiedDate": "2026-11-03",
+    "status": "rejected",
+    "policy": "Play Console Requirements",
+    "issueId": "4989575261088573961",
+    "reason": "Some selected app categories/features require an organization account",
+    "specificTriggerIdentified": false,
+    "healthDeclarationSuspected": true,
+    "reviewRequestPrepared": true
+  }
 }

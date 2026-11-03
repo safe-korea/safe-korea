@@ -9,7 +9,7 @@
   "contactEmail": "taetaeg@gmail.com",
   "privacyPolicy": "https://safe-korea-shelter-api.trovapp.workers.dev/privacy",
   "supportUrl": "https://safe-korea-shelter-api.trovapp.workers.dev/support",
-  "consoleSubmissionStatus": "closed_alpha_review_requested; console_in_review; automated_checks_pending",
+  "consoleSubmissionStatus": "closed_alpha_rejected; non_medical_classification_support_ticket_submitted",
   "verifiedDate": "2026-11-03",
   "category": "TOOLS",
   "targetAgeGroups": [
@@ -28,7 +28,7 @@
   },
   "storeListing": {
     "locale": "ko-KR",
-    "status": "review_requested",
+    "status": "non_medical_description_saved_not_resubmitted",
     "phoneScreenshots": [
       "01-home-current.png",
       "04-actions-current.png",
@@ -105,7 +105,7 @@
     "privacyDeploymentVersion": "cf9ec79e-51f2-4317-9c60-ef4b88c4b04b"
   },
   "closedTest": {
-    "status": "review_requested_automated_checks_pending",
+    "status": "rejected_organization_account_requirement",
     "optedInTesters": 0,
     "requiredTesters": 12,
     "requiredContinuousDays": 14,
@@ -125,11 +125,36 @@
     "allowlistedAccounts": 1,
     "feedbackEmail": "taetaeg@gmail.com",
     "participationUrl": "https://play.google.com/apps/testing/kr.safekor.app",
-    "participationUrlStatus": "available_after_review_and_publication; not_yet_verified_active",
+    "participationUrlStatus": "unavailable_until_rejection_resolved_and_release_published",
     "testerConsoleUrl": "https://play.google.com/console/u/3/developers/7181631274097055190/app/4974887941231472773/tracks/4699249421656772828?tab=testers",
     "reviewRequestedAtUtc": "2026-11-03T05:25:37.676029+00:00",
-    "reviewStatusDetails": "Dashboard: 검토 중. Publishing: quick checks running; sent to review after checks succeed."
+    "reviewStatusDetails": "Policy issue4989575261088573961: category/features require organization account. Triggering declaration not specified."
   },
   "productionStatus": "inactive",
-  "usesAdvertisingId": false
+  "usesAdvertisingId": false,
+  "classificationReview": {
+    "requestedPosition": "non_medical_civilian_evacuation_utility",
+    "status": "policy_support_ticket_submitted_waiting_response",
+    "policyIssueId": "4989575261088573961",
+    "existingHealthDeclaration": "Emergency and First Aid retained pending clarification",
+    "healthDeclarationReason": "Google14738291 includes emergency preparedness and disaster-response resources; not silently changed to none",
+    "requestFile": "release/store/non-medical-review-request.txt",
+    "storeDescription": "non_medical_wording_saved_in_console_not_resubmitted",
+    "supportCaseId": "pending_assignment",
+    "supportReceipt": "티켓이 제출되었습니다. 영업일 기준 2일 이내에 이메일로 답변해 드리겠습니다. 일부 티켓은 시간이 더 걸릴 수 있습니다.",
+    "supportUrl": "https://play.google.com/console/u/3/developers/7181631274097055190/help-and-support?app=4974887941231472773",
+    "requestedAtUtc": "2026-11-03T08:05:09.697533+00:00",
+    "automatedRecommendation": "Conditional option to remove health declaration only if app has no health/first-aid content; specialist clarification requested due disaster-response definition",
+    "healthDeclarationChanged": false,
+    "approvedNonMedicalClassification": false
+  },
+  "testerMatch": {
+    "registrationStatus": "form_filled_not_submitted",
+    "reason": "Registration immediately starts matching, but rejected Play release cannot be installed",
+    "registrationUrl": "https://tester-match.knockknock.company/apps/new",
+    "androidUrl": "https://play.google.com/store/apps/details?id=kr.safekor.app",
+    "webParticipationUrl": "https://play.google.com/apps/testing/kr.safekor.app",
+    "requiredGroup": "tester-match@googlegroups.com",
+    "groupAccessConfigured": false
+  }
 }

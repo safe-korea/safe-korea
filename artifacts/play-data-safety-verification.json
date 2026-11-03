@@ -46,6 +46,6 @@
     "closedTestSetup": "country_testers_version_preview_submission_completed",
     "reviewSendButton": "submission_confirmed_with_14_changes",
     "production": "inactive",
-    "reviewStatus": "dashboard_in_review_automated_checks_pending"
+    "reviewStatus": "closed_alpha_rejected_for_account_requirement; no_data_safety_specific_rejection_observed"
   }
 }
