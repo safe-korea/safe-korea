@@ -11,7 +11,7 @@
   "supportUrl": "https://safe-korea-shelter-api.trovapp.workers.dev/support",
   "consoleSubmissionStatus": "closed_alpha_rejected; non_medical_classification_support_ticket_submitted",
   "verifiedDate": "2026-11-03",
-  "category": "TOOLS",
+  "category": "MAPS_AND_NAVIGATION",
   "targetAgeGroups": [
     "13-15",
     "16-17",
@@ -156,5 +156,15 @@
     "webParticipationUrl": "https://play.google.com/apps/testing/kr.safekor.app",
     "requiredGroup": "tester-match@googlegroups.com",
     "groupAccessConfigured": false
+  },
+  "categoryChange": {
+    "previous": "TOOLS",
+    "current": "MAPS_AND_NAVIGATION",
+    "consoleLabel": "지도/내비게이션",
+    "status": "saved_in_console_not_submitted_for_review",
+    "verifiedDate": "2026-11-03",
+    "reason": "Core GPS-based shelter finding and map display",
+    "healthDeclarationChanged": false,
+    "policyRejectionResolved": false
   }
 }
