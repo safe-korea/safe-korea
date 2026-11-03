@@ -141,6 +141,7 @@ class HomeScreen extends StatelessWidget {
           icon: const Icon(Icons.shield_outlined),
           label: const Text('모의 공습경보 시작'),
         ),
+        const SizedBox(height: 12),
         ActionTile(
           icon: Icons.menu_book_outlined,
           title: '상황별 행동강령',
