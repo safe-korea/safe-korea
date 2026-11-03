@@ -12,7 +12,7 @@
 | 건강 선언 | Emergency and First Aid 기존 선택 유지. 재난 대응 문구의 비의료 앱 적용 여부 전문가 답변 대기 |
 | 콘텐츠 등급 | IARC 설문 저장; 한국 3세 이상. 출시 타깃 연령과 구분 |
 | 타깃 연령 | 사용자 지정대로 13–15 / 16–17 / 18+ 저장 |
-| 카테고리 / 문의처 | 도구 / taetaeg@gmail.com / 공개 `/support`; 연락처 게시 확인 |
+| 카테고리 / 문의처 | 지도/내비게이션으로 변경 저장(재심사 전송 전) / taetaeg@gmail.com / 공개 `/support`; 연락처 게시 확인 |
 | 한국어 스토어 소개 | safeKor 이름·선정 이미지·현재 화면4장 보존. 비의료 범위 상세 설명1504자 수정·저장, 미재제출 |
 | 데이터 보안 | **5/5단계 최종 저장 후 검토 전송 요청**. 위치·앱 상호작용·진단·식별 정보 및 HTTPS/선택 여부 반영 |
 
@@ -53,3 +53,12 @@
 정책 지원 요청 원문: `non-medical-review-request.txt`. 접수/판단 증거: `artifacts/non-medical-classification-review.json`. 실제 경보 발송·실기기 수신 검증은 별도입니다.
 
 공식 근거: [Play 계정 요건](https://support.google.com/googleplay/android-developer/answer/10788890?hl=ko), [건강 선언의 재해 대응 범위](https://support.google.com/googleplay/android-developer/answer/14738291?hl=ko), [테스트 설정](https://support.google.com/googleplay/android-developer/answer/9845334?hl=ko), [12명/연속14일·프로덕션 신청](https://support.google.com/googleplay/android-developer/answer/14151465?hl=ko).
+
+
+## 후속 카테고리 변경
+
+사용자의 다른 카테고리 선택 요청으로 스토어 설정을 **도구 → 지도/내비게이션**으로 변경해 저장했습니다. GPS 주변 대피소 탐색·지도 표시라는 실제 기능에 근거합니다. 콘솔 저장 완료 메시지와 게시 개요의 `앱 카테고리(지도/내비게이션 앱) 선택` 항목을 확인했습니다. 재심사 전송은 하지 않았고, 게시 개요에는 기존 거부 및 검토 전송 전14개 변경사항이 남아 있습니다.
+
+건강 기능 신고는 별도이며 이번 스토어 분류 변경에서 수정하지 않았습니다. 조직 계정 거부 해소·Google 승인·비공개 게시 완료로 간주하지 않습니다. Tester Match도 최종 등록하지 않았습니다.
+
+비교 대상으로 요청한 Trova는 해당 콘솔의 정책 상태 `발견된 문제 없음`, 최근 게시일2026-10-27을 읽기 전용으로 확인했습니다. 건강 기능 신고 내용은 아직 대조하지 않았으므로 설정을 복제했다고 보고하지 않습니다. Trova의 설정은 변경하지 않았습니다.
