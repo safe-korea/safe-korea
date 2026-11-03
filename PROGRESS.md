@@ -886,3 +886,9 @@ Android API 36에서도 공식 서울시청 공개 사진 매칭/표시와 공�
 - GPS 잠실→송파구 자동 선택·공식 시설124개·거리순 결과·시설 저장, 통신 차단/강제 재시작 후 오프라인 홈·저장 도로지도/핀·주소·상황별 차량 행동요령·준비물 체크 영속성, 통신 복구 및 상태 공유 Android chooser 호출 통과. 메시지 실제 전송/실제 정부 알림/물리 기기 검증은 하지 않았습니다.
 - 출시 전 미해결 발견: Kakao SDK 401 Unauthorized로 기본 지도 fallback. 키/패키지/Play 서명 해시/지도 권한 등록 확인과 Play 설치본 재검증 필요. 공개 인증서 해시와 검증 범위는 artifacts/internal-test-v2-emulator-qa.json, 상세는 release/store/INTERNAL_TEST.md.
 - headless AVD를 사용자 데이터 보존하여 창 모드로 재시작. Play 로그인 창/설치본 앱을 실제 표시. 사전 확인용 별도 AVD는 종료했고 Play 설치본 홈과 복구된 통신을 유지합니다. 비밀번호·APK·원본 로그·세션 자료는 Git 제외. 문서/검증 증거 변경만으로 추가 앱 테스트를 반복 실행하지 않았습니다.
+
+## 2026-11-03 — Android Play 배포본 카카오 인증 401 해결
+
+- 사용자 로그인 후 기존 safe-korea 앱의 네이티브 키를 앱 설정과 대조(일치). Android 패키지가 옛 kr.example.safe_korea이고 개발 서명 해시만 등록된 것을 확인. 현재 kr.safekor.app으로 수정하고 Play 앱 서명·로컬 업로드/릴리스 서명 해시 추가. 기존 개발 해시/키/iOS/무료 쿼터 보존. 저장 후 새로고침하여 패키지·해시3개 재확인.
+- 기존 Play 설치본 versionCode2를 재설치 없이 재시작. SDK 인증 HTTP200, 새 프로세스 MapAuthException 없음, Kakao 배경/대피소 묶음 핀 표시 확인. 전체 화면·묶음 탭 확대·개별 핀의 실제 대피소 상세 열기 통과. 카카오맵 별도 앱 미설치 상태에서 검증. UI 캡처 artifacts/kakao-play-release-map.png, QA JSON에 해결 기록 추가.
+- 앱 코드/키/빌드 변경 없음. 기존 401 발견 기록은 이력으로 유지하고 해결 결과/출시 키 해시 절차를 release/store/INTERNAL_TEST.md에 추가. 서버 설정 변경 검증이므로 format/analyze/유닛 테스트 재실행 대신 실제 Play 설치본을 검증. PR27 보안 CI 통과를 확인해 사용자 다음 단계 요청에 따라 병합한 뒤 후속 브랜치에서 기록. 실제 정부 알림 수신·물리 Android 기기 검증은 별도.

@@ -20,11 +20,11 @@
     "offline air-raid vehicle guidance",
     "checklist checkbox survives offline cold restart",
     "connectivity restoration",
-    "native status share chooser opens; cancelled without sending"
+    "native status share chooser opens; cancelled without sending",
+    "Kakao native online map HTTP200 after registration fix",
+    "Kakao full-screen/cluster zoom/individual pin detail"
   ],
-  "unresolved": [
-    "Kakao SDK MapAuthException(401): Unauthorized; fallback map shown; verify app key, package and Play signing key hash registration"
-  ],
+  "unresolved": [],
   "not_tested": [
     "physical Android device",
     "government alert delivery",
@@ -36,5 +36,23 @@
     "longitude": 127.1001,
     "kind": "emulator injected; not user location"
   },
-  "kakao_android_key_hash": "1g2Uk6CebrzYQf2pjXyVwbjPXgU="
+  "kakao_android_key_hash": "1g2Uk6CebrzYQf2pjXyVwbjPXgU=",
+  "resolved": [
+    {
+      "issue": "Kakao SDK MapAuthException(401): Unauthorized",
+      "cause": "Native-key Android registration retained old kr.example.safe_korea package and only debug signing hash. Play uses kr.safekor.app and a different signing certificate.",
+      "fix": "Updated Android package to kr.safekor.app. Added Play signing hash and existing local upload/release signing hash; retained debug hash, native key and iOS registration.",
+      "verified": [
+        "Saved registration reloaded and checked",
+        "Same Play-installed versionCode2 cold restart",
+        "Kakao auth HTTP200 and no MapAuthException in new app process",
+        "Kakao base map and shelter cluster markers render",
+        "Full-screen map opens",
+        "Cluster tap zooms to individual shelter pins",
+        "Individual pin opens matching official shelter detail"
+      ],
+      "rebuild_required": false,
+      "date": "2026-11-03"
+    }
+  ]
 }
