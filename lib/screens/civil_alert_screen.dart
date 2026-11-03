@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../services/civil_alert_ingress.dart';
 import '../models/alert_guidance.dart';
@@ -8,7 +9,7 @@ import '../widgets/common.dart';
 import 'saved_shelters_screen.dart';
 
 /// Response UI for an authenticated, recipient-matched official notice.
-/// Manual guidance and drill notification entry points remain separate.
+/// Own-device response previews share this layout with a persistent test label.
 class CivilAlertScreen extends StatefulWidget {
   const CivilAlertScreen({super.key, required this.notice});
   final CivilAlertNotice notice;
@@ -30,13 +31,21 @@ class _CivilAlertScreenState extends State<CivilAlertScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
+    backgroundColor: AppPalette.backgroundForAlert(notice.kind),
     appBar: AppBar(
-      title: Text(notice.kind.label),
+      title: Text(
+        notice.testOnly ? '훈련 / 테스트 · ${notice.kind.label}' : notice.kind.label,
+      ),
       backgroundColor: AppPalette.forAlert(notice.kind),
       foregroundColor: Colors.white,
+      systemOverlayStyle: SystemUiOverlayStyle.light,
     ),
     body: PageBody(
       children: [
+        if (notice.testOnly) ...[
+          const Notice('테스트 중 · 실제 경보 아님'),
+          const SizedBox(height: 16),
+        ],
         Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
@@ -93,7 +102,7 @@ class _CivilAlertScreenState extends State<CivilAlertScreen> {
         const SizedBox(height: 12),
         const Text('재난문자·정부 방송과 현장 지시를 우선하세요.'),
         ExpansionTile(
-          title: const Text('경보 출처와 시각'),
+          title: Text(notice.testOnly ? '테스트 출처와 시각' : '경보 출처와 시각'),
           children: [
             InfoLine(label: '알림 출처', value: notice.agency),
             InfoLine(

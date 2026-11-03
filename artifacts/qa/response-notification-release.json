@@ -1,0 +1,16 @@
+{
+  "artifact": "build/release-candidates/safeKor-1.0.0-3.aab",
+  "sha256": "1411adf44b1b455ad06514164bb24a147c0b21064a97890d5eb992548298282e",
+  "versionCode": 3,
+  "versionName": "1.0.0",
+  "package": "kr.safekor.app",
+  "playUploaded": false,
+  "jarSignatureVerified": true,
+  "workerVersion": "5c51bdbf-2995-4216-b64a-48a250cfcfef",
+  "liveAssetHashMatches": {
+    "/app/push-client.js": true,
+    "/app/safe-worker.js": true,
+    "/app/main.dart.js": true
+  },
+  "officialEnabled": false
+}

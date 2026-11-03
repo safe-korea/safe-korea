@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import '../services/system_civil_alert_link.dart';
+import 'notification_test_screen.dart';
 import '../widgets/common.dart';
 
 class SystemCivilAlertSettingsScreen extends StatefulWidget {
@@ -75,6 +76,17 @@ class _SystemCivilAlertSettingsScreenState
         const SizedBox(height: 12),
         const Text(
           '• 앱 사용 중에는 대피 안내 화면을 엽니다.\n• 다른 앱 사용 중에는 안내 알림을 눌러 들어옵니다.\n• 원래 재난문자의 사이렌·표시를 제어하지 않습니다.',
+        ),
+        const SizedBox(height: 16),
+        OutlinedButton.icon(
+          onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute<void>(
+              builder: (_) => const NotificationTestScreen(),
+            ),
+          ),
+          icon: const Icon(Icons.notifications_active_outlined),
+          label: const Text('테스트 알림으로 대응 화면 확인'),
         ),
         const SizedBox(height: 16),
         Text(

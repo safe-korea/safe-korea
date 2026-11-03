@@ -486,7 +486,9 @@ export async function pushRoute(
         "test",
         {
           title: "safeKor · 테스트 알림",
-          body: "실제 경보가 아닙니다. 이 기기의 알림 전달을 확인합니다.",
+          body: "실제 경보가 아닙니다. 눌러서 빨간 대피 안내 화면을 확인하세요.",
+          publishedAt: now,
+          expiresAt: now + 120000,
         },
         now,
         deps,

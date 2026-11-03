@@ -332,6 +332,8 @@ test("test push is encrypted, short-lived, bound to one device and receipt disti
   assert.equal(plain[end], 2);
   const data = JSON.parse(new TextDecoder().decode(plain.slice(0, end)));
   assert.equal(data.type, "test");
+  assert.equal(data.publishedAt, now);
+  assert.equal(data.expiresAt, now + 120000);
   assert.match(data.body, /실제 경보가 아닙니다/);
   const receipt = await pushRoute(
     req("receipt", {

@@ -20,8 +20,16 @@ class _NotificationTestScreenState extends State<NotificationTestScreen> {
   DrillNotifications get _notifications =>
       widget.notifications ?? DrillNotifications.instance;
 
-  Future<void> _perform({bool cancel = false}) async {
-    setState(() => _busy = true);
+  Future<void> _perform({
+    bool cancel = false,
+    bool responseTest = false,
+  }) async {
+    setState(() {
+      _busy = true;
+      if (responseTest) {
+        _status = '권한 허용 후 5초 뒤 테스트합니다. 홈 버튼으로 앱을 나간 뒤 알림을 눌러보세요.';
+      }
+    });
     String message;
     try {
       if (cancel) {
@@ -30,11 +38,14 @@ class _NotificationTestScreenState extends State<NotificationTestScreen> {
       } else {
         final allowed = await _notifications.send(
           sound: _sound,
-          kind: _kind,
+          kind: responseTest ? AlertKind.air : _kind,
+          responseTest: responseTest,
           vibration: _vibration,
         );
         message = allowed
-            ? '알림 센터에서 테스트 알림을 눌러 훈련을 시작하세요. 표시·소리·진동은 기기 설정에 따라 달라집니다.'
+            ? responseTest
+                  ? '알림을 누르면 테스트 표시가 있는 빨간 대피 안내 화면이 열립니다.'
+                  : '알림 센터에서 테스트 알림을 눌러 훈련을 시작하세요. 표시·소리·진동은 기기 설정에 따라 달라집니다.'
             : '알림 권한이 없습니다. 기기 설정에서 SAFE KOREA 알림을 허용하세요. 알림 없이도 홈에서 훈련할 수 있습니다.';
       }
     } catch (_) {
@@ -58,6 +69,14 @@ class _NotificationTestScreenState extends State<NotificationTestScreen> {
           title: '경보 구분 연습',
           subtitle: '직접 보내는 연습 알림 · 실제 경보 아님',
         ),
+        FilledButton.icon(
+          onPressed: _busy ? null : () => _perform(responseTest: true),
+          icon: const Icon(Icons.open_in_new),
+          label: const Text('빨간 대응 화면 연결 테스트'),
+        ),
+        const SizedBox(height: 8),
+        const Text('5초 뒤 공습경보 테스트 알림 · 앱 사용 중에는 바로 화면 전환, 앱 밖에서는 알림을 눌러 확인'),
+        const SizedBox(height: 24),
         DropdownButtonFormField<AlertKind>(
           initialValue: _kind,
           isExpanded: true,
