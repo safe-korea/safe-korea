@@ -1,0 +1,37 @@
+{
+  "verifiedAtUtc": "2026-11-03T05:25:37.676029+00:00",
+  "package": "kr.safekor.app",
+  "track": "Alpha",
+  "trackId": "4699249421656772828",
+  "releaseId": "1",
+  "versionCode": 2,
+  "versionName": "1.0.0",
+  "releaseName": "1.0.0 (2) · 비공개 테스트",
+  "artifact": "Existing Play library version2 reused; no new binary uploaded",
+  "countries": [
+    "KR"
+  ],
+  "testerList": "safeKor 비공개 테스트",
+  "allowlistedAccounts": 1,
+  "optedInTesters": 0,
+  "feedbackEmail": "taetaeg@gmail.com",
+  "releaseValidation": "출시 준비됨",
+  "releaseErrors": 0,
+  "advertisingId": {
+    "uses": false,
+    "evidence": "Merged release manifest has no AD_ID or AD_SERVICES permissions; no ads SDK dependency; declaration saved"
+  },
+  "review": {
+    "changes": 14,
+    "requestConfirmed": true,
+    "dashboardStatus": "검토 중",
+    "automatedChecks": "running; automatically sent for review after successful checks",
+    "approved": false,
+    "published": false
+  },
+  "participationUrl": "https://play.google.com/apps/testing/kr.safekor.app",
+  "participationUrlVerifiedActive": false,
+  "production": "inactive",
+  "emulatorRestarted": false,
+  "messagesSentToTesters": false
+}

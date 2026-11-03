@@ -38,13 +38,14 @@
     "typescript": "passed",
     "publicPrivacy": "200 and current content verified"
   },
-  "consoleStatus": "questionnaire_final_saved_pending_review",
+  "consoleStatus": "review_requested_with_closed_alpha",
   "consoleVerification": {
     "finalSaveMessage": "변경사항이 저장되었습니다. 게시 개요에서 전송하여 검토를 받으세요.",
     "publishingOverviewEntry": "데이터 보안 설문지 작성",
     "setupSectionNoLongerIncomplete": true,
-    "closedTestSetup": "0_of_5_country_testers_release_preview_review_steps_not_started",
-    "reviewSendButton": "disabled_pending_release_setup",
-    "production": "inactive"
+    "closedTestSetup": "country_testers_version_preview_submission_completed",
+    "reviewSendButton": "submission_confirmed_with_14_changes",
+    "production": "inactive",
+    "reviewStatus": "dashboard_in_review_automated_checks_pending"
   }
 }
