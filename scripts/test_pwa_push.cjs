@@ -1,6 +1,7 @@
 // Browser API fixtures verify UX/bridge, not an Apple device's actual delivery.
 const {chromium,webkit}=require('../.tools/pwa-qa/node_modules/playwright');
 const {createECDH,randomBytes}=require('node:crypto');
+const {readFileSync}=require('node:fs');
 const assert=require('node:assert/strict');
 const origin=process.env.PWA_TEST_URL||'http://127.0.0.1:8766';
 const ec=createECDH('prime256v1');ec.generateKeys();
@@ -48,6 +49,9 @@ const provinces=require('../assets/regions.json').provinces.map(({code,name})=>(
      return original(input,options);
     };
    });
+   const audio=await c.request.get(origin+'/app/audio/drill_siren.wav');
+   assert.equal(audio.status(),200);
+   assert.deepEqual(await audio.body(),readFileSync('android/app/src/main/res/raw/drill_siren.wav'));
    const p=await c.newPage();
    await p.exposeBinding('__safeKorPushFixture',(_,request)=>fixture(request.url,request.body));const errors=[];p.on('pageerror',e=>errors.push(e.message));
    await p.goto(origin+'/app/');await p.waitForFunction(()=>window.safeFlutterReady===true,null,{timeout:60000});
@@ -88,6 +92,7 @@ const provinces=require('../assets/regions.json').provinces.map(({code,name})=>(
    await p.getByRole('tab',{name:'나의 준비',exact:true}).click();
    await p.getByRole('button',{name:'알림 설정',exact:true}).click();
    await p.locator('#push-panel').waitFor({state:'visible'});
+   await p.locator('#push-test-sound').check();
    await p.locator('#push-test').click();await p.getByText('Apple 서버가 접수했어요. 앱을 닫고 알림을 확인하세요.',{exact:true}).waitFor();assert.equal(tests,1);
    await p.locator('#push-close').click();
    async function notify(script,activation='foreground',deliveryId='11111111-1111-4111-8111-111111111111'){await p.evaluate(({scriptURL,activation,deliveryId})=>{const e=new Event('message');Object.defineProperties(e,{source:{value:{scriptURL}},data:{value:{type:'SAFEKOR_OPEN_NOTICE',deliveryId,activation}}});navigator.serviceWorker.dispatchEvent(e);},{scriptURL:script,activation,deliveryId});}
@@ -96,6 +101,12 @@ const provinces=require('../assets/regions.json').provinces.map(({code,name})=>(
    await p.getByText('테스트 중 · 실제 경보 아님',{exact:true}).waitFor();
    await p.getByText('지금 즉시 대피하세요',{exact:true}).waitFor();
    assert.equal(opened,false);assert.equal(await p.locator('#push-panel').isVisible(),false);
+   await p.waitForFunction(()=>window.safeKorTestSiren.isPlaying());
+   await p.getByRole('button',{name:'소리 끄기',exact:true}).click();
+   assert.equal(await p.evaluate(()=>window.safeKorTestSiren.isPlaying()),false);
+   await p.getByRole('button',{name:'사이렌 듣기',exact:true}).click();
+   await p.waitForFunction(()=>window.safeKorTestSiren.isPlaying());
+   await p.getByRole('button',{name:'소리 끄기',exact:true}).click();
    await p.locator('#push-feedback').waitFor({state:'hidden'});
    await p.waitForTimeout(500);
    await p.screenshot({path:`artifacts/visual-qa/pwa-test-response-${name}.png`});

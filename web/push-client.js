@@ -111,11 +111,15 @@
     }catch{ $('push-welcome-error').textContent='연결하지 못했어요. 인터넷 연결 후 다시 시도해 주세요.';$('push-welcome-error').hidden=false; }
     controls();
   }
+  $('push-test-sound').onchange=()=>{if($('push-test-sound').checked)window.safeKorTestSiren?.prepare();};
   $('push-test').onclick=async()=>{
     if(busy)return;busy=true;controls();
-    try{const result=await api('test',own());message(result.state==='accepted'?'Apple 서버가 접수했어요. 앱을 닫고 알림을 확인하세요.':'알림 전달을 확인하지 못했어요.',result.state!=='accepted');
+    try{
+      if($('push-test-sound').checked)await window.safeKorTestSiren?.prepare();
+      window.safeKorTestSiren?.arm($('push-test-sound').checked);
+      const result=await api('test',own());if(result.state!=='accepted')window.safeKorTestSiren?.arm(false);message(result.state==='accepted'?'Apple 서버가 접수했어요. 앱을 닫고 알림을 확인하세요.':'알림 전달을 확인하지 못했어요.',result.state!=='accepted');
       clearInterval(receiptTimer);let tries=0;receiptTimer=setInterval(()=>{refresh().catch(()=>{});if(++tries>=15)clearInterval(receiptTimer);},2000);
-    }catch(e){message(e.message,true);}finally{busy=false;controls();}
+    }catch(e){window.safeKorTestSiren?.arm(false);message(e.message,true);}finally{busy=false;controls();}
   };
   $('push-refresh').onclick=()=>refresh().catch(e=>message(e.message,true));
   $('push-disable').onclick=async()=>{
@@ -132,7 +136,7 @@
       const value=await api('notice',own({deliveryId:id,openedFromNotification:activation==='notificationclick'}));
       if(!['test','civil'].includes(value.type))return;
       if(!ready){pending=id;pendingActivation=activation;return;}
-      if(value.type==='test')clearInterval(receiptTimer);
+      if(value.type==='test'){clearInterval(receiptTimer);window.safeKorTestSiren?.onNotice(value);}
       welcome.close();panel.close();window.safeKorShowApp?.();window.safeKorPushReceiver?.(JSON.stringify(value));
     }catch(e){welcome.close();panel.showModal();await refresh().catch(()=>{});message(e.message,true);}
   }

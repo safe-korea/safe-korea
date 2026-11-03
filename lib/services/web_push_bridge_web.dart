@@ -73,3 +73,10 @@ external JSFunction? get _openPushSettings;
 external JSFunction? get _openInstallSettings;
 void openWebNotificationSettings() => _openPushSettings?.callAsFunction();
 void openWebInstallSettings() => _openInstallSettings?.callAsFunction();
+
+@JS('window.safeKorPlayTestSiren')
+external JSPromise<JSBoolean> _playTestSiren();
+@JS('window.safeKorStopTestSiren')
+external void _stopTestSiren();
+Future<bool> playWebTestSiren() async => (await _playTestSiren().toDart).toDart;
+void stopWebTestSiren() => _stopTestSiren();
