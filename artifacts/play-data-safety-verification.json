@@ -1,0 +1,50 @@
+{
+  "date": "2026-11-03",
+  "package": "kr.safekor.app",
+  "versionCode": 2,
+  "sdk": {
+    "flutter": "kakao_map_sdk 1.3.1",
+    "android": "com.kakao.maps.open:android:2.15.2",
+    "aarSha256": "a399e828f9c4c3c9aff06d5893c006d8b47776d113ffba3cc692d15cf49da34a",
+    "authenticationTransport": "javax.net.ssl.HttpsURLConnection",
+    "authenticationHeaderFields": [
+      "SDK version",
+      "OS API version",
+      "language/country",
+      "app signing certificate hash",
+      "device model",
+      "package name"
+    ],
+    "embeddedNetworkEndpointSchemes": [
+      "https"
+    ],
+    "limitations": [
+      "Static inspection is not exhaustive native traffic capture",
+      "No SDK guarantee of per-request retention or deletion",
+      "No TLS interception, certificate bypass or emulator restart"
+    ]
+  },
+  "selectedDataTypes": [
+    "approximate_location",
+    "precise_location",
+    "app_interactions",
+    "diagnostics",
+    "device_or_other_ids"
+  ],
+  "assessment": "App code + SDK request construction + provider policies; conservative no ephemeral/sharing exemption assertions",
+  "privacyDeploymentVersion": "cf9ec79e-51f2-4317-9c60-ef4b88c4b04b",
+  "checks": {
+    "workerTestsPassed": 55,
+    "typescript": "passed",
+    "publicPrivacy": "200 and current content verified"
+  },
+  "consoleStatus": "questionnaire_final_saved_pending_review",
+  "consoleVerification": {
+    "finalSaveMessage": "변경사항이 저장되었습니다. 게시 개요에서 전송하여 검토를 받으세요.",
+    "publishingOverviewEntry": "데이터 보안 설문지 작성",
+    "setupSectionNoLongerIncomplete": true,
+    "closedTestSetup": "0_of_5_country_testers_release_preview_review_steps_not_started",
+    "reviewSendButton": "disabled_pending_release_setup",
+    "production": "inactive"
+  }
+}

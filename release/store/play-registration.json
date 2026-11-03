@@ -9,7 +9,7 @@
   "contactEmail": "taetaeg@gmail.com",
   "privacyPolicy": "https://safe-korea-shelter-api.trovapp.workers.dev/privacy",
   "supportUrl": "https://safe-korea-shelter-api.trovapp.workers.dev/support",
-  "consoleSubmissionStatus": "setup_10_of_11_saved; data_safety_draft; review_submission_blocked",
+  "consoleSubmissionStatus": "basic_app_setup_complete; data_safety_saved_pending_review; closed_release_setup_required",
   "verifiedDate": "2026-11-03",
   "category": "TOOLS",
   "targetAgeGroups": [
@@ -37,21 +37,81 @@
     ]
   },
   "dataSafety": {
-    "status": "draft_saved_not_submitted",
+    "status": "final_saved_pending_review",
     "collectsOrShares": true,
+    "encryptedInTransit": true,
     "accountCreation": false,
     "externalAccountLogin": false,
-    "pending": [
-      "all-data transit encryption attestation",
-      "SDK data types, purposes, sharing and ephemeral handling"
-    ]
+    "globalDeletionRequestFeature": false,
+    "dataTypes": [
+      {
+        "type": "approximate_location",
+        "collected": true,
+        "shared": true,
+        "ephemeralOnly": false,
+        "optional": false,
+        "purposes": [
+          "functionality",
+          "security"
+        ]
+      },
+      {
+        "type": "precise_location",
+        "collected": true,
+        "shared": true,
+        "ephemeralOnly": false,
+        "optional": true,
+        "purposes": [
+          "functionality"
+        ]
+      },
+      {
+        "type": "app_interactions",
+        "collected": true,
+        "shared": true,
+        "ephemeralOnly": false,
+        "optional": false,
+        "purposes": [
+          "functionality",
+          "analytics",
+          "security"
+        ]
+      },
+      {
+        "type": "diagnostics",
+        "collected": true,
+        "shared": true,
+        "ephemeralOnly": false,
+        "optional": false,
+        "purposes": [
+          "functionality",
+          "analytics",
+          "security"
+        ]
+      },
+      {
+        "type": "device_or_other_ids",
+        "collected": true,
+        "shared": true,
+        "ephemeralOnly": false,
+        "optional": false,
+        "purposes": [
+          "functionality",
+          "security"
+        ]
+      }
+    ],
+    "evidence": "artifacts/play-data-safety-verification.json",
+    "privacyDeploymentVersion": "cf9ec79e-51f2-4317-9c60-ef4b88c4b04b"
   },
   "closedTest": {
     "status": "not_started",
     "optedInTesters": 0,
     "requiredTesters": 12,
     "requiredContinuousDays": 14,
-    "recruitment": "user_managed"
+    "recruitment": "user_managed",
+    "setupTasksComplete": 0,
+    "setupTasksTotal": 5
   },
   "productionStatus": "inactive"
 }
