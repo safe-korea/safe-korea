@@ -89,6 +89,7 @@ flutter:
     - assets/region_boundaries.json
     - assets/REGION_BOUNDARIES.md
     - assets/public_photos/seoul_city_hall_2026.jpg
+    - shorebird.yaml
 
   # To add assets to your application, add an assets section, like this:
   # assets:
