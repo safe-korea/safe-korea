@@ -7,16 +7,12 @@ import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:safe_korea/models/offline_area.dart';
-import 'package:safe_korea/models/saved_shelter.dart';
 import 'package:safe_korea/models/shelter.dart';
-import 'package:safe_korea/screens/guidelines_screen.dart';
 import 'package:safe_korea/screens/offline_map_screen.dart';
-import 'package:safe_korea/screens/shelter_record_screen.dart';
 import 'package:safe_korea/services/area_map_service.dart';
 import 'package:safe_korea/services/local_store.dart';
 import 'package:safe_korea/services/location_service.dart';
 import 'package:safe_korea/services/region_suggestion_service.dart';
-import 'package:safe_korea/services/saved_shelters_controller.dart';
 import 'package:safe_korea/services/shelter_repository.dart';
 
 import 'map_and_saved_shelters_test.dart' show fixture, SavedMemoryStore;
@@ -78,123 +74,6 @@ class FixtureRepository extends ShelterRepository {
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-
-  group('pet record', () {
-    test('round-trips and old records default to unchecked', () {
-      final entry = SavedShelter.fromCatalog(
-        fixture('11110', '종로구', 'a'),
-        'a',
-        DateTime.utc(2026, 11, 4),
-      );
-      expect(entry.pet.status, PetStatus.unchecked);
-      expect(entry.toJson().containsKey('pet'), isFalse);
-      final pet = PetCheck(
-        status: PetStatus.allowed,
-        conditions: '이동장 필수',
-        checkedWith: '종로구청 안전총괄과',
-        checkedOn: DateTime.utc(2026, 11, 5),
-      );
-      final updated = entry.withPersonal(
-        role: ShelterRole.none,
-        note: '',
-        photos: const [],
-        pet: pet,
-      );
-      final back = SavedShelter.fromJson(
-        jsonDecode(jsonEncode(updated.toJson())) as Map<String, dynamic>,
-      );
-      expect(back.pet.status, PetStatus.allowed);
-      expect(back.pet.conditions, '이동장 필수');
-      expect(back.pet.checkedWith, '종로구청 안전총괄과');
-      // Changing role or map keeps the pet record.
-      expect(
-        back
-            .withPersonal(role: ShelterRole.primary, note: '', photos: const [])
-            .pet
-            .status,
-        PetStatus.allowed,
-      );
-      expect(back.withOfflineMap({'x': 1}).pet.status, PetStatus.allowed);
-    });
-
-    test('controller rejects over-long pet fields', () async {
-      final controller = SavedSheltersController(store: SavedMemoryStore());
-      await controller.load();
-      final catalog = fixture('11110', '종로구', 'a');
-      await controller.toggle(catalog, 'a');
-      final key = controller.entries.single.key;
-      expect(
-        await controller.savePersonal(
-          key,
-          ShelterRole.none,
-          '',
-          const [],
-          pet: PetCheck(status: PetStatus.allowed, conditions: 'x' * 201),
-        ),
-        isFalse,
-      );
-      expect(
-        await controller.savePersonal(
-          key,
-          ShelterRole.none,
-          '',
-          const [],
-          pet: const PetCheck(status: PetStatus.notAllowed),
-        ),
-        isTrue,
-      );
-      expect(controller.entries.single.pet.status, PetStatus.notAllowed);
-      controller.dispose();
-    });
-
-    testWidgets('record screen saves a user-checked pet answer with date', (
-      tester,
-    ) async {
-      final controller = SavedSheltersController(store: SavedMemoryStore());
-      await tester.runAsync(controller.load);
-      await tester.runAsync(
-        () => controller.toggle(fixture('11110', '종로구', 'a'), 'a'),
-      );
-      await tester.pumpWidget(
-        MaterialApp(
-          home: ShelterRecordScreen(
-            entry: controller.entries.single,
-            controller: controller,
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-      expect(find.textContaining('공식 동반 가능 대피소 목록은 없어요'), findsOneWidget);
-      expect(find.text('수용 조건'), findsNothing);
-      await tester.ensureVisible(find.text('동반 가능'));
-      await tester.tap(find.text('동반 가능'));
-      await tester.pumpAndSettle();
-      await tester.enterText(find.widgetWithText(TextField, '수용 조건'), '이동장 필수');
-      await tester.enterText(find.widgetWithText(TextField, '확인한 곳'), '종로구청');
-      expect(find.textContaining('공식 정보 아님'), findsOneWidget);
-      await tester.tap(find.text('기기에 저장'));
-      await tester.pumpAndSettle();
-      final pet = controller.entries.single.pet;
-      expect(pet.status, PetStatus.allowed);
-      expect(pet.conditions, '이동장 필수');
-      expect(pet.checkedWith, '종로구청');
-      expect(pet.checkedOn, isNotNull);
-      controller.dispose();
-    });
-
-    testWidgets('pet guidance is shown as a draft with its own source', (
-      tester,
-    ) async {
-      await tester.pumpWidget(const MaterialApp(home: GuidelinesScreen()));
-      await tester.pumpAndSettle();
-      final tile = find.text('반려동물과 함께 대피 준비');
-      await tester.scrollUntilVisible(tile, 300);
-      await tester.tap(tile);
-      await tester.pumpAndSettle();
-      expect(find.textContaining('초안 · 원문 대조 전 ·'), findsOneWidget);
-      expect(find.textContaining('농림축산식품부'), findsOneWidget);
-    });
-  });
 
   group('my area map', () {
     MockClient cells(List<String> urls) => MockClient((request) async {

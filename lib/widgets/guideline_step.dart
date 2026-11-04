@@ -50,11 +50,6 @@ class GuidelineStep extends StatelessWidget {
       ('추가 안내 확인', Icons.radio_outlined),
       ('주변 사람 돕기', Icons.groups_outlined),
     ],
-    'pet': [
-      ('동반 가능 여부 확인', Icons.pets_outlined),
-      ('갈 곳 정하기', Icons.map_outlined),
-      ('이동장·재난 키트', Icons.backpack_outlined),
-    ],
     'prepare': [
       ('대피 장소', Icons.map_outlined),
       ('생존배낭', Icons.backpack_outlined),
@@ -100,47 +95,6 @@ class GuidelineStep extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(text, style: const TextStyle(fontSize: 16, height: 1.5)),
-        ],
-      ),
-    );
-  }
-}
-
-/// Items whose own source is not yet checked against the original are shown
-/// as drafts, never as authoritative guidance.
-class GuidelineDraftNotice extends StatelessWidget {
-  const GuidelineDraftNotice({super.key, required this.item, this.onOpen});
-  final Map<String, dynamic> item;
-  final ValueChanged<Uri>? onOpen;
-  @override
-  Widget build(BuildContext context) {
-    final source = item['source'] as Map<String, dynamic>?;
-    if (item['draft'] != true || source == null) return const SizedBox.shrink();
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppPalette.cautionBackground,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '초안 · ${source['status']}',
-            style: const TextStyle(
-              color: AppPalette.caution,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text('출처: ${source['name']}', style: const TextStyle(fontSize: 14)),
-          if (onOpen != null)
-            TextButton(
-              onPressed: () => onOpen!(Uri.parse(source['url'] as String)),
-              child: const Text('원문 열기'),
-            ),
         ],
       ),
     );

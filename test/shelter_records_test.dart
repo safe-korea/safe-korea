@@ -305,7 +305,7 @@ void main() {
     await tester.ensureVisible(find.text('저장 해제'));
     await tester.tap(find.text('저장 해제'));
     await tester.pumpAndSettle();
-    expect(find.textContaining('사진·메모·우선순위·반려동물 기록도 삭제'), findsOneWidget);
+    expect(find.textContaining('사진·메모·우선순위도 삭제'), findsOneWidget);
     await tester.tap(find.text('유지하기'));
     await tester.pumpAndSettle();
     expect(c.entries.single.photos, hasLength(1));

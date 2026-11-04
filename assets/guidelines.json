@@ -85,22 +85,6 @@
         "물·간편식·상비약·손전등·라디오 등 생존배낭을 준비하세요.",
         "통신 두절에 대비해 가족 만남 장소와 연락카드를 정하세요."
       ]
-    },
-    {
-      "id": "pet",
-      "title": "반려동물과 함께 대피 준비",
-      "summary": "공식 동반 가능 대피소 목록은 아직 없어요",
-      "draft": true,
-      "source": {
-        "name": "농림축산식품부 · 반려동물 가족을 위한 재난 대응 가이드라인(2022.1)",
-        "url": "https://www.safekorea.go.kr/idsiSFK/neo/ext/img/prevent/220117%20%EB%B0%98%EB%A0%A4%EB%8F%99%EB%AC%BC%20%EA%B0%80%EC%A1%B1%EC%9D%84%20%EC%9C%84%ED%95%9C%20%EC%9E%AC%EB%82%9C%20%EB%8C%80%EC%9D%91%20%EA%B0%80%EC%9D%B4%EB%93%9C%EB%9D%BC%EC%9D%B8(%EA%B5%AD%EB%AF%BC%EC%9A%A9).pdf",
-        "status": "원문 대조 전 · 보도로 확인한 내용만 요약"
-      },
-      "steps": [
-        "공식 반려동물 동반 대피소 목록은 아직 없어요. 가까운 대피시설의 동반 가능 여부를 시·군·구청에 미리 확인하세요.",
-        "동반 가능한 시설과 그곳까지 가는 방법을 미리 정해 두세요. 확인한 내용은 저장한 대피소의 반려동물 기록에 남길 수 있어요.",
-        "대피할 때는 반려동물을 이동장에 넣고 재난 키트를 챙기세요."
-      ]
     }
   ],
   "additionalSourceUrl": "https://safekorea.go.kr/safekorea-kor/acts/nacts/action-guide.do?category=stateOfEmergency&menuSn=4"
