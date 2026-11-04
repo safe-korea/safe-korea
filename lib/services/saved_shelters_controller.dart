@@ -168,12 +168,10 @@ class SavedSheltersController extends ChangeNotifier {
     String key,
     ShelterRole role,
     String note,
-    List<ShelterPhoto> photos, {
-    PetCheck? pet,
-  }) async {
+    List<ShelterPhoto> photos,
+  ) async {
     if (!loaded || busy || loading || !_entries.containsKey(key)) return false;
     if (note.length > 300 || photos.length > 3) return false;
-    if (pet != null && !pet.valid) return false;
     if (photos.any(
       (p) =>
           p.isReferenceMap &&
@@ -196,12 +194,7 @@ class SavedSheltersController extends ChangeNotifier {
               note: other.entranceNote,
               photos: other.photos,
             ),
-        entry.withPersonal(
-          role: role,
-          note: note.trim(),
-          photos: photos,
-          pet: pet,
-        ),
+        entry.withPersonal(role: role, note: note.trim(), photos: photos),
       ];
       await _store.saveSavedShelters([
         for (final value in changes)

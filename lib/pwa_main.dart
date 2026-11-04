@@ -229,10 +229,6 @@ class _PwaGuidanceDetailState extends State<PwaGuidanceDetail> {
             style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
-          GuidelineDraftNotice(
-            item: item,
-            onOpen: (uri) => openExternal(context, uri),
-          ),
           if (kind != null) ...[
             SituationSelector(
               value: _setting,
