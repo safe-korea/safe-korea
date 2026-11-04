@@ -24,7 +24,7 @@ void main() {
         true,
       );
       await tester.pumpAndSettle();
-      expect(find.text('테스트 중 · 실제 경보 아님'), findsOneWidget);
+      expect(find.text('훈련 / 테스트 · 실제 경보 아님'), findsOneWidget);
       expect(find.text('지금 즉시 대피하세요'), findsOneWidget);
       await tester.tap(find.byTooltip('뒤로'));
       await tester.pumpAndSettle();
@@ -40,7 +40,7 @@ void main() {
         true,
       );
       final deadline = DateTime.now().add(const Duration(seconds: 45));
-      while (find.text('테스트 중 · 실제 경보 아님').evaluate().isEmpty &&
+      while (find.text('훈련 / 테스트 · 실제 경보 아님').evaluate().isEmpty &&
           DateTime.now().isBefore(deadline)) {
         await tester.pump(const Duration(milliseconds: 500));
         await tester.runAsync(

@@ -24,7 +24,7 @@ void main() {
     await tester.tap(find.text('모의 공습경보 시작'));
     await tester.pumpAndSettle();
     expect(find.text('훈련 / 테스트'), findsOneWidget);
-    expect(find.textContaining('실제 공습경보가 아닙니다'), findsOneWidget);
+    expect(find.textContaining('훈련 / 테스트 · 실제 경보 아님'), findsOneWidget);
     await tester.ensureVisible(find.text('훈련 종료 · 홈으로'));
     await tester.tap(find.text('훈련 종료 · 홈으로'));
     await tester.pumpAndSettle();
