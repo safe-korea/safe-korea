@@ -22,9 +22,7 @@ class CivilAlertNavigation extends StatefulWidget {
   /// The most recent received alert (official within [CivilAlertNotice.recentWindow],
   /// tests until their short expiry), or null.
   static ValueListenable<CivilAlertNotice?> recentOf(BuildContext context) =>
-      context
-          .findAncestorStateOfType<_CivilAlertNavigationState>()
-          ?._recent ??
+      context.findAncestorStateOfType<_CivilAlertNavigationState>()?._recent ??
       _none;
   static final _none = ValueNotifier<CivilAlertNotice?>(null);
 

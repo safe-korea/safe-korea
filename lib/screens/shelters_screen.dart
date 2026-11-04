@@ -17,6 +17,7 @@ import '../services/saved_shelters_controller.dart';
 import '../services/connection_monitor.dart';
 import 'saved_shelters_screen.dart';
 import 'shelter_record_screen.dart';
+import '../widgets/area_map_card.dart';
 import '../widgets/common.dart';
 import '../widgets/location_controls.dart';
 import '../models/public_shelter_photo.dart';
@@ -423,6 +424,8 @@ class _SheltersScreenState extends State<SheltersScreen> {
                 _map = false;
               }),
             ),
+            const SizedBox(height: 12),
+            AreaMapCard(monitor: widget.monitor),
             if (_position != null &&
                 _nearbyArea != null &&
                 catalog?.areaCode == _nearbyArea)

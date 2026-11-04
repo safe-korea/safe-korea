@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../services/connection_monitor.dart';
 import '../theme/app_theme.dart';
+import '../widgets/area_map_card.dart';
 import '../widgets/common.dart';
 import 'alert_guide_screen.dart';
 import 'saved_shelters_screen.dart';
@@ -69,6 +70,8 @@ class OfflineHubScreen extends StatelessWidget {
               '미리 준비하기',
               style: TextStyle(fontWeight: FontWeight.w700),
             ),
+            const SizedBox(height: 8),
+            AreaMapCard(monitor: monitor),
             const SizedBox(height: 4),
             const Text(
               '대피소를 저장하면 그 주변 지도도 함께 저장해요. 저장하지 않은 자료는 오프라인에서 볼 수 없어요.',

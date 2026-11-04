@@ -22,7 +22,12 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      for (final label in ['이 설정으로 알림 보내기', '알림 지우기', '소리 없이 행동 연습', '소리 안내 자세히']) {
+      for (final label in [
+        '이 설정으로 알림 보내기',
+        '알림 지우기',
+        '소리 없이 행동 연습',
+        '소리 안내 자세히',
+      ]) {
         await tester.ensureVisible(find.text(label));
         expect(find.text(label).hitTestable(), findsOneWidget);
       }

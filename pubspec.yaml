@@ -86,6 +86,7 @@ flutter:
     - assets/shelters.json
     - assets/offline_maps/
     - assets/regions.json
+    - assets/offline_map_index.json
     - assets/region_boundaries.json
     - assets/REGION_BOUNDARIES.md
     - assets/public_photos/seoul_city_hall_2026.jpg

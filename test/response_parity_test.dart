@@ -73,11 +73,12 @@ void main() {
     expect(find.text(badge), findsNothing);
   });
 
-  testWidgets('chemical response does not point people to underground shelters', (
-    tester,
-  ) async {
-    await pump(tester, CivilAlertScreen(notice: notice(AlertKind.chemical)));
-    expect(find.text('주변 대피소 보기'), findsNothing);
-    expect(find.textContaining('저장한 대피소 보기'), findsNothing);
-  });
+  testWidgets(
+    'chemical response does not point people to underground shelters',
+    (tester) async {
+      await pump(tester, CivilAlertScreen(notice: notice(AlertKind.chemical)));
+      expect(find.text('주변 대피소 보기'), findsNothing);
+      expect(find.textContaining('저장한 대피소 보기'), findsNothing);
+    },
+  );
 }

@@ -207,6 +207,23 @@ class _SavedSheltersScreenState extends State<SavedSheltersScreen> {
     ],
   );
 
+  String _petSummary(PetCheck pet) {
+    if (pet.status == PetStatus.unchecked) {
+      return '확인 안 함 · 공식 동반 가능 목록은 없어요. 시·군·구청 등에 미리 확인해 기록하세요.';
+    }
+    final parts = [
+      pet.status.label,
+      if (pet.conditions.isNotEmpty) pet.conditions,
+      [
+        if (pet.checkedOn != null)
+          '${_time(pet.checkedOn!.toIso8601String()).split(' ').first} 확인',
+        if (pet.checkedWith.isNotEmpty) pet.checkedWith,
+      ].join(' · '),
+      '공식 정보 아님',
+    ];
+    return parts.where((p) => p.isNotEmpty).join('\n');
+  }
+
   Widget _entryCard(SavedShelter entry) => Card(
     key: ValueKey(entry.key),
     margin: const EdgeInsets.only(bottom: 16),
@@ -267,6 +284,12 @@ class _SavedSheltersScreenState extends State<SavedSheltersScreen> {
               body: Text(entry.entranceNote),
             ),
           ],
+          const SizedBox(height: 16),
+          IconTextBlock(
+            icon: Icons.pets_outlined,
+            title: '반려동물 동반 · 내가 확인한 내용',
+            body: Text(_petSummary(entry.pet)),
+          ),
           for (var i = 0; i < entry.photos.length; i++)
             if (entry.photos[i].isReferenceMap) ...[
               const SizedBox(height: 16),
@@ -329,7 +352,7 @@ class _SavedSheltersScreenState extends State<SavedSheltersScreen> {
                 icon: const Icon(Icons.photo_library_outlined),
                 label: Text(
                   entry.photos.isEmpty && entry.entranceNote.isEmpty
-                      ? '사진·약도·메모 추가'
+                      ? '사진·약도·메모·반려동물 기록'
                       : '사진·약도 ${entry.photos.length}장 관리',
                 ),
               ),

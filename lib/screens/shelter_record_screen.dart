@@ -14,14 +14,17 @@ Future<bool> confirmPersonalRecordRemoval(
 ) async {
   if (entry.photos.isEmpty &&
       entry.entranceNote.isEmpty &&
-      entry.role == ShelterRole.none) {
+      entry.role == ShelterRole.none &&
+      entry.pet.isEmpty) {
     return true;
   }
   return await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
           title: const Text('대피소 저장을 해제할까요?'),
-          content: const Text('앱에 저장한 사진·메모·우선순위도 삭제됩니다. 사진 보관함 원본은 유지됩니다.'),
+          content: const Text(
+            '앱에 저장한 사진·메모·우선순위·반려동물 기록도 삭제됩니다. 사진 보관함 원본은 유지됩니다.',
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
@@ -56,6 +59,20 @@ class _ShelterRecordScreenState extends State<ShelterRecordScreen> {
   late final _importer = widget.importer ?? ShelterPhotoImporter();
   late ShelterRole _role = widget.entry.role;
   late final _photos = [...widget.entry.photos];
+  late PetStatus _petStatus = widget.entry.pet.status;
+  late DateTime? _petCheckedOn = widget.entry.pet.checkedOn;
+  late final _petConditions = TextEditingController(
+    text: widget.entry.pet.conditions,
+  );
+  late final _petWith = TextEditingController(
+    text: widget.entry.pet.checkedWith,
+  );
+  PetCheck get _pet => PetCheck(
+    status: _petStatus,
+    conditions: _petConditions.text.trim(),
+    checkedWith: _petWith.text.trim(),
+    checkedOn: _petStatus == PetStatus.unchecked ? null : _petCheckedOn,
+  );
   bool _busy = false, _dirty = false;
   String? _message;
   ShelterPhoto? _recovered;
@@ -79,6 +96,8 @@ class _ShelterRecordScreenState extends State<ShelterRecordScreen> {
   @override
   void dispose() {
     _note.dispose();
+    _petConditions.dispose();
+    _petWith.dispose();
     super.dispose();
   }
 
@@ -169,6 +188,84 @@ class _ShelterRecordScreenState extends State<ShelterRecordScreen> {
     }
   }
 
+  String _date(DateTime value) {
+    String two(int n) => n.toString().padLeft(2, '0');
+    final d = value.toLocal();
+    return '${d.year}-${two(d.month)}-${two(d.day)}';
+  }
+
+  Widget _petSection() => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      Semantics(
+        header: true,
+        child: const Text(
+          '반려동물 동반',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+        ),
+      ),
+      const SizedBox(height: 4),
+      const Text(
+        '공식 동반 가능 대피소 목록은 없어요. 시·군·구청 등에 직접 확인한 내용만 기록하세요.',
+        style: TextStyle(fontSize: 14),
+      ),
+      const SizedBox(height: 8),
+      Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        children: [
+          for (final status in PetStatus.values)
+            ChoiceChip(
+              label: Text(status.label),
+              selected: _petStatus == status,
+              onSelected: _busy
+                  ? null
+                  : (_) => setState(() {
+                      _petStatus = status;
+                      // Record when the answer was checked; editing later keeps it.
+                      if (status != PetStatus.unchecked &&
+                          (_petCheckedOn == null ||
+                              widget.entry.pet.status != status)) {
+                        _petCheckedOn = DateTime.now();
+                      }
+                      _dirty = true;
+                    }),
+            ),
+        ],
+      ),
+      if (_petStatus != PetStatus.unchecked) ...[
+        const SizedBox(height: 12),
+        TextField(
+          controller: _petConditions,
+          enabled: !_busy,
+          maxLength: PetCheck.maxConditions,
+          minLines: 1,
+          maxLines: 3,
+          decoration: const InputDecoration(
+            labelText: '수용 조건',
+            hintText: '예: 이동장 필수, 소형견만, 별도 공간',
+          ),
+          onChanged: (_) => setState(() => _dirty = true),
+        ),
+        TextField(
+          controller: _petWith,
+          enabled: !_busy,
+          maxLength: PetCheck.maxCheckedWith,
+          decoration: const InputDecoration(
+            labelText: '확인한 곳',
+            hintText: '예: 종로구청 안전총괄과 전화',
+          ),
+          onChanged: (_) => setState(() => _dirty = true),
+        ),
+        if (_petCheckedOn != null)
+          Text(
+            '확인일 ${_date(_petCheckedOn!)} · 내가 확인한 내용 · 공식 정보 아님',
+            style: const TextStyle(fontSize: 14),
+          ),
+      ],
+    ],
+  );
+
   Future<void> _save() async {
     setState(() {
       _busy = true;
@@ -179,6 +276,7 @@ class _ShelterRecordScreenState extends State<ShelterRecordScreen> {
       _role,
       _note.text,
       _photos,
+      pet: _pet,
     );
     if (!mounted) return;
     setState(() {
@@ -223,7 +321,7 @@ class _ShelterRecordScreenState extends State<ShelterRecordScreen> {
       if (!didPop && !_busy) _confirmLeave();
     },
     child: Scaffold(
-      appBar: AppBar(title: const Text('사진·약도·메모')),
+      appBar: AppBar(title: const Text('내 기록')),
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -289,6 +387,8 @@ class _ShelterRecordScreenState extends State<ShelterRecordScreen> {
             onChanged: (_) => setState(() => _dirty = true),
           ),
           const SizedBox(height: 16),
+          _petSection(),
+          const SizedBox(height: 24),
           Text(
             '내 사진 ${_photos.length}/3',
             style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700),

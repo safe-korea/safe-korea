@@ -93,6 +93,10 @@ class _GuidelinesScreenState extends State<GuidelinesScreen> {
                         child: const Text('이 경보로 내 상황 보기'),
                       ),
                     const SizedBox(height: 12),
+                    GuidelineDraftNotice(
+                      item: item as Map<String, dynamic>,
+                      onOpen: (uri) => openExternal(context, uri),
+                    ),
                     for (final (index, step) in (item['steps'] as List).indexed)
                       GuidelineStep(
                         kind: item['id'] as String,

@@ -15,6 +15,16 @@ class LocalRegionService extends RegionSuggestionService {
       .loadString('assets/region_boundaries.json')
       .then((raw) => (jsonDecode(raw) as Map)['features'] as List);
 
+  /// Bounding box (west, south, east, north) of a district from bundled data.
+  static Future<List<double>?> boundsOf(String code) async {
+    for (final f in await _load()) {
+      if (f['code'] == code) {
+        return (f['bounds'] as List).map((v) => (v as num).toDouble()).toList();
+      }
+    }
+    return null;
+  }
+
   @override
   Future<RegionSuggestion?> suggest(
     Position position,
