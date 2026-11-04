@@ -39,7 +39,7 @@ void main() {
     await send({...record, 'kind': 'release'});
     await send({
       ...record,
-      'receivedAtMs': now - 1200000,
+      'receivedAtMs': now - 3660000,
       'expiresAtMs': now - 1000,
     });
     await send({...record, 'id': 'invalid'});
