@@ -52,6 +52,8 @@ class _OfflineMapScreenState extends State<OfflineMapScreen> {
   String? _selectedId;
   Position? _me;
   String? _meMessage;
+  Size _viewport = Size.zero, _mapSize = Size.zero;
+  List<num> _bounds = const [0, 0, 1, 1];
   bool _locating = false;
 
   Future<void> _locate() async {
@@ -62,7 +64,15 @@ class _OfflineMapScreenState extends State<OfflineMapScreen> {
     try {
       final here = await (widget.locationService ?? LocationService())
           .current();
-      if (mounted) setState(() => _me = here);
+      if (!mounted) return;
+      setState(() => _me = here);
+      // Bring the user's surroundings into view instead of the whole district.
+      if (_inside(here, _bounds)) {
+        _focus(
+          _point(here.longitude, here.latitude, _mapSize, _bounds),
+          math.min(5.0, _maxScale(_bounds)),
+        );
+      }
     } on LocationFailure catch (e) {
       if (mounted) setState(() => _meMessage = e.message);
     } catch (_) {
@@ -169,6 +179,9 @@ class _OfflineMapScreenState extends State<OfflineMapScreen> {
                     );
                     final height = width * ratio;
                     final size = Size(width, height);
+                    _viewport = constraints.biggest;
+                    _mapSize = size;
+                    _bounds = bounds;
                     return ClipRect(
                       child: InteractiveViewer(
                         transformationController: _transform,
@@ -181,10 +194,13 @@ class _OfflineMapScreenState extends State<OfflineMapScreen> {
                             child: Stack(
                               children: [
                                 Positioned.fill(
-                                  child: CustomPaint(
-                                    painter: _MapPainter(
-                                      area.map['features'] as List,
-                                      bounds,
+                                  // Thousands of road lines: paint once, reuse while zooming.
+                                  child: RepaintBoundary(
+                                    child: CustomPaint(
+                                      painter: _MapPainter(
+                                        area.map['features'] as List,
+                                        bounds,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -206,47 +222,52 @@ class _OfflineMapScreenState extends State<OfflineMapScreen> {
                                           bounds,
                                         ).dy -
                                         20,
-                                    child: Semantics(
-                                      button: true,
-                                      label: '${i + 1}번 ${shelters[i].name}',
-                                      child: GestureDetector(
-                                        onTap: () => setState(
-                                          () => _selectedId = shelters[i].id,
-                                        ),
-                                        child: SizedBox(
-                                          width: 40,
-                                          height: 40,
-                                          child: Center(
-                                            child: Container(
-                                              width:
-                                                  selected?.id == shelters[i].id
-                                                  ? 28
-                                                  : 22,
-                                              height:
-                                                  selected?.id == shelters[i].id
-                                                  ? 28
-                                                  : 22,
-                                              decoration: BoxDecoration(
-                                                color:
+                                    child: _Unscaled(
+                                      controller: _transform,
+                                      child: Semantics(
+                                        button: true,
+                                        label: '${i + 1}번 ${shelters[i].name}',
+                                        child: GestureDetector(
+                                          onTap: () => setState(
+                                            () => _selectedId = shelters[i].id,
+                                          ),
+                                          child: SizedBox(
+                                            width: 40,
+                                            height: 40,
+                                            child: Center(
+                                              child: Container(
+                                                width:
                                                     selected?.id ==
                                                         shelters[i].id
-                                                    ? const Color(0xFFB42318)
-                                                    : const Color(0xFF086B50),
-                                                shape: BoxShape.circle,
-                                                border: Border.all(
-                                                  color: Colors.white,
-                                                  width: 2,
+                                                    ? 28
+                                                    : 22,
+                                                height:
+                                                    selected?.id ==
+                                                        shelters[i].id
+                                                    ? 28
+                                                    : 22,
+                                                decoration: BoxDecoration(
+                                                  color:
+                                                      selected?.id ==
+                                                          shelters[i].id
+                                                      ? const Color(0xFFB42318)
+                                                      : const Color(0xFF086B50),
+                                                  shape: BoxShape.circle,
+                                                  border: Border.all(
+                                                    color: Colors.white,
+                                                    width: 2,
+                                                  ),
                                                 ),
-                                              ),
-                                              alignment: Alignment.center,
-                                              child: Text(
-                                                '${i + 1}',
-                                                textScaler:
-                                                    TextScaler.noScaling,
-                                                style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 11,
-                                                  fontWeight: FontWeight.bold,
+                                                alignment: Alignment.center,
+                                                child: Text(
+                                                  '${i + 1}',
+                                                  textScaler:
+                                                      TextScaler.noScaling,
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 11,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
                                                 ),
                                               ),
                                             ),
@@ -273,17 +294,20 @@ class _OfflineMapScreenState extends State<OfflineMapScreen> {
                                           bounds,
                                         ).dy -
                                         10,
-                                    child: Semantics(
-                                      label: '내 위치',
-                                      child: Container(
-                                        width: 20,
-                                        height: 20,
-                                        decoration: BoxDecoration(
-                                          color: const Color(0xFF1A73E8),
-                                          shape: BoxShape.circle,
-                                          border: Border.all(
-                                            color: Colors.white,
-                                            width: 3,
+                                    child: _Unscaled(
+                                      controller: _transform,
+                                      child: Semantics(
+                                        label: '내 위치',
+                                        child: Container(
+                                          width: 20,
+                                          height: 20,
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xFF1A73E8),
+                                            shape: BoxShape.circle,
+                                            border: Border.all(
+                                              color: Colors.white,
+                                              width: 3,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -487,13 +511,44 @@ class _OfflineMapScreenState extends State<OfflineMapScreen> {
     return '내 위치 북위 ${p.latitude.toStringAsFixed(5)}° · 동경 ${p.longitude.toStringAsFixed(5)}°\n오차 ±${p.accuracy.round()}m · ${two(t.hour)}:${two(t.minute)} 확인';
   }
 
+  // Child coordinates are viewport coordinates with the map centered.
+  Offset get _mapOrigin => Offset(
+    (_viewport.width - _mapSize.width) / 2,
+    (_viewport.height - _mapSize.height) / 2,
+  );
+
+  /// Shows [mapPoint] (map coordinates) at the viewport center at [scale].
+  void _focus(Offset mapPoint, double scale) {
+    final p = _mapOrigin + mapPoint;
+    final center = _viewport.center(Offset.zero);
+    _transform.value = Matrix4.identity()
+      ..translateByDouble(
+        center.dx - scale * p.dx,
+        center.dy - scale * p.dy,
+        0,
+        1,
+      )
+      ..scaleByDouble(scale, scale, 1, 1);
+  }
+
   void _zoom(double factor) {
     final current = _transform.value.getMaxScaleOnAxis();
     final next = (current * factor).clamp(
       1.0,
-      widget.showMyLocation ? 30.0 : 5.0,
+      widget.showMyLocation ? _maxScale(_bounds) : 5.0,
     );
-    _transform.value = Matrix4.identity()..scaleByDouble(next, next, 1, 1);
+    if (next == 1.0) {
+      _transform.value = Matrix4.identity();
+      return;
+    }
+    // Keep whatever is at the viewport center in the center.
+    final t = _transform.value.getTranslation();
+    final center = _viewport.center(Offset.zero);
+    final child = Offset(
+      (center.dx - t.x) / current,
+      (center.dy - t.y) / current,
+    );
+    _focus(child - _mapOrigin, next);
   }
 }
 
@@ -641,4 +696,19 @@ class _MapPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _MapPainter oldDelegate) =>
       oldDelegate.features != features;
+}
+
+/// Keeps pins and the position dot at a constant on-screen size while the
+/// map is zoomed.
+class _Unscaled extends StatelessWidget {
+  const _Unscaled({required this.controller, required this.child});
+  final TransformationController controller;
+  final Widget child;
+  @override
+  Widget build(BuildContext context) => ValueListenableBuilder<Matrix4>(
+    valueListenable: controller,
+    builder: (context, matrix, child) =>
+        Transform.scale(scale: 1 / matrix.getMaxScaleOnAxis(), child: child),
+    child: child,
+  );
 }

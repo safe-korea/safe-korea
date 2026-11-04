@@ -52,10 +52,18 @@ class _AreaMapCardState extends State<AreaMapCard> {
       _status = '현재 위치로 지역 확인 중…';
     });
     try {
-      final plan = await _service.plan();
-      if (!mounted) return;
-      final ok = await _confirm(plan);
-      if (ok != true || !mounted) return;
+      AreaMapPlan plan;
+      try {
+        plan = await _service.plan();
+        if (!mounted) return;
+        final ok = await _confirm(plan);
+        if (ok != true || !mounted) return;
+      } on AreaMapChoice catch (choice) {
+        if (!mounted) return;
+        final picked = await _choose(choice.plans);
+        if (picked == null || !mounted) return;
+        plan = picked;
+      }
       setState(() => _status = '${plan.region.label} 지도 받는 중…');
       final saved = await _service.download(
         plan,
@@ -131,6 +139,47 @@ class _AreaMapCardState extends State<AreaMapCard> {
       ),
     ),
   );
+
+  Future<AreaMapPlan?> _choose(List<AreaMapPlan> plans) =>
+      showModalBottomSheet<AreaMapPlan>(
+        context: context,
+        showDragHandle: true,
+        builder: (context) => SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Text(
+                  '어느 지역 지도를 저장할까요?',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                ),
+                const SizedBox(height: 8),
+                const Text('지금 위치가 시·군·구 경계 근처예요. 대피소 목록도 함께 받아요.'),
+                const SizedBox(height: 4),
+                const Text(
+                  '내 위치 좌표는 보내지 않고 고른 지역 전체를 받아요.',
+                  style: TextStyle(fontSize: 14, color: AppPalette.muted),
+                ),
+                const SizedBox(height: 12),
+                for (final plan in plans)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.pop(context, plan),
+                      child: Text('${plan.region.label} · ${plan.sizeLabel}'),
+                    ),
+                  ),
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('취소'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
 
   void _open(AreaMap saved) {
     final catalog =
