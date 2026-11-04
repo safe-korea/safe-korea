@@ -272,6 +272,26 @@ void main() {
       },
     );
 
+    test(
+      'near a real district boundary the user chooses; no guessing',
+      () async {
+        rootBundle.clear();
+        // Jongno-1ga sits on the Jongno/Jung boundary (Cheonggyecheon).
+        final service = AreaMapService(
+          location: Here(37.5700, 126.9790),
+          store: AreaStore(),
+        );
+        try {
+          await service.plan();
+          fail('expected a choice');
+        } on AreaMapChoice catch (choice) {
+          final labels = choice.plans.map((p) => p.region.label).toList();
+          expect(labels, containsAll(['서울특별시 종로구', '서울특별시 중구']));
+          expect(choice.plans.every((p) => p.totalKb > 0), isTrue);
+        }
+      },
+    );
+
     testWidgets(
       'saved area shows my position, coordinates and straight-line distance',
       (tester) async {

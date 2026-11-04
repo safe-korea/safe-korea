@@ -149,21 +149,18 @@ class LocalStore {
   }
 
   // One "my area" map at a time: saving a new district replaces the old one.
-  Future<void> _ensureAreaMapTable() async => (await database).execute(
-    'CREATE TABLE IF NOT EXISTS area_map (id INTEGER PRIMARY KEY, content TEXT NOT NULL)',
-  );
+  // A district map is several MB, above Android SQLite's ~2MB CursorWindow
+  // row limit (saving succeeds but reading fails), so it lives in a file
+  // next to the database instead of a table row.
+  Future<File> _areaMapFile() async =>
+      File(path.join(await getDatabasesPath(), 'area_map.json'));
   Future<Map<String, dynamic>?> loadAreaMap() async {
     if (kIsWeb) {
       return (readBrowserRecord('areaMap') as Map?)?.cast<String, dynamic>();
     }
-    await _ensureAreaMapTable();
-    final rows = await (await database).query(
-      'area_map',
-      where: 'id = ?',
-      whereArgs: [1],
-    );
-    if (rows.isEmpty) return null;
-    return jsonDecode(rows.first['content'] as String) as Map<String, dynamic>;
+    final file = await _areaMapFile();
+    if (!await file.exists()) return null;
+    return jsonDecode(await file.readAsString()) as Map<String, dynamic>;
   }
 
   Future<void> saveAreaMap(Map<String, dynamic> record) async {
@@ -171,11 +168,12 @@ class LocalStore {
       writeBrowserRecord('areaMap', record);
       return;
     }
-    await _ensureAreaMapTable();
-    await (await database).insert('area_map', {
-      'id': 1,
-      'content': jsonEncode(record),
-    }, conflictAlgorithm: ConflictAlgorithm.replace);
+    final file = await _areaMapFile();
+    await file.parent.create(recursive: true);
+    // Write then rename so an interrupted save keeps the previous map.
+    final temp = File('${file.path}.tmp');
+    await temp.writeAsString(jsonEncode(record), flush: true);
+    await temp.rename(file.path);
   }
 
   Future<void> removeAreaMap() async {
@@ -183,8 +181,8 @@ class LocalStore {
       removeBrowserRecord('areaMap');
       return;
     }
-    await _ensureAreaMapTable();
-    await (await database).delete('area_map', where: 'id = ?', whereArgs: [1]);
+    final file = await _areaMapFile();
+    if (await file.exists()) await file.delete();
   }
 
   Future<void> _ensurePreparationTable() async => (await database).execute(

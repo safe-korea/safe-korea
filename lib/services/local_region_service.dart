@@ -25,6 +25,41 @@ class LocalRegionService extends RegionSuggestionService {
     return null;
   }
 
+  /// Districts that contain the position or any point within its accuracy
+  /// (+100m). Used to let the user choose near a boundary instead of guessing.
+  static Future<Set<String>> codesNear(Position position) async {
+    final data = await _load();
+    Set<String> hitsAt(double x, double y) => {
+      for (final f in data)
+        if (!(x < (f['bounds'] as List)[0] ||
+            y < (f['bounds'] as List)[1] ||
+            x > (f['bounds'] as List)[2] ||
+            y > (f['bounds'] as List)[3]))
+          for (final poly in f['polygons'] as List)
+            if (_inside(x, y, poly[0] as List) &&
+                !(poly as List)
+                    .skip(1)
+                    .any((hole) => _inside(x, y, hole as List)))
+              f['code'] as String,
+    };
+    final lat = position.latitude, lon = position.longitude;
+    final radius = position.accuracy + 100;
+    final codes = hitsAt(lon, lat);
+    for (var i = 0; i < 8; i++) {
+      final angle = i * math.pi / 4;
+      codes.addAll(
+        hitsAt(
+          lon +
+              radius *
+                  math.cos(angle) /
+                  (111320 * math.cos(lat * math.pi / 180)),
+          lat + radius * math.sin(angle) / 111320,
+        ),
+      );
+    }
+    return codes;
+  }
+
   @override
   Future<RegionSuggestion?> suggest(
     Position position,

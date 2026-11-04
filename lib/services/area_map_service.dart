@@ -55,6 +55,13 @@ class AreaMapFailure implements Exception {
   final String message;
 }
 
+/// Near a district boundary: the user picks one of these instead of the app
+/// guessing.
+class AreaMapChoice implements Exception {
+  const AreaMapChoice(this.plans);
+  final List<AreaMapPlan> plans;
+}
+
 /// Saves the whole district around the current position. The position stays
 /// on the device: only the district's public map cells and region code are
 /// requested, so the server cannot tell where in the district the user is.
@@ -86,12 +93,36 @@ class AreaMapService {
                 as List)
             .cast<Map<String, dynamic>>();
     final region = await _regions.suggest(here, provinces);
-    if (region?.districtCode == null) {
-      throw const AreaMapFailure(
-        '구 경계 근처라 지역을 정하지 못했어요. 조금 이동한 뒤 다시 시도하거나 대피소 화면에서 지역을 선택하세요.',
-      );
+    if (region?.districtCode != null) return _planFor(region!);
+    // Near a boundary: offer the nearby districts, never pick one silently.
+    final labels = <String, RegionSuggestion>{
+      for (final p in provinces)
+        for (final d in p['districts'] as List)
+          d['code'] as String: RegionSuggestion(
+            p['code'] as String,
+            d['code'] as String,
+            '${p['name']} ${d['name']}',
+          ),
+    };
+    final nearby = _regions is LocalRegionService
+        ? await LocalRegionService.codesNear(here)
+        : <String>{};
+    final plans = <AreaMapPlan>[];
+    for (final code in nearby.where(labels.containsKey).take(4)) {
+      try {
+        plans.add(await _planFor(labels[code]!));
+      } on AreaMapFailure {
+        // Skip districts without published map cells.
+      }
     }
-    final bounds = await LocalRegionService.boundsOf(region!.districtCode!);
+    if (plans.isNotEmpty) throw AreaMapChoice(plans);
+    throw const AreaMapFailure(
+      '현재 위치의 시·군·구를 확인하지 못했어요. 대피소 화면에서 지역을 선택해 대피소를 저장하세요.',
+    );
+  }
+
+  Future<AreaMapPlan> _planFor(RegionSuggestion region) async {
+    final bounds = await LocalRegionService.boundsOf(region.districtCode!);
     if (bounds == null) {
       throw const AreaMapFailure('이 지역의 지도 범위를 찾지 못했어요.');
     }
