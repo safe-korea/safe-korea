@@ -1013,3 +1013,10 @@ Android API 36에서도 공식 서울시청 공개 사진 매칭/표시와 공�
 - `shorebird release android`로 1.0.0+5 릴리스 생성, 업로드 키 서명·16KB·versionCode5·API 경로 포함 확인. `shorebird preview` 설치 후 업데이트 확인 요청(앱 ID·버전·패치 번호·플랫폼·CPU 종류)과 "패치 없음" 응답 확인.
 - 개인정보처리방침에 Shorebird 업데이트 확인 처리 항목 추가. Play 데이터 보안 신고 반영 여부는 운영자 확인 필요.
 - 에뮬레이터 QA(코드5): 앱 사용 중·백그라운드·종료 상태 알림 → 대응 화면, 홈 배너 재진입, 저장 대피소 분기, 오프라인 저장 목록 통과. 통합 테스트 notification_delivery·system_civil_alert_link·app 통과. notifications(옛 문구)·ux_walkthrough(스크롤 없는 탭)·shelters(카카오 빌드의 네이티브 지도, 같은 지역 1분 제한)는 기존 테스트 쪽 문제로 확인.
+
+## 2026-11-04 — 내 지역 지도·반려동물 기록, 코드6 Shorebird 릴리스
+- #47 현재 위치 기준 시·군·구 지도 저장(좌표 미전송, 칸별 크기 목록으로 정확한 용량), 저장 지도에서 내 위치·좌표·가까운 대피소 직선거리/방향, 대피소별 반려동물 동반 기록(공식 정보 아님), 행동강령 반려동물 항목(초안 표시).
+- #48 에뮬레이터 QA에서 발견: 10MB 지도가 SQLite CursorWindow(~2MB) 때문에 재시작 후 읽히지 않음 → 파일 저장. 구 경계 근처 막힘 → 후보 구 선택. 확대 시 빈 화면 → 화면 중심 확대·내 위치 포커스. 핀 크기 고정.
+- Shorebird 패치는 에셋(지도 칸 크기 목록·행동강령 JSON·아이콘 글꼴) 변경을 담지 못해 거절됨 → 1.0.0+6 새 릴리스. 코드5(Shorebird 릴리스 1.0.0+5)는 Play에 올리지 않음.
+- 코드6 AAB: `build/release-candidates/safeKor-1.0.0-6.aab`, SHA-256 `c2ecd8fa32ceb4ddb4a3d23805e94445d00a9cff37e121ebbee3331d3b129906`, 업로드 키 서명·16KB·API 경로 확인, `shorebird preview` 실행 확인.
+- PWA 운영 배포 `2cb38a62-e3d9-4c7f-b0d7-c07a52588026`(반려동물 기록·행동강령·개인정보처리방침). 내 지역 지도는 브라우저 저장 한도로 PWA 미제공.
