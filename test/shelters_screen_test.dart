@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:safe_korea/widgets/common.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:safe_korea/screens/shelters_screen.dart';
@@ -68,7 +69,9 @@ void main() {
       await tester.pumpAndSettle();
       expect(requests, 1);
       expect(find.text('합성 테스트 대피소'), findsOneWidget);
-      expect(find.textContaining('1건 저장 · 목록은 오프라인 사용 가능'), findsOneWidget);
+      expect(find.textContaining('1곳 목록을 이 기기에 보관했어요'), findsOneWidget);
+      // Success is an information note, not a warning.
+      expect(find.byIcon(Icons.warning_amber_rounded), findsNothing);
       expect(store.cached, isNotNull);
       fail = true;
       await tester.ensureVisible(find.text('지역 변경'));
@@ -78,6 +81,17 @@ void main() {
       await tester.tap(find.text('선택 지역 대피소 불러오기'));
       await tester.pumpAndSettle();
       expect(find.textContaining('공식 시설 조회에 실패했습니다'), findsOneWidget);
+      // Failure must look different from the success note.
+      expect(
+        find.descendant(
+          of: find.ancestor(
+            of: find.textContaining('공식 시설 조회에 실패했습니다'),
+            matching: find.byType(Notice),
+          ),
+          matching: find.byIcon(Icons.warning_amber_rounded),
+        ),
+        findsOneWidget,
+      );
       expect(find.text('합성 테스트 대피소'), findsOneWidget);
       await tester.pumpWidget(const SizedBox());
       await tester.pumpWidget(

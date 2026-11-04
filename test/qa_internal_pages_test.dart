@@ -78,8 +78,8 @@ void main() {
       await tester.pumpAndSettle();
       await tapText(catalog.shelters.first.name);
       await tapText('시설 자료 상세');
-      await tester.ensureVisible(find.text('대피소 저장 해제'));
-      expect(find.text('대피소 저장 해제').hitTestable(), findsOneWidget);
+      await tester.ensureVisible(find.text('저장됨 · 저장 해제'));
+      expect(find.text('저장됨 · 저장 해제').hitTestable(), findsOneWidget);
       await mount(SavedSheltersScreen(controller: saved));
       await tapText('조회·저장 정보');
       await tester.ensureVisible(find.text('공식 자료 다시 확인'));

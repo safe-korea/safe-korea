@@ -50,6 +50,8 @@ class _SheltersScreenState extends State<SheltersScreen> {
   String? _district = '11110';
   bool _fetching = false, _choosingRegion = true, _queryFailed = false;
   String? _networkMessage;
+  // Errors must look different from the success note (QA: same green box).
+  bool _networkWarning = false;
   ShelterCatalog? _catalog;
   Position? _position;
   bool _locating = false, _map = false;
@@ -85,6 +87,7 @@ class _SheltersScreenState extends State<SheltersScreen> {
         try {
           cached = await _repository.cached();
         } catch (_) {
+          _networkWarning = true;
           _networkMessage = '기기에 저장된 시설 자료를 읽지 못했습니다. 지역을 선택해 다시 조회해 주세요.';
         }
       }
@@ -150,15 +153,21 @@ class _SheltersScreenState extends State<SheltersScreen> {
         await _repository.save(catalog);
         if (mounted) {
           setState(
-            () => _networkMessage =
-                '공식 지도에서 ${catalog.shelters.length}건 저장 · 목록은 오프라인 사용 가능',
+            () {
+              _networkWarning = false;
+              _networkMessage =
+                  '${catalog.shelters.length}곳 목록을 이 기기에 보관했어요 · 연결 없이도 볼 수 있어요';
+            },
           );
         }
       } catch (_) {
         if (mounted) {
           setState(
-            () => _networkMessage =
-                '시설은 조회했지만 기기에 저장하지 못했습니다. 이번 화면에서만 이용할 수 있습니다.',
+            () {
+              _networkWarning = true;
+              _networkMessage =
+                  '시설은 조회했지만 기기에 저장하지 못했습니다. 이번 화면에서만 이용할 수 있습니다.';
+            },
           );
         }
       }
@@ -544,7 +553,13 @@ class _SheltersScreenState extends State<SheltersScreen> {
               const SizedBox(height: 12),
             ],
             if (_networkMessage != null)
-              Semantics(liveRegion: true, child: Notice(_networkMessage!)),
+              Semantics(
+                liveRegion: true,
+                child: Notice(
+                  _networkMessage!,
+                  warning: _queryFailed || _networkWarning,
+                ),
+              ),
             if (_queryFailed)
               OutlinedButton(
                 onPressed: () =>
@@ -820,23 +835,25 @@ class _SheltersScreenState extends State<SheltersScreen> {
               ],
             ),
             const SizedBox(height: 12),
-            if (source != null)
+            if (source != null && _saved.contains(source, shelter.id))
+              // Undo is secondary once saved; the saved state itself is shown
+              // by the filled bookmark icon.
+              OutlinedButton.icon(
+                onPressed: _saved.loaded && !_saved.busy && !_saved.loading
+                    ? () => _toggleSaved(shelter, source)
+                    : null,
+                icon: const Icon(Icons.bookmark),
+                label: Text(
+                  _saved.busy ? '대피소·지도 저장 중…' : '저장됨 · 저장 해제',
+                ),
+              )
+            else if (source != null)
               FilledButton.tonalIcon(
                 onPressed: _saved.loaded && !_saved.busy && !_saved.loading
                     ? () => _toggleSaved(shelter, source)
                     : null,
-                icon: Icon(
-                  _saved.contains(source, shelter.id)
-                      ? Icons.bookmark
-                      : Icons.bookmark_add_outlined,
-                ),
-                label: Text(
-                  _saved.busy
-                      ? '대피소·지도 저장 중…'
-                      : (_saved.contains(source, shelter.id)
-                            ? '대피소 저장 해제'
-                            : '대피소 저장'),
-                ),
+                icon: const Icon(Icons.bookmark_add_outlined),
+                label: Text(_saved.busy ? '대피소·지도 저장 중…' : '대피소 저장'),
               ),
             if (source != null &&
                 _saved.entryFor(source, shelter.id) != null) ...[

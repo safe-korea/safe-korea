@@ -223,7 +223,7 @@ void main() {
       expect(controller.entries.length, 1);
       await tester.pump(const Duration(seconds: 5));
       await tester.pumpAndSettle();
-      Navigator.of(tester.element(find.text('대피소 저장 해제'))).pop();
+      Navigator.of(tester.element(find.text('저장됨 · 저장 해제'))).pop();
       await tester.pumpAndSettle();
       await tester.tap(find.byTooltip('저장한 대피소 (1)'));
       await tester.pumpAndSettle();

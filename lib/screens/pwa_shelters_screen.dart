@@ -245,6 +245,9 @@ class _PwaSheltersScreenState extends State<PwaSheltersScreen> {
               const Notice('대피소 조회 연결을 준비하고 있어요. 아래 정부 사이트에서 확인해 주세요.'),
             if (_api.configured && _showRegion) ...[
               DropdownButtonFormField<String>(
+                // Let the field grow with large system text instead of clipping.
+                isDense: false,
+                itemHeight: null,
                 key: ValueKey('province-$_province'),
                 initialValue: _province,
                 isExpanded: true,
@@ -267,6 +270,9 @@ class _PwaSheltersScreenState extends State<PwaSheltersScreen> {
               ),
               const SizedBox(height: 12),
               DropdownButtonFormField<String>(
+                // Let the field grow with large system text instead of clipping.
+                isDense: false,
+                itemHeight: null,
                 key: ValueKey('district-$_province-$_district'),
                 initialValue: _district,
                 isExpanded: true,
