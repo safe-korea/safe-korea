@@ -4,7 +4,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <application
-        android:label="SAFE KOREA"
+        android:label="safeKor"
         android:allowBackup="false"
         android:fullBackupContent="false"
         android:name="${applicationName}"

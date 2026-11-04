@@ -230,6 +230,57 @@ class _FamilyScreenState extends State<FamilyScreen> {
     super.dispose();
   }
 
+  Widget _actions(BuildContext context) {
+    final canShare =
+        !_loadFailed && !_dirty && !_saving && canShareMeetingPlan(_savedPlan);
+    // At large system text the pinned bar used ~40% of the screen (QA), so
+    // it keeps only the action that can be used now.
+    final compact = _largeText(context);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (_editing) ...[
+          FilledButton.icon(
+            onPressed: _saving || _loadFailed ? null : _save,
+            icon: const Icon(Icons.save_outlined),
+            label: Text(_saving ? '저장 중…' : '기기에 저장'),
+          ),
+          const SizedBox(height: 8),
+        ],
+        if (!compact &&
+            (_loadFailed || _dirty || !canShareMeetingPlan(_savedPlan)))
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Text(
+              _loadFailed
+                  ? '저장 내용을 다시 읽은 뒤 공유할 수 있어요.'
+                  : _dirty
+                  ? '수정한 내용을 먼저 저장한 뒤 공유하세요.'
+                  : '장소를 하나 저장하면 공유할 수 있어요.',
+              style: const TextStyle(fontSize: 14),
+            ),
+          ),
+        if (!compact || canShare || !_editing)
+          FilledButton.icon(
+            onPressed: !canShare
+                ? null
+                : () => Navigator.push(
+                    context,
+                    MaterialPageRoute<void>(
+                      builder: (_) => MeetingShareScreen(plan: _savedPlan),
+                    ),
+                  ),
+            icon: const Icon(Icons.share_outlined),
+            label: const Text('가족에게 공유'),
+          ),
+      ],
+    );
+  }
+
+  bool _largeText(BuildContext context) =>
+      MediaQuery.textScalerOf(context).scale(16) > 24;
+
   @override
   Widget build(BuildContext context) => PopScope(
     canPop: !_dirty && !_saving,
@@ -240,9 +291,9 @@ class _FamilyScreenState extends State<FamilyScreen> {
       appBar: AppBar(
         title: const Text('가족 만남 장소'),
         actions: [
-          IconButton(
-            tooltip: '내 상태 공유',
+          TextButton.icon(
             icon: const Icon(Icons.chat_bubble_outline),
+            label: const Text('내 상태 공유'),
             onPressed: () => Navigator.push(
               context,
               MaterialPageRoute<void>(
@@ -271,54 +322,7 @@ class _FamilyScreenState extends State<FamilyScreen> {
                     child: SingleChildScrollView(
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            if (_editing) ...[
-                              FilledButton.icon(
-                                onPressed: _saving || _loadFailed
-                                    ? null
-                                    : _save,
-                                icon: const Icon(Icons.save_outlined),
-                                label: Text(_saving ? '저장 중…' : '기기에 저장'),
-                              ),
-                              const SizedBox(height: 8),
-                            ],
-                            if (_loadFailed ||
-                                _dirty ||
-                                !canShareMeetingPlan(_savedPlan))
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 8),
-                                child: Text(
-                                  _loadFailed
-                                      ? '저장 내용을 다시 읽은 뒤 공유할 수 있어요.'
-                                      : _dirty
-                                      ? '수정한 내용을 먼저 저장한 뒤 공유하세요.'
-                                      : '장소를 하나 저장하면 공유할 수 있어요.',
-                                  style: const TextStyle(fontSize: 14),
-                                ),
-                              ),
-                            FilledButton.icon(
-                              onPressed:
-                                  _loadFailed ||
-                                      _dirty ||
-                                      _saving ||
-                                      !canShareMeetingPlan(_savedPlan)
-                                  ? null
-                                  : () => Navigator.push(
-                                      context,
-                                      MaterialPageRoute<void>(
-                                        builder: (_) => MeetingShareScreen(
-                                          plan: _savedPlan,
-                                        ),
-                                      ),
-                                    ),
-                              icon: const Icon(Icons.share_outlined),
-                              label: const Text('가족에게 공유'),
-                            ),
-                          ],
-                        ),
+                        child: _actions(context),
                       ),
                     ),
                   ),

@@ -61,7 +61,7 @@ class HomeScreen extends StatelessWidget {
           const SizedBox(width: 10),
           const Flexible(
             child: Text(
-              'SAFE KOREA',
+              'safeKor',
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),

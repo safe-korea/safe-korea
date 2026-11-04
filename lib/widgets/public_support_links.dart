@@ -38,7 +38,7 @@ class PublicSupportLinks extends StatelessWidget {
           Uri(
             scheme: 'mailto',
             path: publicSupportEmail,
-            query: 'subject=${Uri.encodeComponent('SAFE KOREA 문의')}',
+            query: 'subject=${Uri.encodeComponent('safeKor 문의')}',
           ),
         ),
         icon: const Icon(Icons.mail_outline),

@@ -18,7 +18,7 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(const SafeKoreaApp());
-    expect(find.text('SAFE KOREA'), findsOneWidget);
+    expect(find.text('safeKor'), findsOneWidget);
     expect(find.textContaining('경보를 들었다면, 지금 할 행동부터'), findsOneWidget);
     await tester.ensureVisible(find.text('모의 공습경보 시작'));
     await tester.tap(find.text('모의 공습경보 시작'));

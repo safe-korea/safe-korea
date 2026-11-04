@@ -71,7 +71,11 @@ void main() {
       // Asset futures must not cross test fake-async zones.
       rootBundle.clear();
       await mount(SheltersScreen(catalog: catalog, savedShelters: saved));
-      await tapText('저장한 대피소 · 오프라인 목록');
+      final savedEntry = find.textContaining('· 오프라인 목록');
+      await tester.ensureVisible(savedEntry);
+      await tester.tap(savedEntry);
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
       expect(find.byType(SavedSheltersScreen), findsOneWidget);
       expect(find.text(catalog.shelters.first.name), findsOneWidget);
       await tester.tap(find.byType(BackButton));
