@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 
 import '../theme/app_theme.dart';
 import '../widgets/common.dart';
+import '../widgets/received_alert_banner.dart';
 import 'alert_guide_screen.dart';
 import 'system_civil_alert_settings_screen.dart';
 import 'offline_hub_screen.dart';
@@ -71,6 +72,7 @@ class HomeScreen extends StatelessWidget {
     ),
     body: PageBody(
       children: [
+        const ReceivedAlertBanner(),
         const Text(
           '지금 필요한 안내',
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800),

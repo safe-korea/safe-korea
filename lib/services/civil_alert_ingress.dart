@@ -24,16 +24,34 @@ class CivilAlertNotice {
   final DateTime issuedAt, expiresAt;
   final bool exercise, testOnly;
   final String? relatedAlertId;
-  bool freshAt(DateTime now) =>
+
+  /// How long a received official alert stays reopenable from home.
+  /// People open the app minutes after the siren while evacuating.
+  static const recentWindow = Duration(minutes: 60);
+
+  bool get _wellFormed =>
       id.isNotEmpty &&
       revision.isNotEmpty &&
       agency.trim().isNotEmpty &&
       area.trim().isNotEmpty &&
       !exercise &&
+      expiresAt.isAfter(issuedAt);
+
+  /// Fresh enough to open the response screen automatically.
+  bool freshAt(DateTime now) =>
+      _wellFormed &&
       !issuedAt.isBefore(now.subtract(const Duration(minutes: 10))) &&
-      expiresAt.isAfter(issuedAt) &&
       expiresAt.isAfter(now) &&
       !issuedAt.isAfter(now.add(const Duration(seconds: 30)));
+
+  /// Recent enough to keep a "received alert" entry on home, labelled with
+  /// its receive time. Tests keep their own short expiry.
+  bool recentAt(DateTime now) =>
+      _wellFormed &&
+      !issuedAt.isAfter(now.add(const Duration(seconds: 30))) &&
+      (testOnly
+          ? expiresAt.isAfter(now)
+          : now.difference(issuedAt) < recentWindow);
 }
 
 /// Transport-neutral app ingress. Optional Android system relay is experimental;
@@ -57,7 +75,7 @@ class CivilAlertIngress {
     if (notice.testOnly ||
         !sourceAuthenticated ||
         !recipientMatched ||
-        !notice.freshAt(_clock())) {
+        !notice.recentAt(_clock())) {
       return false;
     }
     if (notice.kind == AlertKind.release &&
@@ -78,7 +96,7 @@ class CivilAlertIngress {
     final now = _clock();
     if (id.isEmpty ||
         expiresAt.difference(issuedAt) > const Duration(minutes: 2) ||
-        (_current != null && !_current!.testOnly && _current!.freshAt(now))) {
+        (_current != null && !_current!.testOnly && _current!.recentAt(now))) {
       return false;
     }
     final notice = CivilAlertNotice(
