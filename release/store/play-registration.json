@@ -9,7 +9,7 @@
   "contactEmail": "taetaeg@gmail.com",
   "privacyPolicy": "https://safe-korea-shelter-api.trovapp.workers.dev/privacy",
   "supportUrl": "https://safe-korea-shelter-api.trovapp.workers.dev/support",
-  "consoleSubmissionStatus": "closed_alpha_rejected_again; policy_specialist_reconsideration_submitted",
+  "consoleSubmissionStatus": "closed_alpha_v4_no_health_resubmitted_in_review",
   "verifiedDate": "2026-11-03",
   "category": "MAPS_AND_NAVIGATION",
   "targetAgeGroups": [
@@ -17,9 +17,7 @@
     "16-17",
     "18+"
   ],
-  "healthDeclaration": [
-    "Emergency and First Aid"
-  ],
+  "healthDeclaration": [],
   "internalTest": {
     "versionName": "1.0.0",
     "versionCode": 2,
@@ -105,7 +103,7 @@
     "privacyDeploymentVersion": "cf9ec79e-51f2-4317-9c60-ef4b88c4b04b"
   },
   "closedTest": {
-    "status": "rejected_organization_account_requirement",
+    "status": "v4_resubmitted_in_review",
     "optedInTesters": 0,
     "requiredTesters": 12,
     "requiredContinuousDays": 14,
@@ -114,10 +112,10 @@
     "setupTasksTotal": 5,
     "trackName": "Alpha",
     "trackId": "4699249421656772828",
-    "releaseId": "1",
-    "releaseName": "1.0.0 (2) · 비공개 테스트",
+    "releaseId": "2",
+    "releaseName": "1.0.0 (4) · 비의료 대피 안내 개선",
     "versionName": "1.0.0",
-    "versionCode": 2,
+    "versionCode": 4,
     "countries": [
       "KR"
     ],
@@ -125,10 +123,10 @@
     "allowlistedAccounts": 1,
     "feedbackEmail": "taetaeg@gmail.com",
     "participationUrl": "https://play.google.com/apps/testing/kr.safekor.app",
-    "participationUrlStatus": "unavailable_until_rejection_resolved_and_release_published",
+    "participationUrlStatus": "pending_review_and_release_publication",
     "testerConsoleUrl": "https://play.google.com/console/u/3/developers/7181631274097055190/app/4974887941231472773/tracks/4699249421656772828?tab=testers",
     "reviewRequestedAtUtc": "2026-11-03T05:25:37.676029+00:00",
-    "reviewStatusDetails": "Submission2 rejected under new issue4986533038781243937. Previous issue4989575261088573961 marked resolved at21:51; this is not app approval.",
+    "reviewStatusDetails": "Submission3 at2026-11-03 23:17 Console time is in review. VersionCode4 uploaded; no-health declaration saved. Not approved.",
     "resubmission": {
       "activityId": "2",
       "status": "rejected",
@@ -142,24 +140,36 @@
       "healthDeclarationChanged": false,
       "activityUrl": "https://play.google.com/console/u/3/developers/7181631274097055190/app/4974887941231472773/publishing/submission-activity/2/details",
       "activePolicyIssueId": "4986533038781243937"
+    },
+    "latestSubmission": {
+      "activityId": "3",
+      "status": "in_review",
+      "submittedAtConsole": "2026-11-03 23:17",
+      "consoleTimezone": "Asia/Seoul",
+      "versionCode": 4,
+      "versionName": "1.0.0",
+      "changeCount": 14,
+      "releaseId": "2",
+      "healthDeclaration": "no_health_features",
+      "activityUrl": "https://play.google.com/console/u/3/developers/7181631274097055190/app/4974887941231472773/publishing/submission-activity/3/details"
     }
   },
   "productionStatus": "inactive",
   "usesAdvertisingId": false,
   "classificationReview": {
     "requestedPosition": "non_medical_civilian_evacuation_utility",
-    "status": "policy_specialist_reconsideration_submitted_waiting_response",
+    "status": "publisher_corrected_no_health_and_resubmitted_v4",
     "policyIssueId": "4986533038781243937",
-    "existingHealthDeclaration": "Emergency and First Aid retained pending clarification",
-    "healthDeclarationReason": "Google14738291 includes emergency preparedness and disaster-response resources; not silently changed to none",
+    "existingHealthDeclaration": "No health features",
+    "healthDeclarationReason": "Publisher judgment for a non-medical shelter-map and civil-defense preparedness utility without clinical/first-aid procedures or health-data features, following the support email conditional resubmission path. General source-attributed civil-defense guidance remains present; Google may assess the scope differently.",
     "requestFile": "release/store/non-medical-appeal.txt",
     "storeDescription": "non_medical_wording_saved_in_console_not_resubmitted",
-    "supportCaseId": "pending_assignment",
+    "supportCaseId": "available_in_console",
     "supportReceipt": "티켓이 제출되었습니다. 영업일 기준 2일 이내에 이메일로 답변해 드리겠습니다. 일부 티켓은 시간이 더 걸릴 수 있습니다.",
     "supportUrl": "https://play.google.com/console/u/3/developers/7181631274097055190/help-and-support?app=4974887941231472773",
     "requestedAtUtc": "2026-11-03T13:10:37.923455+00:00",
     "automatedRecommendation": "AI suggested no-health declaration only if app has no health/first-aid content. Human clarification requested because published disaster-response definition remains relevant.",
-    "healthDeclarationChanged": false,
+    "healthDeclarationChanged": true,
     "approvedNonMedicalClassification": false,
     "previousPolicyIssueId": "4989575261088573961",
     "submissionType": "Play Console policy support ticket carrying an appeal request for the active rejection",
@@ -168,11 +178,19 @@
     "selectedSupportIssue": "앱이 거부, 삭제 또는 정지됨",
     "governmentDeclarationVerified": "No",
     "previousSupportCaseStatus": "disabled; response content not available in Console",
-    "trovaHealthDeclarationVerified": "No health features (read only comparison)"
+    "trovaHealthDeclarationVerified": "No health features (read only comparison)",
+    "previousHealthDeclaration": [
+      "Emergency and First Aid"
+    ],
+    "humanResponse": {
+      "received": true,
+      "receivedAtConsole": "2026-11-03 22:50",
+      "summary": "Support identifies Emergency and First Aid declaration as requiring organization account. If the app does not belong to this category, remove that classification and resubmit with an incremented version code; otherwise use an organization account. This is conditional guidance, not specific approval."
+    }
   },
   "testerMatch": {
     "registrationStatus": "form_filled_not_submitted",
-    "reason": "Submission2 rejected again under new policy issue; expert reconsideration requested; closed participation not available",
+    "reason": "Wait for submission3 approval and published closed release, then configure public Google group access before final registration",
     "registrationUrl": "https://tester-match.knockknock.company/apps/new",
     "androidUrl": "https://play.google.com/store/apps/details?id=kr.safekor.app",
     "webParticipationUrl": "https://play.google.com/apps/testing/kr.safekor.app",
@@ -183,10 +201,12 @@
     "previous": "TOOLS",
     "current": "MAPS_AND_NAVIGATION",
     "consoleLabel": "지도/내비게이션",
-    "status": "submitted_for_review",
+    "status": "included_in_submission3_in_review",
     "verifiedDate": "2026-11-03",
     "reason": "Core GPS-based shelter finding and map display",
     "healthDeclarationChanged": false,
     "policyRejectionResolved": false
-  }
+  },
+  "healthDeclarationSelection": "My app does not provide any health features",
+  "healthFeaturesProvided": false
 }

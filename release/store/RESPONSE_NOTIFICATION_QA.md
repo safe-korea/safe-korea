@@ -40,3 +40,8 @@ PWA는 기존 운영 Worker에 배포했습니다(`5c51bdbf-2995-4216-b64a-48a25
 - 후속 검증: Flutter195개·Worker/오디오62개 통과, analyze/check/format 통과. Chromium·WebKit에서 동일 파일 바이트, 사용자 동작으로 오디오 준비, 수신 시 재생 및 수동 재생/중지 통과. Android UI 검사에서 지연 뒤 `playSound:true`·`drill_siren` 리소스·테스트 payload를 확인했습니다. 이 추가 작업에서 물리 기기 스피커 소리나 실제 정부 수신을 검증한 것은 아닙니다.
 - 새 서명 후보: `build/release-candidates/safeKor-1.0.0-4.aab`. 기존 versionCode3 파일은 보존했습니다. Play 업로드 전이며 [새 후보 검사 기록](../../artifacts/qa/response-siren-release.json)에 해시를 남깁니다.
 - iPhone PWA는 잠금 화면 위에 앱의 대응 화면을 강제로 띄우거나 사용자 지정 사이렌을 재생할 수 없습니다. [Notifications API](https://notifications.spec.whatwg.org/)는 알림 표시와 플랫폼 소리 관례를 정의하며 사용자 지정 알람 소리 API를 제공하지 않습니다. 앱 안의 Web Audio는 [브라우저 자동 재생 정책](https://developer.chrome.com/blog/autoplay/)을 따릅니다. 이 제한을 우회하지 않습니다.
+
+
+## 코드4 제출 후속 상태
+
+2026-11-03 오후11:17 versionCode4 후보를 실제 Play 비공개 Alpha 새 출시2에 업로드해 제출3·검토 중을 확인했습니다. 이 문서의 후보 준비/업로드 전 표현은 그 이전 검사 시점의 기록입니다. 건강 신고 정정과 함께 전송했으며 승인·스토어 설치본 업데이트 완료를 뜻하지 않습니다.
