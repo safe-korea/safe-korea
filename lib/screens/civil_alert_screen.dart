@@ -11,7 +11,7 @@ import '../theme/app_theme.dart';
 import '../widgets/alert_actions.dart';
 import '../widgets/common.dart';
 import '../widgets/received_alert_banner.dart';
-import 'saved_shelters_screen.dart';
+import '../widgets/response_parts.dart';
 
 /// Response UI for an authenticated, recipient-matched official notice.
 /// Own-device response previews share this layout with a persistent test label.
@@ -56,10 +56,6 @@ class _CivilAlertScreenState extends State<CivilAlertScreen> {
     ),
     body: PageBody(
       children: [
-        if (notice.testOnly) ...[
-          const Notice('테스트 중 · 실제 경보 아님'),
-          const SizedBox(height: 16),
-        ],
         Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
@@ -69,6 +65,10 @@ class _CivilAlertScreenState extends State<CivilAlertScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              if (notice.testOnly) ...[
+                TrainingBadge(color: AppPalette.forAlert(notice.kind)),
+                const SizedBox(height: 12),
+              ],
               Text(
                 notice.kind.label,
                 style: const TextStyle(
@@ -85,6 +85,13 @@ class _CivilAlertScreenState extends State<CivilAlertScreen> {
                   fontWeight: FontWeight.w800,
                 ),
               ),
+              if (notice.kind == AlertKind.air) ...[
+                const SizedBox(height: 8),
+                const Text(
+                  '물품을 찾느라 지체하지 마세요',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
+              ],
               const SizedBox(height: 8),
               Text(notice.area, style: const TextStyle(color: Colors.white)),
               const SizedBox(height: 4),
@@ -135,27 +142,28 @@ class _CivilAlertScreenState extends State<CivilAlertScreen> {
           ),
         ],
         const SizedBox(height: 16),
-        AlertActions(
-          key: ValueKey('${notice.id}/${notice.revision}'),
+        ResponseShelterButtons(
           kind: _selected ?? notice.kind,
-          onKindChanged: (kind) => setState(() => _selected = kind),
+          color: AppPalette.forAlert(_selected ?? notice.kind),
+        ),
+        const SizedBox(height: 16),
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: AppPalette.surface,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: AlertActions(
+            key: ValueKey('${notice.id}/${notice.revision}'),
+            kind: _selected ?? notice.kind,
+            training: notice.testOnly,
+            onKindChanged: (kind) => setState(() => _selected = kind),
+          ),
         ),
         if (_selected != null)
           TextButton(
             onPressed: () => setState(() => _selected = null),
             child: const Text('공격 종류 다시 확인'),
-          ),
-        const SizedBox(height: 12),
-        if ((_selected ?? notice.kind).offersShelters)
-          FilledButton.icon(
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute<void>(
-                builder: (_) => const SavedSheltersScreen(),
-              ),
-            ),
-            icon: const Icon(Icons.bookmark_outline),
-            label: const Text('저장한 대피소 확인'),
           ),
         const SizedBox(height: 12),
         const Text('재난문자·정부 방송과 현장 지시를 우선하세요.'),
