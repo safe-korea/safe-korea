@@ -213,5 +213,45 @@ void main() {
         expect(tester.takeException(), isNull);
       },
     );
+
+    testWidgets('locating centers the map on me after the panel grows', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(1080, 2400);
+      tester.view.devicePixelRatio = 2.625;
+      addTearDown(tester.view.reset);
+      final area = OfflineArea({
+        'schemaVersion': 1,
+        'bounds': [126.96, 37.54, 127.02, 37.57],
+        'features': [
+          {
+            'id': '1',
+            'kind': 'road',
+            'type': 'primary',
+            'name': '을지로',
+            'points': [
+              [126.96, 37.55],
+              [127.02, 37.55],
+            ],
+          },
+        ],
+        'preparedAt': '2026-11-05',
+      }, fixture('11140', '중구', 'a', latitude: 37.55));
+      await tester.pumpWidget(
+        MaterialApp(
+          home: OfflineMapScreen(
+            savedArea: area,
+            showMyLocation: true,
+            locationService: Here(37.56, 126.985),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('내 위치 확인 (GPS)'));
+      await tester.pumpAndSettle();
+      final viewport = tester.getRect(find.byType(InteractiveViewer));
+      final dot = tester.getCenter(find.bySemanticsLabel('내 위치'));
+      expect((dot - viewport.center).distance, lessThan(4));
+    });
   });
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -86,10 +88,13 @@ class SafeKoreaApp extends StatelessWidget {
                 ),
               ),
             Expanded(
-              child: MediaQuery.removePadding(
-                context: context,
-                removeTop: status.needsOfflineTools,
-                child: child!,
+              child: _ShiftTapGuard(
+                shifted: status.needsOfflineTools,
+                child: MediaQuery.removePadding(
+                  context: context,
+                  removeTop: status.needsOfflineTools,
+                  child: child!,
+                ),
               ),
             ),
           ],
@@ -98,4 +103,43 @@ class SafeKoreaApp extends StatelessWidget {
     ),
     home: AppShell(monitor: monitor),
   );
+}
+
+/// The connection banner pushes the page down when it appears or goes away.
+/// Briefly ignore taps so a tap aimed at the old position does not land on a
+/// different button (found in emulator QA).
+class _ShiftTapGuard extends StatefulWidget {
+  const _ShiftTapGuard({required this.shifted, required this.child});
+  final bool shifted;
+  final Widget child;
+  @override
+  State<_ShiftTapGuard> createState() => _ShiftTapGuardState();
+}
+
+class _ShiftTapGuardState extends State<_ShiftTapGuard> {
+  static const hold = Duration(milliseconds: 400);
+  bool _blocking = false;
+  Timer? _timer;
+
+  @override
+  void didUpdateWidget(_ShiftTapGuard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.shifted != widget.shifted) {
+      _timer?.cancel();
+      _blocking = true;
+      _timer = Timer(hold, () {
+        if (mounted) setState(() => _blocking = false);
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) =>
+      AbsorbPointer(absorbing: _blocking, child: widget.child);
 }

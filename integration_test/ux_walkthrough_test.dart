@@ -53,6 +53,9 @@ void main() {
       await tester.tap(find.text('훈련 종료 · 홈으로'));
       await tester.pumpAndSettle();
       await tab(3);
+      // The family card sits below the checklist: scroll to it first.
+      await tester.ensureVisible(find.text('가족 만남 장소'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('가족 만남 장소'));
       await tester.pumpAndSettle();
       expect(find.byType(FamilyScreen), findsOneWidget);
@@ -60,11 +63,8 @@ void main() {
       await tester.tap(find.byType(BackButton));
       await tester.pumpAndSettle();
       await tab(1);
-      final savedButton = find.byWidgetPredicate(
-        (widget) =>
-            widget is Tooltip &&
-            widget.message?.startsWith('저장한 대피소 (') == true,
-      );
+      final savedButton = find.textContaining('· 오프라인 목록');
+      await tester.ensureVisible(savedButton);
       await tester.tap(savedButton);
       await tester.pumpAndSettle();
       expect(find.byType(SavedSheltersScreen), findsOneWidget);

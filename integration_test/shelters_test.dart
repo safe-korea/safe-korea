@@ -58,7 +58,11 @@ void main() {
         await tester.pump(const Duration(seconds: 3));
         expect(
           find.byWidgetPredicate(
-            (widget) => widget is ShelterPin || widget is ShelterClusterPin,
+            (widget) =>
+                widget is ShelterPin ||
+                widget is ShelterClusterPin ||
+                // Builds with a Kakao key draw pins in the native map view.
+                widget.runtimeType.toString() == 'KakaoMap',
           ),
           findsWidgets,
         );
@@ -71,6 +75,10 @@ void main() {
         await tester.tap(find.text('대피소 저장').first);
         await tester.pumpAndSettle();
         expect(saved.entries.length, 1);
+        // The live API allows one query per region per minute.
+        await tester.runAsync(
+          () => Future<void>.delayed(const Duration(seconds: 61)),
+        );
         await saved.refresh(saved.entries.single, repository);
         expect(
           saved.entries.single.check,
