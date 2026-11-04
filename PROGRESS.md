@@ -1006,3 +1006,10 @@ Android API 36에서도 공식 서울시청 공개 사진 매칭/표시와 공�
   - #44 테스트 알림·경보 연결·가족·오프라인 대피소 화면 다듬기, 표시 이름 safeKor 통일.
 - 코드5(1.0.0+5) AAB 로컬 빌드: 업로드 키 서명 확인, 16KB ELF 정렬 통과, versionCode 5, 런처 라벨 safeKor. Console 업로드·제출은 하지 않음.
 - 미검증: 실기기 시스템 재난문자 → 앱 전달, 저장 대피소가 있을 때 버튼 분기, 통합 테스트(에뮬레이터 필요).
+
+## 2026-11-04 — 코드5 Shorebird 릴리스
+- Shorebird 1.6.136(Flutter 3.47.9)을 `~/.shorebird`에 설치(셸 설정 미변경), `shorebird init`으로 app_id `ef75aa63-caa8-490e-8d52-01d3ac53dbf2` 등록.
+- 첫 코드5 AAB에 `api.production.json`이 빠져 주변 지도 저장이 실패하는 것을 에뮬레이터 QA에서 발견. 이후 Android 빌드는 `--dart-define-from-file=config/kakao.local.json --dart-define-from-file=config/api.production.json` 두 파일을 모두 사용.
+- `shorebird release android`로 1.0.0+5 릴리스 생성, 업로드 키 서명·16KB·versionCode5·API 경로 포함 확인. `shorebird preview` 설치 후 업데이트 확인 요청(앱 ID·버전·패치 번호·플랫폼·CPU 종류)과 "패치 없음" 응답 확인.
+- 개인정보처리방침에 Shorebird 업데이트 확인 처리 항목 추가. Play 데이터 보안 신고 반영 여부는 운영자 확인 필요.
+- 에뮬레이터 QA(코드5): 앱 사용 중·백그라운드·종료 상태 알림 → 대응 화면, 홈 배너 재진입, 저장 대피소 분기, 오프라인 저장 목록 통과. 통합 테스트 notification_delivery·system_civil_alert_link·app 통과. notifications(옛 문구)·ux_walkthrough(스크롤 없는 탭)·shelters(카카오 빌드의 네이티브 지도, 같은 지역 1분 제한)는 기존 테스트 쪽 문제로 확인.
