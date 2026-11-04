@@ -22,6 +22,12 @@ void main() {
       for (final label in ['지금 할 행동 보기', '저장한 대피소', '가족 만남 장소', '비상배낭 체크리스트']) {
         expect(find.text(label), findsOneWidget);
       }
+      // Right after the banner appears the page has just moved: taps are
+      // ignored briefly so they cannot land on a different button.
+      await tester.tap(find.text('지금 할 행동 보기'), warnIfMissed: false);
+      await tester.pumpAndSettle();
+      expect(find.byType(AlertGuideScreen), findsNothing);
+      await tester.pump(const Duration(milliseconds: 500));
       await tester.tap(find.text('지금 할 행동 보기'));
       await tester.pumpAndSettle();
       expect(find.byType(AlertGuideScreen), findsOneWidget);
@@ -32,6 +38,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.byType(AlertGuideScreen), findsOneWidget);
       expect(find.text('연결 없음 · 오프라인 기능 보기'), findsOneWidget);
+      await tester.pump(const Duration(milliseconds: 500));
       await tester.tap(find.text('연결 없음 · 오프라인 기능 보기'));
       await tester.pumpAndSettle();
       expect(find.byType(OfflineHubScreen), findsOneWidget);

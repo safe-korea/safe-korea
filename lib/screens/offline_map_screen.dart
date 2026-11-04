@@ -66,13 +66,15 @@ class _OfflineMapScreenState extends State<OfflineMapScreen> {
           .current();
       if (!mounted) return;
       setState(() => _me = here);
-      // Bring the user's surroundings into view instead of the whole district.
-      if (_inside(here, _bounds)) {
+      // The panel below grows with the coordinates and nearest shelters,
+      // shrinking the map: focus after that layout, not before.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted || !_inside(here, _bounds)) return;
         _focus(
           _point(here.longitude, here.latitude, _mapSize, _bounds),
           math.min(5.0, _maxScale(_bounds)),
         );
-      }
+      });
     } on LocationFailure catch (e) {
       if (mounted) setState(() => _meMessage = e.message);
     } catch (_) {
@@ -194,14 +196,42 @@ class _OfflineMapScreenState extends State<OfflineMapScreen> {
                             child: Stack(
                               children: [
                                 Positioned.fill(
-                                  // Thousands of road lines: paint once, reuse while zooming.
-                                  child: RepaintBoundary(
-                                    child: CustomPaint(
-                                      painter: _MapPainter(
-                                        area.map['features'] as List,
-                                        bounds,
-                                      ),
-                                    ),
+                                  child: ValueListenableBuilder<Matrix4>(
+                                    valueListenable: _transform,
+                                    builder: (context, matrix, _) {
+                                      final zoom = matrix.getMaxScaleOnAxis();
+                                      // Thousands of road lines: repaint only
+                                      // when the zoom doubles, reuse otherwise.
+                                      final step = math
+                                          .pow(
+                                            2,
+                                            (math.log(zoom) / math.ln2).floor(),
+                                          )
+                                          .toDouble();
+                                      return Stack(
+                                        fit: StackFit.expand,
+                                        children: [
+                                          RepaintBoundary(
+                                            child: CustomPaint(
+                                              painter: _MapPainter(
+                                                area.map['features'] as List,
+                                                bounds,
+                                                zoom: step,
+                                              ),
+                                            ),
+                                          ),
+                                          // Few labels: keep them readable at
+                                          // every zoom level.
+                                          CustomPaint(
+                                            painter: _LabelPainter(
+                                              area.map['features'] as List,
+                                              bounds,
+                                              zoom: zoom,
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    },
                                   ),
                                 ),
                                 for (var i = 0; i < shelters.length; i++)
@@ -557,18 +587,19 @@ Offset _point(double lon, double lat, Size size, List<num> bounds) => Offset(
   (bounds[3] - lat) / (bounds[3] - bounds[1]) * size.height,
 );
 
+const _majorRoads = ['primary', 'secondary', 'tertiary', 'trunk'];
+
 class _MapPainter extends CustomPainter {
-  _MapPainter(this.features, this.bounds);
+  _MapPainter(this.features, this.bounds, {this.zoom = 1});
   final List<num> bounds;
   final List features;
+  // Lines keep roughly the same on-screen width while zooming.
+  final double zoom;
   @override
   void paint(Canvas canvas, Size size) {
     canvas.save();
     canvas.clipRect(Offset.zero & size);
     canvas.drawColor(const Color(0xFFF4F1E8), BlendMode.src);
-    final occupied = <Rect>[];
-    final labels = <(String, Offset)>[];
-    final usedNames = <String>{};
     for (final kind in ['park', 'water', 'building', 'road']) {
       for (final feature in features.where((f) => f['kind'] == kind)) {
         final points = (feature['points'] as List)
@@ -587,17 +618,12 @@ class _MapPainter extends CustomPainter {
         for (final point in points.skip(1)) {
           path.lineTo(point.dx, point.dy);
         }
-        final major = [
-          'primary',
-          'secondary',
-          'tertiary',
-          'trunk',
-        ].contains(feature['type']);
+        final major = _majorRoads.contains(feature['type']);
         final paint = Paint()..isAntiAlias = true;
         if (kind == 'road') {
           paint
             ..style = PaintingStyle.stroke
-            ..strokeWidth = major ? 5 : 1.8;
+            ..strokeWidth = (major ? 5 : 1.8) / zoom;
           paint.color = major ? const Color(0xFFD4B878) : Colors.white;
         } else {
           path.close();
@@ -626,33 +652,65 @@ class _MapPainter extends CustomPainter {
               : const Color(0xFFDDD9CF);
         }
         canvas.drawPath(path, paint);
-        final name = feature['name'] as String;
-        if (name.isEmpty || (kind != 'water' && !(kind == 'road' && major))) {
-          continue;
-        }
-        labels.add((name, points[points.length ~/ 2]));
       }
     }
-    for (final (name, anchor) in labels) {
-      if (usedNames.contains(name)) continue;
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(covariant _MapPainter oldDelegate) =>
+      oldDelegate.features != features || oldDelegate.zoom != zoom;
+}
+
+/// Road and water names plus the scale bar, drawn at a constant on-screen
+/// size so zooming in shows more names instead of bigger ones.
+class _LabelPainter extends CustomPainter {
+  _LabelPainter(this.features, this.bounds, {required this.zoom});
+  final List features;
+  final List<num> bounds;
+  final double zoom;
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.save();
+    canvas.clipRect(Offset.zero & size);
+    final occupied = <Rect>[];
+    final usedNames = <String>{};
+    for (final feature in features) {
+      final kind = feature['kind'];
+      final name = feature['name'] as String? ?? '';
+      if (name.isEmpty ||
+          usedNames.contains(name) ||
+          (kind != 'water' &&
+              !(kind == 'road' && _majorRoads.contains(feature['type'])))) {
+        continue;
+      }
+      final points = feature['points'] as List;
+      if (points.length < 2) continue;
+      final mid = points[points.length ~/ 2] as List;
+      final anchor = _point(
+        (mid[0] as num).toDouble(),
+        (mid[1] as num).toDouble(),
+        size,
+        bounds,
+      );
       final label = TextPainter(
         textDirection: TextDirection.ltr,
         text: TextSpan(
           text: name,
-          style: const TextStyle(
+          style: TextStyle(
             fontFamily: 'SafeKoreaWeb',
-            fontSize: 10,
-            color: Color(0xFF334E45),
-            backgroundColor: Color(0xDDFFFFFF),
+            fontSize: 10 / zoom,
+            color: const Color(0xFF334E45),
+            backgroundColor: const Color(0xDDFFFFFF),
           ),
         ),
-      )..layout(maxWidth: 100);
+      )..layout(maxWidth: 100 / zoom);
       final rect = Rect.fromLTWH(
         anchor.dx,
         anchor.dy,
         label.width,
         label.height,
-      ).inflate(3);
+      ).inflate(3 / zoom);
       if (!(Offset.zero & size).contains(rect.topLeft) ||
           !(Offset.zero & size).contains(rect.bottomRight) ||
           occupied.any((r) => r.overlaps(rect))) {
@@ -668,34 +726,33 @@ class _MapPainter extends CustomPainter {
         ((bounds[2] - bounds[0]) *
             111320 *
             math.cos((bounds[1] + bounds[3]) / 2 * math.pi / 180));
-    final scale = Paint()
-      ..color = const Color(0xFF17352D)
-      ..strokeWidth = 2;
     canvas.drawLine(
-      Offset(12, size.height - 12),
-      Offset(12 + scaleWidth, size.height - 12),
-      scale,
+      Offset(12 / zoom, size.height - 12 / zoom),
+      Offset(12 / zoom + scaleWidth, size.height - 12 / zoom),
+      Paint()
+        ..color = const Color(0xFF17352D)
+        ..strokeWidth = 2 / zoom,
     );
     TextPainter(
         textDirection: TextDirection.ltr,
-        text: const TextSpan(
+        text: TextSpan(
           text: '200m',
           style: TextStyle(
             fontFamily: 'SafeKoreaWeb',
-            fontSize: 10,
-            color: Color(0xFF17352D),
+            fontSize: 10 / zoom,
+            color: const Color(0xFF17352D),
             backgroundColor: Colors.white,
           ),
         ),
       )
       ..layout()
-      ..paint(canvas, Offset(12, size.height - 28));
+      ..paint(canvas, Offset(12 / zoom, size.height - 28 / zoom));
     canvas.restore();
   }
 
   @override
-  bool shouldRepaint(covariant _MapPainter oldDelegate) =>
-      oldDelegate.features != features;
+  bool shouldRepaint(covariant _LabelPainter oldDelegate) =>
+      oldDelegate.zoom != zoom || oldDelegate.features != features;
 }
 
 /// Keeps pins and the position dot at a constant on-screen size while the

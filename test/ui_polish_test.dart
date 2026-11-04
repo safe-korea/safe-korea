@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:safe_korea/screens/family_screen.dart';
+import 'package:safe_korea/screens/saved_shelters_screen.dart';
 import 'package:safe_korea/screens/shelters_screen.dart';
 import 'package:safe_korea/services/connection_monitor.dart';
 import 'package:safe_korea/services/region_suggestion_service.dart';
@@ -74,4 +75,30 @@ void main() {
     expect(find.text('장소를 하나 저장하면 공유할 수 있어요.'), findsNothing);
     expect(find.text('내 상태 공유'), findsOneWidget);
   });
+
+  for (final online in [true, false]) {
+    testWidgets('saved shelter online map follows connectivity ($online)', (
+      tester,
+    ) async {
+      final link = await tester.runAsync(() => monitor(online));
+      addTearDown(link!.dispose);
+      final controller = SavedSheltersController(store: SavedMemoryStore());
+      await tester.runAsync(controller.load);
+      await tester.runAsync(
+        () => controller.toggle(fixture('11110', '종로구', 'a'), 'a'),
+      );
+      await tester.pumpWidget(
+        MaterialApp(
+          home: SavedSheltersScreen(controller: controller, monitor: link),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('온라인 지도 보기'), online ? findsOneWidget : findsNothing);
+      expect(
+        find.text('온라인 지도 · 연결 후 이용'),
+        online ? findsNothing : findsOneWidget,
+      );
+      controller.dispose();
+    });
+  }
 }
