@@ -269,6 +269,9 @@ class _OfflineMapScreenState extends State<OfflineMapScreen> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       DropdownButtonFormField<String>(
+                        // Let the field grow with large system text instead of clipping.
+                        isDense: false,
+                        itemHeight: null,
                         key: ValueKey(_selectedId),
                         initialValue: selected?.id,
                         isExpanded: true,

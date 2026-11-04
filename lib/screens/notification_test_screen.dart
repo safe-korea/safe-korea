@@ -80,6 +80,9 @@ class _NotificationTestScreenState extends State<NotificationTestScreen> {
         ),
         const SizedBox(height: 24),
         DropdownButtonFormField<AlertKind>(
+          // Let the field grow with large system text instead of clipping.
+          isDense: false,
+          itemHeight: null,
           initialValue: _kind,
           isExpanded: true,
           decoration: const InputDecoration(labelText: '연습할 경보'),

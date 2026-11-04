@@ -27,9 +27,12 @@ class _AlertGuideScreenState extends State<AlertGuideScreen> {
     body: PageBody(
       children: [
         DropdownButtonFormField<AlertKind>(
+          // Let the field grow with large system text instead of clipping.
+          isDense: false,
+          itemHeight: null,
           key: ValueKey(_kind),
           initialValue: _confirmed ? _kind : null,
-          hint: const Text('받은 경보를 선택하세요'),
+          hint: const Text('받은 경보 선택'),
           isExpanded: true,
           decoration: const InputDecoration(labelText: '경보·공격 종류'),
           items: [
