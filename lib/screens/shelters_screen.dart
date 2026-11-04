@@ -14,6 +14,7 @@ import '../services/local_region_service.dart';
 import '../widgets/nearby_shelters.dart';
 import '../services/shelter_repository.dart';
 import '../services/saved_shelters_controller.dart';
+import '../services/connection_monitor.dart';
 import 'saved_shelters_screen.dart';
 import 'shelter_record_screen.dart';
 import '../widgets/common.dart';
@@ -31,8 +32,10 @@ class SheltersScreen extends StatefulWidget {
     this.repository,
     this.savedShelters,
     this.regionService,
+    this.monitor,
   });
   final ShelterCatalog? catalog;
+  final ConnectionMonitor? monitor;
   final LocationService? locationService;
   final RegionSuggestionService? regionService;
   final ShelterRepository? repository;
@@ -67,6 +70,14 @@ class _SheltersScreenState extends State<SheltersScreen> {
     super.initState();
     _load();
     _saved.ensureLoaded();
+    _link.addListener(_onLink);
+  }
+
+  ConnectionMonitor get _link => widget.monitor ?? ConnectionMonitor.instance;
+  // Online-only actions are not offered as main actions while disconnected.
+  bool get _offline => _link.value.needsOfflineTools;
+  void _onLink() {
+    if (mounted) setState(() {});
   }
 
   Future<void> _load() async {
@@ -152,23 +163,18 @@ class _SheltersScreenState extends State<SheltersScreen> {
       try {
         await _repository.save(catalog);
         if (mounted) {
-          setState(
-            () {
-              _networkWarning = false;
-              _networkMessage =
-                  '${catalog.shelters.length}곳 목록을 이 기기에 보관했어요 · 연결 없이도 볼 수 있어요';
-            },
-          );
+          setState(() {
+            _networkWarning = false;
+            _networkMessage =
+                '${catalog.shelters.length}곳 목록을 이 기기에 보관했어요 · 연결 없이도 볼 수 있어요';
+          });
         }
       } catch (_) {
         if (mounted) {
-          setState(
-            () {
-              _networkWarning = true;
-              _networkMessage =
-                  '시설은 조회했지만 기기에 저장하지 못했습니다. 이번 화면에서만 이용할 수 있습니다.';
-            },
-          );
+          setState(() {
+            _networkWarning = true;
+            _networkMessage = '시설은 조회했지만 기기에 저장하지 못했습니다. 이번 화면에서만 이용할 수 있습니다.';
+          });
         }
       }
     } on ConflictingShelterIdentity {
@@ -201,6 +207,7 @@ class _SheltersScreenState extends State<SheltersScreen> {
 
   @override
   void dispose() {
+    _link.removeListener(_onLink);
     if (widget.repository == null) _repository.close();
     super.dispose();
   }
@@ -353,28 +360,7 @@ class _SheltersScreenState extends State<SheltersScreen> {
     final catalog = _catalog;
     final items = _filtered;
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('주변 대피시설'),
-        actions: [
-          ListenableBuilder(
-            listenable: _saved,
-            builder: (context, _) => IconButton(
-              tooltip: '저장한 대피소 (${_saved.entries.length})',
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute<void>(
-                  builder: (_) => SavedSheltersScreen(controller: _saved),
-                ),
-              ),
-              icon: Badge(
-                isLabelVisible: _saved.entries.isNotEmpty,
-                label: Text('${_saved.entries.length}'),
-                child: const Icon(Icons.bookmark_outline),
-              ),
-            ),
-          ),
-        ],
-      ),
+      appBar: AppBar(title: const Text('주변 대피시설')),
       body: ListenableBuilder(
         listenable: _saved,
         builder: (context, _) => PageBody(
@@ -422,7 +408,7 @@ class _SheltersScreenState extends State<SheltersScreen> {
                 ),
               ),
               icon: const Icon(Icons.bookmark_outline),
-              label: const Text('저장한 대피소 · 오프라인 목록'),
+              label: Text('저장한 대피소 (${_saved.entries.length}곳) · 오프라인 목록'),
             ),
             const SizedBox(height: 12),
             LocationControls(
@@ -562,9 +548,12 @@ class _SheltersScreenState extends State<SheltersScreen> {
               ),
             if (_queryFailed)
               OutlinedButton(
-                onPressed: () =>
-                    openExternal(context, Uri.parse(officialMapSource)),
-                child: const Text('정부 공식 시설 검색 열기'),
+                onPressed: _offline
+                    ? null
+                    : () => openExternal(context, Uri.parse(officialMapSource)),
+                child: Text(
+                  _offline ? '정부 공식 시설 검색 · 연결 후 이용' : '정부 공식 시설 검색 열기',
+                ),
               ),
             if (_error != null) ...[
               Notice(_error!, warning: true),
@@ -601,7 +590,12 @@ class _SheltersScreenState extends State<SheltersScreen> {
                   style: TextStyle(fontSize: 14),
                 ),
               ),
-              if (!_map)
+              if (!_map && _offline)
+                const OutlinedButton(
+                  onPressed: null,
+                  child: Text('온라인 지도 · 연결 후 이용'),
+                )
+              else if (!_map)
                 FilledButton.icon(
                   onPressed: () => setState(() => _map = true),
                   icon: const Icon(Icons.map_outlined),
@@ -621,7 +615,7 @@ class _SheltersScreenState extends State<SheltersScreen> {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  '${items.length}개 시설 · ${_position == null ? '위치 미사용, 원본 순서' : '직선거리 가까운 순'}',
+                  '${items.length}개 시설 · ${_position == null ? '기관 제공 순서' : '직선거리 가까운 순'}',
                 ),
                 const SizedBox(height: 12),
               ],
@@ -675,6 +669,10 @@ class _SheltersScreenState extends State<SheltersScreen> {
                 title: const Text('자료 출처와 조회 시각'),
                 children: [
                   InfoLine(label: '출처', value: catalog.sourceName),
+                  const InfoLine(
+                    label: '지역 판별',
+                    value: '국가공간정보포털 · KnellBalm 행정경계 자료(2023)',
+                  ),
                   InfoLine(label: '자료 범위', value: catalog.coverage),
                   InfoLine(
                     label: '마지막 조회',
@@ -716,9 +714,12 @@ class _SheltersScreenState extends State<SheltersScreen> {
             if (!_queryFailed) ...[
               const SizedBox(height: 12),
               OutlinedButton(
-                onPressed: () =>
-                    openExternal(context, Uri.parse(officialMapSource)),
-                child: const Text('정부 공식 시설 검색 열기'),
+                onPressed: _offline
+                    ? null
+                    : () => openExternal(context, Uri.parse(officialMapSource)),
+                child: Text(
+                  _offline ? '정부 공식 시설 검색 · 연결 후 이용' : '정부 공식 시설 검색 열기',
+                ),
               ),
             ],
           ],
@@ -843,9 +844,7 @@ class _SheltersScreenState extends State<SheltersScreen> {
                     ? () => _toggleSaved(shelter, source)
                     : null,
                 icon: const Icon(Icons.bookmark),
-                label: Text(
-                  _saved.busy ? '대피소·지도 저장 중…' : '저장됨 · 저장 해제',
-                ),
+                label: Text(_saved.busy ? '대피소·지도 저장 중…' : '저장됨 · 저장 해제'),
               )
             else if (source != null)
               FilledButton.tonalIcon(

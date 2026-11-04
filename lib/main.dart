@@ -51,7 +51,7 @@ class SafeKoreaApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MaterialApp(
     navigatorKey: _navigatorKey,
-    title: 'SAFE KOREA',
+    title: 'safeKor',
     debugShowCheckedModeBanner: false,
     locale: const Locale('ko'),
     supportedLocales: const [Locale('ko')],

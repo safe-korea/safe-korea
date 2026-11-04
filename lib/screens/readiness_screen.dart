@@ -215,7 +215,7 @@ class _ReadinessScreenState extends State<ReadinessScreen> {
         const SizedBox(height: 12),
         OutlinedButton.icon(
           onPressed: () =>
-              showLicensePage(context: context, applicationName: 'SAFE KOREA'),
+              showLicensePage(context: context, applicationName: 'safeKor'),
           icon: const Icon(Icons.info_outline),
           label: const Text('앱 정보 · 오픈소스 라이선스'),
         ),

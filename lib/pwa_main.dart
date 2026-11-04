@@ -191,7 +191,7 @@ class _PwaGuidanceHomeState extends State<PwaGuidanceHome> {
             TextButton(
               onPressed: () => showLicensePage(
                 context: context,
-                applicationName: 'SAFE KOREA',
+                applicationName: 'safeKor',
               ),
               child: const Text('오픈소스 라이선스'),
             ),
