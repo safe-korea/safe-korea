@@ -107,11 +107,11 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(find.text('주변 실제 모습 보기'), findsOneWidget);
-      expect(find.text('사진·약도·메모 추가'), findsNothing);
+      expect(find.text('사진·약도·메모·반려동물 기록'), findsNothing);
       await tester.ensureVisible(find.text('내 기록 · 선택'));
       await tester.tap(find.text('내 기록 · 선택'));
       await tester.pumpAndSettle();
-      expect(find.text('사진·약도·메모 추가'), findsOneWidget);
+      expect(find.text('사진·약도·메모·반려동물 기록'), findsOneWidget);
     },
   );
   testWidgets(

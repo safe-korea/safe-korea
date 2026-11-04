@@ -36,6 +36,54 @@ class ShelterPhoto {
 
 enum ShelterCheck { confirmed, changed, notFound, incomplete }
 
+/// User-checked pet policy for one saved shelter. Not official data: there is
+/// no public list of pet-friendly civil-defense shelters.
+enum PetStatus {
+  unchecked('확인 안 함'),
+  allowed('동반 가능'),
+  notAllowed('동반 불가');
+
+  const PetStatus(this.label);
+  final String label;
+}
+
+class PetCheck {
+  const PetCheck({
+    this.status = PetStatus.unchecked,
+    this.conditions = '',
+    this.checkedWith = '',
+    this.checkedOn,
+  });
+  static const none = PetCheck();
+  static const maxConditions = 200, maxCheckedWith = 60;
+  final PetStatus status;
+  final String conditions, checkedWith;
+  final DateTime? checkedOn;
+  bool get isEmpty =>
+      status == PetStatus.unchecked &&
+      conditions.isEmpty &&
+      checkedWith.isEmpty;
+  bool get valid =>
+      conditions.length <= maxConditions &&
+      checkedWith.length <= maxCheckedWith;
+  Map<String, dynamic> toJson() => {
+    'status': status.name,
+    'conditions': conditions,
+    'checkedWith': checkedWith,
+    'checkedOn': checkedOn?.toIso8601String(),
+  };
+  factory PetCheck.fromJson(Map<String, dynamic>? json) => json == null
+      ? none
+      : PetCheck(
+          status: PetStatus.values.byName(json['status'] as String),
+          conditions: json['conditions'] as String? ?? '',
+          checkedWith: json['checkedWith'] as String? ?? '',
+          checkedOn: json['checkedOn'] == null
+              ? null
+              : DateTime.parse(json['checkedOn'] as String),
+        );
+}
+
 /// An explicit saved snapshot, including the source and original retrieval time.
 class SavedShelter {
   SavedShelter._(
@@ -48,8 +96,10 @@ class SavedShelter {
     this.entranceNote = '',
     this.photos = const [],
     this.offlineMap,
+    this.pet = PetCheck.none,
   });
   final Map<String, dynamic>? offlineMap;
+  final PetCheck pet;
   SavedShelter withOfflineMap(Map<String, dynamic> map) => SavedShelter._(
     snapshot,
     savedAt,
@@ -60,6 +110,7 @@ class SavedShelter {
     entranceNote: entranceNote,
     photos: photos,
     offlineMap: map,
+    pet: pet,
   );
   final ShelterRole role;
   final String entranceNote;
@@ -68,6 +119,7 @@ class SavedShelter {
     required ShelterRole role,
     required String note,
     required List<ShelterPhoto> photos,
+    PetCheck? pet,
   }) => SavedShelter._(
     snapshot,
     savedAt,
@@ -78,6 +130,7 @@ class SavedShelter {
     entranceNote: note,
     photos: List.unmodifiable(photos),
     offlineMap: offlineMap,
+    pet: pet ?? this.pet,
   );
   final int keyVersion;
   final DateTime? checkedAt;
@@ -100,6 +153,7 @@ class SavedShelter {
             shelter.longitude == catalog.shelters.single.longitude
         ? offlineMap
         : null,
+    pet: pet,
   );
   final ShelterCatalog snapshot;
   final DateTime savedAt;
@@ -159,6 +213,11 @@ class SavedShelter {
       check: json['check'] == null
           ? null
           : ShelterCheck.values.byName(json['check'] as String),
+      pet: PetCheck.fromJson(
+        json['pet'] == null
+            ? null
+            : Map<String, dynamic>.from(json['pet'] as Map),
+      ),
     );
   }
   Map<String, dynamic> toJson() => {
@@ -172,5 +231,6 @@ class SavedShelter {
     'role': role.name,
     'entranceNote': entranceNote,
     'photos': photos.map((p) => p.toJson()).toList(),
+    if (!pet.isEmpty) 'pet': pet.toJson(),
   };
 }

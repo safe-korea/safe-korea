@@ -148,6 +148,45 @@ class LocalStore {
     }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
+  // One "my area" map at a time: saving a new district replaces the old one.
+  Future<void> _ensureAreaMapTable() async => (await database).execute(
+    'CREATE TABLE IF NOT EXISTS area_map (id INTEGER PRIMARY KEY, content TEXT NOT NULL)',
+  );
+  Future<Map<String, dynamic>?> loadAreaMap() async {
+    if (kIsWeb) {
+      return (readBrowserRecord('areaMap') as Map?)?.cast<String, dynamic>();
+    }
+    await _ensureAreaMapTable();
+    final rows = await (await database).query(
+      'area_map',
+      where: 'id = ?',
+      whereArgs: [1],
+    );
+    if (rows.isEmpty) return null;
+    return jsonDecode(rows.first['content'] as String) as Map<String, dynamic>;
+  }
+
+  Future<void> saveAreaMap(Map<String, dynamic> record) async {
+    if (kIsWeb) {
+      writeBrowserRecord('areaMap', record);
+      return;
+    }
+    await _ensureAreaMapTable();
+    await (await database).insert('area_map', {
+      'id': 1,
+      'content': jsonEncode(record),
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  Future<void> removeAreaMap() async {
+    if (kIsWeb) {
+      removeBrowserRecord('areaMap');
+      return;
+    }
+    await _ensureAreaMapTable();
+    await (await database).delete('area_map', where: 'id = ?', whereArgs: [1]);
+  }
+
   Future<void> _ensurePreparationTable() async => (await database).execute(
     'CREATE TABLE IF NOT EXISTS preparation (id INTEGER PRIMARY KEY, content TEXT NOT NULL)',
   );
