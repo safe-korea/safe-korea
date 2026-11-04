@@ -51,7 +51,8 @@
 
 
 - `./scripts/verify.sh`: 서식·정적 분석·Flutter·Python 회귀 검사.
-- `flutter build appbundle --release --dart-define-from-file=config/kakao.local.json`: 실제 명령은 로컬 .tools/flutter/bin/flutter 사용. Android 키 파일이 없으면 unsigned AAB.
+- Android 릴리스(코드5부터 Shorebird): `shorebird release android -- --dart-define-from-file=config/kakao.local.json --dart-define-from-file=config/api.production.json`. 두 설정 파일 중 하나라도 빠지면 지도 저장·연결 확인이 동작하지 않습니다. 이후 Dart만 바뀐 수정은 `shorebird patch --platforms=android --release-version=1.0.0+5 -- (같은 설정)`.
+- (이전) `flutter build appbundle --release --dart-define-from-file=config/kakao.local.json`: 실제 명령은 로컬 .tools/flutter/bin/flutter 사용. Android 키 파일이 없으면 unsigned AAB.
 - `BYPASS_PERMISSION_LOCATION_ALWAYS=1 .tools/flutter/bin/flutter build ios --release --no-codesign --dart-define-from-file=config/kakao.local.json`: 위치 플러그인의 Always 권한 코드를 제외하는 빌드 플래그이며 보안/샌드박스 해제 옵션이 아님.
 - `python3 scripts/inspect_release.py > artifacts/release-artifact-inspection.json`: manifest·서명 entry·ELF 정렬·iOS 포함 privacy manifest의 제한된 정적 검사. 이 결과만으로 스토어 준비 완료를 판정하지 않음.
 - 로그: `artifacts/release-aab-build.log`, `release-ios-build.log`, `release-verify.log`, `release-offline-android.log`, `release-offline-mode.log`.
