@@ -10,6 +10,7 @@ import '../models/alert_guidance.dart';
 import '../theme/app_theme.dart';
 import '../widgets/alert_actions.dart';
 import '../widgets/common.dart';
+import '../widgets/received_alert_banner.dart';
 import 'saved_shelters_screen.dart';
 
 /// Response UI for an authenticated, recipient-matched official notice.
@@ -86,6 +87,19 @@ class _CivilAlertScreenState extends State<CivilAlertScreen> {
               ),
               const SizedBox(height: 8),
               Text(notice.area, style: const TextStyle(color: Colors.white)),
+              const SizedBox(height: 4),
+              Text(
+                receivedAtLabel(notice, DateTime.now()),
+                style: const TextStyle(color: Colors.white),
+              ),
+              if (!notice.freshAt(DateTime.now()))
+                const Text(
+                  '받은 지 시간이 지났어요. 해제 여부는 재난문자·정부 방송으로 확인하세요.',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
             ],
           ),
         ),

@@ -18,6 +18,9 @@ import org.json.JSONObject
 object CivilAlertLink {
     private const val PREFS = "civil_alert_link_v1"
     private const val NOTIFICATION_ID = 74003
+    // Keep the received alert reopenable while people are evacuating; the app shows the
+    // receive time and never treats an old alert as current beyond this window.
+    const val PENDING_WINDOW_MS = 60 * 60 * 1000L
     var sink: EventChannel.EventSink? = null
     var foreground = false
     private fun prefs(c: Context) = c.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
@@ -60,7 +63,7 @@ object CivilAlertLink {
         val now = System.currentTimeMillis()
         if (prefs(c).getString("lastId", null) == id) return
         val record = mapOf<String, Any>("id" to id, "kind" to kind, "receivedAtMs" to whenMs,
-            "expiresAtMs" to now + 120000L, "sourcePackage" to pkg, "source" to "system_cell_broadcast")
+            "expiresAtMs" to now + PENDING_WINDOW_MS, "sourcePackage" to pkg, "source" to "system_cell_broadcast")
         prefs(c).edit().putString("lastId", id).putString("pending", JSONObject(record).toString()).apply()
         Handler(Looper.getMainLooper()).post { sink?.success(record) }
         if (foreground) return
