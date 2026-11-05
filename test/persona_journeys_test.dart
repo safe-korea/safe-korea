@@ -116,7 +116,10 @@ void main() {
       await tap(tester, 'GPS 현재 위치 확인');
       expect(location.calls, 1);
       expect(find.textContaining('위치 권한 없이도'), findsOneWidget);
-      await tap(tester, '저장한 대피소 · 오프라인 목록');
+      final savedEntry = find.textContaining('· 오프라인 목록');
+      await tester.ensureVisible(savedEntry);
+      await tester.tap(savedEntry);
+      await tester.pumpAndSettle();
       expect(find.text(catalog.shelters.first.address), findsOneWidget);
       await tester.tap(find.byType(BackButton));
       await tester.pumpAndSettle();

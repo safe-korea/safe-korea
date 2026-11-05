@@ -36,15 +36,24 @@ class _GuidelinesScreenState extends State<GuidelinesScreen> {
         final data = snapshot.data!;
         return PageBody(
           children: [
+            // Same label, color and destination as the home emergency entry.
             FilledButton.icon(
+              style: FilledButton.styleFrom(
+                backgroundColor: AppPalette.alert,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 16,
+                ),
+              ),
               onPressed: () => Navigator.push(
                 context,
                 MaterialPageRoute<void>(
-                  builder: (_) => const AlertGuideScreen(),
+                  builder: (_) =>
+                      const AlertGuideScreen(requireKindSelection: true),
                 ),
               ),
               icon: const Icon(Icons.touch_app_outlined),
-              label: const Text('내 상황에 맞는 행동 보기'),
+              label: const Text('지금 할 행동 보기'),
             ),
             const SizedBox(height: 8),
             const Text('실내·실외·이동 중 안내 · 오프라인 저장됨'),
@@ -81,7 +90,7 @@ class _GuidelinesScreenState extends State<GuidelinesScreen> {
                             builder: (_) => AlertGuideScreen(initialKind: kind),
                           ),
                         ),
-                        child: const Text('내 상황에 맞춰 보기'),
+                        child: const Text('이 경보로 내 상황 보기'),
                       ),
                     const SizedBox(height: 12),
                     for (final (index, step) in (item['steps'] as List).indexed)

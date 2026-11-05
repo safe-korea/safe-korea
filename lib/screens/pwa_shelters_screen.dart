@@ -9,13 +9,22 @@ import 'package:flutter/services.dart';
 import '../models/shelter.dart';
 import '../services/shelter_api_client.dart';
 import '../services/location_service.dart';
+import '../services/region_suggestion_service.dart';
+import '../services/local_region_service.dart';
+import '../widgets/nearby_shelters.dart';
 import '../widgets/common.dart';
 import '../widgets/location_controls.dart';
 
 /// Optional one-shot location for on-device distance sorting; region-only API.
 class PwaSheltersScreen extends StatefulWidget {
-  const PwaSheltersScreen({super.key, this.api, this.locationService});
+  const PwaSheltersScreen({
+    super.key,
+    this.api,
+    this.locationService,
+    this.regionService,
+  });
   final LocationService? locationService;
+  final RegionSuggestionService? regionService;
   final ShelterApiClient? api;
   @override
   State<PwaSheltersScreen> createState() => _PwaSheltersScreenState();
@@ -29,12 +38,22 @@ class _PwaSheltersScreenState extends State<PwaSheltersScreen> {
   bool _busy = false, _locating = false;
   Position? _position;
   String? _locationMessage;
+  String? _nearbyArea;
+  final _nearbyKey = GlobalKey();
+  bool _showRegion = true;
 
   Future<void> _locate() async {
-    if (_locating) return;
+    if (_locating || _busy) return;
+    if (!_api.configured) {
+      setState(
+        () => _locationMessage = '대피소 조회 연결을 준비하고 있어요. 아래 정부 원문을 이용하세요.',
+      );
+      return;
+    }
     setState(() {
       _locating = true;
       _position = null;
+      _nearbyArea = null;
       _locationMessage = null;
     });
     try {
@@ -44,10 +63,45 @@ class _PwaSheltersScreenState extends State<PwaSheltersScreen> {
       setState(() {
         _position = position;
         _shown = 20;
-        _locationMessage =
-            '현재 위치 확인 · 오차 약 ${position.accuracy.round()}m · '
-            '${position.timestamp.toLocal().toString().split('.').first} 확인';
+        _locationMessage = '현재 지역의 대피소를 찾고 있어요…';
       });
+      final suggestion = await (widget.regionService ?? LocalRegionService())
+          .suggest(position, await _regions);
+      if (!mounted) return;
+      if (suggestion?.districtCode == null) {
+        setState(() {
+          _showRegion = true;
+          _locationMessage = '위치는 확인했지만 조회 지역을 확정하지 못했어요. 아래에서 지역을 선택하세요.';
+        });
+        return;
+      }
+      setState(() {
+        _province = suggestion!.provinceCode;
+        _district = suggestion.districtCode;
+      });
+      await _fetch();
+      if (!mounted) return;
+      setState(() {
+        final found =
+            _error == null && _catalog?.areaCode == suggestion!.districtCode;
+        _nearbyArea = found ? suggestion.districtCode : null;
+        _showRegion = !found;
+        _locationMessage = found
+            ? '${suggestion.label} 조회 완료 · 아래 가까운 순으로 표시했어요.'
+            : '현재 지역의 새 자료를 불러오지 못했어요. 이전 조회 결과는 아래에서 확인하세요.';
+      });
+      if (_nearbyArea != null) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          final target = _nearbyKey.currentContext;
+          if (mounted && target != null) {
+            Scrollable.ensureVisible(
+              target,
+              duration: const Duration(milliseconds: 300),
+              alignment: 0.05,
+            );
+          }
+        });
+      }
     } on LocationFailure catch (error) {
       if (mounted) setState(() => _locationMessage = error.message);
     } on TimeoutException {
@@ -92,6 +146,7 @@ class _PwaSheltersScreenState extends State<PwaSheltersScreen> {
     if (_busy || _district == null) return;
     setState(() {
       _busy = true;
+      _nearbyArea = null;
       _error = null;
     });
     try {
@@ -145,7 +200,7 @@ class _PwaSheltersScreenState extends State<PwaSheltersScreen> {
           padding: const EdgeInsets.all(20),
           children: [
             const Text(
-              '대피할 지역을 선택하세요',
+              '내 주변 대피소 찾기',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
@@ -153,20 +208,47 @@ class _PwaSheltersScreenState extends State<PwaSheltersScreen> {
             const SizedBox(height: 16),
             LocationControls(
               position: _position,
-              busy: _locating,
+              busy: _locating || _busy,
               message: _locationMessage,
               onLocate: _locate,
               onClear: () => setState(() {
                 _position = null;
+                _nearbyArea = null;
+                _showRegion = true;
                 _locationMessage = null;
                 _shown = 20;
               }),
             ),
+            if (_position != null &&
+                _nearbyArea != null &&
+                catalog?.areaCode == _nearbyArea)
+              NearbyShelters(
+                key: _nearbyKey,
+                catalog: catalog!,
+                position: _position!,
+                onSelect: (shelter) => openExternal(
+                  context,
+                  Uri.parse(
+                    'https://map.kakao.com/link/map/${Uri.encodeComponent(shelter.name)},${shelter.latitude},${shelter.longitude}',
+                  ),
+                ),
+              ),
             const SizedBox(height: 20),
+            if (!_showRegion)
+              TextButton(
+                onPressed: _locating || _busy
+                    ? null
+                    : () => setState(() => _showRegion = true),
+                child: const Text('다른 지역 직접 선택'),
+              ),
             if (!_api.configured)
               const Notice('대피소 조회 연결을 준비하고 있어요. 아래 정부 사이트에서 확인해 주세요.'),
-            if (_api.configured) ...[
+            if (_api.configured && _showRegion) ...[
               DropdownButtonFormField<String>(
+                // Let the field grow with large system text instead of clipping.
+                isDense: false,
+                itemHeight: null,
+                key: ValueKey('province-$_province'),
                 initialValue: _province,
                 isExpanded: true,
                 decoration: const InputDecoration(labelText: '시·도'),
@@ -177,7 +259,7 @@ class _PwaSheltersScreenState extends State<PwaSheltersScreen> {
                       child: Text(p['name'] as String),
                     ),
                 ],
-                onChanged: _busy
+                onChanged: _busy || _locating
                     ? null
                     : (value) => setState(() {
                         _province = value;
@@ -188,7 +270,10 @@ class _PwaSheltersScreenState extends State<PwaSheltersScreen> {
               ),
               const SizedBox(height: 12),
               DropdownButtonFormField<String>(
-                key: ValueKey(_province),
+                // Let the field grow with large system text instead of clipping.
+                isDense: false,
+                itemHeight: null,
+                key: ValueKey('district-$_province-$_district'),
                 initialValue: _district,
                 isExpanded: true,
                 decoration: const InputDecoration(labelText: '시·군·구'),
@@ -199,7 +284,7 @@ class _PwaSheltersScreenState extends State<PwaSheltersScreen> {
                       child: Text(d['name'] as String),
                     ),
                 ],
-                onChanged: _busy || _province == null
+                onChanged: _busy || _locating || _province == null
                     ? null
                     : (value) => setState(() {
                         _district = value;
@@ -209,7 +294,9 @@ class _PwaSheltersScreenState extends State<PwaSheltersScreen> {
               ),
               const SizedBox(height: 16),
               FilledButton.icon(
-                onPressed: _district == null || _busy ? null : _fetch,
+                onPressed: _district == null || _busy || _locating
+                    ? null
+                    : _fetch,
                 icon: const Icon(Icons.search),
                 label: Text(_busy ? '공식 자료 확인 중…' : '대피소 찾기'),
               ),
@@ -310,7 +397,7 @@ class _PwaSheltersScreenState extends State<PwaSheltersScreen> {
             ),
             const SizedBox(height: 12),
             const Text(
-              '조회 시 지역 코드와 IP가 데이터 서버에 전달돼요. 지도 버튼은 해당 시설 위치를 카카오에 전달해요. 현재 GPS·가족 정보는 전송하지 않아요. 이 화면의 시설 목록은 오프라인 저장되지 않아요.',
+              '지역 판별: 국가공간정보포털·KnellBalm의 2023년 경계 가공자료. 경계·변경 지역에서는 직접 선택이 필요할 수 있어요.\n조회 시 지역 코드와 IP가 데이터 서버에 전달돼요. 지도 버튼은 해당 시설 위치를 카카오에 전달해요. 현재 GPS·가족 정보는 전송하지 않아요. 이 화면의 시설 목록은 오프라인 저장되지 않아요.',
             ),
           ],
         );

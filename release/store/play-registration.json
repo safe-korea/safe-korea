@@ -1,0 +1,233 @@
+{
+  "displayName": "safeKor",
+  "packageName": "kr.safekor.app",
+  "defaultLanguage": "ko-KR",
+  "appType": "APPLICATION",
+  "pricing": "FREE",
+  "containsAds": false,
+  "requiresLogin": false,
+  "contactEmail": "taetaeg@gmail.com",
+  "privacyPolicy": "https://safe-korea-shelter-api.trovapp.workers.dev/privacy",
+  "supportUrl": "https://safe-korea-shelter-api.trovapp.workers.dev/support",
+  "consoleSubmissionStatus": "closed_alpha_v4_published; tester_group_access_update_in_review",
+  "verifiedDate": "2026-11-04",
+  "category": "MAPS_AND_NAVIGATION",
+  "targetAgeGroups": [
+    "13-15",
+    "16-17",
+    "18+"
+  ],
+  "healthDeclaration": [],
+  "internalTest": {
+    "versionName": "1.0.0",
+    "versionCode": 2,
+    "status": "active",
+    "url": "https://play.google.com/apps/internaltest/4701311713198758231"
+  },
+  "storeListing": {
+    "locale": "ko-KR",
+    "status": "non_medical_description_saved_not_resubmitted",
+    "phoneScreenshots": [
+      "01-home-current.png",
+      "04-actions-current.png",
+      "03-shelter-map-current.png",
+      "02-offline-map-current.png"
+    ]
+  },
+  "dataSafety": {
+    "status": "review_requested",
+    "collectsOrShares": true,
+    "encryptedInTransit": true,
+    "accountCreation": false,
+    "externalAccountLogin": false,
+    "globalDeletionRequestFeature": false,
+    "dataTypes": [
+      {
+        "type": "approximate_location",
+        "collected": true,
+        "shared": true,
+        "ephemeralOnly": false,
+        "optional": false,
+        "purposes": [
+          "functionality",
+          "security"
+        ]
+      },
+      {
+        "type": "precise_location",
+        "collected": true,
+        "shared": true,
+        "ephemeralOnly": false,
+        "optional": true,
+        "purposes": [
+          "functionality"
+        ]
+      },
+      {
+        "type": "app_interactions",
+        "collected": true,
+        "shared": true,
+        "ephemeralOnly": false,
+        "optional": false,
+        "purposes": [
+          "functionality",
+          "analytics",
+          "security"
+        ]
+      },
+      {
+        "type": "diagnostics",
+        "collected": true,
+        "shared": true,
+        "ephemeralOnly": false,
+        "optional": false,
+        "purposes": [
+          "functionality",
+          "analytics",
+          "security"
+        ]
+      },
+      {
+        "type": "device_or_other_ids",
+        "collected": true,
+        "shared": true,
+        "ephemeralOnly": false,
+        "optional": false,
+        "purposes": [
+          "functionality",
+          "security"
+        ]
+      }
+    ],
+    "evidence": "artifacts/play-data-safety-verification.json",
+    "privacyDeploymentVersion": "cf9ec79e-51f2-4317-9c60-ef4b88c4b04b"
+  },
+  "closedTest": {
+    "status": "active_published",
+    "optedInTesters": 0,
+    "requiredTesters": 12,
+    "requiredContinuousDays": 14,
+    "recruitment": "user_managed",
+    "setupTasksComplete": 5,
+    "setupTasksTotal": 5,
+    "trackName": "Alpha",
+    "trackId": "4699249421656772828",
+    "releaseId": "2",
+    "releaseName": "1.0.0 (4) · 비의료 대피 안내 개선",
+    "versionName": "1.0.0",
+    "versionCode": 4,
+    "countries": [
+      "KR"
+    ],
+    "testerList": "safeKor 비공개 테스트",
+    "allowlistedAccounts": 1,
+    "feedbackEmail": "taetaeg@gmail.com",
+    "participationUrl": "https://play.google.com/apps/testing/kr.safekor.app",
+    "participationUrlStatus": "published_release; matching_group_access_pending_submission4",
+    "testerConsoleUrl": "https://play.google.com/console/u/3/developers/7181631274097055190/app/4974887941231472773/tracks/4699249421656772828?tab=testers",
+    "reviewRequestedAtUtc": "2026-11-03T05:25:37.676029+00:00",
+    "reviewStatusDetails": "Submission3 versionCode4 published at2026-11-03 23:56. Alpha active. Separate tester Google Group access update submission4 is in review.",
+    "resubmission": {
+      "activityId": "2",
+      "status": "rejected",
+      "submittedAtConsole": "2026-11-03 21:43",
+      "consoleTimezone": "Asia/Seoul",
+      "observedAtUtc": "2026-11-03T12:45:05.916155+00:00",
+      "changeCount": 14,
+      "versionName": "1.0.0",
+      "versionCode": 2,
+      "category": "MAPS_AND_NAVIGATION",
+      "healthDeclarationChanged": false,
+      "activityUrl": "https://play.google.com/console/u/3/developers/7181631274097055190/app/4974887941231472773/publishing/submission-activity/2/details",
+      "activePolicyIssueId": "4986533038781243937"
+    },
+    "latestSubmission": {
+      "activityId": "3",
+      "status": "published",
+      "submittedAtConsole": "2026-11-03 23:17",
+      "consoleTimezone": "Asia/Seoul",
+      "versionCode": 4,
+      "versionName": "1.0.0",
+      "changeCount": 14,
+      "releaseId": "2",
+      "healthDeclaration": "no_health_features",
+      "activityUrl": "https://play.google.com/console/u/3/developers/7181631274097055190/app/4974887941231472773/publishing/submission-activity/3/details",
+      "publishedAtConsole": "2026-11-03 23:56"
+    },
+    "publishedAtConsole": "2026-11-03 23:56",
+    "testerAccessUpdate": {
+      "activityId": "4",
+      "submittedAtConsole": "2026-11-04 12:03",
+      "status": "in_review",
+      "changeCount": 1,
+      "previousMethod": "email_list",
+      "previousListPreserved": "safeKor 비공개 테스트",
+      "newMethod": "google_groups",
+      "googleGroups": [
+        "tester-match@googlegroups.com"
+      ],
+      "reason": "Required access setup for previously authorized Tester Match registration"
+    }
+  },
+  "productionStatus": "inactive",
+  "usesAdvertisingId": false,
+  "classificationReview": {
+    "requestedPosition": "non_medical_civilian_evacuation_utility",
+    "status": "submission3_current_v4_release_and_declarations_approved",
+    "policyIssueId": "4986533038781243937",
+    "existingHealthDeclaration": "No health features",
+    "healthDeclarationReason": "Publisher judgment for a non-medical shelter-map and civil-defense preparedness utility without clinical/first-aid procedures or health-data features, following the support email conditional resubmission path. General source-attributed civil-defense guidance remains present; Google may assess the scope differently.",
+    "requestFile": "release/store/non-medical-appeal.txt",
+    "storeDescription": "non_medical_wording_saved_in_console_not_resubmitted",
+    "supportCaseId": "available_in_console",
+    "supportReceipt": "티켓이 제출되었습니다. 영업일 기준 2일 이내에 이메일로 답변해 드리겠습니다. 일부 티켓은 시간이 더 걸릴 수 있습니다.",
+    "supportUrl": "https://play.google.com/console/u/3/developers/7181631274097055190/help-and-support?app=4974887941231472773",
+    "requestedAtUtc": "2026-11-03T13:10:37.923455+00:00",
+    "automatedRecommendation": "AI suggested no-health declaration only if app has no health/first-aid content. Human clarification requested because published disaster-response definition remains relevant.",
+    "healthDeclarationChanged": true,
+    "approvedNonMedicalClassification": true,
+    "previousPolicyIssueId": "4989575261088573961",
+    "submissionType": "Play Console policy support ticket carrying an appeal request for the active rejection",
+    "receiptVerified": true,
+    "humanSpecialistRequested": true,
+    "selectedSupportIssue": "앱이 거부, 삭제 또는 정지됨",
+    "governmentDeclarationVerified": "No",
+    "previousSupportCaseStatus": "disabled; response content not available in Console",
+    "trovaHealthDeclarationVerified": "No health features (read only comparison)",
+    "previousHealthDeclaration": [
+      "Emergency and First Aid"
+    ],
+    "humanResponse": {
+      "received": true,
+      "receivedAtConsole": "2026-11-03 22:50",
+      "summary": "Support identifies Emergency and First Aid declaration as requiring organization account. If the app does not belong to this category, remove that classification and resubmit with an incremented version code; otherwise use an organization account. This is conditional guidance, not specific approval."
+    },
+    "approvalScope": "Current versionCode4 closed-release submission3 published; not a blanket guarantee for future releases"
+  },
+  "testerMatch": {
+    "registrationStatus": "form_updated_waiting_google_group_access_review",
+    "reason": "VersionCode4 is published. Required Google Group access update submission4 still in review; defer immediate matching until participants can access the release.",
+    "registrationUrl": "https://tester-match.knockknock.company/apps/new",
+    "androidUrl": "https://play.google.com/store/apps/details?id=kr.safekor.app",
+    "webParticipationUrl": "https://play.google.com/apps/testing/kr.safekor.app",
+    "requiredGroup": "tester-match@googlegroups.com",
+    "groupAccessConfigured": false,
+    "requiredGoogleGroup": "tester-match@googlegroups.com",
+    "targetTesters": 12,
+    "descriptionFile": "release/store/tester-match-description.txt",
+    "descriptionUpdatedInBrowser": true,
+    "finalSubmitted": false
+  },
+  "categoryChange": {
+    "previous": "TOOLS",
+    "current": "MAPS_AND_NAVIGATION",
+    "consoleLabel": "지도/내비게이션",
+    "status": "published_in_submission3",
+    "verifiedDate": "2026-11-03",
+    "reason": "Core GPS-based shelter finding and map display",
+    "healthDeclarationChanged": false,
+    "policyRejectionResolved": false
+  },
+  "healthDeclarationSelection": "My app does not provide any health features",
+  "healthFeaturesProvided": false
+}

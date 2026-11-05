@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:flutter_tts/flutter_tts.dart';
 
 class ActionSpeech {
@@ -8,14 +10,15 @@ class ActionSpeech {
   Future<void> speak(String text) async {
     final generation = ++_generation;
     final tts = _engine ??= FlutterTts();
-    if (Platform.isAndroid && await tts.isLanguageInstalled('ko-KR') != true) {
+    if ((!kIsWeb && Platform.isAndroid) &&
+        await tts.isLanguageInstalled('ko-KR') != true) {
       throw StateError('설치된 한국어 음성 없음');
     }
     final voices = await tts.getVoices as List;
     final candidates = voices.whereType<Map>().where(
       (voice) =>
           voice['locale'].toString().replaceAll('_', '-') == 'ko-KR' &&
-          (!Platform.isAndroid ||
+          (!(!kIsWeb && Platform.isAndroid) ||
               voice['network_required'] == false ||
               voice['network_required'] == 'false' ||
               voice['network_required'] == '0' ||

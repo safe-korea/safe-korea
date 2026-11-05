@@ -223,9 +223,11 @@ void main() {
       expect(controller.entries.length, 1);
       await tester.pump(const Duration(seconds: 5));
       await tester.pumpAndSettle();
-      Navigator.of(tester.element(find.text('대피소 저장 해제'))).pop();
+      Navigator.of(tester.element(find.text('저장됨 · 저장 해제'))).pop();
       await tester.pumpAndSettle();
-      await tester.tap(find.byTooltip('저장한 대피소 (1)'));
+      final savedEntry = find.text('저장한 대피소 (1곳) · 오프라인 목록');
+      await tester.ensureVisible(savedEntry);
+      await tester.tap(savedEntry);
       await tester.pumpAndSettle();
       expect(find.text('테스트 시설 a'), findsOneWidget);
       await tester.ensureVisible(find.text('조회·저장 정보'));
@@ -239,7 +241,7 @@ void main() {
       expect(find.textContaining('저장한 대피소가 아직 없어요'), findsOneWidget);
       await tester.pageBack();
       await tester.pumpAndSettle();
-      expect(find.byTooltip('저장한 대피소 (0)'), findsOneWidget);
+      expect(find.text('저장한 대피소 (0곳) · 오프라인 목록'), findsOneWidget);
       await tester.pumpWidget(const SizedBox());
       controller.dispose();
     },

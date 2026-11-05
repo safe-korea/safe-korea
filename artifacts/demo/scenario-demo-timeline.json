@@ -1,0 +1,72 @@
+[
+  {
+    "scene": "arrival",
+    "start": 0,
+    "duration": 5,
+    "caption": "경보가 울린 순간,\n무엇을 해야 할까요?",
+    "note": "경보 상황 재현 · 실제 정부 경보 수신 영상 아님"
+  },
+  {
+    "scene": "received",
+    "start": 5,
+    "duration": 7,
+    "caption": "공습경보, 지금 즉시 대피하세요.\n내 상황에 맞는 행동을 확인하세요",
+    "note": "합성 경보 입력 → 대응 화면 자동 전환 시연"
+  },
+  {
+    "scene": "response_actions",
+    "start": 12,
+    "duration": 7,
+    "caption": "실내라면 계단으로.\n물품을 찾느라 지체하지 마세요.",
+    "note": "행정안전부 행동요령 요약 · 현장 지시 우선"
+  },
+  {
+    "scene": "offline",
+    "start": 19,
+    "duration": 5,
+    "caption": "미리 저장해 둔\n대피소를 확인하세요",
+    "note": "사전에 저장을 마친 시설 · 신규 네트워크 연결 차단"
+  },
+  {
+    "scene": "map",
+    "start": 24,
+    "duration": 6,
+    "caption": "통신이 끊겨도\n저장한 지도는 내 폰에.",
+    "note": "저장한 참고 지도 · 현재 위치·길찾기 없음"
+  },
+  {
+    "scene": "zoom",
+    "start": 30,
+    "duration": 3,
+    "caption": "확대해서\n주변 도로를 확인하세요",
+    "note": "개방 여부·안전한 이동 경로는 현장 확인"
+  },
+  {
+    "scene": "family",
+    "start": 33,
+    "duration": 5,
+    "caption": "연락이 될 때\n가족과 만날 장소를 정하세요",
+    "note": "통신 복구 후 · 시연용 가족 약속"
+  },
+  {
+    "scene": "share",
+    "start": 38,
+    "duration": 4,
+    "caption": "만날 장소와 약속을\n가족에게 미리 공유하세요",
+    "note": "공유할 내용 확인"
+  },
+  {
+    "scene": "sheet",
+    "start": 42,
+    "duration": 3,
+    "caption": "카카오톡 등\n원하는 앱으로 공유",
+    "note": "공유 창 시연 · 실제 전송하지 않음"
+  },
+  {
+    "scene": "closing",
+    "start": 45,
+    "duration": 4,
+    "caption": "위급한 순간,\n첫 행동을 함께합니다.",
+    "note": "safeKor · 대피 준비와 행동요령"
+  }
+]

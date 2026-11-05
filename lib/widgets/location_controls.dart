@@ -23,7 +23,7 @@ class LocationControls extends StatelessWidget {
     final point = position;
     final time = point?.timestamp.toLocal();
     final status = point == null
-        ? message ?? '선택한 지역 내 거리순 정렬'
+        ? message ?? '현재 위치로 지역을 찾고 대피소를 조회해요.'
         : '현재 위치 확인 · 오차 약 ${point.accuracy.round()}m\n'
               '${time!.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')} 확인 · 실시간 추적 아님';
     return Card(
@@ -59,6 +59,15 @@ class LocationControls extends StatelessWidget {
               liveRegion: true,
               child: Text(status, style: const TextStyle(fontSize: 14)),
             ),
+            if (point != null &&
+                message != null &&
+                !message!.startsWith('현재 위치 확인')) ...[
+              const SizedBox(height: 8),
+              Semantics(
+                liveRegion: true,
+                child: Text(message!, style: const TextStyle(fontSize: 14)),
+              ),
+            ],
             const SizedBox(height: 12),
             OutlinedButton.icon(
               onPressed: busy ? null : onLocate,
@@ -73,7 +82,7 @@ class LocationControls extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             const Text(
-              '조회 지역은 자동으로 바뀌지 않아요.',
+              '좌표는 기기에서만 처리해요. 시설 조회에는 연결이 필요해요.',
               style: TextStyle(fontSize: 13, color: AppPalette.muted),
             ),
           ],

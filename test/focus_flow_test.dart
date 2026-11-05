@@ -27,7 +27,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.byType(AlertGuideScreen), findsOneWidget);
       expect(find.text('훈련 / 테스트'), findsNothing);
-      expect(find.textContaining('자동 수신'), findsOneWidget);
+      expect(find.textContaining('자동 수신'), findsNothing);
       expect(find.byType(ActionBriefTile), findsNothing);
       await tester.tap(find.byType(DropdownButtonFormField<AlertKind>));
       await tester.pumpAndSettle();

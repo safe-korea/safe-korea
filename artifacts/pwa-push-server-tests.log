@@ -1,0 +1,44 @@
+
+> test
+> node --test test/*.test.js
+
+✔ fixed official request, source date, canonical region and missing source update date (13.576625ms)
+✔ cache hits reuse timestamp without sharing CORS origin (1.689917ms)
+✔ no coordinates, arbitrary proxy URL, duplicate or unknown region accepted (0.459917ms)
+✔ unknown browser origin denied, native requests allowed, POST rejected (0.342875ms)
+✔ CORS preflight and health never contact upstream (0.149792ms)
+✔ upstream failure returns explicitly stale bounded data, never renews retrieval date (0.557625ms)
+✔ invalid source never populates a cache or exposes raw upstream errors (0.213541ms)
+✔ source limiter returns Retry-After and is not consulted for valid cache hits (0.399125ms)
+✔ same-isolate concurrent source misses share one upstream request (11.540833ms)
+✔ cache storage failure does not hide fresh valid data (0.350417ms)
+✔ normalization preserves entrance, counts exclusions and rejects identity conflict (0.239709ms)
+✔ bounded upstream body rejects HTML, declared/chunked oversize and invalid UTF-8 (0.780709ms)
+✔ upstream redirects are rejected without following another host (0.140583ms)
+✔ policy and contact are public Korean HTML with confirmed identity and no scripts or forms (15.011833ms)
+✔ HEAD, trailing slash and unsupported methods preserve API route isolation (0.272417ms)
+✔ endpoint allowlist rejects FCM, SSRF, credentials, ports and lookalikes (0.486375ms)
+✔ register requires consent, region, valid crypto, origin and ownership; cannot replace another device (14.845541ms)
+✔ test push is encrypted, short-lived, bound to one device and receipt distinguishes accepted/received/opened (4.706333ms)
+✔ 410 removes expired subscriptions, and unsigned third-party posts cannot send (1.580292ms)
+✔ strict civil-defense parsing excludes training, future context, releases and weather (0.891375ms)
+✔ official adapter is gated, fresh, exact-region and independent from numeric disaster ID guesses (0.437209ms)
+✔ source reads are bounded, do not redirect, and incomplete scans never enable dispatch (1.129459ms)
+✔ verified complete source targets the selected region once; repeated snapshot cannot send again (2.420875ms)
+✔ source daily budget and declared or streamed oversize stop before delivery (1.083584ms)
+✔ recipient internal IDs never masquerade as shelter codes; exact trimmed names are resolved (1.459666ms)
+✔ JSON gateway IP denial is classified without exposing key or upstream text (0.168541ms)
+✔ persistent IP rejection backs off instead of retrying the same failure each cron (0.579042ms)
+✔ real Workers runtime encrypts and sends Apple request, reads official data, and rejects redirects without forwarding credentials (136.272ms)
+✔ push always displays, reports only valid receipts, and relays to visible app (11.296667ms)
+✔ notification click focuses only own app or opens fixed app URL; payload URL is ignored (0.536625ms)
+✔ asset routing cannot swallow API errors or health requests (12.488833ms)
+✔ static POST is rejected and missing assets preserve API-only mode (0.343875ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 32
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 355.799292

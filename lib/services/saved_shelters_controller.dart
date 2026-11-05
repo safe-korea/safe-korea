@@ -3,15 +3,45 @@ import 'package:flutter/foundation.dart';
 import '../models/saved_shelter.dart';
 import '../models/shelter.dart';
 import 'local_store.dart';
+import 'saved_map_downloader.dart';
 import 'shelter_repository.dart';
 
 class SavedSheltersController extends ChangeNotifier {
-  SavedSheltersController({LocalStore? store}) : _store = store ?? LocalStore();
+  SavedSheltersController({LocalStore? store, SavedMapDownloader? maps})
+    : _store = store ?? LocalStore(),
+      _maps = maps ?? SavedMapDownloader();
+  final SavedMapDownloader _maps;
   static final shared = SavedSheltersController();
   final LocalStore _store;
   Map<String, SavedShelter> _entries = {};
   bool loaded = false, loading = false, busy = false;
   String? error;
+  String? mapMessage;
+  Future<void> _downloadMap(SavedShelter entry) async {
+    mapMessage = null;
+    try {
+      final map = await _maps.fetch(entry.shelter);
+      final next = entry.withOfflineMap(map);
+      await _store.saveSavedShelter(next.key, next.toJson());
+      _entries[next.key] = next;
+      mapMessage = '대피소와 주변 지도를 저장했습니다.';
+    } catch (_) {
+      mapMessage = '대피소는 저장했지만 지도는 저장하지 못했어요. 인터넷 연결 후 다시 저장해 주세요.';
+    }
+  }
+
+  Future<void> retryMap(SavedShelter entry) async {
+    if (busy || !loaded) return;
+    busy = true;
+    notifyListeners();
+    try {
+      await _downloadMap(_entries[entry.key]!);
+    } finally {
+      busy = false;
+      notifyListeners();
+    }
+  }
+
   Future<void>? _pending;
   List<SavedShelter> get entries => List.unmodifiable(
     _entries.values.toList()..sort((a, b) {
@@ -197,6 +227,7 @@ class SavedSheltersController extends ChangeNotifier {
         final entry = SavedShelter.fromCatalog(catalog, id, DateTime.now());
         await _store.saveSavedShelter(entry.key, entry.toJson());
         _entries[entry.key] = entry;
+        await _downloadMap(entry);
       }
       return true;
     } catch (_) {

@@ -1,11 +1,12 @@
 import 'widgets/situation_selector.dart';
+import 'services/web_push_bridge.dart';
+import 'main.dart' show SafeKoreaApp;
 
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'models/alert_guidance.dart';
 import 'services/connection_monitor.dart';
@@ -15,8 +16,6 @@ import 'widgets/action_brief.dart';
 import 'widgets/common.dart';
 import 'widgets/public_support_links.dart';
 import 'widgets/guideline_step.dart';
-
-final _pwaNavigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,25 +28,18 @@ Future<void> main() async {
     ..addFont(rootBundle.load('assets/fonts/NanumGothic-Regular.ttf'));
   await fonts.load();
   runApp(const SafeKoreaPwa());
+  WidgetsBinding.instance.addPostFrameCallback((_) => attachWebPushBridge());
   ConnectionMonitor.instance.start();
 }
 
-/// A separate entry point keeps unfinished native plugins out of the web app.
+/// Load bundled web fonts and run the same application shell as the native app.
 class SafeKoreaPwa extends StatelessWidget {
   const SafeKoreaPwa({super.key});
   @override
   Widget build(BuildContext context) {
     final theme = buildAppTheme(fontFamily: 'SafeKoreaWeb');
-    return MaterialApp(
-      navigatorKey: _pwaNavigatorKey,
-      title: 'SAFE KOREA',
-      debugShowCheckedModeBanner: false,
-      locale: const Locale('ko'),
-      supportedLocales: const [Locale('ko')],
-      localizationsDelegates: GlobalMaterialLocalizations.delegates,
-      // Material localizes Korean with dense typography; override that family
-      // as well so it cannot request an unbundled Noto font when offline.
-      theme: theme.copyWith(
+    return SafeKoreaApp(
+      appTheme: theme.copyWith(
         typography: theme.typography.copyWith(
           dense: theme.typography.dense.apply(fontFamily: 'SafeKoreaWeb'),
           tall: theme.typography.tall.apply(fontFamily: 'SafeKoreaWeb'),
@@ -56,36 +48,6 @@ class SafeKoreaPwa extends StatelessWidget {
           ),
         ),
       ),
-      builder: (context, child) => ValueListenableBuilder<LinkStatus>(
-        valueListenable: ConnectionMonitor.instance,
-        builder: (context, status, _) => Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (status.needsOfflineTools)
-              Material(
-                color: AppPalette.cautionBackground,
-                child: SafeArea(
-                  bottom: false,
-                  child: TextButton.icon(
-                    onPressed: () => _pwaNavigatorKey.currentState?.popUntil(
-                      (route) => route.isFirst,
-                    ),
-                    icon: const Icon(Icons.wifi_off),
-                    label: const Text('연결 확인 필요 · 저장된 행동요령 보기'),
-                  ),
-                ),
-              ),
-            Expanded(
-              child: MediaQuery.removePadding(
-                context: context,
-                removeTop: status.needsOfflineTools,
-                child: child!,
-              ),
-            ),
-          ],
-        ),
-      ),
-      home: const PwaGuidanceHome(),
     );
   }
 }
@@ -195,7 +157,9 @@ class _PwaGuidanceHomeState extends State<PwaGuidanceHome> {
                 ),
               ),
             const SizedBox(height: 16),
-            const Notice('앱 안의 지도·GPS·가족 저장은 준비 중입니다.'),
+            const Notice(
+              '웹에서는 지도 연결에 인터넷이 필요해요. 대피소·주변 지도 저장과 가족 저장은 Android 앱에서 이용하세요.',
+            ),
             OutlinedButton.icon(
               onPressed: () => openExternal(
                 context,
@@ -225,10 +189,8 @@ class _PwaGuidanceHomeState extends State<PwaGuidanceHome> {
             const SizedBox(height: 20),
             const PublicSupportLinks(),
             TextButton(
-              onPressed: () => showLicensePage(
-                context: context,
-                applicationName: 'SAFE KOREA',
-              ),
+              onPressed: () =>
+                  showLicensePage(context: context, applicationName: 'safeKor'),
               child: const Text('오픈소스 라이선스'),
             ),
           ],

@@ -47,7 +47,20 @@ class SavedShelter {
     this.role = ShelterRole.none,
     this.entranceNote = '',
     this.photos = const [],
+    this.offlineMap,
   });
+  final Map<String, dynamic>? offlineMap;
+  SavedShelter withOfflineMap(Map<String, dynamic> map) => SavedShelter._(
+    snapshot,
+    savedAt,
+    checkedAt: checkedAt,
+    check: check,
+    keyVersion: keyVersion,
+    role: role,
+    entranceNote: entranceNote,
+    photos: photos,
+    offlineMap: map,
+  );
   final ShelterRole role;
   final String entranceNote;
   final List<ShelterPhoto> photos;
@@ -64,6 +77,7 @@ class SavedShelter {
     role: role,
     entranceNote: note,
     photos: List.unmodifiable(photos),
+    offlineMap: offlineMap,
   );
   final int keyVersion;
   final DateTime? checkedAt;
@@ -81,6 +95,11 @@ class SavedShelter {
     role: role,
     entranceNote: entranceNote,
     photos: photos,
+    offlineMap:
+        shelter.latitude == catalog.shelters.single.latitude &&
+            shelter.longitude == catalog.shelters.single.longitude
+        ? offlineMap
+        : null,
   );
   final ShelterCatalog snapshot;
   final DateTime savedAt;
@@ -123,6 +142,9 @@ class SavedShelter {
     return SavedShelter._(
       catalog,
       DateTime.parse(json['savedAt'] as String).toUtc(),
+      offlineMap: json['offlineMap'] == null
+          ? null
+          : Map<String, dynamic>.from(json['offlineMap'] as Map),
       keyVersion: keyVersion,
       role: ShelterRole.values.byName(json['role'] as String? ?? 'none'),
       entranceNote: json['entranceNote'] as String? ?? '',
@@ -140,6 +162,7 @@ class SavedShelter {
     );
   }
   Map<String, dynamic> toJson() => {
+    if (offlineMap != null) 'offlineMap': offlineMap,
     'schemaVersion': 1,
     'keyVersion': keyVersion,
     'savedAt': savedAt.toIso8601String(),

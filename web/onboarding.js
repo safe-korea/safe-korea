@@ -3,31 +3,31 @@
   const $ = id => document.getElementById(id);
   const slides = [
     {
-      eyebrow: '평소에는 준비로, 비상시에는 행동으로',
-      title: '미리 준비해 두세요.<br>필요한 순간, <em>바로 꺼내도록.</em>',
-      description: '공습·화생방 등 비상 상황의 행동요령을\n쉽게 꺼내 보는 비상 대비 앱, SAFE KOREA.',
-      benefit: '긴 설명보다, 먼저 할 행동부터',
-      image: 'previews/air-guidance.png',
+      eyebrow: '경보가 울린 순간, 무엇을 할지 바로.',
+      title: '사이렌에<br><em>당황하지 마세요.</em>',
+      description: '내 상황에 맞는 행동을 바로 확인하세요.\n첫 행동부터 함께하는 비상 대비 앱, safeKor.',
+      benefit: '긴 설명 대신, 먼저 할 행동부터',
+      image: 'previews/air-guidance.png?v=ui-spacing-20261103',
       alt: 'iPhone 17 Pro의 공습 안내 화면: 실내를 선택하면 계단으로 이동하는 행동을 먼저 안내합니다.',
       caption: 'iPhone 17 Pro · 공습 행동요령',
       next: '내 상황에 맞는 안내 보기 →',
     },
     {
       eyebrow: '실내인지, 실외인지에 따라 다르니까',
-      title: '내가 있는 곳에 맞춰,<br><em>다음 행동을.</em>',
+      title: '지금 있는 곳에 맞춰,<br><em>첫 행동부터.</em>',
       description: '실내·실외·차량, 내 상황을 선택하세요.\n지금 할 일을 짧고 명확하게 확인할 수 있어요.',
       benefit: '위치 권한 없이, 직접 상황 선택',
-      image: 'previews/outdoor-guidance.png',
+      image: 'previews/outdoor-guidance.png?v=ui-spacing-20261103',
       alt: 'iPhone 17 Pro의 공습 안내 화면: 실외 선택 시 가까운 건물로 대피하라는 안내를 보여줍니다.',
       caption: 'iPhone 17 Pro · 실외 상황 선택',
       next: '오프라인에서도 볼 수 있나요? →',
     },
     {
       eyebrow: '필요할 때 검색부터 하지 않도록',
-      title: '연결이 끊겨도,<br>준비한 안내는 <em>곁에.</em>',
-      description: '미리 저장한 행동요령은 인터넷 없이도.\n홈 화면에 두고 필요할 때 바로 꺼내 보세요.',
-      benefit: '사전 저장 후 오프라인 이용 · 지도 제외',
-      image: 'previews/guidance-list.png',
+      title: '연결이 끊겨도,<br><em>행동요령은 내 폰에.</em>',
+      description: '한 번 저장해 두세요.\n필요한 순간, 인터넷 없이 꺼내 볼 수 있어요.',
+      benefit: '사전 저장 후 오프라인 행동요령 확인',
+      image: 'previews/guidance-list.png?v=ui-spacing-20261103',
       alt: 'iPhone 17 Pro의 행동요령 목록 화면: 공습·경계·화생방 등 상황별 안내를 선택합니다.',
       caption: 'iPhone 17 Pro · 상황별 행동요령',
       next: '내 폰에 준비하기 →',
@@ -100,47 +100,50 @@
     let cachedReady = false;
     try {
       if (!isSecureContext || !('serviceWorker' in navigator)) throw Error('unsupported');
-      const existing = await navigator.serviceWorker.getRegistration();
-      if (existing?.active) cachedReady = (await workerCheck(existing.active)).ready;
+      const existing = await navigator.serviceWorker.getRegistration(new URL('app/', document.baseURI));
+      if (existing?.active && existing.scope === new URL('app/',document.baseURI).href) cachedReady = (await workerCheck(existing.active)).ready;
       if (cachedReady) status('저장된 안내를 확인했어요. 새 버전도 확인하고 있어요.', 'ready');
-      const registration = await navigator.serviceWorker.register('safe-worker.js', {updateViaCache:'none'});
+      const registration = await navigator.serviceWorker.register(new URL('app/safe-worker.js', document.baseURI), {updateViaCache:'none'});
       await registration.update();
-      const ready = await Promise.race([navigator.serviceWorker.ready, new Promise((_, reject) => setTimeout(() => reject(Error('timeout')), 60000))]);
+      const ready = await new Promise((resolve,reject) => { const started=Date.now(); const check=()=>{ if(registration.active) resolve(registration); else if(Date.now()-started>60000) reject(Error('timeout')); else setTimeout(check,100); }; check(); });
       let result = await workerCheck(ready.active);
       if (!result.ready) result = await workerCheck(ready.active, 'REPAIR_OFFLINE');
       if (!result.ready) throw Error('incomplete');
-      status(registration.waiting ? '기존 안내는 저장되어 있어요. 새 버전 적용은 이 앱의 모든 창을 닫은 뒤 다시 열어 주세요.' : '오프라인 안내 저장 완료 · 지도는 인터넷이 필요해요.', 'ready');
+      status(registration.waiting ? '기존 안내는 저장되어 있어요. 새 버전 적용은 이 앱의 모든 창을 닫은 뒤 다시 열어 주세요.' : '오프라인 안내 저장 완료', 'ready');
       $('prepare').textContent = '저장 상태 다시 확인';
     } catch (_) {
       if (cachedReady) {
         status('기존 오프라인 안내를 확인했어요. 새 버전 확인은 인터넷 연결 후 다시 해주세요.', 'ready');
         return;
       }
-      status('저장을 완료하지 못했어요. 인터넷·저장공간을 확인하고 다시 시도하세요. 행동요령은 바로 볼 수 있어요.', 'error');
+      status('저장을 완료하지 못했어요. 인터넷·저장공간을 확인하고 다시 시도하세요.', 'error');
       $('prepare').textContent = '저장 다시 시도';
     } finally { $('prepare').disabled = false; }
   };
-  let loaded = false;
   const start = () => {
-    $('onboarding').hidden = true;
-    $('app-shell').hidden = false;
-    try { localStorage.setItem('safe-korea-onboarding-v1','seen'); } catch (_) { /* Continue without persistence. */ }
-    if (!loaded) {
-      loaded = true;
-      const script = document.createElement('script');
-      script.src = 'flutter_bootstrap.js';
-      script.onerror = () => { $('boot-error').hidden = false; };
-      document.body.append(script);
-      setTimeout(() => { if (!window.safeFlutterReady) $('boot-error').hidden = false; }, 45000);
-    }
+    try { localStorage.setItem('safe-korea-onboarding-v1','seen'); } catch (_) {}
+    location.assign(new URL('app/', document.baseURI));
   };
-  $('start').onclick = start;
-  $('quick-start').onclick = start;
-  $('retry').onclick = () => location.reload();
-  $('reopen').onclick = () => {
+  $('start').onclick = () => {
+    $('install-help').setAttribute('aria-expanded','true');
+    $('install-detail').hidden=false;
+    $('install-title').scrollIntoView({behavior:'smooth',block:'start'});
+  };
+  $('quick-start').onclick = showSetup;
+  // Marketing URLs always remain marketing in a normal browser. A previous
+  // visit never installs the app, and must never turn a shared link into /app/.
+  const params = new URL(location.href).searchParams;
+  const explicitIntro=params.has('intro')||location.pathname.endsWith('/intro/');
+  if (!explicitIntro && !params.has('setup') && standalone) {
+    start();
+  } else {
+    $('entry-loading')?.setAttribute('hidden', '');
     $('onboarding').hidden = false;
-    $('app-shell').hidden = true;
-    showSetup();
-  };
-  try { if (!new URL(location.href).searchParams.has('intro') && localStorage.getItem('safe-korea-onboarding-v1') === 'seen') start(); } catch (_) {}
+    if (params.has('setup')) showSetup();
+  }
+  // Check for a newer shell even when setup is skipped. Do not skipWaiting:
+  // already-open guidance must never reload underneath the user.
+  if ('serviceWorker' in navigator && isSecureContext) {
+    navigator.serviceWorker.getRegistration(new URL('app/', document.baseURI)).then(registration => registration?.update()).catch(() => {});
+  }
 })();

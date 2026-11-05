@@ -88,7 +88,7 @@ ThemeData buildAppTheme({String? fontFamily}) {
       expandedAlignment: Alignment.centerLeft,
     ),
     cardTheme: CardThemeData(
-      margin: const EdgeInsets.symmetric(vertical: 4),
+      margin: const EdgeInsets.only(bottom: 12),
       color: AppPalette.surface,
       elevation: 0,
       shape: RoundedRectangleBorder(

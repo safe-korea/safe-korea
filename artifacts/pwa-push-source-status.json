@@ -1,0 +1,13 @@
+{
+  "transportReady": true,
+  "officialEnabled": false,
+  "source": {
+    "state": "source_observed",
+    "complete": true,
+    "records": 0,
+    "checkedAt": 1793633761718,
+    "receivedAt": 1793633761773,
+    "transport": "signed_collector",
+    "semanticsVerified": false
+  }
+}

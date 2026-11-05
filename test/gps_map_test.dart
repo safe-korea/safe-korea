@@ -7,6 +7,8 @@ import 'package:safe_korea/screens/shelters_screen.dart';
 import 'package:safe_korea/services/saved_shelters_controller.dart';
 import 'package:safe_korea/widgets/shelter_map.dart';
 
+import 'package:safe_korea/services/region_suggestion_service.dart';
+
 import 'helpers/map_tiles.dart';
 import 'map_and_saved_shelters_test.dart' show fixture, SavedMemoryStore;
 import 'region_and_refresh_test.dart' show FixtureLocation;
@@ -23,6 +25,7 @@ void main() {
         home: SheltersScreen(
           catalog: fixture('11110', '테스트 지역', 'gps'),
           locationService: location,
+          regionService: RegionSuggestionService(lookup: (_, _) async => []),
           savedShelters: saved,
         ),
       ),
@@ -47,12 +50,13 @@ void main() {
       const LatLng(37.57, 126.98),
     );
     await tester.ensureVisible(find.byTooltip('내 위치 옵션'));
+    await tester.pumpAndSettle();
     await tester.tap(find.byTooltip('내 위치 옵션'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('내 위치 사용 해제'));
     await tester.pumpAndSettle();
     expect(find.byType(ShelterMap), findsNothing);
-    expect(find.textContaining('위치 미사용, 원본 순서'), findsOneWidget);
+    expect(find.textContaining('기관 제공 순서'), findsOneWidget);
     await tester.pumpWidget(const SizedBox());
     saved.dispose();
   });

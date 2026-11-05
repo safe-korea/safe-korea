@@ -223,7 +223,7 @@ class _ShelterRecordScreenState extends State<ShelterRecordScreen> {
       if (!didPop && !_busy) _confirmLeave();
     },
     child: Scaffold(
-      appBar: AppBar(title: const Text('사진·약도·메모')),
+      appBar: AppBar(title: const Text('내 기록')),
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -253,6 +253,9 @@ class _ShelterRecordScreenState extends State<ShelterRecordScreen> {
           const Text('개인 기록 · 공식 사진 아님\n대피 중에는 촬영보다 이동을 우선하세요.'),
           const SizedBox(height: 20),
           DropdownButtonFormField<ShelterRole>(
+            // Let the field grow with large system text instead of clipping.
+            isDense: false,
+            itemHeight: null,
             initialValue: _role,
             isExpanded: true,
             decoration: const InputDecoration(labelText: '대피소 우선순위'),

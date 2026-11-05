@@ -1,7 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'screens/app_shell.dart';
+import 'services/system_civil_alert_link.dart';
+import 'widgets/civil_alert_navigation.dart';
+import 'services/civil_alert_ingress.dart';
 import 'screens/offline_hub_screen.dart';
 import 'services/connection_monitor.dart';
 import 'screens/drill_screen.dart';
@@ -31,56 +36,110 @@ void main() {
     });
     // A platform failure must never prevent access to offline guidance.
     DrillNotifications.instance.initialize().catchError((Object _) {});
+    SystemCivilAlertLink.shared.start().catchError((Object _) {});
   });
 }
 
 class SafeKoreaApp extends StatelessWidget {
-  const SafeKoreaApp({super.key, this.monitor});
+  const SafeKoreaApp({
+    super.key,
+    this.monitor,
+    this.appTheme,
+    this.officialAlertEvents,
+  });
+  final Stream<CivilAlertNotice>? officialAlertEvents;
+  final ThemeData? appTheme;
   final ConnectionMonitor? monitor;
   @override
   Widget build(BuildContext context) => MaterialApp(
     navigatorKey: _navigatorKey,
-    title: 'SAFE KOREA',
+    title: 'safeKor',
     debugShowCheckedModeBanner: false,
     locale: const Locale('ko'),
     supportedLocales: const [Locale('ko')],
     localizationsDelegates: GlobalMaterialLocalizations.delegates,
-    theme: buildAppTheme(),
-    builder: (context, child) => ValueListenableBuilder<LinkStatus>(
-      valueListenable: monitor ?? ConnectionMonitor.instance,
-      builder: (context, status, _) => Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          if (status.needsOfflineTools)
-            Material(
-              color: AppPalette.cautionBackground,
-              child: SafeArea(
-                bottom: false,
-                child: TextButton.icon(
-                  onPressed: () => _navigatorKey.currentState?.push(
-                    MaterialPageRoute<void>(
-                      builder: (_) => OfflineHubScreen(monitor: monitor),
+    theme: appTheme ?? buildAppTheme(),
+    builder: (context, child) => CivilAlertNavigation(
+      navigatorKey: _navigatorKey,
+      notices: officialAlertEvents,
+      child: ValueListenableBuilder<LinkStatus>(
+        valueListenable: monitor ?? ConnectionMonitor.instance,
+        builder: (context, status, _) => Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (status.needsOfflineTools)
+              Material(
+                color: AppPalette.cautionBackground,
+                child: SafeArea(
+                  bottom: false,
+                  child: TextButton.icon(
+                    onPressed: () => _navigatorKey.currentState?.push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => OfflineHubScreen(monitor: monitor),
+                      ),
                     ),
-                  ),
-                  icon: const Icon(Icons.wifi_off),
-                  label: Text(
-                    status == LinkStatus.offline
-                        ? '연결 없음 · 오프라인 기능 보기'
-                        : '연결 확인 필요 · 오프라인 기능 보기',
+                    icon: const Icon(Icons.wifi_off),
+                    label: Text(
+                      status == LinkStatus.offline
+                          ? '연결 없음 · 오프라인 기능 보기'
+                          : '연결 확인 필요 · 오프라인 기능 보기',
+                    ),
                   ),
                 ),
               ),
+            Expanded(
+              child: _ShiftTapGuard(
+                shifted: status.needsOfflineTools,
+                child: MediaQuery.removePadding(
+                  context: context,
+                  removeTop: status.needsOfflineTools,
+                  child: child!,
+                ),
+              ),
             ),
-          Expanded(
-            child: MediaQuery.removePadding(
-              context: context,
-              removeTop: status.needsOfflineTools,
-              child: child!,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     ),
     home: AppShell(monitor: monitor),
   );
+}
+
+/// The connection banner pushes the page down when it appears or goes away.
+/// Briefly ignore taps so a tap aimed at the old position does not land on a
+/// different button (found in emulator QA).
+class _ShiftTapGuard extends StatefulWidget {
+  const _ShiftTapGuard({required this.shifted, required this.child});
+  final bool shifted;
+  final Widget child;
+  @override
+  State<_ShiftTapGuard> createState() => _ShiftTapGuardState();
+}
+
+class _ShiftTapGuardState extends State<_ShiftTapGuard> {
+  static const hold = Duration(milliseconds: 400);
+  bool _blocking = false;
+  Timer? _timer;
+
+  @override
+  void didUpdateWidget(_ShiftTapGuard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.shifted != widget.shifted) {
+      _timer?.cancel();
+      _blocking = true;
+      _timer = Timer(hold, () {
+        if (mounted) setState(() => _blocking = false);
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) =>
+      AbsorbPointer(absorbing: _blocking, child: widget.child);
 }

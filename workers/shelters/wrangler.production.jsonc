@@ -14,7 +14,9 @@
     "enabled": false
   },
   "vars": {
-    "ALLOWED_ORIGINS": "http://127.0.0.1:8765,http://127.0.0.1:8766,http://localhost:8765,http://localhost:8766,https://safe-korea-shelter-api.trovapp.workers.dev"
+    "ALLOWED_ORIGINS": "http://127.0.0.1:8765,http://127.0.0.1:8766,http://localhost:8765,http://localhost:8766,https://safe-korea-shelter-api.trovapp.workers.dev",
+    "GOV_ALERT_SEMANTICS_VERIFIED": "false",
+    "GOV_ALERT_TRANSPORT": "collector"
   },
   "ratelimits": [
     {
@@ -32,6 +34,14 @@
         "limit": 20,
         "period": 60
       }
+    },
+    {
+      "name": "PUSH_REQUEST_LIMIT",
+      "namespace_id": "731003",
+      "simple": {
+        "limit": 60,
+        "period": 60
+      }
     }
   ],
   "rules": [
@@ -42,5 +52,17 @@
       ],
       "fallthrough": true
     }
-  ]
+  ],
+  "d1_databases": [
+    {
+      "binding": "PUSH_DB",
+      "database_name": "safe-kor-web-push",
+      "database_id": "9f338e58-9c51-496a-b60b-9c08653dd836"
+    }
+  ],
+  "triggers": {
+    "crons": [
+      "*/2 * * * *"
+    ]
+  }
 }

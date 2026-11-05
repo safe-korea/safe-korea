@@ -1,4 +1,7 @@
 import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
+
 import 'dart:io';
 import 'dart:ui' as ui;
 
@@ -19,7 +22,7 @@ class ShelterPhotoImporter {
   }
 
   Future<ShelterPhoto?> recover() async {
-    if (!Platform.isAndroid) return null;
+    if (kIsWeb || !Platform.isAndroid) return null;
     final result = await ImagePicker().retrieveLostData();
     final files = result.files;
     return files == null || files.isEmpty ? null : decode(files.first);

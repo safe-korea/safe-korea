@@ -1,0 +1,86 @@
+[
+  {
+    "scene": "home",
+    "start": 0,
+    "duration": 4,
+    "caption": "갑작스러운 경보,\n무엇부터 해야 할까요?",
+    "note": "모의 경보·사이렌이 포함된 시연"
+  },
+  {
+    "scene": "drill",
+    "start": 4,
+    "duration": 6,
+    "caption": "지금 해야 할 행동부터\n크게, 명확하게",
+    "note": "훈련 / 테스트 · 실제 정부 경보 수신 아님"
+  },
+  {
+    "scene": "actions",
+    "start": 10,
+    "duration": 6,
+    "caption": "실내·실외·이동 중\n내 상황에 맞게 바로 행동",
+    "note": "훈련 / 테스트"
+  },
+  {
+    "scene": "save",
+    "start": 16,
+    "duration": 6,
+    "caption": "대피소를 미리 확인하고\n내 휴대폰에 저장하세요",
+    "note": "공식 시설 조회 자료 · 개방 여부는 현장 확인"
+  },
+  {
+    "scene": "saved",
+    "start": 22,
+    "duration": 3,
+    "caption": "주변 지도도\n함께 저장됩니다",
+    "note": "선택한 시설 주변 도로 자료만 다운로드"
+  },
+  {
+    "scene": "offline",
+    "start": 25,
+    "duration": 4,
+    "caption": "통신이 끊겨도\n미리 저장한 정보는 그대로",
+    "note": "통신 끊김 상황 재현 · 신규 네트워크 연결 차단"
+  },
+  {
+    "scene": "map",
+    "start": 29,
+    "duration": 5,
+    "caption": "저장한 대피소와\n주변 도로를 확인하세요",
+    "note": "저장한 참고 지도 · 현재 위치·길찾기 없음"
+  },
+  {
+    "scene": "zoom",
+    "start": 34,
+    "duration": 3,
+    "caption": "연결 없이 확대해서\n주변 도로 확인",
+    "note": "저장한 참고 지도 · 현재 위치·길찾기 없음"
+  },
+  {
+    "scene": "family",
+    "start": 37,
+    "duration": 5,
+    "caption": "연락이 될 때\n가족과 만날 장소를 정하세요",
+    "note": "통신 복구 후 · 시연용 가족 약속"
+  },
+  {
+    "scene": "share",
+    "start": 42,
+    "duration": 4,
+    "caption": "만날 장소와 약속을\n가족에게 미리 공유하세요",
+    "note": "공유할 내용 확인"
+  },
+  {
+    "scene": "sheet",
+    "start": 46,
+    "duration": 3,
+    "caption": "카카오톡 등\n원하는 앱으로 공유",
+    "note": "공유 창 시연 · 실제 전송하지 않음"
+  },
+  {
+    "scene": "closing",
+    "start": 49,
+    "duration": 4,
+    "caption": "미리 준비해 두세요.\n필요할 때 바로 꺼내 보세요.",
+    "note": "safeKor · 대피 준비와 행동요령"
+  }
+]

@@ -1,0 +1,50 @@
+{
+  "date": "2026-11-03",
+  "package": "kr.safekor.app",
+  "versionCode": 2,
+  "policyIssue": "4989575261088573961",
+  "rejection": "Organization account required for selected category/features",
+  "specificTriggerInRejectionNotice": false,
+  "sourceReview": {
+    "medicalDiagnosis": false,
+    "treatmentRecommendations": false,
+    "medicationDosage": false,
+    "CPROrBleedingControl": false,
+    "healthDataCollection": false,
+    "civilDefenseEvacuationGuidance": true,
+    "biologicalIncidentRefersToHealthAuthorities": true
+  },
+  "storeDescription": {
+    "consoleSaved": true,
+    "length": 1504,
+    "medicalClaimsAdded": false,
+    "functionalityRemovedOrHidden": false
+  },
+  "healthDeclaration": {
+    "previous": "Emergency and First Aid",
+    "changed": false,
+    "reason": "Public Google guidance includes disaster-response resources; specialist interpretation requested"
+  },
+  "support": {
+    "submitted": true,
+    "category": "App rejected, removed or suspended",
+    "receiptVerified": true,
+    "caseId": "pending_assignment",
+    "responseWindow": "Console says generally two business days; may take longer",
+    "automatedRecommendationOnly": false,
+    "approved": false
+  },
+  "testerMatch": {
+    "formPrepared": true,
+    "submitted": false,
+    "matchingStarted": false,
+    "sharedGroupAddedToPlay": false
+  },
+  "verification": {
+    "textLimitsAndBrandAssets": "passed",
+    "jsonParsing": "passed",
+    "gitDiffCheck": "passed",
+    "newAppBinary": false,
+    "emulatorStarted": false
+  }
+}

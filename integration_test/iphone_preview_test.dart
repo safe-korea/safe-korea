@@ -53,7 +53,7 @@ void main() {
     ) {
       await tester.pump(const Duration(seconds: 1));
     }
-    expect(find.textContaining('건 저장 · 목록은 오프라인 사용 가능'), findsOneWidget);
+    expect(find.textContaining('곳 목록을 이 기기에 보관했어요'), findsOneWidget);
     await tester.ensureVisible(find.text('시설을 누르면 상세 정보와 저장 버튼이 나와요.'));
     await tester.pumpAndSettle();
     await binding.takeScreenshot('shelter-list');
