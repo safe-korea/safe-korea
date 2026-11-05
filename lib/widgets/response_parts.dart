@@ -50,7 +50,11 @@ class _ResponseShelterButtonsState extends State<ResponseShelterButtons> {
   @override
   void initState() {
     super.initState();
-    SavedSheltersController.shared.ensureLoaded().catchError((Object _) {});
+    // Loading notifies listeners; never do that while another listener of the
+    // shared controller is being built (e.g. preview + real screen).
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      SavedSheltersController.shared.ensureLoaded().catchError((Object _) {});
+    });
   }
 
   void _open(Widget page) =>

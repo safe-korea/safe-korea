@@ -185,6 +185,33 @@ class LocalStore {
     if (await file.exists()) await file.delete();
   }
 
+  // Small app flags (e.g. the first-run alert preview was seen).
+  Future<void> _ensureFlagsTable() async => (await database).execute(
+    'CREATE TABLE IF NOT EXISTS app_flags (name TEXT PRIMARY KEY, value TEXT NOT NULL)',
+  );
+  Future<bool> loadFlag(String name) async {
+    if (kIsWeb) return readBrowserRecord('flag_$name') == true;
+    await _ensureFlagsTable();
+    final rows = await (await database).query(
+      'app_flags',
+      where: 'name = ?',
+      whereArgs: [name],
+    );
+    return rows.isNotEmpty && rows.first['value'] == 'true';
+  }
+
+  Future<void> saveFlag(String name) async {
+    if (kIsWeb) {
+      writeBrowserRecord('flag_$name', true);
+      return;
+    }
+    await _ensureFlagsTable();
+    await (await database).insert('app_flags', {
+      'name': name,
+      'value': 'true',
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
   Future<void> _ensurePreparationTable() async => (await database).execute(
     'CREATE TABLE IF NOT EXISTS preparation (id INTEGER PRIMARY KEY, content TEXT NOT NULL)',
   );
