@@ -8,7 +8,7 @@ bool canShareMeetingPlan(FamilyPlan plan) =>
 
 /// Only explicit meeting fields; legacy contacts are never serialized here.
 String buildMeetingShareText(FamilyPlan plan, {bool includeNote = false}) {
-  final lines = <String>['[SAFE KOREA] 가족 만남 장소', '통신이 끊기면 만날 장소를 미리 정해 둡니다.'];
+  final lines = <String>['[safeKor] 가족 만남 장소', '통신이 끊기면 만날 장소를 미리 정해 둡니다.'];
   void addPlace(String title, String name, MeetingPoint? point) {
     if (name.trim().isEmpty && !(point?.isValid ?? false)) return;
     lines.add('\n$title: ${name.trim().isEmpty ? "지도에 지정한 장소" : name.trim()}');

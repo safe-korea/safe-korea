@@ -179,12 +179,12 @@ void main() {
       isTrue,
     );
     fail = true;
-    await tester.ensureVisible(find.text('알림 보내기'));
-    await tester.tap(find.text('알림 보내기'));
+    await tester.ensureVisible(find.text('이 설정으로 알림 보내기'));
+    await tester.tap(find.text('이 설정으로 알림 보내기'));
     await tester.pumpAndSettle();
     expect(find.textContaining('알림을 처리하지 못했습니다'), findsOneWidget);
     fail = false;
-    await tester.tap(find.text('알림 보내기'));
+    await tester.tap(find.text('이 설정으로 알림 보내기'));
     await tester.pumpAndSettle();
     expect(find.textContaining('알림 센터에서 테스트 알림을 눌러'), findsOneWidget);
   });

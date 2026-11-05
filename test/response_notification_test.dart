@@ -90,7 +90,7 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(find.text('훈련 / 테스트 · 공습경보'), findsOneWidget);
-      expect(find.text('테스트 중 · 실제 경보 아님'), findsOneWidget);
+      expect(find.text('훈련 / 테스트 · 실제 경보 아님'), findsOneWidget);
       expect(find.text('지금 즉시 대피하세요'), findsOneWidget);
       expect(
         tester.widget<AppBar>(find.byType(AppBar)).backgroundColor,
@@ -105,7 +105,7 @@ void main() {
         recipientMatched: true,
       );
       await tester.pumpAndSettle();
-      expect(find.text('테스트 중 · 실제 경보 아님'), findsNothing);
+      expect(find.text('훈련 / 테스트 · 실제 경보 아님'), findsNothing);
       expect(find.text('훈련 / 테스트 · 공습경보'), findsNothing);
       expect(find.text('지금 즉시 대피하세요'), findsOneWidget);
       expect(tester.takeException(), isNull);

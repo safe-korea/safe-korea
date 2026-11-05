@@ -6,13 +6,11 @@ import '../models/alert_guidance.dart';
 import '../widgets/alert_actions.dart';
 import '../widgets/common.dart';
 import '../widgets/drill_elapsed_timer.dart';
+import '../widgets/response_parts.dart';
 import 'guidelines_screen.dart';
 import 'readiness_screen.dart';
 import 'saved_shelters_screen.dart';
-import 'shelters_screen.dart';
 import 'after_arrival_screen.dart';
-import '../services/saved_shelters_controller.dart';
-import '../models/saved_shelter.dart';
 
 class DrillScreen extends StatefulWidget {
   const DrillScreen({super.key, this.kind = AlertKind.air});
@@ -24,12 +22,6 @@ class DrillScreen extends StatefulWidget {
 class _DrillScreenState extends State<DrillScreen> {
   final _checked = <int>{};
   late AlertKind _kind = widget.kind;
-  @override
-  void initState() {
-    super.initState();
-    SavedSheltersController.shared.ensureLoaded();
-  }
-
   void _open(Widget page) =>
       Navigator.push(context, MaterialPageRoute<void>(builder: (_) => page));
 
@@ -76,6 +68,8 @@ class _DrillScreenState extends State<DrillScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              TrainingBadge(color: AppPalette.forAlert(_kind)),
+              const SizedBox(height: 12),
               Text(
                 '${_kind.label} 연습',
                 style: TextStyle(
@@ -83,11 +77,6 @@ class _DrillScreenState extends State<DrillScreen> {
                   fontSize: _kind == AlertKind.air ? 18 : 24,
                   fontWeight: FontWeight.w800,
                 ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                _kind == AlertKind.air ? '실제 공습경보가 아닙니다' : '실제 경보가 아닙니다',
-                style: const TextStyle(color: Colors.white, fontSize: 14),
               ),
               if (_kind == AlertKind.air) ...[
                 const SizedBox(height: 12),
@@ -114,36 +103,8 @@ class _DrillScreenState extends State<DrillScreen> {
           ),
         ),
         const SizedBox(height: 16),
-        if (_kind == AlertKind.air) ...[
-          FilledButton.icon(
-            style: FilledButton.styleFrom(
-              backgroundColor: AppPalette.forAlert(_kind),
-              foregroundColor: Colors.white,
-            ),
-            onPressed: () => _open(const SheltersScreen()),
-            icon: const Icon(Icons.near_me_outlined),
-            label: const Text('주변 대피소 보기'),
-          ),
-          ListenableBuilder(
-            listenable: SavedSheltersController.shared,
-            builder: (context, _) {
-              final hasPlan = SavedSheltersController.shared.entries.any(
-                (entry) => entry.role != ShelterRole.none,
-              );
-              return hasPlan
-                  ? Padding(
-                      padding: const EdgeInsets.only(top: 8),
-                      child: OutlinedButton.icon(
-                        onPressed: () => _open(const SavedSheltersScreen()),
-                        icon: const Icon(Icons.bookmark),
-                        label: const Text('내 주·대체 대피소 바로 보기'),
-                      ),
-                    )
-                  : const SizedBox.shrink();
-            },
-          ),
-          const SizedBox(height: 16),
-        ],
+        ResponseShelterButtons(kind: _kind, color: AppPalette.forAlert(_kind)),
+        if (_kind.offersShelters) const SizedBox(height: 16),
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
@@ -156,16 +117,6 @@ class _DrillScreenState extends State<DrillScreen> {
             onKindChanged: (kind) => setState(() => _kind = kind),
           ),
         ),
-        if (_kind.offersShelters && _kind != AlertKind.air)
-          FilledButton.icon(
-            style: FilledButton.styleFrom(
-              backgroundColor: AppPalette.forAlert(_kind),
-              foregroundColor: Colors.white,
-            ),
-            onPressed: () => _open(const SheltersScreen()),
-            icon: const Icon(Icons.near_me_outlined),
-            label: const Text('대피시설 확인'),
-          ),
         if (_kind == AlertKind.air) ...[
           const SizedBox(height: 12),
           Container(

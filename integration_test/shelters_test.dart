@@ -47,7 +47,7 @@ void main() {
         ) {
           await tester.pump(const Duration(seconds: 1));
         }
-        expect(find.textContaining('건 저장 · 목록은 오프라인 사용 가능'), findsOneWidget);
+        expect(find.textContaining('곳 목록을 이 기기에 보관했어요'), findsOneWidget);
         final catalog = await repository.cached();
         expect(catalog, isNotNull);
         expect(catalog!.areaCode, '11110');
@@ -58,7 +58,11 @@ void main() {
         await tester.pump(const Duration(seconds: 3));
         expect(
           find.byWidgetPredicate(
-            (widget) => widget is ShelterPin || widget is ShelterClusterPin,
+            (widget) =>
+                widget is ShelterPin ||
+                widget is ShelterClusterPin ||
+                // Builds with a Kakao key draw pins in the native map view.
+                widget.runtimeType.toString() == 'KakaoMap',
           ),
           findsWidgets,
         );
@@ -71,6 +75,10 @@ void main() {
         await tester.tap(find.text('대피소 저장').first);
         await tester.pumpAndSettle();
         expect(saved.entries.length, 1);
+        // The live API allows one query per region per minute.
+        await tester.runAsync(
+          () => Future<void>.delayed(const Duration(seconds: 61)),
+        );
         await saved.refresh(saved.entries.single, repository);
         expect(
           saved.entries.single.check,

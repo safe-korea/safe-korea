@@ -148,6 +148,43 @@ class LocalStore {
     }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
+  // One "my area" map at a time: saving a new district replaces the old one.
+  // A district map is several MB, above Android SQLite's ~2MB CursorWindow
+  // row limit (saving succeeds but reading fails), so it lives in a file
+  // next to the database instead of a table row.
+  Future<File> _areaMapFile() async =>
+      File(path.join(await getDatabasesPath(), 'area_map.json'));
+  Future<Map<String, dynamic>?> loadAreaMap() async {
+    if (kIsWeb) {
+      return (readBrowserRecord('areaMap') as Map?)?.cast<String, dynamic>();
+    }
+    final file = await _areaMapFile();
+    if (!await file.exists()) return null;
+    return jsonDecode(await file.readAsString()) as Map<String, dynamic>;
+  }
+
+  Future<void> saveAreaMap(Map<String, dynamic> record) async {
+    if (kIsWeb) {
+      writeBrowserRecord('areaMap', record);
+      return;
+    }
+    final file = await _areaMapFile();
+    await file.parent.create(recursive: true);
+    // Write then rename so an interrupted save keeps the previous map.
+    final temp = File('${file.path}.tmp');
+    await temp.writeAsString(jsonEncode(record), flush: true);
+    await temp.rename(file.path);
+  }
+
+  Future<void> removeAreaMap() async {
+    if (kIsWeb) {
+      removeBrowserRecord('areaMap');
+      return;
+    }
+    final file = await _areaMapFile();
+    if (await file.exists()) await file.delete();
+  }
+
   Future<void> _ensurePreparationTable() async => (await database).execute(
     'CREATE TABLE IF NOT EXISTS preparation (id INTEGER PRIMARY KEY, content TEXT NOT NULL)',
   );

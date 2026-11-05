@@ -46,7 +46,7 @@ class _NotificationTestScreenState extends State<NotificationTestScreen> {
             ? responseTest
                   ? '알림을 누르면 테스트 표시가 있는 빨간 대피 안내 화면이 열립니다.'
                   : '알림 센터에서 테스트 알림을 눌러 훈련을 시작하세요. 표시·소리·진동은 기기 설정에 따라 달라집니다.'
-            : '알림 권한이 없습니다. 기기 설정에서 SAFE KOREA 알림을 허용하세요. 알림 없이도 홈에서 훈련할 수 있습니다.';
+            : '알림 권한이 없습니다. 기기 설정에서 safeKor 알림을 허용하세요. 알림 없이도 홈에서 훈련할 수 있습니다.';
       }
     } catch (_) {
       message = '알림을 처리하지 못했습니다. 다시 시도하거나 홈에서 훈련을 시작하세요.';
@@ -69,17 +69,22 @@ class _NotificationTestScreenState extends State<NotificationTestScreen> {
           title: '경보 구분 연습',
           subtitle: '직접 보내는 연습 알림 · 실제 경보 아님',
         ),
-        FilledButton.icon(
-          onPressed: _busy ? null : () => _perform(responseTest: true),
-          icon: const Icon(Icons.open_in_new),
-          label: const Text('사이렌으로 대응 화면 테스트'),
+        const _Section('1 · 경보가 오면 대응 화면이 뜨는지 확인'),
+        const Text(
+          '5초 뒤 공습경보 테스트 알림과 사이렌이 옵니다. 앱 사용 중에는 바로 화면이 바뀌고, 앱 밖에서는 알림을 눌러 확인하세요. 아래 설정과 관계없이 사이렌이 포함돼요.',
         ),
         const SizedBox(height: 8),
-        const Text(
-          '5초 뒤 사이렌·공습경보 테스트 알림 · 앱 사용 중에는 바로 화면 전환, 앱 밖에서는 알림을 눌러 확인',
+        FilledButton.icon(
+          onPressed: _busy ? null : () => _perform(responseTest: true),
+          icon: const Icon(Icons.campaign_outlined),
+          label: const Text('사이렌으로 대응 화면 테스트'),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 28),
+        const _Section('2 · 경보 종류별 알림 연습'),
         DropdownButtonFormField<AlertKind>(
+          // Let the field grow with large system text instead of clipping.
+          isDense: false,
+          itemHeight: null,
           initialValue: _kind,
           isExpanded: true,
           decoration: const InputDecoration(labelText: '연습할 경보'),
@@ -116,13 +121,13 @@ class _NotificationTestScreenState extends State<NotificationTestScreen> {
         const SizedBox(height: 12),
         const Text('소리는 기기의 무음·집중 모드 설정을 따릅니다.'),
         const SizedBox(height: 20),
-        FilledButton.icon(
+        OutlinedButton.icon(
           onPressed: _busy ? null : () => _perform(),
           icon: const Icon(Icons.notifications_outlined),
-          label: Text(_busy ? '처리 중…' : '알림 보내기'),
+          label: Text(_busy ? '처리 중…' : '이 설정으로 알림 보내기'),
         ),
         const SizedBox(height: 8),
-        OutlinedButton(
+        TextButton(
           onPressed: _busy ? null : () => _perform(cancel: true),
           child: const Text('알림 지우기'),
         ),
@@ -161,6 +166,22 @@ class _NotificationTestScreenState extends State<NotificationTestScreen> {
           ],
         ),
       ],
+    ),
+  );
+}
+
+class _Section extends StatelessWidget {
+  const _Section(this.title);
+  final String title;
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(bottom: 8),
+    child: Semantics(
+      header: true,
+      child: Text(
+        title,
+        style: const TextStyle(fontSize: 19, fontWeight: FontWeight.w700),
+      ),
     ),
   );
 }
