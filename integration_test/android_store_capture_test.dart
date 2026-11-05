@@ -17,7 +17,11 @@ void main() {
     await tester.tap(find.byType(NavigationDestination).at(2));
     await tester.pumpAndSettle();
     await binding.takeScreenshot('02-offline-guidance');
-    await tester.tap(find.text('내 상황에 맞는 행동 보기'));
+    await tester.tap(find.text('지금 할 행동 보기').hitTestable());
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('받은 경보 선택'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('공습경보').last);
     await tester.pumpAndSettle();
     await tester.tap(find.text('실내'));
     await tester.pumpAndSettle();

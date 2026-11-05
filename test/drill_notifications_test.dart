@@ -143,6 +143,28 @@ void main() {
       'drill_cbrn_voice.wav',
     );
   });
+  testWidgets(
+    'explicit response test uses the existing siren after its delay',
+    (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: NotificationTestScreen(notifications: DrillNotifications()),
+        ),
+      );
+      await tester.tap(find.text('사이렌으로 대응 화면 테스트'));
+      await tester.pumpAndSettle();
+      expect(calls.where((call) => call.method == 'show'), isEmpty);
+      await tester.pump(const Duration(seconds: 5));
+      await tester.pumpAndSettle();
+      final show = calls.lastWhere((call) => call.method == 'show');
+      expect(show.arguments['platformSpecifics']['playSound'], true);
+      expect(show.arguments['platformSpecifics']['sound'], 'drill_siren');
+      expect(
+        show.arguments['payload'],
+        startsWith('safe_korea:response_test:v1:air:'),
+      );
+    },
+  );
   testWidgets('screen defaults silent and recovers from platform error', (
     tester,
   ) async {
@@ -157,12 +179,12 @@ void main() {
       isTrue,
     );
     fail = true;
-    await tester.ensureVisible(find.text('알림 보내기'));
-    await tester.tap(find.text('알림 보내기'));
+    await tester.ensureVisible(find.text('이 설정으로 알림 보내기'));
+    await tester.tap(find.text('이 설정으로 알림 보내기'));
     await tester.pumpAndSettle();
     expect(find.textContaining('알림을 처리하지 못했습니다'), findsOneWidget);
     fail = false;
-    await tester.tap(find.text('알림 보내기'));
+    await tester.tap(find.text('이 설정으로 알림 보내기'));
     await tester.pumpAndSettle();
     expect(find.textContaining('알림 센터에서 테스트 알림을 눌러'), findsOneWidget);
   });

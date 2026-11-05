@@ -14,8 +14,10 @@ import '../services/local_region_service.dart';
 import '../widgets/nearby_shelters.dart';
 import '../services/shelter_repository.dart';
 import '../services/saved_shelters_controller.dart';
+import '../services/connection_monitor.dart';
 import 'saved_shelters_screen.dart';
 import 'shelter_record_screen.dart';
+import '../widgets/area_map_card.dart';
 import '../widgets/common.dart';
 import '../widgets/location_controls.dart';
 import '../models/public_shelter_photo.dart';
@@ -31,8 +33,10 @@ class SheltersScreen extends StatefulWidget {
     this.repository,
     this.savedShelters,
     this.regionService,
+    this.monitor,
   });
   final ShelterCatalog? catalog;
+  final ConnectionMonitor? monitor;
   final LocationService? locationService;
   final RegionSuggestionService? regionService;
   final ShelterRepository? repository;
@@ -50,6 +54,8 @@ class _SheltersScreenState extends State<SheltersScreen> {
   String? _district = '11110';
   bool _fetching = false, _choosingRegion = true, _queryFailed = false;
   String? _networkMessage;
+  // Errors must look different from the success note (QA: same green box).
+  bool _networkWarning = false;
   ShelterCatalog? _catalog;
   Position? _position;
   bool _locating = false, _map = false;
@@ -65,6 +71,14 @@ class _SheltersScreenState extends State<SheltersScreen> {
     super.initState();
     _load();
     _saved.ensureLoaded();
+    _link.addListener(_onLink);
+  }
+
+  ConnectionMonitor get _link => widget.monitor ?? ConnectionMonitor.instance;
+  // Online-only actions are not offered as main actions while disconnected.
+  bool get _offline => _link.value.needsOfflineTools;
+  void _onLink() {
+    if (mounted) setState(() {});
   }
 
   Future<void> _load() async {
@@ -85,6 +99,7 @@ class _SheltersScreenState extends State<SheltersScreen> {
         try {
           cached = await _repository.cached();
         } catch (_) {
+          _networkWarning = true;
           _networkMessage = '기기에 저장된 시설 자료를 읽지 못했습니다. 지역을 선택해 다시 조회해 주세요.';
         }
       }
@@ -149,17 +164,18 @@ class _SheltersScreenState extends State<SheltersScreen> {
       try {
         await _repository.save(catalog);
         if (mounted) {
-          setState(
-            () => _networkMessage =
-                '공식 지도에서 ${catalog.shelters.length}건 저장 · 목록은 오프라인 사용 가능',
-          );
+          setState(() {
+            _networkWarning = false;
+            _networkMessage =
+                '${catalog.shelters.length}곳 목록을 이 기기에 보관했어요 · 연결 없이도 볼 수 있어요';
+          });
         }
       } catch (_) {
         if (mounted) {
-          setState(
-            () => _networkMessage =
-                '시설은 조회했지만 기기에 저장하지 못했습니다. 이번 화면에서만 이용할 수 있습니다.',
-          );
+          setState(() {
+            _networkWarning = true;
+            _networkMessage = '시설은 조회했지만 기기에 저장하지 못했습니다. 이번 화면에서만 이용할 수 있습니다.';
+          });
         }
       }
     } on ConflictingShelterIdentity {
@@ -192,6 +208,7 @@ class _SheltersScreenState extends State<SheltersScreen> {
 
   @override
   void dispose() {
+    _link.removeListener(_onLink);
     if (widget.repository == null) _repository.close();
     super.dispose();
   }
@@ -344,28 +361,7 @@ class _SheltersScreenState extends State<SheltersScreen> {
     final catalog = _catalog;
     final items = _filtered;
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('주변 대피시설'),
-        actions: [
-          ListenableBuilder(
-            listenable: _saved,
-            builder: (context, _) => IconButton(
-              tooltip: '저장한 대피소 (${_saved.entries.length})',
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute<void>(
-                  builder: (_) => SavedSheltersScreen(controller: _saved),
-                ),
-              ),
-              icon: Badge(
-                isLabelVisible: _saved.entries.isNotEmpty,
-                label: Text('${_saved.entries.length}'),
-                child: const Icon(Icons.bookmark_outline),
-              ),
-            ),
-          ),
-        ],
-      ),
+      appBar: AppBar(title: const Text('주변 대피시설')),
       body: ListenableBuilder(
         listenable: _saved,
         builder: (context, _) => PageBody(
@@ -413,7 +409,7 @@ class _SheltersScreenState extends State<SheltersScreen> {
                 ),
               ),
               icon: const Icon(Icons.bookmark_outline),
-              label: const Text('저장한 대피소 · 오프라인 목록'),
+              label: Text('저장한 대피소 (${_saved.entries.length}곳) · 오프라인 목록'),
             ),
             const SizedBox(height: 12),
             LocationControls(
@@ -428,6 +424,8 @@ class _SheltersScreenState extends State<SheltersScreen> {
                 _map = false;
               }),
             ),
+            const SizedBox(height: 12),
+            AreaMapCard(monitor: widget.monitor),
             if (_position != null &&
                 _nearbyArea != null &&
                 catalog?.areaCode == _nearbyArea)
@@ -468,6 +466,7 @@ class _SheltersScreenState extends State<SheltersScreen> {
                       '확인한 지역의 코드·IP를 국민안전24에 보내 시설을 조회합니다.',
                       style: TextStyle(fontSize: 14),
                     ),
+                    const SizedBox(height: 12),
                     FilledButton.icon(
                       onPressed: _fetching
                           ? null
@@ -479,11 +478,13 @@ class _SheltersScreenState extends State<SheltersScreen> {
                       label: const Text('이 지역 대피소 바로 조회'),
                     ),
                   ],
-                  if (_suggestion != null)
+                  if (_suggestion != null) ...[
+                    const SizedBox(height: 12),
                     OutlinedButton(
                       onPressed: _fetching ? null : _applySuggestion,
                       child: const Text('제안한 지역 선택'),
                     ),
+                  ],
                 ],
               ),
               const SizedBox(height: 12),
@@ -541,12 +542,21 @@ class _SheltersScreenState extends State<SheltersScreen> {
               const SizedBox(height: 12),
             ],
             if (_networkMessage != null)
-              Semantics(liveRegion: true, child: Notice(_networkMessage!)),
+              Semantics(
+                liveRegion: true,
+                child: Notice(
+                  _networkMessage!,
+                  warning: _queryFailed || _networkWarning,
+                ),
+              ),
             if (_queryFailed)
               OutlinedButton(
-                onPressed: () =>
-                    openExternal(context, Uri.parse(officialMapSource)),
-                child: const Text('정부 공식 시설 검색 열기'),
+                onPressed: _offline
+                    ? null
+                    : () => openExternal(context, Uri.parse(officialMapSource)),
+                child: Text(
+                  _offline ? '정부 공식 시설 검색 · 연결 후 이용' : '정부 공식 시설 검색 열기',
+                ),
               ),
             if (_error != null) ...[
               Notice(_error!, warning: true),
@@ -583,7 +593,12 @@ class _SheltersScreenState extends State<SheltersScreen> {
                   style: TextStyle(fontSize: 14),
                 ),
               ),
-              if (!_map)
+              if (!_map && _offline)
+                const OutlinedButton(
+                  onPressed: null,
+                  child: Text('온라인 지도 · 연결 후 이용'),
+                )
+              else if (!_map)
                 FilledButton.icon(
                   onPressed: () => setState(() => _map = true),
                   icon: const Icon(Icons.map_outlined),
@@ -603,7 +618,7 @@ class _SheltersScreenState extends State<SheltersScreen> {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  '${items.length}개 시설 · ${_position == null ? '위치 미사용, 원본 순서' : '직선거리 가까운 순'}',
+                  '${items.length}개 시설 · ${_position == null ? '기관 제공 순서' : '직선거리 가까운 순'}',
                 ),
                 const SizedBox(height: 12),
               ],
@@ -657,6 +672,10 @@ class _SheltersScreenState extends State<SheltersScreen> {
                 title: const Text('자료 출처와 조회 시각'),
                 children: [
                   InfoLine(label: '출처', value: catalog.sourceName),
+                  const InfoLine(
+                    label: '지역 판별',
+                    value: '국가공간정보포털 · KnellBalm 행정경계 자료(2023)',
+                  ),
                   InfoLine(label: '자료 범위', value: catalog.coverage),
                   InfoLine(
                     label: '마지막 조회',
@@ -695,12 +714,17 @@ class _SheltersScreenState extends State<SheltersScreen> {
                 child: const Text('공식 자료 출처 보기'),
               ),
             ],
-            if (!_queryFailed)
+            if (!_queryFailed) ...[
+              const SizedBox(height: 12),
               OutlinedButton(
-                onPressed: () =>
-                    openExternal(context, Uri.parse(officialMapSource)),
-                child: const Text('정부 공식 시설 검색 열기'),
+                onPressed: _offline
+                    ? null
+                    : () => openExternal(context, Uri.parse(officialMapSource)),
+                child: Text(
+                  _offline ? '정부 공식 시설 검색 · 연결 후 이용' : '정부 공식 시설 검색 열기',
+                ),
               ),
+            ],
           ],
         ),
       ),
@@ -815,23 +839,23 @@ class _SheltersScreenState extends State<SheltersScreen> {
               ],
             ),
             const SizedBox(height: 12),
-            if (source != null)
+            if (source != null && _saved.contains(source, shelter.id))
+              // Undo is secondary once saved; the saved state itself is shown
+              // by the filled bookmark icon.
+              OutlinedButton.icon(
+                onPressed: _saved.loaded && !_saved.busy && !_saved.loading
+                    ? () => _toggleSaved(shelter, source)
+                    : null,
+                icon: const Icon(Icons.bookmark),
+                label: Text(_saved.busy ? '대피소·지도 저장 중…' : '저장됨 · 저장 해제'),
+              )
+            else if (source != null)
               FilledButton.tonalIcon(
                 onPressed: _saved.loaded && !_saved.busy && !_saved.loading
                     ? () => _toggleSaved(shelter, source)
                     : null,
-                icon: Icon(
-                  _saved.contains(source, shelter.id)
-                      ? Icons.bookmark
-                      : Icons.bookmark_add_outlined,
-                ),
-                label: Text(
-                  _saved.busy
-                      ? '대피소·지도 저장 중…'
-                      : (_saved.contains(source, shelter.id)
-                            ? '대피소 저장 해제'
-                            : '대피소 저장'),
-                ),
+                icon: const Icon(Icons.bookmark_add_outlined),
+                label: Text(_saved.busy ? '대피소·지도 저장 중…' : '대피소 저장'),
               ),
             if (source != null &&
                 _saved.entryFor(source, shelter.id) != null) ...[

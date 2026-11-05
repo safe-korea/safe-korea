@@ -189,10 +189,8 @@ class _PwaGuidanceHomeState extends State<PwaGuidanceHome> {
             const SizedBox(height: 20),
             const PublicSupportLinks(),
             TextButton(
-              onPressed: () => showLicensePage(
-                context: context,
-                applicationName: 'SAFE KOREA',
-              ),
+              onPressed: () =>
+                  showLicensePage(context: context, applicationName: 'safeKor'),
               child: const Text('오픈소스 라이선스'),
             ),
           ],

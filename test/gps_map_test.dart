@@ -56,7 +56,7 @@ void main() {
     await tester.tap(find.text('내 위치 사용 해제'));
     await tester.pumpAndSettle();
     expect(find.byType(ShelterMap), findsNothing);
-    expect(find.textContaining('위치 미사용, 원본 순서'), findsOneWidget);
+    expect(find.textContaining('기관 제공 순서'), findsOneWidget);
     await tester.pumpWidget(const SizedBox());
     saved.dispose();
   });

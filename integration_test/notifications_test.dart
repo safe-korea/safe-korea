@@ -14,7 +14,7 @@ void main() {
       await tester.ensureVisible(find.text('테스트 알림 설정'));
       await tester.tap(find.text('테스트 알림 설정'));
       await tester.pumpAndSettle();
-      expect(find.text('지금 테스트 알림 보내기'), findsOneWidget);
+      expect(find.text('사이렌으로 대응 화면 테스트'), findsOneWidget);
       DrillNotifications.instance.handlePayload('invalid');
       await tester.pumpAndSettle();
       expect(find.text('테스트 알림'), findsOneWidget);

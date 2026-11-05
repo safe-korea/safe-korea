@@ -1,0 +1,28 @@
+{
+  "artifact": "build/release-candidates/safeKor-1.0.0-4.aab",
+  "versionCode": 4,
+  "sha256": "3a47704aa9409fd4380901817f79dee43999f0e5f4fd1a764e75cdef6a13ad38",
+  "jarSignatureVerified": true,
+  "playUploaded": true,
+  "testSirenSeconds": 8,
+  "pwaBackgroundCustomSiren": false,
+  "flutterTestsPassed": 195,
+  "workerTestsPassed": 62,
+  "workerVersion": "9994bd94-e79b-4376-81f9-933990294a10",
+  "liveAssetHashMatches": {
+    "/app/audio/drill_siren.wav": true,
+    "/app/test-siren.js": true,
+    "/app/push-client.js": true,
+    "/app/main.dart.js": true
+  },
+  "officialEnabled": false,
+  "playReleaseId": "2",
+  "playTrack": "Alpha",
+  "playSubmissionActivityId": "3",
+  "playSubmittedAtConsole": "2026-11-03 23:17",
+  "playReviewStatus": "published",
+  "nativeLibrariesInspected": 7,
+  "nativeElf16kbCompatible": true,
+  "playPublishedAtConsole": "2026-11-03 23:56",
+  "playPublicationVerifiedDate": "2026-11-04"
+}

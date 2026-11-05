@@ -25,18 +25,20 @@ class PublicSupportLinks extends StatelessWidget {
         icon: const Icon(Icons.privacy_tip_outlined),
         label: const Text('개인정보처리방침'),
       ),
+      const SizedBox(height: 12),
       OutlinedButton.icon(
         onPressed: () => openExternal(context, Uri.parse(publicSupportUrl)),
         icon: const Icon(Icons.help_outline),
         label: const Text('문의·데이터 삭제 안내'),
       ),
+      const SizedBox(height: 12),
       TextButton.icon(
         onPressed: () => openExternal(
           context,
           Uri(
             scheme: 'mailto',
             path: publicSupportEmail,
-            query: 'subject=${Uri.encodeComponent('SAFE KOREA 문의')}',
+            query: 'subject=${Uri.encodeComponent('safeKor 문의')}',
           ),
         ),
         icon: const Icon(Icons.mail_outline),

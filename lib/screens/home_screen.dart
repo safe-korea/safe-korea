@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 
 import '../theme/app_theme.dart';
 import '../widgets/common.dart';
+import '../widgets/received_alert_banner.dart';
 import 'alert_guide_screen.dart';
 import 'system_civil_alert_settings_screen.dart';
 import 'offline_hub_screen.dart';
@@ -45,13 +46,33 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
-      title: const Text(
-        'SAFE KOREA',
-        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
+      title: Row(
+        children: [
+          ExcludeSemantics(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(9),
+              child: Image.asset(
+                'assets/branding/app-icon.png',
+                width: 36,
+                height: 36,
+              ),
+            ),
+          ),
+          const SizedBox(width: 10),
+          const Flexible(
+            child: Text(
+              'safeKor',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
+            ),
+          ),
+        ],
       ),
     ),
     body: PageBody(
       children: [
+        const ReceivedAlertBanner(),
         const Text(
           '지금 필요한 안내',
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800),
@@ -122,6 +143,7 @@ class HomeScreen extends StatelessWidget {
           icon: const Icon(Icons.shield_outlined),
           label: const Text('모의 공습경보 시작'),
         ),
+        const SizedBox(height: 12),
         ActionTile(
           icon: Icons.menu_book_outlined,
           title: '상황별 행동강령',

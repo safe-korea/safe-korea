@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import '../services/system_civil_alert_link.dart';
+import 'notification_test_screen.dart';
+import '../theme/app_theme.dart';
 import '../widgets/common.dart';
 
 class SystemCivilAlertSettingsScreen extends StatefulWidget {
@@ -59,6 +61,35 @@ class _SystemCivilAlertSettingsScreenState
     super.dispose();
   }
 
+  bool get _accessDone =>
+      _status['enabled'] == true && _status['accessGranted'] == true;
+
+  String _stateLabel() {
+    if (_status['enabled'] != true) return '연결 꺼짐';
+    if (_status['accessGranted'] != true) return '1단계 알림 접근 허용 필요';
+    if (_status['canNotify'] != true) return '연결됨 · 2단계 안내 알림 허용 필요';
+    return '연결됨';
+  }
+
+  Widget _step(int number, String title, bool done) => Padding(
+    padding: const EdgeInsets.only(bottom: 4),
+    child: Row(
+      children: [
+        Icon(
+          done ? Icons.check_circle : Icons.radio_button_unchecked,
+          color: done ? AppPalette.green : AppPalette.muted,
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            '$number단계 · $title${done ? ' (완료)' : ''}',
+            style: const TextStyle(fontWeight: FontWeight.w700),
+          ),
+        ),
+      ],
+    ),
+  );
+
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(title: const Text('휴대전화 경보 연결')),
@@ -73,15 +104,39 @@ class _SystemCivilAlertSettingsScreenState
           'Android 기기 내 연결 · 실험 기능\n휴대전화에 표시된 민방공 경보를 선별해 행동 안내로 연결합니다.',
         ),
         const SizedBox(height: 12),
-        const Text(
-          '• 앱 사용 중에는 대피 안내 화면을 엽니다.\n• 다른 앱 사용 중에는 안내 알림을 눌러 들어옵니다.\n• 원래 재난문자의 사이렌·표시를 제어하지 않습니다.',
+        for (final line in const [
+          '앱 사용 중에는 대피 안내 화면을 엽니다.',
+          '다른 앱 사용 중에는 안내 알림을 눌러 들어옵니다.',
+          '원래 재난문자의 사이렌·표시를 제어하지 않습니다.',
+        ])
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('•  '),
+                Expanded(child: Text(line)),
+              ],
+            ),
+          ),
+        const SizedBox(height: 16),
+        OutlinedButton.icon(
+          onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute<void>(
+              builder: (_) => const NotificationTestScreen(),
+            ),
+          ),
+          icon: const Icon(Icons.notifications_active_outlined),
+          label: const Text('테스트 알림으로 대응 화면 확인'),
         ),
         const SizedBox(height: 16),
-        Text(
-          _status['enabled'] == true && _status['accessGranted'] == true
-              ? '기기 연결 사용 중'
-              : '기기 연결 꺼짐 또는 권한 동의 대기',
-          style: const TextStyle(fontWeight: FontWeight.w700),
+        Semantics(
+          liveRegion: true,
+          child: Text(
+            '현재 상태: ${_stateLabel()}',
+            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+          ),
         ),
         if (_status['sourceInstalled'] == false)
           const Notice(
@@ -89,10 +144,7 @@ class _SystemCivilAlertSettingsScreenState
             warning: true,
           ),
         const SizedBox(height: 16),
-        const Text(
-          '권한 범위를 먼저 확인하세요',
-          style: TextStyle(fontWeight: FontWeight.w700),
-        ),
+        _step(1, '권한 범위 확인 후 연결 허용', _accessDone),
         const Text(
           '‘알림 접근 권한’은 다른 앱 알림에도 접근할 수 있는 권한입니다. safeKor는 발신 앱을 먼저 확인하고, 지원된 시스템 재난문자의 명확한 경보 발령 문구만 처리합니다. 개인 알림 내용은 읽거나 저장·전송하지 않습니다. 경보 원문도 서버에 보내지 않습니다.',
         ),
@@ -109,6 +161,10 @@ class _SystemCivilAlertSettingsScreenState
           icon: const Icon(Icons.settings_outlined),
           label: Text(_busy ? '설정 여는 중…' : '알림 접근 설정에서 연결 허용'),
         ),
+        const SizedBox(height: 20),
+        _step(2, '앱 밖에서 받을 안내 알림 허용', _status['canNotify'] == true),
+        const Text('다른 앱을 쓰는 중에 경보가 오면 이 알림을 눌러 대피 안내로 들어옵니다.'),
+        const SizedBox(height: 8),
         OutlinedButton(
           onPressed: () async {
             await FlutterLocalNotificationsPlugin()

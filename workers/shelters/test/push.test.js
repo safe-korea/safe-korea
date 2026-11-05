@@ -16,6 +16,50 @@ import {
   regionMatches,
   fetchOfficial,
 } from "../src/official_alerts.ts";
+import { readCollectorSnapshot } from "../src/collector.ts";
+
+const collectorSecret = "c".repeat(43);
+async function collectorRequest(value, secret = collectorSecret) {
+  const body = JSON.stringify(value);
+  const stamp = String(value.collectedAt);
+  const key = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+  const signature = encode64(
+    new Uint8Array(
+      await crypto.subtle.sign(
+        "HMAC",
+        key,
+        new TextEncoder().encode(stamp + "\n" + body),
+      ),
+    ),
+  );
+  return new Request(origin + "/api/push/collector", {
+    method: "POST",
+    body,
+    headers: {
+      "Content-Type": "application/json",
+      "X-SafeKor-Timestamp": stamp,
+      "X-SafeKor-Signature": signature,
+    },
+  });
+}
+function collectorValue(now, rows = []) {
+  return {
+    protocolVersion: 1,
+    collectedAt: now,
+    sourceReadAt: now,
+    state: "source_observed",
+    complete: true,
+    recordCount: rows.length,
+    totalCount: rows.length,
+    rows,
+  };
+}
 
 function database() {
   const sql = new DatabaseSync(":memory:");
@@ -288,6 +332,8 @@ test("test push is encrypted, short-lived, bound to one device and receipt disti
   assert.equal(plain[end], 2);
   const data = JSON.parse(new TextDecoder().decode(plain.slice(0, end)));
   assert.equal(data.type, "test");
+  assert.equal(data.publishedAt, now);
+  assert.equal(data.expiresAt, now + 120000);
   assert.match(data.body, /실제 경보가 아닙니다/);
   const receipt = await pushRoute(
     req("receipt", {
@@ -298,8 +344,20 @@ test("test push is encrypted, short-lived, bound to one device and receipt disti
     { now: () => now + 1000 },
   );
   assert.equal((await receipt.json()).received, true);
+  for (const openedFromNotification of [undefined, false, "true"]) {
+    const foreground = await pushRoute(
+      req("notice", { ...own, deliveryId: result.deliveryId, openedFromNotification }),
+      f.env,
+      { now: () => now + 1500 },
+    );
+    assert.equal((await foreground.json()).type, "test");
+    const beforeClick = await (
+      await pushRoute(req("status", own), f.env, { now: () => now + 1600 })
+    ).json();
+    assert.equal(beforeClick.lastTest.opened_at, null);
+  }
   const opened = await pushRoute(
-    req("notice", { ...own, deliveryId: result.deliveryId }),
+    req("notice", { ...own, deliveryId: result.deliveryId, openedFromNotification: true }),
     f.env,
     { now: () => now + 2000 },
   );
@@ -372,7 +430,8 @@ test("strict civil-defense parsing excludes training, future context, releases a
   );
   assert.equal(koreanTimestamp("2026-02-30 21:30:00"), null);
   assert(regionMatches("11710", ["11"]));
-  assert(!regionMatches("11", ["11710"]));
+  assert(regionMatches("11", ["11710"]));
+  assert(!regionMatches("11", ["26110"]));
   assert(!regionMatches("26110", ["11"]));
 });
 test("official adapter is gated, fresh, exact-region and independent from numeric disaster ID guesses", async () => {
@@ -616,4 +675,208 @@ test("persistent IP rejection backs off instead of retrying the same failure eac
   assert.equal(calls, 0);
   await pollGovernment(f.env, { now: () => now + 6 * 3600000 + 1, upstream });
   assert.equal(calls, 1);
+});
+
+test("collector authentication binds body/time, rejects invalid summaries and ordinary disaster text", async () => {
+  const now = Date.now();
+  assert.equal(
+    (
+      await readCollectorSnapshot(
+        await collectorRequest(collectorValue(now)),
+        collectorSecret,
+        now,
+      )
+    ).complete,
+    true,
+  );
+  const original = await collectorRequest(collectorValue(now));
+  const tampered = new Request(original.url, {
+    method: "POST",
+    headers: original.headers,
+    body: JSON.stringify({ ...collectorValue(now), recordCount: 3 }),
+  });
+  await assert.rejects(
+    readCollectorSnapshot(tampered, collectorSecret, now),
+    /collector_auth_failed/,
+  );
+  await assert.rejects(
+    readCollectorSnapshot(
+      await collectorRequest(collectorValue(now)),
+      "d".repeat(43),
+      now,
+    ),
+    /collector_auth_failed/,
+  );
+  await assert.rejects(
+    readCollectorSnapshot(
+      await collectorRequest(collectorValue(now - 61000)),
+      collectorSecret,
+      now,
+    ),
+    /collector_auth_failed/,
+  );
+  for (const invalid of [
+    {
+      ...collectorValue(now),
+      complete: false,
+      rows: [{ DST_SE_NM: "민방공", MSG_CN: "합성" }],
+      recordCount: 1,
+      totalCount: 1,
+    },
+    { ...collectorValue(now), totalCount: 101 },
+    collectorValue(now, [{ DST_SE_NM: "호우", MSG_CN: "합성 일반 재난" }]),
+    { ...collectorValue(now), gatewayCode: "private-error-text" },
+    { ...collectorValue(now), sourceReadAt: now - 61000 },
+  ])
+    await assert.rejects(
+      readCollectorSnapshot(
+        await collectorRequest(invalid),
+        collectorSecret,
+        now,
+      ),
+      /collector_invalid/,
+    );
+  const large = new Request(origin + "/api/push/collector", {
+    method: "POST",
+    headers: {
+      ...Object.fromEntries(
+        (await collectorRequest(collectorValue(now))).headers,
+      ),
+      "Content-Length": String(3 * 1024 * 1024),
+    },
+    body: "{}",
+  });
+  await assert.rejects(
+    readCollectorSnapshot(large, collectorSecret, now),
+    /collector_too_large/,
+  );
+});
+
+test("signed collector needs no browser Origin, keeps dispatch gated, rejects replays, disables direct polling", async () => {
+  const f = await fixture(),
+    now = Date.now();
+  await pushRoute(req("subscribe", f.body), f.env, { now: () => now });
+  f.env.GOV_ALERT_TRANSPORT = "collector";
+  f.env.COLLECTOR_HMAC_KEY = collectorSecret;
+  let sends = 0;
+  const deps = {
+    now: () => now,
+    upstream: async () => {
+      sends++;
+      return new Response(null, { status: 201 });
+    },
+  };
+  const row = {
+    SN: 987,
+    CRT_DT: new Date(now + 9 * 3600000)
+      .toISOString()
+      .slice(0, 19)
+      .replace("T", " "),
+    MDFCN_YMD: "synthetic",
+    MSG_CN: "공습경보 발령합니다. 대피하세요.",
+    RCPTN_RGN_ID: "11710",
+    RCPTN_RGN_NM: "서울특별시 송파구",
+    DST_SE_NM: "민방공",
+    EMRG_STEP_NM: "위급재난",
+  };
+  const value = collectorValue(now, [row]);
+  let response = await pushRoute(await collectorRequest(value), f.env, deps);
+  assert.equal(response.status, 200);
+  assert.equal((await response.json()).officialEnabled, false);
+  assert.equal(sends, 0);
+  const state = f.env.PUSH_DB.sql
+    .prepare("SELECT value FROM alert_runtime WHERE name='source_status'")
+    .get().value;
+  assert.equal(JSON.parse(state).transport, "signed_collector");
+  assert(!state.includes("MSG_CN"));
+  assert(!state.includes(row.MSG_CN));
+  assert.equal(
+    (await (await pushRoute(await collectorRequest(value), f.env, deps)).json())
+      .duplicate,
+    true,
+  );
+  f.env.GOV_ALERT_SEMANTICS_VERIFIED = "true";
+  response = await pushRoute(
+    await collectorRequest({ ...value, collectedAt: now + 1 }),
+    f.env,
+    deps,
+  );
+  assert.equal(response.status, 200);
+  assert.equal(sends, 1);
+  await pushRoute(
+    await collectorRequest({ ...value, collectedAt: now + 2 }),
+    f.env,
+    deps,
+  );
+  assert.equal(
+    sends,
+    1,
+    "notice deduplication survives a later collector snapshot",
+  );
+  await pollGovernment(f.env, deps);
+  assert.equal(
+    sends,
+    1,
+    "collector mode must not call government from Cloudflare",
+  );
+  assert.equal(
+    (await pushRoute(req("unsubscribe", { id: "x", capability }), f.env))
+      .status,
+    403,
+    "ordinary browser POST retains Origin protection",
+  );
+  assert.equal(
+    (
+      await pushRoute(
+        await collectorRequest(value, "d".repeat(43)),
+        f.env,
+        deps,
+      )
+    ).status,
+    403,
+  );
+});
+
+test("province registration dispatches district notice inside selected city, never to another city (synthetic only)", async () => {
+  const now = Date.now();
+  const row = {
+    SN: 542,
+    CRT_DT: new Date(now + 9 * 3600000)
+      .toISOString()
+      .slice(0, 19)
+      .replace("T", " "),
+    MDFCN_YMD: "synthetic",
+    MSG_CN: "공습경보를 발령합니다.",
+    RCPTN_RGN_ID: "internal",
+    RCPTN_RGN_NM: "서울특별시 송파구",
+    DST_SE_NM: "민방공",
+    EMRG_STEP_NM: "위급재난",
+  };
+  for (const [region, expected] of [
+    ["11", 1],
+    ["28", 0],
+  ]) {
+    const f = await fixture();
+    f.body.region = region;
+    await pushRoute(req("subscribe", f.body), f.env, { now: () => now });
+    Object.assign(f.env, {
+      GOV_ALERT_TRANSPORT: "collector",
+      COLLECTOR_HMAC_KEY: collectorSecret,
+      GOV_ALERT_SEMANTICS_VERIFIED: "true",
+    });
+    let sent = 0;
+    const response = await pushRoute(
+      await collectorRequest(collectorValue(now, [row])),
+      f.env,
+      {
+        now: () => now,
+        upstream: async () => {
+          sent++;
+          return new Response(null, { status: 201 });
+        },
+      },
+    );
+    assert.equal(response.status, 200);
+    assert.equal(sent, expected, region);
+  }
 });

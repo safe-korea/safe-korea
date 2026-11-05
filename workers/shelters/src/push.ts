@@ -1,3 +1,4 @@
+import { readCollectorSnapshot, CollectorError } from "./collector.ts";
 import { type PushSubscription } from "@block65/webcrypto-web-push";
 import {
   digest,
@@ -34,6 +35,8 @@ export type PushEnv = {
   VAPID_PRIVATE_KEY?: string;
   GOV_ALERT_API_KEY?: string;
   GOV_ALERT_SEMANTICS_VERIFIED?: string;
+  GOV_ALERT_TRANSPORT?: string;
+  COLLECTOR_HMAC_KEY?: string;
 };
 type Sub = {
   id: string;
@@ -203,7 +206,9 @@ async function state(env: PushEnv): Promise<Record<string, unknown>> {
     publicKey: keys?.publicKey || null,
     officialEnabled:
       env.GOV_ALERT_SEMANTICS_VERIFIED === "true" &&
-      !!env.GOV_ALERT_API_KEY &&
+      (env.GOV_ALERT_TRANSPORT === "collector"
+        ? !!env.COLLECTOR_HMAC_KEY
+        : !!env.GOV_ALERT_API_KEY) &&
       source.complete === true &&
       typeof source.checkedAt === "number" &&
       Date.now() - source.checkedAt < 300000,
@@ -291,6 +296,69 @@ export async function pushRoute(
     if (path === "/api/push/config" && request.method === "GET")
       return json(await state(env));
     if (request.method !== "POST") throw new PushError(405, "post_required");
+    if (path === "/api/push/collector") {
+      if (env.GOV_ALERT_TRANSPORT !== "collector" || !env.COLLECTOR_HMAC_KEY)
+        throw new PushError(503, "collector_not_enabled");
+      if (
+        !env.PUSH_REQUEST_LIMIT ||
+        !(
+          await env.PUSH_REQUEST_LIMIT.limit({
+            key: await digest(
+              request.headers.get("CF-Connecting-IP") || "unknown",
+            ),
+          })
+        ).success
+      )
+        throw new PushError(429, "try_later");
+      let snapshot;
+      try {
+        snapshot = await readCollectorSnapshot(
+          request,
+          env.COLLECTOR_HMAC_KEY,
+          now,
+        );
+      } catch (error) {
+        throw new PushError(
+          403,
+          error instanceof CollectorError ? error.message : "collector_invalid",
+        );
+      }
+      const claim = await db(env)
+        .prepare(
+          "INSERT INTO alert_runtime(name,value) VALUES ('collector_last',?) ON CONFLICT(name) DO UPDATE SET value=excluded.value WHERE CAST(alert_runtime.value AS INTEGER)<?",
+        )
+        .bind(String(snapshot.collectedAt), snapshot.collectedAt)
+        .run();
+      if (!claim.meta?.changes)
+        return json({ accepted: true, duplicate: true });
+      const verified = env.GOV_ALERT_SEMANTICS_VERIFIED === "true";
+      await db(env)
+        .prepare(
+          "INSERT INTO alert_runtime(name,value) VALUES ('source_status',?) ON CONFLICT(name) DO UPDATE SET value=excluded.value",
+        )
+        .bind(
+          JSON.stringify({
+            state: snapshot.state,
+            complete: snapshot.complete,
+            records: snapshot.recordCount,
+            checkedAt: snapshot.sourceReadAt,
+            receivedAt: now,
+            transport: "signed_collector",
+            semanticsVerified: verified,
+            ...(snapshot.gatewayCode
+              ? { gatewayCode: snapshot.gatewayCode }
+              : {}),
+          }),
+        )
+        .run();
+      if (snapshot.complete && verified)
+        await dispatchRows(env, snapshot.rows, now, deps);
+      return json({
+        accepted: true,
+        officialEnabled: verified && snapshot.complete,
+      });
+    }
+
     if (request.headers.get("origin") !== new URL(request.url).origin)
       throw new PushError(403, "origin_denied");
     if (
@@ -393,12 +461,14 @@ export async function pushRoute(
         .bind(body.deliveryId, sub.id, now)
         .first<Delivery>();
       if (!d) throw new PushError(410, "notice_expired");
-      await db(env)
-        .prepare(
-          "UPDATE push_deliveries SET opened_at=COALESCE(opened_at,?) WHERE id=?",
-        )
-        .bind(now, d.id)
-        .run();
+      if (body.openedFromNotification === true) {
+        await db(env)
+          .prepare(
+            "UPDATE push_deliveries SET opened_at=COALESCE(opened_at,?) WHERE id=?",
+          )
+          .bind(now, d.id)
+          .run();
+      }
       return json({ type: d.type, deliveryId: d.id, ...JSON.parse(d.payload) });
     }
     if (path === "/api/push/test") {
@@ -416,7 +486,9 @@ export async function pushRoute(
         "test",
         {
           title: "safeKor · 테스트 알림",
-          body: "실제 경보가 아닙니다. 이 기기의 알림 전달을 확인합니다.",
+          body: "실제 경보가 아닙니다. 눌러서 빨간 대피 안내 화면을 확인하세요.",
+          publishedAt: now,
+          expiresAt: now + 120000,
         },
         now,
         deps,
@@ -443,6 +515,18 @@ export async function pollGovernment(
   if (!env.PUSH_DB) return;
   const now = (deps.now ?? Date.now)(),
     database = env.PUSH_DB;
+  if (env.GOV_ALERT_TRANSPORT === "collector") {
+    await database.batch([
+      database
+        .prepare("DELETE FROM push_subscriptions WHERE expires_at<=?")
+        .bind(now),
+      database
+        .prepare("DELETE FROM push_deliveries WHERE expires_at<?")
+        .bind(now - 86400000),
+    ]);
+    return;
+  }
+
   const prior = await database
     .prepare("SELECT value FROM alert_runtime WHERE name='source_status'")
     .first<{ value: string }>();
@@ -515,32 +599,41 @@ export async function pollGovernment(
     });
     // Incomplete pagination and unverified semantics can never create an alert.
     if (!source.complete || !verified) return;
-    const notices: Notice[] = [];
-    for (const row of source.rows) {
-      const n = await normalizeOfficial(row, now, true);
-      if (n) notices.push(n);
-    }
-    const subs = await database
-      .prepare("SELECT * FROM push_subscriptions WHERE expires_at>? LIMIT 1000")
-      .bind(now)
-      .all<Sub>();
-    for (const notice of notices)
-      for (const sub of subs.results) {
-        if (
-          regionMatches(sub.region, notice.regions) &&
-          notice.expiresAt > Date.now()
-        )
-          await deliver(
-            env,
-            sub,
-            `${notice.id}/${notice.revision}`,
-            "civil",
-            notice as unknown as Record<string, unknown>,
-            now,
-            deps,
-          );
-      }
+    await dispatchRows(env, source.rows, now, deps);
   } catch {
     await save({ state: "source_unavailable", complete: false });
   }
+}
+
+async function dispatchRows(
+  env: PushEnv,
+  rows: Record<string, unknown>[],
+  now: number,
+  deps: PushDeps,
+): Promise<void> {
+  const notices: Notice[] = [];
+  for (const row of rows) {
+    const n = await normalizeOfficial(row, now, true);
+    if (n) notices.push(n);
+  }
+  const subs = await db(env)
+    .prepare("SELECT * FROM push_subscriptions WHERE expires_at>? LIMIT 1000")
+    .bind(now)
+    .all<Sub>();
+  for (const notice of notices)
+    for (const sub of subs.results) {
+      if (
+        regionMatches(sub.region, notice.regions) &&
+        notice.expiresAt > Date.now()
+      )
+        await deliver(
+          env,
+          sub,
+          `${notice.id}/${notice.revision}`,
+          "civil",
+          notice as unknown as Record<string, unknown>,
+          now,
+          deps,
+        );
+    }
 }

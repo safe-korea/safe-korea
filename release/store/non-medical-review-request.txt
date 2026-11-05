@@ -1,0 +1,29 @@
+Subject: Request to review non-medical civilian evacuation utility classification — kr.safekor.app
+
+Hello Google Play Policy team,
+
+Please review the Play Console Requirements rejection for safeKor (kr.safekor.app), closed Alpha release 1.0.0 (version code 2), issue 4989575261088573961, dated 3 November 2026.
+
+safeKor is a privately operated, non-medical civilian evacuation and preparedness utility in the Tools category. It is not developed by or on behalf of a government organization.
+
+Its functions are:
+- Finding publicly listed civil-defense shelters by selected region and optional foreground location;
+- Showing short summaries of official civil-defense movement/sheltering instructions for air-raid, preliminary, chemical/biological and nuclear warnings;
+- Saving selected shelter information and surrounding road-map data for offline reference;
+- Keeping a family meeting plan and a preparedness checklist locally, with user-initiated sharing;
+- Practising clearly labelled drills and optionally linking supported Android system civil-defense notifications locally.
+
+It does not diagnose or treat medical conditions, provide clinical decision support, first-aid procedures such as CPR or bleeding control, medication dosages, healthcare services or human-subject research. It does not collect symptoms, medical records, vital signs or Health Connect data. Some civil-defense text directs users to follow public authorities' instructions, including health authorities for biological incidents, but it provides no individual medical advice or treatment recommendations.
+
+We selected Emergency and First Aid in the health declaration because the guidance at https://support.google.com/googleplay/android-developer/answer/14738291 includes emergency preparedness/disaster-response information. The rejection states that an organization account is required but does not identify the triggering declaration. We do not want to conceal existing disaster-guidance functionality or make an inaccurate declaration.
+
+Please clarify whether this non-medical civilian evacuation utility can be distributed from an individual developer account and which declaration accurately applies. If the Emergency and First Aid declaration is not applicable to this limited non-medical scope, please allow us to correct it and reconsider the rejection. If an organization account remains required even for this scope, please identify the applicable requirement so that we can follow the correct process.
+
+The store description is being clarified to identify the app as a non-medical evacuation-information tool. This wording does not remove or disguise any functionality. The app does not provide financial or VPN services and is not an official government app. It has no login or reviewer credentials requirement.
+
+Public privacy policy: https://safe-korea-shelter-api.trovapp.workers.dev/privacy
+Support: https://safe-korea-shelter-api.trovapp.workers.dev/support
+Developer contact: taetaeg@gmail.com
+
+Thank you.
+Developer of safeKor

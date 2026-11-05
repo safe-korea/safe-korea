@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../models/saved_shelter.dart';
 import '../theme/app_theme.dart';
+import '../services/connection_monitor.dart';
 import '../services/saved_shelters_controller.dart';
 import '../services/shelter_repository.dart';
 import '../widgets/common.dart';
@@ -16,8 +17,14 @@ import 'shelters_screen.dart';
 import 'shelter_record_screen.dart';
 
 class SavedSheltersScreen extends StatefulWidget {
-  const SavedSheltersScreen({super.key, this.controller, this.repository});
+  const SavedSheltersScreen({
+    super.key,
+    this.controller,
+    this.repository,
+    this.monitor,
+  });
   final ShelterRepository? repository;
+  final ConnectionMonitor? monitor;
   final SavedSheltersController? controller;
   @override
   State<SavedSheltersScreen> createState() => _SavedSheltersScreenState();
@@ -28,8 +35,16 @@ class _SavedSheltersScreenState extends State<SavedSheltersScreen> {
   String _query = '';
   String? _refreshMessage;
   late final _repository = widget.repository ?? ShelterRepository();
+  ConnectionMonitor get _link => widget.monitor ?? ConnectionMonitor.instance;
+  // Online-only actions are not the main action while disconnected (QA).
+  bool get _offline => _link.value.needsOfflineTools;
+  void _onLink() {
+    if (mounted) setState(() {});
+  }
+
   @override
   void dispose() {
+    _link.removeListener(_onLink);
     if (widget.repository == null) _repository.close();
     super.dispose();
   }
@@ -50,6 +65,7 @@ class _SavedSheltersScreenState extends State<SavedSheltersScreen> {
   @override
   void initState() {
     super.initState();
+    _link.addListener(_onLink);
     _controller.ensureLoaded();
   }
 
@@ -223,6 +239,7 @@ class _SavedSheltersScreenState extends State<SavedSheltersScreen> {
             const SizedBox(height: 8),
           ],
           _identity(entry),
+          const SizedBox(height: 16),
           if (entry.offlineMap != null)
             FilledButton.icon(
               icon: const Icon(Icons.offline_pin_outlined),
@@ -241,8 +258,14 @@ class _SavedSheltersScreenState extends State<SavedSheltersScreen> {
             const Text('주변 지도 미저장 · 인터넷 연결 후 저장하세요'),
             OutlinedButton.icon(
               icon: const Icon(Icons.download_outlined),
-              label: Text(_controller.busy ? '지도 저장 중…' : '주변 지도 저장'),
-              onPressed: _controller.busy
+              label: Text(
+                _offline
+                    ? '주변 지도 · 연결 후 저장'
+                    : _controller.busy
+                    ? '지도 저장 중…'
+                    : '주변 지도 저장',
+              ),
+              onPressed: _controller.busy || _offline
                   ? null
                   : () async {
                       await _controller.retryMap(entry);
@@ -272,11 +295,24 @@ class _SavedSheltersScreenState extends State<SavedSheltersScreen> {
               PersonalShelterPhoto(photo: entry.photos[i], index: i + 1),
             ],
           const SizedBox(height: 16),
-          FilledButton.icon(
-            onPressed: () => _openMap(entry),
-            icon: const Icon(Icons.map_outlined),
-            label: const Text('온라인 지도 보기'),
-          ),
+          if (_offline)
+            const OutlinedButton(
+              onPressed: null,
+              child: Text('온라인 지도 · 연결 후 이용'),
+            )
+          // The saved map above is the main action when it exists.
+          else if (entry.offlineMap != null)
+            OutlinedButton.icon(
+              onPressed: () => _openMap(entry),
+              icon: const Icon(Icons.map_outlined),
+              label: const Text('온라인 지도 보기'),
+            )
+          else
+            FilledButton.icon(
+              onPressed: () => _openMap(entry),
+              icon: const Icon(Icons.map_outlined),
+              label: const Text('온라인 지도 보기'),
+            ),
           const SizedBox(height: 6),
           const Text(
             '지도 이용 시 조회 범위·IP가 지도 제공자에게 전달됩니다.',
@@ -300,6 +336,7 @@ class _SavedSheltersScreenState extends State<SavedSheltersScreen> {
           ),
           ExpansionTile(
             tilePadding: EdgeInsets.zero,
+            childrenPadding: const EdgeInsets.only(bottom: 12),
             expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
             title: const Text('내 기록 · 선택'),
             children: [

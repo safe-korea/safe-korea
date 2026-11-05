@@ -68,11 +68,11 @@ self.addEventListener('push',event=>{
     let data;try{data=event.data.json();}catch{}
     const valid=data?.protocolVersion===1&&['civil','test'].includes(data.type)&&/^[a-f0-9-]{36}$/.test(data.deliveryId)&&Number.isFinite(data.expiresAt)&&data.expiresAt>Date.now()&&data.expiresAt<=Date.now()+150000;
     const title=valid?(data.type==='test'?'safeKor · 테스트 알림':'safeKor · 민방공 경보 안내'):'safeKor · 알림 확인';
-    const body=valid?(data.type==='test'?'실제 경보가 아닙니다. 알림을 눌러 전달을 확인하세요.':'경보 내용을 확인하고 지금 할 행동을 보세요.'):'지난 알림이거나 내용을 확인하지 못했어요. 최신 정부 안내를 확인하세요.';
+    const body=valid?(data.type==='test'?'실제 경보가 아닙니다. 눌러서 대피 안내 화면을 확인하세요.':'경보 내용을 확인하고 지금 할 행동을 보세요.'):'지난 알림이거나 내용을 확인하지 못했어요. 최신 정부 안내를 확인하세요.';
     await self.registration.showNotification(title,{body,icon:new URL('../icons/icon-192.png',self.registration.scope).href,tag:valid?data.deliveryId:'safeKor-check',data:valid?{deliveryId:data.deliveryId}:{},requireInteraction:false});
     if(valid){
       const windows=await self.clients.matchAll({type:'window',includeUncontrolled:false});
-      for(const c of windows)if(c.visibilityState==='visible'&&new URL(c.url).origin===self.location.origin&&new URL(c.url).pathname.startsWith('/app/'))c.postMessage({type:'SAFEKOR_OPEN_NOTICE',deliveryId:data.deliveryId});
+      for(const c of windows)if(c.visibilityState==='visible'&&new URL(c.url).origin===self.location.origin&&new URL(c.url).pathname.startsWith('/app/'))c.postMessage({type:'SAFEKOR_OPEN_NOTICE',deliveryId:data.deliveryId,activation:'foreground'});
     }
     if(valid&&typeof data.receiptToken==='string'){
       try{await fetch(new URL('../api/push/receipt',self.registration.scope),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({deliveryId:data.deliveryId,receiptToken:data.receiptToken}),credentials:'omit'});}catch{}
@@ -88,7 +88,7 @@ self.addEventListener('notificationclick',event=>{
     if(!app.pathname.endsWith('/app/'))app.pathname=app.pathname.replace(/\/?$/,'/')+'app/';
     const windows=await self.clients.matchAll({type:'window',includeUncontrolled:true});
     const current=windows.find(c=>new URL(c.url).origin===app.origin&&new URL(c.url).pathname.startsWith(app.pathname));
-    if(current){await current.focus();if(id)current.postMessage({type:'SAFEKOR_OPEN_NOTICE',deliveryId:id});return;}
+    if(current){await current.focus();if(id)current.postMessage({type:'SAFEKOR_OPEN_NOTICE',deliveryId:id,activation:'notificationclick'});return;}
     if(id)app.searchParams.set('notice',id);
     await self.clients.openWindow(app.href);
   })());

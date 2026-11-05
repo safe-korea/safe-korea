@@ -82,7 +82,7 @@ class LocationControls extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             const Text(
-              '좌표는 기기에서만 처리해요. 시설 조회에는 연결이 필요해요.\n지역 판별: 국가공간정보포털·KnellBalm 경계자료(2023).',
+              '좌표는 기기에서만 처리해요. 시설 조회에는 연결이 필요해요.',
               style: TextStyle(fontSize: 13, color: AppPalette.muted),
             ),
           ],

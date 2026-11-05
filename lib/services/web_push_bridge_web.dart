@@ -15,6 +15,24 @@ void attachWebPushBridge() {
   _receiver = ((JSString value) {
     try {
       final row = jsonDecode(value.toDart) as Map<String, dynamic>;
+      if (row['type'] == 'test') {
+        final id = row['deliveryId'],
+            issued = row['publishedAt'],
+            expires = row['expiresAt'];
+        if (id is! String ||
+            !RegExp(r'^[a-f0-9-]{36}$').hasMatch(id) ||
+            issued is! int ||
+            expires is! int) {
+          return;
+        }
+        CivilAlertIngress.shared.acceptResponseTest(
+          id: id,
+          kind: AlertKind.air,
+          issuedAt: DateTime.fromMillisecondsSinceEpoch(issued, isUtc: true),
+          expiresAt: DateTime.fromMillisecondsSinceEpoch(expires, isUtc: true),
+        );
+        return;
+      }
       final kind = AlertKind.fromName(row['kind'] as String?);
       if (row['type'] != 'civil' || kind == null || kind == AlertKind.release) {
         return;
@@ -48,3 +66,17 @@ void attachWebPushBridge() {
   }).toJS;
   _ready?.callAsFunction();
 }
+
+@JS('window.safeKorOpenPushSettings')
+external JSFunction? get _openPushSettings;
+@JS('window.safeKorOpenInstallSettings')
+external JSFunction? get _openInstallSettings;
+void openWebNotificationSettings() => _openPushSettings?.callAsFunction();
+void openWebInstallSettings() => _openInstallSettings?.callAsFunction();
+
+@JS('window.safeKorPlayTestSiren')
+external JSPromise<JSBoolean> _playTestSiren();
+@JS('window.safeKorStopTestSiren')
+external void _stopTestSiren();
+Future<bool> playWebTestSiren() async => (await _playTestSiren().toDart).toDart;
+void stopWebTestSiren() => _stopTestSiren();
