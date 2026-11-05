@@ -20,7 +20,9 @@
   "playTrack": "Alpha",
   "playSubmissionActivityId": "3",
   "playSubmittedAtConsole": "2026-11-03 23:17",
-  "playReviewStatus": "in_review",
+  "playReviewStatus": "published",
   "nativeLibrariesInspected": 7,
-  "nativeElf16kbCompatible": true
+  "nativeElf16kbCompatible": true,
+  "playPublishedAtConsole": "2026-11-03 23:56",
+  "playPublicationVerifiedDate": "2026-11-04"
 }
