@@ -4,6 +4,7 @@ import '../services/connection_monitor.dart';
 import '../theme/app_theme.dart';
 import '../widgets/area_map_card.dart';
 import '../widgets/common.dart';
+import '../widgets/received_alert_banner.dart';
 import 'alert_guide_screen.dart';
 import 'saved_shelters_screen.dart';
 import 'family_screen.dart';
@@ -24,6 +25,9 @@ class OfflineHubScreen extends StatelessWidget {
         valueListenable: connection,
         builder: (context, status, _) => PageBody(
           children: [
+            // Home is replaced by this screen while offline: a received
+            // alert must stay reachable here too.
+            const ReceivedAlertBanner(),
             Text(
               switch (status) {
                 LinkStatus.offline => '네트워크 연결이 없어요',

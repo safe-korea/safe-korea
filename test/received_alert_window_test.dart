@@ -152,4 +152,32 @@ void main() {
     expect(find.text('훈련 / 테스트 · 공습경보'), findsOneWidget);
     expect(find.text('공습경보 수신'), findsNothing);
   });
+
+  testWidgets('received alert stays reachable while offline', (tester) async {
+    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.devicePixelRatio = 2.625;
+    addTearDown(tester.view.reset);
+    final events = StreamController<CivilAlertNotice>.broadcast();
+    addTearDown(events.close);
+    final monitor = ConnectionMonitor(
+      readLink: () async => false,
+      changes: const Stream<void>.empty(),
+      probe: () async => null,
+    );
+    addTearDown(monitor.dispose);
+    await tester.pumpWidget(
+      SafeKoreaApp(officialAlertEvents: events.stream, monitor: monitor),
+    );
+    await monitor.refresh();
+    await tester.pumpAndSettle();
+    // Offline: home is replaced by the offline tools screen.
+    expect(find.text('네트워크 연결이 없어요'), findsOneWidget);
+    events.add(official(const Duration(minutes: 20)));
+    await tester.pumpAndSettle();
+    expect(find.text('공습경보 수신'), findsOneWidget);
+    await tester.pump(const Duration(milliseconds: 500));
+    await tester.tap(find.text('대응 화면 다시 열기'));
+    await tester.pumpAndSettle();
+    expect(find.byType(CivilAlertScreen), findsOneWidget);
+  });
 }
