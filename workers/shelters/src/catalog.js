@@ -30,6 +30,18 @@ function dms(row, prefix, axis) {
   return degrees + minutes / 60 + seconds / 3600;
 }
 
+/** Number of facilities the full list must hold, or null when rows are missing.
+ * Since 2026-11 the source reports every facility twice in `totalCnt` (its
+ * paged `list` repeats each one) while `mapList` holds each facility once.
+ * Only that exact doubling is accepted, and only when `mapList` has no repeats.
+ * @param {unknown[]} rows @param {number} total @returns {number|null} */
+export function officialTotal(rows, total) {
+  if (rows.length === total) return total;
+  if (rows.length === 0 || total !== rows.length * 2) return null;
+  const ids = new Set(rows.map(row => row && typeof row === 'object' ? /** @type {any} */ (row).facilCode : undefined));
+  return ids.size === rows.length && !ids.has(undefined) ? rows.length : null;
+}
+
 /** Official-list validation mirrors the existing native adapter. No synthetic facilities.
  * @param {unknown} input @param {string} region @param {number} now */
 export function normalizeCatalog(input, region, now) {
@@ -38,7 +50,9 @@ export function normalizeCatalog(input, region, now) {
   if (meta.tableNm !== 'TFK_CIVIL_EMR_FACL_TEMP' || meta.tableKorNm !== '민방위대피소' || meta.gubun !== '2' || meta.sggCd !== region) throw Error('wrong_source');
   const rows = payload.mapList;
   const total = payload.totalCnt;
-  if (!Array.isArray(rows) || !Number.isInteger(total) || total < 0 || total > MAX_ROWS || rows.length !== total) throw Error('incomplete_list');
+  if (!Array.isArray(rows) || !Number.isInteger(total) || total < 0 || total > MAX_ROWS) throw Error('incomplete_list');
+  const listed = officialTotal(rows, total);
+  if (listed === null) throw Error('incomplete_list');
   /** @type {Map<string, {id:string,name:string,address:string,latitude:number,longitude:number,updatedAt:null,status:string}>} */
   const byId = new Map();
   let skippedCount = 0;
@@ -63,11 +77,11 @@ export function normalizeCatalog(input, region, now) {
       skippedCount++;
     } else byId.set(record.id, record);
   }
-  if (total > 0 && byId.size === 0) throw Error('no_valid_records');
+  if (listed > 0 && byId.size === 0) throw Error('no_valid_records');
   return {
     schemaVersion: 1, sourceName: '행정안전부 국민안전24 · 민방위 대피소', sourceUrl: SOURCE_URL,
     retrievedAt: new Date(now).toISOString(), coverage: REGION_NAMES.get(region), areaCode: region,
-    officialCount: total, skippedCount, status: 'verified', items: [...byId.values()],
+    officialCount: listed, skippedCount, status: 'verified', items: [...byId.values()],
   };
 }
 

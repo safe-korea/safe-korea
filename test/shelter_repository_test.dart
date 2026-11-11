@@ -102,6 +102,26 @@ void main() {
     }
     expect(parse(response([])).shelters, isEmpty);
   });
+  test('source counting each facility twice keeps the real count', () {
+    final rows = [
+      entry('a'),
+      {...entry('b'), 'facilNm': '두 번째 시설'},
+    ];
+    final data = parse({...response(rows), 'totalCnt': 4});
+    expect(data.shelters, hasLength(2));
+    expect(data.officialCount, 2);
+    for (final bad in [
+      {...response(rows), 'totalCnt': 3},
+      {...response(rows), 'totalCnt': 6},
+      {
+        ...response([entry('a'), entry('a')]),
+        'totalCnt': 4,
+      },
+      {...response([]), 'totalCnt': 2},
+    ]) {
+      expect(() => parse(bad), throwsA(isA<IncompleteShelterResponse>()));
+    }
+  });
   test('query sends only a region and fixed civil defense parameters, HTTP errors fail', () async {
     final repository = ShelterRepository(
       client: MockClient((request) async {

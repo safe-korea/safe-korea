@@ -103,6 +103,20 @@ class ShelterRepository {
     return degrees + minutes / 60 + seconds / 3600;
   }
 
+  /// Facilities the full list must hold, or null when rows are missing.
+  /// Since 2026-11 the source reports every facility twice in `totalCnt`
+  /// while `mapList` holds each once; only that exact doubling is accepted,
+  /// and only when `mapList` has no repeats. Mirrors the Worker.
+  static int? officialTotal(List rows, int reported) {
+    if (reported < 0) return null;
+    if (rows.length == reported) return reported;
+    if (rows.isEmpty || reported != rows.length * 2) return null;
+    final ids = {for (final row in rows) row is Map ? row['facilCode'] : null};
+    return ids.length == rows.length && !ids.contains(null)
+        ? rows.length
+        : null;
+  }
+
   static ShelterCatalog parse(
     Map<String, dynamic> payload, {
     required String code,
@@ -117,11 +131,10 @@ class ShelterRepository {
       throw const FormatException('요청한 민방위 시설 자료가 아닙니다.');
     }
     final rows = payload['mapList'] as List;
-    final total = payload['totalCnt'] as int;
+    final reported = payload['totalCnt'] as int;
     // `list` contains only five paginated rows. `mapList` must contain all rows.
-    if (total < 0 || total != rows.length) {
-      throw IncompleteShelterResponse(total, rows.length);
-    }
+    final total = officialTotal(rows, reported);
+    if (total == null) throw IncompleteShelterResponse(reported, rows.length);
     final items = <Map<String, dynamic>>[];
     final recordsById = <String, Map<String, dynamic>>{};
     var skipped = 0;

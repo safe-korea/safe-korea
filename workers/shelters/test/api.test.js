@@ -108,3 +108,16 @@ test('bounded upstream body rejects HTML, declared/chunked oversize and invalid 
 });
 
 test('upstream redirects are rejected without following another host',async()=>{const h=harness();h.deps.upstream=async()=>new Response(null,{status:302,headers:{Location:'https://other.example'}});assert.equal((await h.request()).status,502);assert.equal(h.data.size,0)});
+test('source counting each facility twice is accepted with the real count',()=>{
+  const rows=[row('a'),row('b')];
+  rows[1]={...rows[1],facilNm:'두 번째 시설'};
+  const c=normalizeCatalog({...payload(rows),totalCnt:4},'11110',0);
+  assert.equal(c.officialCount,2);assert.equal(c.items.length,2);
+});
+test('a short list is still rejected, even when doubled or repeated',()=>{
+  const rows=[row('a'),row('b')];
+  for(const total of [3,5,6]) assert.throws(()=>normalizeCatalog({...payload(rows),totalCnt:total},'11110',0),/incomplete_list/);
+  // Doubling only counts when mapList itself has no repeats.
+  assert.throws(()=>normalizeCatalog({...payload([row('a'),row('a')]),totalCnt:4},'11110',0),/incomplete_list/);
+  assert.throws(()=>normalizeCatalog({...payload([]),totalCnt:2},'11110',0),/incomplete_list/);
+});
